@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rstudio-configmap
+data:
+  config1.txt: |-
+    test1	1018	1018
+    test2	1019	1019
+    test3	1020	1020
+    muralika	1021	1021

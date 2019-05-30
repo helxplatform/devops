@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: logstash
+spec:
+  clusterIP: None
+  selector:
+    app: logstash
+  ports:
+    - name: beats
+      port: 5044

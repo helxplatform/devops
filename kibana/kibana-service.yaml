@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  labels:
+    service: kibana
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5601
+    name: external
+  - port: 9300
+    name: internal
+  selector:
+    service: kibana

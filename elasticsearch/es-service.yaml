@@ -1,0 +1,16 @@
+# Services will allow our Elasticsearch nodes discover themselves properly
+apiVersion: v1
+kind: Service
+metadata:
+  name: es-nodes
+  labels:
+    service: elasticsearch
+spec:
+  clusterIP: None
+  ports:
+  - port: 9200
+    name: external
+  - port: 9300
+    name: internal
+  selector:
+    service: elasticsearch

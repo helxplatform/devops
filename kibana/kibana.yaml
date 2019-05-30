@@ -1,0 +1,34 @@
+# Kibana node deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: kibana
+  labels:
+    service: kibana
+spec:
+  serviceName: kibana
+  replicas: 1
+  selector:
+    matchLabels:
+      service: kibana
+  template:
+    metadata:
+      labels:
+        service: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:6.3.0
+        resources:
+          # need more cpu upon initialization, therefore burstable class
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m
+        env:
+          - name: ELASTICSEARCH_URL
+            value: http://elasticsearch-0.es-nodes.default.svc.cluster.local:9200
+        ports:
+        - containerPort: 5601
+          name: ui
+          protocol: TCP

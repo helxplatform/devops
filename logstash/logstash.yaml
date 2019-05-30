@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+  labels:
+    app: logstash
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      hostname: logstash
+      subdomain: deployment
+      containers:
+        - name: logstash
+          image: docker.elastic.co/logstash/logstash:7.0.0
+          ports:
+            - containerPort: 5044
+          volumeMounts:
+            - name: logstash-pipelines
+              mountPath: /usr/share/logstash/pipeline
+           # - name: logstash-tls
+           #   mountPath: /usr/share/logstash/ssl
+
+      # spec.template.spec.volumes
+      volumes:
+        - name: logstash-pipelines
+          configMap:
+            name: logstash-pipelines
+        #- name: logstash-tls
+        #  secret:
+        #    secretName: logstash-tls
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-pipelines
+data:
+  logstash.conf: |-
+    input
+    {
+        beats {
+                port => 5044
+        }
+
+    }
+
+    filter
+    {
+        grok{
+                match => {
+                        "message" => "%{COMBINEDAPACHELOG}"
+                }
+        }
+        mutate{
+                convert => { "bytes" => "integer" }
+        }
+        date {
+                match => [ "timestamp", "dd/MMM/YYYY:HH:mm:ss Z" ]
+                locale => en
+                remove_field => "timestamp"
+        }
+        geoip {
+                source => "clientip"
+        }
+        useragent {
+                source => "agent"
+                target => "useragent"
+        }
+    }
+
+
+    output
+    {
+        stdout {
+                codec => dots
+        }
+
+        elasticsearch {
+                hosts => [ "http://elasticsearch-0.es-nodes.default.svc.cluster.local:9200" ]
+        }
+    }
