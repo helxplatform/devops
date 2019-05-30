@@ -1,4 +1,4 @@
-# rstudio-total-v1
+# rstudio-total-k8s
 
 This resource deploys a Rstudio on the cloud and leveraging cloud scalable nature(using Google Kubernetes Engine) to support multiple 
 users.
