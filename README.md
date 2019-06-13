@@ -1,4 +1,4 @@
-# rstudio-total-k8s
+# heliumplus-k8s-devops-core
 
 This resource deploys a Rstudio on the cloud and leveraging cloud scalable nature(using Google Kubernetes Engine) to support multiple 
 users.
