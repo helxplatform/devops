@@ -66,6 +66,17 @@ Kubectl apply -R -f logstash/
 ```
 The configuration for the Logstash is defined in a ConfigMap(logstash-configmap.yaml). 
 
+## Setup NFS server
+### Installing NFS server
+Step-1: The NFS server is backed by a google persistent disk. Make sure it exists prior to the deployment. If the persistent dosk does not exist, use the following command to create a disk on a google kubernetes cluster,
+```
+gcloud compute disks create gce-nfs-disk --size 10GB --zone us-central1-a
+```
+Step-2: Run the following command to deploy NFS server.
+```
+kubectl apply -R -f nfs-server
+```
+
 ## Setup Rstudio
 ### Installing Rstudio
 Step-1: Run the following command to deploy the Rstudio app. 
