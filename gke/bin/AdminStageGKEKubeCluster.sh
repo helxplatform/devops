@@ -132,7 +132,7 @@ function createNodePool(){
    ${EXTRA_CREATE_ARGS} \
    --zone ${ZONE} --cluster ${CLUSTER_NAME} \
    --num-nodes ${NUM_POOL_NODES} --min-nodes ${MIN_POOL_NODES} --max-nodes ${MAX_POOL_NODES} --enable-autoscaling \
-   --machine-type ${MACHINE_TYPE}
+   --machine-type ${MACHINE_TYPE} --node-labels=pool-name=$1
 }
 
 function deleteNodePool(){
