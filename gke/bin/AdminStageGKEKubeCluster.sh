@@ -33,6 +33,8 @@ CLUSTER_VERSION=${CLUSTER_VERSION-1.13.6-gke.13}
 MACHINE_TYPE=${MACHINE_TYPE-n1-standard-2}
 RBAC_ENABLED=${RBAC_ENABLED-true}
 NUM_NODES=${NUM_NODES-2}
+MIN_NODES=${MIN_NODES-0}
+MAX_NODES=${MAX_NODES-2}
 INT_NETWORK=${INT_NETWORK-default}
 PREEMPTIBLE=${PREEMPTIBLE-false}
 EXTRA_CREATE_ARGS=${EXTRA_CREATE_ARGS-""}
@@ -120,10 +122,16 @@ fi
 
 
 case $1 in
-  up)
+  createCluster)
     bootstrap;
     ;;
-  down)
+  deleteCluster)
+    cleanup_gke_resources;
+    ;;
+  createNodePool)
+    bootstrap;
+    ;;
+  createNodePool)
     cleanup_gke_resources;
     ;;
   chaos)
