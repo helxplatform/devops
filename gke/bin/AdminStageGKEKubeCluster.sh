@@ -1,4 +1,9 @@
-﻿# * Create a script using gcloud commands, etc to:
+#!/bin/bash -x
+# This bash script shall create a GKE cluster, an external IP, setup kubectl to
+# connect to the cluster without changing the home kube config and finally installs
+# helm with the appropriate service account if RBAC is enabled
+
+# * Create a script using gcloud commands, etc to:
 # * Create two new identical clusters called stage-dev and stage-prod.
 # * Add the following node pools to both clusters with these machine types:
 #    * default: n1-standard-2
@@ -19,27 +24,29 @@
 # * Delete all old GKE clusters.
 # 
 
-#!/bin/bash
-# This bash script shall create a GKE cluster, an external IP, setup kubectl to
-# connect to the cluster without changing the home kube config and finally installs
-# helm with the appropriate service account if RBAC is enabled
 set -e
+PROJECT=${PROJECT-stage-mvp}
 REGION=${REGION-us-east4}
 ZONE_EXTENSION=${ZONE_EXTENSION-b}
 ZONE=${REGION}-${ZONE_EXTENSION}
 CLUSTER_ENV=${CLUSTER_ENV-dev}
 CLUSTER_NAME=${CLUSTER_NAME-stage-${CLUSTER_ENV}}
 CLUSTER_VERSION=${CLUSTER_VERSION-1.13.6-gke.13}
-MACHINE_TYPE=${MACHINE_TYPE-n1-standard-2}
+MACHINE_TYPE=${MACHINE_TYPE-n1-standard-8}
+ACCELERATOR_TYPE=${ACCELERATOR_TYPE-""}
+ACCELERATOR_COUNT=${ACCELERATOR_COUNT-1}
 RBAC_ENABLED=${RBAC_ENABLED-true}
 NUM_NODES=${NUM_NODES-2}
 MIN_NODES=${MIN_NODES-0}
 MAX_NODES=${MAX_NODES-2}
+NUM_POOL_NODES=${NUM_POOL_NODES-2}
+MIN_POOL_NODES=${MIN_POOL_NODES-0}
+MAX_POOL_NODES=${MAX_POOL_NODES-3}
 INT_NETWORK=${INT_NETWORK-default}
 PREEMPTIBLE=${PREEMPTIBLE-false}
 EXTRA_CREATE_ARGS=${EXTRA_CREATE_ARGS-""}
-USE_STATIC_IP=${USE_STATIC_IP-false};
-external_ip_name=${CLUSTER_NAME}-external-ip;
+USE_STATIC_IP=${USE_STATIC_IP-false}
+external_ip_name=${CLUSTER_NAME}-external-ip
 
 
 # MacOS does not support readlink, but it does have perl
@@ -81,6 +88,7 @@ function bootstrap(){
     echo "Successfully provisioned external IP address $address , You need to add an A record to the DNS name to point to this address. See https://gitlab.com/charts/gitlab/blob/master/doc/installation/cloud/gke.md#dns-entry.";
     echo "#####\n"
   fi
+
   mkdir -p ${CLUSTER_ENV}/.kube;
   touch ${CLUSTER_ENV}/.kube/config;
   export KUBECONFIG=$(pwd)/${CLUSTER_ENV}/.kube/config;
@@ -99,7 +107,6 @@ function bootstrap(){
     kubectl config set-credentials ${CLUSTER_NAME}-admin-user --username=admin --password=$(cluster_admin_password_gke)
     kubectl --user=${CLUSTER_NAME}-admin-user create -f rbac-config.yaml;
   fi
-# Don't forget to add the  node pool creation from Steve’s slack message
 }
 
 
@@ -115,9 +122,28 @@ function cleanup_gke_resources(){
   echo "\033[;33m Warning: Disks, load balancers, DNS records, and other cloud resources created during the helm deployment are not deleted, please delete them manually from the gcp console \033[0m";
 }
 
+function createNodePool(){
+   if ! [ -z "${ACCELERATOR_TYPE}" ]; then
+     EXTRA_CREATE_ARGS="--accelerator type=${ACCELERATOR_TYPE},count=${ACCELERATOR_COUNT}"
+   fi
+
+   echo "creating NodePool with name $1"
+   gcloud container node-pools create $1 \
+   ${EXTRA_CREATE_ARGS} \
+   --zone ${ZONE} --cluster ${CLUSTER_NAME} \
+   --num-nodes ${NUM_POOL_NODES} --min-nodes ${MIN_POOL_NODES} --max-nodes ${MAX_POOL_NODES} --enable-autoscaling \
+   --machine-type ${MACHINE_TYPE}
+}
+
+function deleteNodePool(){
+   echo "deleting NodePool with name $1"
+   yes | gcloud container node-pools delete $1 \
+   --zone ${ZONE} --cluster ${CLUSTER_NAME}
+}
 
 if [ -z "$1" ]; then
-  echo "You need to pass up or down";
+  echo "Supported commands: createCluster, deleteCluster, createNodePool, deleteNodePool";
+  exit
 fi
 
 
@@ -129,10 +155,18 @@ case $1 in
     cleanup_gke_resources;
     ;;
   createNodePool)
-    bootstrap;
+    if [ -z "$2" ]; then
+       echo "createNodePool requires a node pool name";
+       exit
+    fi
+    createNodePool $2;
     ;;
-  createNodePool)
-    cleanup_gke_resources;
+  deleteNodePool)
+    if [ -z "$2" ]; then
+       echo "deleteNodePool requires a node pool name";
+       exit
+    fi
+    deleteNodePool $2;
     ;;
   chaos)
     $SCRIPT_PATH/kube-monkey.sh;
