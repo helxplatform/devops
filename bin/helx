@@ -111,7 +111,7 @@ nodepool () {
         echo AdminStageGKEKubeCluster.sh createNodePool 
     }
     delete () {
-        test "$#" == "10" || \
+        test "$#" == "4" || \
             (echo args: node-pool-name cluster-name region zone-extension \
                   && exit 1)
         export NODE_POOL_NAME=$1
@@ -164,7 +164,7 @@ install () {
 ## Test - perform automated health checks to verify each component is responding
 ## as expected.
 ##
-test () {
+validate () {
     which AdminStageGKEKubeCluster.sh
     infrastructure () {
         echo test ELK endpoints
