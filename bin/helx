@@ -1,0 +1,190 @@
+#!/bin/bash
+
+##################################################################################
+##
+## This manages the construction of the Helx infrastructure.
+##
+##   author: hopefully pj linebaugh
+##   author: hopefully howard lander
+##   author: hopefully murali karthik kothapali
+##   author: steven cox
+##   version: 0.1
+##   usage:
+##      
+##     cluster create: 
+##      
+##       helx cluster create
+##       example: helx cluster create stage-dev us-east4 b
+##      
+##     cluster delete: 
+##      
+##       helx cluster delete ...
+##       example: helx cluster delete stage-dev us-east4 b
+##      
+##     nodepool create:
+##      
+##       helx nodepool create \
+##               node-pool-name cluster-name region zone-extension \
+##               num-pool-nodes min-pool-nodes max-pool-nodes \
+##               machine-type accelerator-type accelerator-count
+##       example: helx nodepool create \
+##                medium-gpu-pool stage-dev us-east4 b \
+##                10 0 10 \
+##                n1-standard-8 nvidia-tesla-p100 2
+##      
+##     nodepool delete:
+##      
+##       helx nodepool delete \
+##               node-pool-name cluster-name region zone-extension
+##       example: helx nodepool delete medium-gpu-pool stage-dev us-east4 b
+##
+##     install infrastructure:
+##
+##       helx install infrastructure
+##       example: helx install infrastructure
+##
+##     install core
+##
+##       helx install core
+##       example: helx install core
+##
+##################################################################################
+set -e
+set +x
+
+##
+## Get our location and configure the path.
+##
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+HELX_ROOT=$( dirname $DIR )
+export PYTHONPATH=$HELX_ROOT
+
+##
+## Update the path
+##
+export PATH=$HELX_ROOT/bin:$PATH
+export PATH=$HELX_ROOT/gke/bin:$PATH
+
+##
+## Manage node clusters
+##
+cluster () {
+    create () {
+        test "$#" == "3" || (echo args: cluster-name region extension && exit 1)
+        export CLUSTER_NAME=$1
+        export REGION=$2
+        export ZONE_EXTENSION=$3
+        echo creating cluster $CLUSTER_NAME in region $REGION with extension $ZONE_EXTENSION
+        echo AdminStageGKEKubeCluster.sh createCluster
+    }
+    delete () {
+        test "$#" == "3" || (echo args: cluster-name region extension && exit 1)
+        export CLUSTER_NAME=$1
+        export REGION=$2
+        export ZONE_EXTENSION=$3
+        echo deleting cluster $CLUSTER_NAME in region $REGION with extension $ZONE_EXTENSION
+        echo AdminStageGKEKubeCluster.sh deleteCluster
+    }
+    $*
+}
+
+##
+## Manage node pools
+##
+nodepool () {
+    create () {
+        test "$#" == "10" || \
+            (echo args: node-pool-name cluster-name region zone-extension \
+                 num-pool-nodes min-pool-nodes max-pool-nodes \
+                 machine-type accelerator-type accelerator-count && exit 1)
+        export NODE_POOL_NAME=$1
+        export CLUSTER_NAME=$2
+        export REGION=$3
+        export ZONE_EXTENSION=$4
+        export NUM_POOL_NODES=$5
+        export MIN_POOL_NODES=$6
+        export MAX_POOL_NODES=$7
+        export MACHINE_TYPE=$8
+        export ACCELERATOR_TYPE=$9
+        export ACCELERATOR_COUNT=$10
+        echo creating nodepool $NODE_POOL_NAME at $CLUSTER_NAME
+        echo AdminStageGKEKubeCluster.sh createNodePool 
+    }
+    delete () {
+        test "$#" == "10" || \
+            (echo args: node-pool-name cluster-name region zone-extension \
+                  && exit 1)
+        export NODE_POOL_NAME=$1
+        export CLUSTER_NAME=$2
+        export REGION=$3
+        export ZONE_EXTENSION=$4
+        echo deleting nodepool $NODE_POOL_NAME at $CLUSTER_NAME
+        echo AdminStageGKEKubeCluster.sh deleteNodePool
+    }
+}
+
+##
+## Manage Helx install
+##
+install () {
+    ##
+    ## Install required infrastructure such as logging and search stacks like ELK
+    ## NFS persistent volume infrastructure, etc.
+    ##
+    infrastructure () {
+        echo kubectl apply -f 
+    }
+    ##
+    ## Install core system pieces that are not user applications.
+    ## The supported pattern is that each will be a GitHub repository
+    ## containing a kubernetes folder. Artifacts in that folder will
+    ## be applied with "kubectl apply -f"
+    ##
+    core () {
+        core_repos="git@github.com:heliumplusdatastage/tycho.git"
+        for repo in $core_repos; do
+            dir=$(echo $repo | sed -e "s,.*/,," -e "s,.git,,")
+            rm -rf $dir
+            git clone $repo
+            echo kubectl apply -f $dir/kubernetes
+        done
+    }
+    ##
+    ## Install infrastructure and core system components.
+    ##
+    all () {
+        infra
+        core
+    }
+    $*
+}
+
+##
+## Test - perform automated health checks to verify each component is responding
+## as expected.
+##
+test () {
+    which AdminStageGKEKubeCluster.sh
+    infrastructure () {
+        echo test ELK endpoints
+        echo test NFS access. potentially via an app
+    }
+    core () {
+        echo test tycho API. status would be good
+        echo test commons share
+        echo test commons share app store
+    }
+    apps () {
+        echo deploy each app via tycho
+        echo verify it deploys
+        echo verify we can reach it and it returns healthy responses
+    }
+    all () {
+        infrastructure
+        core
+        apps
+    }
+    $*
+}
+
+$*
