@@ -121,6 +121,7 @@ nodepool () {
         echo deleting nodepool $NODE_POOL_NAME at $CLUSTER_NAME
         echo AdminStageGKEKubeCluster.sh deleteNodePool
     }
+    $*
 }
 
 ##
