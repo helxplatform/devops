@@ -165,7 +165,6 @@ install () {
 ## as expected.
 ##
 validate () {
-    which AdminStageGKEKubeCluster.sh
     infrastructure () {
         echo test ELK endpoints
         echo test NFS access. potentially via an app
