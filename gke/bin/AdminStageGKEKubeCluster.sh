@@ -15,14 +15,14 @@
 #    * Autoscale to a maximum of two nodes.
 #    * Downscale to zero
 #    * Use preemptible instances
-# * Create or reuse a disk to be the backing store for an NFS PersistentVolume. 
+# * Create or reuse a disk to be the backing store for an NFS PersistentVolume.
 #    * For now, a 10GB SSD
-# * Execute the stage basic devops install after: 
+# * Execute the stage basic devops install after:
 #    * Deleting RStudio kubernetes yaml
 #    * Adding NFS PersistentVolume and PersistentVolumeClaim deployment
 # * Add the parameterizable script for all of the above steps to the devops repo.
 # * Delete all old GKE clusters.
-# 
+#
 
 set -e
 PROJECT=${PROJECT-stage-mvp}
@@ -47,7 +47,10 @@ PREEMPTIBLE=${PREEMPTIBLE-false}
 EXTRA_CREATE_ARGS=${EXTRA_CREATE_ARGS-""}
 USE_STATIC_IP=${USE_STATIC_IP-false}
 external_ip_name=${CLUSTER_NAME}-external-ip
-
+HELIUM_GKE_HOME=${HELIUM_GKE_HOME-$(pwd)/../../}
+# NFS_STORAGE_NAME also needs to be changed in the NFS server YAML.
+NFS_STORAGE_NAME=${NFS_STORAGE_NAME-gce-nfs-disk}
+NFS_STORAGE_SIZE=${NFS_STORAGE_SIZE-10GB}
 
 # MacOS does not support readlink, but it does have perl
 KERNEL_NAME=$(uname -s)
@@ -89,9 +92,9 @@ function bootstrap(){
     echo "#####\n"
   fi
 
-  mkdir -p ${CLUSTER_ENV}/.kube;
-  touch ${CLUSTER_ENV}/.kube/config;
-  export KUBECONFIG=$(pwd)/${CLUSTER_ENV}/.kube/config;
+  mkdir -p ${CLUSTER_NAME}/.kube;
+  touch ${CLUSTER_NAME}/.kube/config;
+  export KUBECONFIG=$(pwd)/${CLUSTER_NAME}/.kube/config;
 
   gcloud container clusters get-credentials $CLUSTER_NAME --zone $ZONE --project $PROJECT;
 
@@ -141,6 +144,37 @@ function deleteNodePool(){
    --zone ${ZONE} --cluster ${CLUSTER_NAME}
 }
 
+function deployELKNFS(){
+   echo "deploying ELK and NFS"
+   # deploy ELK
+   kubectl apply -R -f $HELIUM_GKE_HOME/elasticsearch/
+   kubectl apply -R -f $HELIUM_GKE_HOME/kibana/
+   kubectl apply -R -f $HELIUM_GKE_HOME/logstash/
+
+   # create disk for persistent storage
+   gcloud compute disks create $NFS_STORAGE_NAME --size $NFS_STORAGE_SIZE \
+          --zone $ZONE --project $PROJECT
+   # deploy NFS server
+   kubectl apply -R -f $HELIUM_GKE_HOME/nfs-server/
+}
+
+function deleteELKNFS(){
+   echo "deleting ELK and NFS"
+   # delete ELK
+   kubectl delete -R -f $HELIUM_GKE_HOME/elasticsearch/
+   kubectl delete -R -f $HELIUM_GKE_HOME/kibana/
+   kubectl delete -R -f $HELIUM_GKE_HOME/logstash/
+
+   # delete NFS server
+   kubectl delete -R -f $HELIUM_GKE_HOME/nfs-server/
+   # delete disk for persistent storage
+   SLEEP_TIME=30
+   echo "Waiting for $SLEEP_TIME seconds for NFS server deletion."
+   sleep $SLEEP_TIME
+   gcloud compute disks delete $NFS_STORAGE_NAME \
+          --zone $ZONE --project $PROJECT -q
+}
+
 if [ -z "$1" ]; then
   echo "Supported commands: createCluster, deleteCluster, createNodePool, deleteNodePool";
   exit
@@ -170,6 +204,20 @@ case $1 in
     ;;
   chaos)
     $SCRIPT_PATH/kube-monkey.sh;
+    ;;
+  deployELKNFS)
+    deployELKNFS;
+    ;;
+  deleteELKNFS)
+    deleteELKNFS;
+    ;;
+  createClusterELKNFS)
+    bootstrap;
+    deployELKNFS;
+    ;;
+  deleteClusterELKNFS)
+    deleteELKNFS;
+    cleanup_gke_resources;
     ;;
   *)
     echo "Unknown command $1";
