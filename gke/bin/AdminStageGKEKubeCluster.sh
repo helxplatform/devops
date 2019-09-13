@@ -47,10 +47,13 @@ PREEMPTIBLE=${PREEMPTIBLE-false}
 EXTRA_CREATE_ARGS=${EXTRA_CREATE_ARGS-""}
 USE_STATIC_IP=${USE_STATIC_IP-false}
 external_ip_name=${CLUSTER_NAME}-external-ip
-HELIUM_GKE_HOME=${HELIUM_GKE_HOME-$(pwd)/../../}
+HELIUM_GKE_HOME=${HELIUM_GKE_HOME-$(pwd)/../..}
 # NFS_STORAGE_NAME also needs to be changed in the NFS server YAML.
 NFS_STORAGE_NAME=${NFS_STORAGE_NAME-gce-nfs-disk}
 NFS_STORAGE_SIZE=${NFS_STORAGE_SIZE-10GB}
+KUBECONFIG_DIR=${HELIUM_GKE_HOME}/kubeconfigs/${PROJECT}-${CLUSTER_NAME}
+KUBECONFIG=${KUBECONFIG_DIR}/config
+KUBECONFIG_USER=${PROJECT}-${CLUSTER_NAME}-admin-user
 
 # MacOS does not support readlink, but it does have perl
 KERNEL_NAME=$(uname -s)
@@ -92,24 +95,33 @@ function bootstrap(){
     echo "#####\n"
   fi
 
-  mkdir -p ${CLUSTER_NAME}/.kube;
-  touch ${CLUSTER_NAME}/.kube/config;
-  export KUBECONFIG=$(pwd)/${CLUSTER_NAME}/.kube/config;
+  mkdir -p $KUBECONFIG_DIR
+  # Erase k8s config if there.
+  echo "" > $KUBECONFIG_DIR/config
 
   gcloud container clusters get-credentials $CLUSTER_NAME --zone $ZONE --project $PROJECT;
 
   # Create roles for RBAC Helm
   if $RBAC_ENABLED; then
+    echo "Creating RBAC binding for HELM tiller account."
     status_code=$(curl -L -w '%{http_code}' -o rbac-config.yaml -s "https://gitlab.com/charts/gitlab/raw/master/doc/installation/examples/rbac-config.yaml");
     if [ "$status_code" != 200 ]; then
       echo "Failed to download rbac-config.yaml, status code: $status_code";
       exit 1;
     fi
 
-
-    kubectl config set-credentials ${CLUSTER_NAME}-admin-user --username=admin --password=$(cluster_admin_password_gke)
-    kubectl --user=${CLUSTER_NAME}-admin-user create -f rbac-config.yaml;
+    kubectl config set-credentials ${KUBECONFIG_USER} --username=admin --password=$(cluster_admin_password_gke)
+    kubectl create --user=${KUBECONFIG_USER} -f rbac-config.yaml;
   fi
+
+  # deploy tiller here?
+
+  echo "###"
+  echo "For kubectl configuration of this cluster only:"
+  echo "  export KUBECONFIG=$KUBECONFIG"
+  echo "To add to your own kubectl configurations use:"
+  echo "  export KUBECONFIG=\$KUBECONFIG:$KUBECONFIG"
+  echo "###"
 }
 
 
@@ -133,40 +145,47 @@ function createNodePool(){
    echo "creating NodePool with name $1"
    gcloud container node-pools create $1 \
    ${EXTRA_CREATE_ARGS} \
-   --zone ${ZONE} --cluster ${CLUSTER_NAME} \
-   --num-nodes ${NUM_POOL_NODES} --min-nodes ${MIN_POOL_NODES} --max-nodes ${MAX_POOL_NODES} --enable-autoscaling \
+   --zone ${ZONE} --project $PROJECT --cluster ${CLUSTER_NAME} \
+   --num-nodes ${NUM_POOL_NODES} --min-nodes ${MIN_POOL_NODES} \
+   --max-nodes ${MAX_POOL_NODES} --enable-autoscaling \
    --machine-type ${MACHINE_TYPE} --node-labels=pool-name=$1
+
+   if ! [ -z "${ACCELERATOR_TYPE}" ]; then
+     sleep 15 # Wait a little for nodes to come up.
+     # Deploy Nvidia device drivers to the nodes if an accelerator is used.
+     kubectl apply --user=${KUBECONFIG_USER} -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/master/nvidia-driver-installer/cos/daemonset-preloaded.yaml
+   fi
 }
 
 function deleteNodePool(){
    echo "deleting NodePool with name $1"
    yes | gcloud container node-pools delete $1 \
-   --zone ${ZONE} --cluster ${CLUSTER_NAME}
+   --zone ${ZONE} --project $PROJECT --cluster ${CLUSTER_NAME}
 }
 
 function deployELKNFS(){
    echo "deploying ELK and NFS"
    # deploy ELK
-   kubectl apply -R -f $HELIUM_GKE_HOME/elasticsearch/
-   kubectl apply -R -f $HELIUM_GKE_HOME/kibana/
-   kubectl apply -R -f $HELIUM_GKE_HOME/logstash/
+   kubectl apply --user=${KUBECONFIG_USER} -R -f $HELIUM_GKE_HOME/elasticsearch/
+   kubectl apply --user=${KUBECONFIG_USER} -R -f $HELIUM_GKE_HOME/kibana/
+   kubectl apply --user=${KUBECONFIG_USER} -R -f $HELIUM_GKE_HOME/logstash/
 
    # create disk for persistent storage
    gcloud compute disks create $NFS_STORAGE_NAME --size $NFS_STORAGE_SIZE \
           --zone $ZONE --project $PROJECT
    # deploy NFS server
-   kubectl apply -R -f $HELIUM_GKE_HOME/nfs-server/
+   kubectl apply --user=${KUBECONFIG_USER} -R -f $HELIUM_GKE_HOME/nfs-server/
 }
 
 function deleteELKNFS(){
    echo "deleting ELK and NFS"
    # delete ELK
-   kubectl delete -R -f $HELIUM_GKE_HOME/elasticsearch/
-   kubectl delete -R -f $HELIUM_GKE_HOME/kibana/
-   kubectl delete -R -f $HELIUM_GKE_HOME/logstash/
+   kubectl delete --user=${KUBECONFIG_USER} -R -f $HELIUM_GKE_HOME/elasticsearch/
+   kubectl delete --user=${KUBECONFIG_USER} -R -f $HELIUM_GKE_HOME/kibana/
+   kubectl delete --user=${KUBECONFIG_USER} -R -f $HELIUM_GKE_HOME/logstash/
 
    # delete NFS server
-   kubectl delete -R -f $HELIUM_GKE_HOME/nfs-server/
+   kubectl delete --user=${KUBECONFIG_USER} -R -f $HELIUM_GKE_HOME/nfs-server/
    # delete disk for persistent storage
    SLEEP_TIME=30
    echo "Waiting for $SLEEP_TIME seconds for NFS server deletion."
