@@ -30,5 +30,5 @@ spec:
       volumes:
         - name: mydata
           gcePersistentDisk:
-            pdName: gce-nfs-disk
+            pdName: $NFS_STORAGE_NAME
             fsType: ext4
