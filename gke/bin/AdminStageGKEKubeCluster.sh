@@ -26,8 +26,13 @@
 
 # To override the variables below you can can export them out in a file and
 # then set the variable "GKE_CLUSTER_CONFIG" to the location of that file.
-if [ -z "${!GKE_CLUSTER_CONFIG}" ]
+# Setting at least CLUSTER_NAME, e.g., "pjl-stage", would be good for developer
+# testing.
+if  [ -z ${GKE_CLUSTER_CONFIG+x} ]
 then
+  echo "Using values from shell or defaults in this script."
+else
+  echo "Sourcing ${GKE_CLUSTER_CONFIG}"
   source ${GKE_CLUSTER_CONFIG}
 fi
 
@@ -41,7 +46,7 @@ PROJECT=${PROJECT-stack-dev-237116}
 REGION=${REGION-us-east1}
 ZONE_EXTENSION=${ZONE_EXTENSION-b}
 CLUSTER_ENV=${CLUSTER_ENV-dev}
-CLUSTER_NAME=${CLUSTER_NAME-stage-${CLUSTER_ENV}}
+CLUSTER_NAME=${CLUSTER_NAME-stage}
 CLUSTER_VERSION=${CLUSTER_VERSION-1.13.7-gke.24}
 MACHINE_TYPE=${MACHINE_TYPE-n1-standard-2}
 ADD_CLUSTER_ACCELERATOR=${ADD_CLUSTER_ACCELERATOR-false}
@@ -63,22 +68,22 @@ USE_STATIC_IP=${USE_STATIC_IP-false}
 HELIUM_GKE_HOME=${HELIUM_GKE_HOME-$(pwd)/../..}
 # NFS_STORAGE_NAME also needs to be changed in the NFS server YAML.  Currently
 # this is done via an env variable in the YAML.
-NFS_STORAGE_NAME=${NFS_STORAGE_NAME-gke-${CLUSTER_NAME}-elk-pd}
 NFS_STORAGE_SIZE=${NFS_STORAGE_SIZE-10GB}
 COMMONSSHARE_K8S=${COMMONSSHARE_K8S-${HELIUM_GKE_HOME}/../../../heliumdatacommons/commonsshare/commonsshare/k8s}
 TYCHO_K8S=${TYCHO_K8S-${HELIUM_GKE_HOME}/../../../heliumplus/tycho/tycho/kubernetes}
-KUBECONFIG_DIR=${KUBECONFIG_DIR-${HELIUM_GKE_HOME}/kubeconfigs/${PROJECT}-${CLUSTER_NAME}}
-# POSTGIS_STORAGE_NAME=${POSTGIS_STORAGE_NAME-gke-${CLUSTER_NAME}-postgis-pd}
 # POSTGIS_STORAGE_SIZE=${POSTGIS_STORAGE_SIZE-1GB}
 
-# end setable variables
-
+# end overridable variables
+CLUSTER_NAME_ENV=${CLUSTER_NAME}-${CLUSTER_ENV}
+NFS_STORAGE_NAME=${NFS_STORAGE_NAME-gke-${CLUSTER_NAME_ENV}-elk-pd}
+KUBECONFIG_DIR=${KUBECONFIG_DIR-${HELIUM_GKE_HOME}/kubeconfigs/${PROJECT}-${CLUSTER_NAME_ENV}}
+# POSTGIS_STORAGE_NAME=${POSTGIS_STORAGE_NAME-gke-${CLUSTER_NAME_ENV}-postgis-pd}
 ZONE=${REGION}-${ZONE_EXTENSION}
 USER_KUBECONFIG=$KUBECONFIG
 SCRIPT_KUBECONFIG=${KUBECONFIG_DIR}/config
 KUBECONFIG=${SCRIPT_KUBECONFIG}
-KUBECONFIG_USER=${PROJECT}-${CLUSTER_NAME}-admin-user
-external_ip_name=${CLUSTER_NAME}-external-ip
+KUBECONFIG_USER=${PROJECT}-${CLUSTER_NAME_ENV}-admin-user
+external_ip_name=${CLUSTER_NAME_ENV}-external-ip
 
 # MacOS does not support readlink, but it does have perl
 KERNEL_NAME=$(uname -s)
@@ -111,7 +116,7 @@ function bootstrap(){
     echo "Not adding accelerator to base cluster."
   fi
 
-  gcloud container clusters create $CLUSTER_NAME --zone $ZONE \
+  gcloud container clusters create $CLUSTER_NAME_ENV --zone $ZONE \
     --cluster-version $CLUSTER_VERSION --machine-type $MACHINE_TYPE \
     --scopes "https://www.googleapis.com/auth/ndev.clouddns.readwrite",\
 "https://www.googleapis.com/auth/compute",\
@@ -137,11 +142,11 @@ function bootstrap(){
   mkdir -p $KUBECONFIG_DIR
   # Erase k8s config if there.
   echo "" > $KUBECONFIG_DIR/config
-  gcloud container clusters get-credentials $CLUSTER_NAME --zone $ZONE --project $PROJECT;
+  gcloud container clusters get-credentials $CLUSTER_NAME_ENV --zone $ZONE --project $PROJECT;
 
   # Add new cluster kubeconfig to user's kubeconfig.
   KUBECONFIG=$USER_KUBECONFIG
-  gcloud container clusters get-credentials $CLUSTER_NAME --zone $ZONE --project $PROJECT;
+  gcloud container clusters get-credentials $CLUSTER_NAME_ENV --zone $ZONE --project $PROJECT;
   KUBECONFIG=$SCRIPT_KUBECONFIG
   # add a 'user' in user's kubeconfig
   kubectl --kubeconfig $USER_KUBECONFIG config set-credentials ${KUBECONFIG_USER} --username=admin --password=$(cluster_admin_password_gke)
@@ -178,8 +183,8 @@ function bootstrap(){
 #Deletes everything created during bootstrap
 function cleanup_gke_resources(){
   validate_required_tools;
-  gcloud container clusters delete -q $CLUSTER_NAME --zone $ZONE --project $PROJECT;
-  echo "Deleted $CLUSTER_NAME cluster successfully";
+  gcloud container clusters delete -q $CLUSTER_NAME_ENV --zone $ZONE --project $PROJECT;
+  echo "Deleted $CLUSTER_NAME_ENV cluster successfully";
   if ${USE_STATIC_IP}; then
     gcloud compute addresses delete -q $external_ip_name --region $REGION --project $PROJECT &&
     echo "Deleted ip: $external_ip_name successfully";
@@ -188,7 +193,7 @@ function cleanup_gke_resources(){
   echo "Warning: Disks, load balancers, DNS records, and other cloud resources"
   echo "created during the deployment are not deleted, please delete them"
   echo "manually from the gcp console.  Check disks that start with:"
-  echo "  gke-${CLUSTER_NAME}-"
+  echo "  gke-${CLUSTER_NAME_ENV}-"
   echo "######";
 }
 
@@ -200,7 +205,7 @@ function createNodePool(){
    echo "creating NodePool with name $1"
    gcloud container node-pools create $1 \
    ${EXTRA_CREATE_ARGS} \
-   --zone ${ZONE} --project $PROJECT --cluster ${CLUSTER_NAME} \
+   --zone ${ZONE} --project $PROJECT --cluster ${CLUSTER_NAME_ENV} \
    --num-nodes ${NUM_POOL_NODES} --min-nodes ${MIN_POOL_NODES} \
    --max-nodes ${MAX_POOL_NODES} --enable-autoscaling \
    --machine-type ${MACHINE_TYPE} --node-labels=pool-name=$1
@@ -220,7 +225,7 @@ function installAcceleratorDaemonset(){
 function deleteNodePool(){
    echo "deleting NodePool with name $1"
    yes | gcloud container node-pools delete $1 \
-   --zone ${ZONE} --project $PROJECT --cluster ${CLUSTER_NAME}
+   --zone ${ZONE} --project $PROJECT --cluster ${CLUSTER_NAME_ENV}
 }
 
 function deployELKNFS(){
