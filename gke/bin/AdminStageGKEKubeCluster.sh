@@ -38,7 +38,7 @@ fi
 
 set -e
 #
-# These variables can be set outside of this script.
+# default user-definable variable definitions
 #
 #PROJECT=${PROJECT-stage-mvp}
 #PROJECT=${PROJECT-research-237918}
@@ -46,8 +46,8 @@ PROJECT=${PROJECT-stack-dev-237116}
 REGION=${REGION-us-east1}
 ZONE_EXTENSION=${ZONE_EXTENSION-b}
 CLUSTER_ENV=${CLUSTER_ENV-dev}
-CLUSTER_NAME=${CLUSTER_NAME-stage}
-CLUSTER_VERSION=${CLUSTER_VERSION-1.13.7-gke.24}
+CLUSTER_NAME=${CLUSTER_NAME-${USER}-stage}
+CLUSTER_VERSION=${CLUSTER_VERSION-1.13.11-gke.9}
 MACHINE_TYPE=${MACHINE_TYPE-n1-standard-2}
 ADD_CLUSTER_ACCELERATOR=${ADD_CLUSTER_ACCELERATOR-false}
 CLUSTER_ACCELERATOR_TYPE=${CLUSTER_ACCELERATOR_TYPE-"nvidia-tesla-p100"}
@@ -65,19 +65,19 @@ INT_NETWORK=${INT_NETWORK-default}
 PREEMPTIBLE=${PREEMPTIBLE-false}
 EXTRA_CREATE_ARGS=${EXTRA_CREATE_ARGS-""}
 USE_STATIC_IP=${USE_STATIC_IP-false}
-HELIUM_GKE_HOME=${HELIUM_GKE_HOME-$(pwd)/../..}
-# NFS_STORAGE_NAME also needs to be changed in the NFS server YAML.  Currently
-# this is done via an env variable in the YAML.
+K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-$(pwd)/../..}
+HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-${K8S_DEVOPS_CORE_HOME}/..}
+HELIUMDATACOMONS_HOME=${HELIUMDATACOMONS_HOME-${HELIUMPLUSDATASTAGE_HOME}/../heliumdatacommons}
 NFS_STORAGE_SIZE=${NFS_STORAGE_SIZE-10GB}
-COMMONSSHARE_K8S=${COMMONSSHARE_K8S-${HELIUM_GKE_HOME}/../../../heliumdatacommons/commonsshare/commonsshare/k8s}
-TYCHO_K8S=${TYCHO_K8S-${HELIUM_GKE_HOME}/../../../heliumplus/tycho/tycho/kubernetes}
-# POSTGIS_STORAGE_SIZE=${POSTGIS_STORAGE_SIZE-1GB}
+COMMONSSHARE_K8S=${COMMONSSHARE_K8S-${HELIUMDATACOMONS_HOME}/commonsshare/k8s}
+TYCHO_K8S=${TYCHO_K8S-${HELIUMPLUSDATASTAGE_HOME}/tycho/kubernetes}
+#
+# end default user-definable variable definitions
+#
 
-# end overridable variables
 CLUSTER_NAME_ENV=${CLUSTER_NAME}-${CLUSTER_ENV}
 NFS_STORAGE_NAME=${NFS_STORAGE_NAME-gke-${CLUSTER_NAME_ENV}-elk-pd}
-KUBECONFIG_DIR=${KUBECONFIG_DIR-${HELIUM_GKE_HOME}/kubeconfigs/${PROJECT}-${CLUSTER_NAME_ENV}}
-# POSTGIS_STORAGE_NAME=${POSTGIS_STORAGE_NAME-gke-${CLUSTER_NAME_ENV}-postgis-pd}
+KUBECONFIG_DIR=${KUBECONFIG_DIR-${K8S_DEVOPS_CORE_HOME}/kubeconfigs/${PROJECT}-${CLUSTER_NAME_ENV}}
 ZONE=${REGION}-${ZONE_EXTENSION}
 USER_KUBECONFIG=$KUBECONFIG
 SCRIPT_KUBECONFIG=${KUBECONFIG_DIR}/config
@@ -159,9 +159,6 @@ function bootstrap(){
       echo "Failed to download rbac-config.yaml, status code: $status_code";
       exit 1;
     fi
-
-    # kubectl config set-credentials ${KUBECONFIG_USER} --username=admin --password=$(cluster_admin_password_gke)
-    # kubectl create --user=${KUBECONFIG_USER} -f rbac-config.yaml;
     kubectl create -f rbac-config.yaml;
   fi
 
@@ -219,6 +216,7 @@ function installAcceleratorDaemonset(){
   sleep 15 # Wait a little for nodes to come up.
   # Deploy Nvidia device drivers to the nodes if an accelerator is used.
   kubectl create -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/master/nvidia-driver-installer/cos/daemonset-preloaded.yaml
+  # If there are problems with the GPU then might want to try the one below.
   # kubectl create -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/stable/daemonset.yaml
 }
 
@@ -231,40 +229,35 @@ function deleteNodePool(){
 function deployELKNFS(){
    echo "deploying ELK and NFS"
    # deploy ELK
-   kubectl apply -R -f $HELIUM_GKE_HOME/elasticsearch/
-   kubectl apply -R -f $HELIUM_GKE_HOME/kibana/
-   kubectl apply -R -f $HELIUM_GKE_HOME/logstash/
+   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/
+   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/kibana/
+   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/logstash/
 
    # create disk for persistent storage
    gcloud compute disks create $NFS_STORAGE_NAME --size $NFS_STORAGE_SIZE \
           --zone $ZONE --project $PROJECT
-   # deploy NFS server
-   # deploy all YAML files at once
-   # kubectl apply -R -f $HELIUM_GKE_HOME/nfs-server/
 
-   kubectl apply -R -f $HELIUM_GKE_HOME/nfs-server/nfs-pvc-pv.yaml
+   # deploy NFS server
+   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-pvc-pv.yaml
    export NFS_STORAGE_NAME
    # replace env variable in YAML file NFS_STORAGE_NAME value and deploy inline
-   cat $HELIUM_GKE_HOME/nfs-server/nfs-server.template.yaml | envsubst | kubectl apply -R -f -
-   # kubectl apply -R -f $HELIUM_GKE_HOME/nfs-server/nfs-server.yaml
-   kubectl apply -R -f $HELIUM_GKE_HOME/nfs-server/nfs-service.yaml
+   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.template.yaml | envsubst | kubectl apply -R -f -
+   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-service.yaml
 }
 
 function deleteELKNFS(){
    echo "deleting ELK and NFS"
    # delete ELK
-   kubectl delete -R -f $HELIUM_GKE_HOME/elasticsearch/
-   kubectl delete -R -f $HELIUM_GKE_HOME/kibana/
-   kubectl delete -R -f $HELIUM_GKE_HOME/logstash/
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/kibana/
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/logstash/
 
    # delete NFS server
-   # kubectl delete -R -f $HELIUM_GKE_HOME/nfs-server/
-
-   kubectl delete -R -f $HELIUM_GKE_HOME/nfs-server/nfs-pvc-pv.yaml
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-pvc-pv.yaml
    export NFS_STORAGE_NAME
-   cat $HELIUM_GKE_HOME/nfs-server/nfs-server.template.yaml | envsubst | kubectl delete -R -f -
-   # kubectl delete -R -f $HELIUM_GKE_HOME/nfs-server/nfs-server.yaml
-   kubectl delete -R -f $HELIUM_GKE_HOME/nfs-server/nfs-service.yaml
+   # replace env variable in YAML file NFS_STORAGE_NAME value and delete inline
+   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.template.yaml | envsubst | kubectl delete -R -f -
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-service.yaml
 
    # delete disk for persistent storage
    SLEEP_TIME=30
@@ -276,15 +269,7 @@ function deleteELKNFS(){
 
 function commonsShare(){
    echo "executing kubectl $1 on CommonsShare YAMLs"
-   # create/delete disk for persistent storage
-   # if [ $1 == "create" ]; then
-   #   DISKS_EXTRA_OPTIONS="--size $POSTGIS_STORAGE_SIZE"
-   # else
-   #   DISKS_EXTRA_OPTIONS=""
-   # fi
-   # gcloud compute disks $1 $POSTGIS_STORAGE_NAME $DISKS_EXTRA_OPTIONS \
-   #        --zone $ZONE --project $PROJECT -q
-   kubectl $1 -f $COMMONSSHARE_K8S/postgis-claim0-persistentvolumeclaim.yaml,$COMMONSSHARE_K8S/postgis-deployment.yaml,$COMMONSSHARE_K8S/hydroshare-service.yaml,$COMMONSSHARE_K8S/solr-deployment.yaml,$COMMONSSHARE_K8S/hydroshare-env-configmap.yaml,$COMMONSSHARE_K8S/postgis-service.yaml,$COMMONSSHARE_K8S/solr-service.yaml,$COMMONSSHARE_K8S/hydroshare-deployment.yaml
+   kubectl $1 -f $COMMONSSHARE_K8S/postgis-claim0-persistentvolumeclaim.yaml,$COMMONSSHARE_K8S/postgis-deployment.yaml,$COMMONSSHARE_K8S/hydroshare-service.yaml,$COMMONSSHARE_K8S/solr-deployment.yaml,$COMMONSSHARE_K8S/hydroshare-env-configmap.yaml,$COMMONSSHARE_K8S/hydroshare-secret.yaml,$COMMONSSHARE_K8S/postgis-service.yaml,$COMMONSSHARE_K8S/solr-service.yaml,$COMMONSSHARE_K8S/hydroshare-deployment.yaml
 }
 
 function tycho(){
