@@ -76,7 +76,7 @@ TYCHO_K8S=${TYCHO_K8S-${HELIUMPLUSDATASTAGE_HOME}/tycho/kubernetes}
 #
 
 CLUSTER_NAME_ENV=${CLUSTER_NAME}-${CLUSTER_ENV}
-NFS_STORAGE_NAME=${NFS_STORAGE_NAME-gke-${CLUSTER_NAME_ENV}-elk-pd}
+NFS_STORAGE_NAME=${NFS_STORAGE_NAME-gke-${CLUSTER_NAME_ENV}-nfs-pd}
 KUBECONFIG_DIR=${KUBECONFIG_DIR-${K8S_DEVOPS_CORE_HOME}/kubeconfigs/${PROJECT}-${CLUSTER_NAME_ENV}}
 ZONE=${REGION}-${ZONE_EXTENSION}
 USER_KUBECONFIG=$KUBECONFIG
@@ -226,13 +226,26 @@ function deleteNodePool(){
    --zone ${ZONE} --project $PROJECT --cluster ${CLUSTER_NAME_ENV}
 }
 
-function deployELKNFS(){
-   echo "deploying ELK and NFS"
+function deployELK(){
+   echo "deploying ELK"
    # deploy ELK
    kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/
    kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/kibana/
    kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/logstash/
+}
 
+function deleteELK(){
+   echo "deleting ELK and NFS"
+   # delete ELK
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/kibana/
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/logstash/
+}
+
+function deployNFS(){
+   # An NFS server is deployed within the cluster since GKE does not support
+   # a PV that is ReadWriteMany.
+   echo "deploying NFS"
    # create disk for persistent storage
    gcloud compute disks create $NFS_STORAGE_NAME --size $NFS_STORAGE_SIZE \
           --zone $ZONE --project $PROJECT
@@ -245,13 +258,8 @@ function deployELKNFS(){
    kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-service.yaml
 }
 
-function deleteELKNFS(){
-   echo "deleting ELK and NFS"
-   # delete ELK
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/kibana/
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/logstash/
-
+function deleteNFS(){
+   echo "deleting NFS"
    # delete NFS server
    kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-pvc-pv.yaml
    export NFS_STORAGE_NAME
@@ -278,7 +286,7 @@ function tycho(){
 }
 
 if [ -z "$1" ]; then
-  echo "Supported commands: createCluster, deleteCluster, createNodePool, deleteNodePool, choas, deployELKNFS, deleteELKNFS, createClusterELKNFS, deleteClusterELKNFS, deployCommonsShare, deleteCommonsShare, deployTycho, deleteTycho, createClusterAll, deleteClusterAll";
+  echo "Supported commands: createCluster, deleteCluster, createNodePool, deleteNodePool, choas, deployELK, deleteELK, createClusterELK, deleteClusterELK, deployNFS, deleteNFS, createClusterNFS, deleteClusterNFS, deployCommonsShare, deleteCommonsShare, deployTycho, deleteTycho, createClusterAll, deleteClusterAll";
   exit
 fi
 
@@ -307,18 +315,32 @@ case $1 in
   chaos)
     $SCRIPT_PATH/kube-monkey.sh;
     ;;
-  deployELKNFS)
-    deployELKNFS;
+  deployELK)
+    deployELK;
     ;;
-  deleteELKNFS)
-    deleteELKNFS;
+  deleteELK)
+    deleteELK;
     ;;
-  createClusterELKNFS)
+  createClusterELK)
     bootstrap;
-    deployELKNFS;
+    deployELK;
     ;;
-  deleteClusterELKNFS)
-    deleteELKNFS;
+  deleteClusterELK)
+    deleteELK;
+    cleanup_gke_resources;
+    ;;
+  deployNFS)
+    deployNFS;
+    ;;
+  deleteNFS)
+    deleteNFS;
+    ;;
+  createClusterNFS)
+    bootstrap;
+    deployNFS;
+    ;;
+  deleteClusterNFS)
+    deleteNFS;
     cleanup_gke_resources;
     ;;
   deployCommonsShare)
@@ -335,14 +357,16 @@ case $1 in
     ;;
   createClusterAll)
     bootstrap;
-    deployELKNFS;
+    deployELK;
+    deployNFS;
     commonsShare create;
     tycho create;
     ;;
   deleteClusterAll)
     tycho delete;
     commonsShare delete;
-    deleteELKNFS;
+    deleteELK;
+    deleteNFS;
     cleanup_gke_resources;
     ;;
   *)
