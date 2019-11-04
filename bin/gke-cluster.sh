@@ -37,6 +37,15 @@ else
 fi
 
 set -e
+
+# MacOS does not support readlink, but it does have perl
+KERNEL_NAME=$(uname -s)
+if [ "${KERNEL_NAME}" = "Darwin" ]; then
+  SCRIPT_PATH=$(perl -e 'use Cwd "abs_path";use File::Basename;print dirname(abs_path(shift))' "$0")
+else
+  SCRIPT_PATH=$(dirname "$(readlink -f "$0")")
+fi
+
 #
 # default user-definable variable definitions
 #
@@ -65,7 +74,9 @@ INT_NETWORK=${INT_NETWORK-default}
 PREEMPTIBLE=${PREEMPTIBLE-false}
 EXTRA_CREATE_ARGS=${EXTRA_CREATE_ARGS-""}
 USE_STATIC_IP=${USE_STATIC_IP-false}
-K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-$(pwd)/..}
+K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-${SCRIPT_PATH}/..}
+
+# app variables (used in k8s-apps.sh)
 HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-${K8S_DEVOPS_CORE_HOME}/..}
 HELIUMDATACOMONS_HOME=${HELIUMDATACOMONS_HOME-${HELIUMPLUSDATASTAGE_HOME}/../heliumdatacommons}
 COMMONSSHARE_K8S=${COMMONSSHARE_K8S-${HELIUMDATACOMONS_HOME}/commonsshare/k8s}
@@ -83,16 +94,9 @@ KUBECONFIG=${SCRIPT_KUBECONFIG}
 KUBECONFIG_USER=${PROJECT}-${CLUSTER_NAME_ENV}-admin-user
 external_ip_name=${CLUSTER_NAME_ENV}-external-ip
 
-# MacOS does not support readlink, but it does have perl
-KERNEL_NAME=$(uname -s)
-if [ "${KERNEL_NAME}" = "Darwin" ]; then
-  SCRIPT_PATH=$(perl -e 'use Cwd "abs_path";use File::Basename;print dirname(abs_path(shift))' "$0")
-else
-  SCRIPT_PATH=$(dirname "$(readlink -f "$0")")
-fi
-
 # We seem to need common.sh
 source $SCRIPT_PATH/gke-common.sh;
+source $SCRIPT_PATH/k8s-apps.sh loadFunctions;
 
 function bootstrap(){
   set -e
@@ -178,7 +182,6 @@ function bootstrap(){
   echo "######"
 }
 
-
 #Deletes everything created during bootstrap
 function cleanup_gke_resources(){
   validate_required_tools;
@@ -227,58 +230,6 @@ function deleteNodePool(){
    yes | gcloud container node-pools delete $1 \
    --zone ${ZONE} --project $PROJECT --cluster ${CLUSTER_NAME_ENV}
 }
-
-function deployELK(){
-   echo "deploying ELK"
-   # deploy ELK
-   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/
-   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/kibana/
-   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/logstash/
-}
-
-function deleteELK(){
-   echo "deleting ELK and NFS"
-   # delete ELK
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/kibana/
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/logstash/
-}
-
-function deployNFS(){
-   # An NFS server is deployed within the cluster since GKE does not support
-   # a PV that is ReadWriteMany.
-   echo "deploying NFS"
-   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
-   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
-   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
-   # deploy NFS PVC for NFS clients
-   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-pvc-pv.yaml
-}
-
-function deleteNFS(){
-   echo "deleting NFS"
-   # delete NFS server
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-pvc-pv.yaml
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
-}
-
-function commonsShare(){
-   echo "executing kubectl $1 on CommonsShare YAMLs"
-   kubectl $1 -f $COMMONSSHARE_K8S/postgis-claim0-persistentvolumeclaim.yaml,$COMMONSSHARE_K8S/postgis-deployment.yaml,$COMMONSSHARE_K8S/hydroshare-service.yaml,$COMMONSSHARE_K8S/solr-deployment.yaml,$COMMONSSHARE_K8S/hydroshare-env-configmap.yaml,$COMMONSSHARE_K8S/hydroshare-secret.yaml,$COMMONSSHARE_K8S/postgis-service.yaml,$COMMONSSHARE_K8S/solr-service.yaml,$COMMONSSHARE_K8S/hydroshare-deployment.yaml
-}
-
-function tycho(){
-   echo "executing kubectl $1 on tycho YAMLs"
-   kubectl $1 -f $TYCHO_K8S/
-}
-
-if [ -z "$1" ]; then
-  echo "Supported commands: createCluster, deleteCluster, createNodePool, deleteNodePool, choas, deployELK, deleteELK, createClusterELK, deleteClusterELK, deployNFS, deleteNFS, createClusterNFS, deleteClusterNFS, deployCommonsShare, deleteCommonsShare, deployTycho, deleteTycho, createClusterAll, deleteClusterAll";
-  exit
-fi
-
 
 case $1 in
   createCluster)
