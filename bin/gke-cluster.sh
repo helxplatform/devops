@@ -65,7 +65,7 @@ INT_NETWORK=${INT_NETWORK-default}
 PREEMPTIBLE=${PREEMPTIBLE-false}
 EXTRA_CREATE_ARGS=${EXTRA_CREATE_ARGS-""}
 USE_STATIC_IP=${USE_STATIC_IP-false}
-K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-$(pwd)/../..}
+K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-$(pwd)/..}
 HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-${K8S_DEVOPS_CORE_HOME}/..}
 HELIUMDATACOMONS_HOME=${HELIUMDATACOMONS_HOME-${HELIUMPLUSDATASTAGE_HOME}/../heliumdatacommons}
 COMMONSSHARE_K8S=${COMMONSSHARE_K8S-${HELIUMDATACOMONS_HOME}/commonsshare/k8s}
@@ -92,7 +92,7 @@ else
 fi
 
 # We seem to need common.sh
-source $SCRIPT_PATH/common.sh;
+source $SCRIPT_PATH/gke-common.sh;
 
 function bootstrap(){
   set -e
@@ -190,7 +190,7 @@ function cleanup_gke_resources(){
   fi
   echo "######"
   echo "Warning: Disks, load balancers, DNS records, and other cloud resources"
-  echo "created during the deployment are not deleted, please delete them"
+  echo "created during the deployment might not be deleted, please delete them"
   echo "manually from the gcp console.  Check disks that start with:"
   echo "  gke-${CLUSTER_NAME_ENV}-"
   echo "######";
