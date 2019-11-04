@@ -68,7 +68,6 @@ USE_STATIC_IP=${USE_STATIC_IP-false}
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-$(pwd)/../..}
 HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-${K8S_DEVOPS_CORE_HOME}/..}
 HELIUMDATACOMONS_HOME=${HELIUMDATACOMONS_HOME-${HELIUMPLUSDATASTAGE_HOME}/../heliumdatacommons}
-NFS_STORAGE_SIZE=${NFS_STORAGE_SIZE-10GB}
 COMMONSSHARE_K8S=${COMMONSSHARE_K8S-${HELIUMDATACOMONS_HOME}/commonsshare/k8s}
 TYCHO_K8S=${TYCHO_K8S-${HELIUMPLUSDATASTAGE_HOME}/tycho/kubernetes}
 #
@@ -76,7 +75,6 @@ TYCHO_K8S=${TYCHO_K8S-${HELIUMPLUSDATASTAGE_HOME}/tycho/kubernetes}
 #
 
 CLUSTER_NAME_ENV=${CLUSTER_NAME}-${CLUSTER_ENV}
-NFS_STORAGE_NAME=${NFS_STORAGE_NAME-gke-${CLUSTER_NAME_ENV}-nfs-pd}
 KUBECONFIG_DIR=${KUBECONFIG_DIR-${K8S_DEVOPS_CORE_HOME}/kubeconfigs/${PROJECT}-${CLUSTER_NAME_ENV}}
 ZONE=${REGION}-${ZONE_EXTENSION}
 USER_KUBECONFIG=$KUBECONFIG
@@ -138,6 +136,7 @@ function bootstrap(){
     echo "#####\n"
   fi
 
+  echo "saving kubeconfig credentials to $KUBECONFIG_DIR/config"
   # Save new cluster kubeconfig in local directory.
   mkdir -p $KUBECONFIG_DIR
   # Erase k8s config if there.
@@ -146,10 +145,13 @@ function bootstrap(){
 
   # Add new cluster kubeconfig to user's kubeconfig.
   KUBECONFIG=$USER_KUBECONFIG
+  echo "adding kubeconfig credentials to $KUBECONFIG"
   gcloud container clusters get-credentials $CLUSTER_NAME_ENV --zone $ZONE --project $PROJECT;
-  KUBECONFIG=$SCRIPT_KUBECONFIG
   # add a 'user' in user's kubeconfig
-  kubectl --kubeconfig $USER_KUBECONFIG config set-credentials ${KUBECONFIG_USER} --username=admin --password=$(cluster_admin_password_gke)
+  # This is giving an error and don't think it is used elsewhere, so commenting out.
+  # echo "adding kubeconfig username/password credentials to $KUBECONFIG"
+  # kubectl config set-credentials ${KUBECONFIG_USER} --username=admin --password=$(cluster_admin_password_gke)
+  KUBECONFIG=$SCRIPT_KUBECONFIG
 
   # Create roles for RBAC Helm
   if $RBAC_ENABLED; then
@@ -246,33 +248,20 @@ function deployNFS(){
    # An NFS server is deployed within the cluster since GKE does not support
    # a PV that is ReadWriteMany.
    echo "deploying NFS"
-   # create disk for persistent storage
-   gcloud compute disks create $NFS_STORAGE_NAME --size $NFS_STORAGE_SIZE \
-          --zone $ZONE --project $PROJECT
-
-   # deploy NFS server
+   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
+   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
+   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
+   # deploy NFS PVC for NFS clients
    kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-pvc-pv.yaml
-   export NFS_STORAGE_NAME
-   # replace env variable in YAML file NFS_STORAGE_NAME value and deploy inline
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.template.yaml | envsubst | kubectl apply -R -f -
-   kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-service.yaml
 }
 
 function deleteNFS(){
    echo "deleting NFS"
    # delete NFS server
    kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-pvc-pv.yaml
-   export NFS_STORAGE_NAME
-   # replace env variable in YAML file NFS_STORAGE_NAME value and delete inline
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.template.yaml | envsubst | kubectl delete -R -f -
-   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-service.yaml
-
-   # delete disk for persistent storage
-   SLEEP_TIME=30
-   echo "Waiting for $SLEEP_TIME seconds for NFS server deletion."
-   sleep $SLEEP_TIME
-   gcloud compute disks delete $NFS_STORAGE_NAME \
-          --zone $ZONE --project $PROJECT -q
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
+   kubectl delete -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
 }
 
 function commonsShare(){
