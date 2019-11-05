@@ -152,7 +152,8 @@ function bootstrap(){
   echo "adding kubeconfig credentials to $KUBECONFIG"
   gcloud container clusters get-credentials $CLUSTER_NAME_ENV --zone $ZONE --project $PROJECT;
   # add a 'user' in user's kubeconfig
-  # This is giving an error and don't think it is used elsewhere, so commenting out.
+  # This is giving an error and don't think it is used elsewhere, so commenting
+  # out.  Maybe it needs to be after the HELM RBAC configuration.
   # echo "adding kubeconfig username/password credentials to $KUBECONFIG"
   # kubectl config set-credentials ${KUBECONFIG_USER} --username=admin --password=$(cluster_admin_password_gke)
   KUBECONFIG=$SCRIPT_KUBECONFIG
