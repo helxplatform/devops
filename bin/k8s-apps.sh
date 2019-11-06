@@ -54,10 +54,12 @@ NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/"}
 # for GKE deployment use...
 NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.default.svc.cluster.local"}
 NFS_CLNT_SVC_CLSTRIP_DEC=${NFS_CLNT_SVC_CLSTRIP_DEC-""}
-NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"cloud-top"}
-# for local stars deployment use...
+# for local stars deployment use something like this in your variables file...
 # export NFS_CLNT_PV_NFS_SRVR="10.233.58.201"
 # export NFS_CLNT_SVC_CLSTRIP_DEC="clusterIP: 10.233.58.201"
+NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"nfs-client-pv"}
+NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"nfs-client-pvc"}
+NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"nfs-client-sc"}
 
 #
 # end default user-definable variable definitions
@@ -128,7 +130,9 @@ function deployNFS(){
    export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
    export PV_NFS_SERVER=$NFS_CLNT_PV_NFS_SRVR
    export SVC_CLSTRIP_DEC=$NFS_CLNT_SVC_CLSTRIP_DEC
+   export PV_NAME=$NFS_CLNT_PV_NAME
    export PVC_NAME=$NFS_CLNT_PVC_NAME
+   export STORAGECLASS_NAME=$NFS_CLNT_STORAGECLASS
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
        kubectl create -n $NAMESPACE -f -
    # deploy NFS PVC for NFS clients
@@ -142,6 +146,9 @@ function deleteNFS(){
    export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
    export PV_NFS_SERVER=$NFS_CLNT_PV_NFS_SRVR
    export SVC_CLSTRIP_DEC=$NFS_CLNT_SVC_CLSTRIP_DEC
+   export PV_NAME=$NFS_CLNT_PV_NAME
+   export PVC_NAME=$NFS_CLNT_PVC_NAME
+   export STORAGECLASS_NAME=$NFS_CLNT_STORAGECLASS
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
        kubectl delete -n $NAMESPACE -f -
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
@@ -218,7 +225,7 @@ case $1 in
     deleteELK
     ;;
   loadFunctions)
-    echo "just loding functions"
+    echo "just loading functions"
     ;;
   *)
     echo "Unknown command $1"

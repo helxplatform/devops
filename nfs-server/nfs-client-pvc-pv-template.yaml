@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs
+  name: $PV_NAME
 spec:
   capacity:
     storage: 10Gi
@@ -11,6 +11,7 @@ spec:
   nfs:
     server: $PV_NFS_SERVER
     path: $PV_NFS_PATH
+  storageClassName: $STORAGECLASS_NAME
 
 ---
 kind: PersistentVolumeClaim
@@ -20,7 +21,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: ""
+  storageClassName: $STORAGECLASS_NAME
   resources:
     requests:
       storage: 10Gi
