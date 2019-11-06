@@ -36,7 +36,7 @@ else
   source ${GKE_CLUSTER_CONFIG}
 fi
 
-set -e
+# set -e
 
 # MacOS does not support readlink, but it does have perl
 KERNEL_NAME=$(uname -s)
@@ -78,8 +78,8 @@ K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-${SCRIPT_PATH}/..}
 
 # app variables (used in k8s-apps.sh)
 HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-${K8S_DEVOPS_CORE_HOME}/..}
-HELIUMDATACOMONS_HOME=${HELIUMDATACOMONS_HOME-${HELIUMPLUSDATASTAGE_HOME}/../heliumdatacommons}
-COMMONSSHARE_K8S=${COMMONSSHARE_K8S-${HELIUMDATACOMONS_HOME}/commonsshare/k8s}
+HELIUMDATACOMMONS_HOME=${HELIUMDATACOMMONS_HOME-${HELIUMPLUSDATASTAGE_HOME}/../heliumdatacommons}
+COMMONSSHARE_K8S=${COMMONSSHARE_K8S-${HELIUMDATACOMMONS_HOME}/commonsshare/k8s}
 TYCHO_K8S=${TYCHO_K8S-${HELIUMPLUSDATASTAGE_HOME}/tycho/kubernetes}
 #
 # end default user-definable variable definitions
@@ -201,6 +201,7 @@ function cleanup_gke_resources(){
 }
 
 function createNodePool(){
+  set -e
    if ! [ -z "${NP_ACCELERATOR_TYPE}" ]; then
      EXTRA_CREATE_ARGS="--accelerator type=${NP_ACCELERATOR_TYPE},count=${NP_ACCELERATOR_COUNT}"
    fi
@@ -234,84 +235,92 @@ function deleteNodePool(){
 
 case $1 in
   createCluster)
-    bootstrap;
+    bootstrap
     ;;
   deleteCluster)
-    cleanup_gke_resources;
+    cleanup_gke_resources
     ;;
   createNodePool)
     if [ -z "$2" ]; then
-       echo "createNodePool requires a node pool name";
+       echo "createNodePool requires a node pool name"
        exit
     fi
-    createNodePool $2;
+    createNodePool $2
     ;;
   deleteNodePool)
     if [ -z "$2" ]; then
-       echo "deleteNodePool requires a node pool name";
+       echo "deleteNodePool requires a node pool name"
        exit
     fi
-    deleteNodePool $2;
+    deleteNodePool $2
     ;;
   chaos)
-    $SCRIPT_PATH/kube-monkey.sh;
+    $SCRIPT_PATH/kube-monkey.sh
     ;;
   deployELK)
-    deployELK;
+    deployELK
     ;;
   deleteELK)
-    deleteELK;
+    deleteELK
     ;;
   createClusterELK)
-    bootstrap;
-    deployELK;
+    bootstrap
+    deployELK
     ;;
   deleteClusterELK)
-    deleteELK;
-    cleanup_gke_resources;
+    deleteELK
+    cleanup_gke_resources
     ;;
   deployNFS)
-    deployNFS;
+    deployNFS
     ;;
   deleteNFS)
-    deleteNFS;
+    deleteNFS
     ;;
   createClusterNFS)
-    bootstrap;
-    deployNFS;
+    bootstrap
+    deployNFS
     ;;
   deleteClusterNFS)
-    deleteNFS;
-    cleanup_gke_resources;
+    deleteNFS
+    cleanup_gke_resources
     ;;
   deployCommonsShare)
-    commonsShare create;
+    commonsShare create
     ;;
   deleteCommonsShare)
-    commonsShare delete;
+    commonsShare delete
+    ;;
+  deployAppStore)
+    appStore create
+    ;;
+  deleteAppStore)
+    appStore delete
     ;;
   deployTycho)
-    tycho create;
+    tycho create
     ;;
   deleteTycho)
-    tycho delete;
+    tycho delete
     ;;
   createClusterAll)
-    bootstrap;
-    deployELK;
-    deployNFS;
-    commonsShare create;
-    tycho create;
+    bootstrap
+    deployELK
+    deployNFS
+    commonsShare create
+    tycho create
+    appStore create
     ;;
   deleteClusterAll)
-    tycho delete;
-    commonsShare delete;
-    deleteELK;
-    deleteNFS;
-    cleanup_gke_resources;
+    tycho delete
+    commonsShare delete
+    appStore delete
+    deleteELK
+    deleteNFS
+    cleanup_gke_resources
     ;;
   *)
-    echo "Unknown command $1";
-    exit 1;
+    echo "Unknown command $1"
+    exit 1
   ;;
 esac

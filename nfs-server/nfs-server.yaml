@@ -26,25 +26,11 @@ spec:
           privileged: true
         volumeMounts:
           - mountPath: /exports
-            # name: mydata
             name: nfs-storage-vol
       volumes:
-        # - name: mydata
+        - name: nfs-storage-vol
         #   gcePersistentDisk:
         #     pdName: $NFS_STORAGE_NAME
         #     fsType: ext4
-        - name: nfs-storage-vol
           persistentVolumeClaim:
             claimName: nfs-storage-pvc
-
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: nfs-storage-pvc
-# spec:
-#   accessModes:
-#   - ReadWriteOnce
-#   resources:
-#     requests:
-#       storage: 10Gi
-# status: {}

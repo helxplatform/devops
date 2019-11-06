@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: elk-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+     requests:
+       # storage size to use
+       storage: 10Gi
+  storageClassName: elk-sc

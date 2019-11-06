@@ -9,14 +9,14 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    server: nfs-server.default.svc.cluster.local
-    path: "/"
+    server: $PV_NFS_SERVER
+    path: $PV_NFS_PATH
 
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: nfs
+  name: $PVC_NAME
 spec:
   accessModes:
     - ReadWriteMany
