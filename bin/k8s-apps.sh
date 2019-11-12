@@ -61,6 +61,10 @@ NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"nfs-client-pv"}
 NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"nfs-client-pvc"}
 NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"nfs-client-sc"}
 
+HELM=${HELM-helm}
+CAT_HELM_DIR=${CAT_HELM_DIR-${HELIUMPLUSDATASTAGE_HOME}/CAT_helm}
+CAT_NAME=${CAT_NAME-cat}
+
 #
 # end default user-definable variable definitions
 #
@@ -157,25 +161,18 @@ function deleteNFS(){
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
 }
 
-function commonsShare(){
-   echo "executing kubectl $1 on CommonsShare YAMLs"
-   kubectl $1 -n $NAMESPACE -f \
-     $COMMONSSHARE_K8S/postgis-claim0-persistentvolumeclaim.yaml,$COMMONSSHARE_K8S/postgis-deployment.yaml,$COMMONSSHARE_K8S/hydroshare-service.yaml,$COMMONSSHARE_K8S/solr-deployment.yaml,$COMMONSSHARE_K8S/hydroshare-env-configmap.yaml,$COMMONSSHARE_K8S/hydroshare-secret.yaml,$COMMONSSHARE_K8S/postgis-service.yaml,$COMMONSSHARE_K8S/solr-service.yaml,$COMMONSSHARE_K8S/hydroshare-deployment.yaml
+function deployCAT(){
+   echo "executing $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE"
+   $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE
 }
 
-function appStore(){
-   echo "executing kubectl $1 on AppStore YAMLs"
-   kubectl $1 -n $NAMESPACE -f \
-     $APPSTORE_K8S/csappstore-storage.yml,$APPSTORE_K8S/postgres-storage.yml,$APPSTORE_K8S/csappstore-configmap.yml,$APPSTORE_K8S/csappstore-deployment.yml,$APPSTORE_K8S/csappstore-service.yml,$APPSTORE_K8S/postgres-deployment.yml,$APPSTORE_K8S/postgres-service.yml
-}
-
-function tycho(){
-   echo "executing kubectl $1 on tycho YAMLs"
-   kubectl $1 -n $NAMESPACE -f $TYCHO_K8S/
+function deleteCAT(){
+   echo "executing $HELM delete $CAT_NAME"
+   $HELM delete $CAT_NAME
 }
 
 if [ -z "$1" ]; then
-  echo "Supported commands: deployELK, deleteELK, deployNFS, deleteNFS, deployCommonsShare, deleteCommonsShare, deployTycho, deleteTycho, createAll, deleteAll";
+  echo "Supported commands: deployELK, deleteELK, deployNFS, deleteNFS, deployCAT, deleteCAT, createAll, deleteAll";
   exit
 fi
 
@@ -192,35 +189,19 @@ case $1 in
   deleteNFS)
     deleteNFS
     ;;
-  deployCommonsShare)
-    commonsShare create
+  deployCAT)
+    deployCAT
     ;;
-  deleteCommonsShare)
-    commonsShare delete
-    ;;
-  deployAppStore)
-    appStore create
-    ;;
-  deleteAppStore)
-    appStore delete
-    ;;
-  deployTycho)
-    tycho create
-    ;;
-  deleteTycho)
-    tycho delete
+  deleteCAT)
+    deleteCAT
     ;;
   deployAll)
     deployELK
     deployNFS
-    commonsShare create
-    tycho create
-    appStore create
+    deployCAT
     ;;
   deleteAll)
-    tycho delete
-    commonsShare delete
-    appStore delete
+    deleteCAT
     deleteNFS
     deleteELK
     ;;

@@ -263,58 +263,28 @@ case $1 in
   deleteELK)
     deleteELK
     ;;
-  createClusterELK)
-    bootstrap
-    deployELK
-    ;;
-  deleteClusterELK)
-    deleteELK
-    cleanup_gke_resources
-    ;;
   deployNFS)
     deployNFS
     ;;
   deleteNFS)
     deleteNFS
     ;;
-  createClusterNFS)
-    bootstrap
-    deployNFS
+  deployCAT)
+    deployCAT
     ;;
-  deleteClusterNFS)
-    deleteNFS
-    cleanup_gke_resources
-    ;;
-  deployCommonsShare)
-    commonsShare create
-    ;;
-  deleteCommonsShare)
-    commonsShare delete
-    ;;
-  deployAppStore)
-    appStore create
-    ;;
-  deleteAppStore)
-    appStore delete
-    ;;
-  deployTycho)
-    tycho create
-    ;;
-  deleteTycho)
-    tycho delete
+  deleteCAT)
+    deleteCAT
     ;;
   createClusterAll)
     bootstrap
+    # wait for cluster to come up a bit more
+    sleep 60
     deployELK
     deployNFS
-    commonsShare create
-    tycho create
-    appStore create
+    deployCAT
     ;;
   deleteClusterAll)
-    tycho delete
-    commonsShare delete
-    appStore delete
+    deleteCAT
     deleteELK
     deleteNFS
     cleanup_gke_resources
