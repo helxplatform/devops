@@ -77,7 +77,7 @@ function deployELK(){
      kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage-gke.yaml
    else
      # setup persistent storage for bare-metal k8s
-     helm install --name $NFSCP_NAME \
+     $HELM install --name $NFSCP_NAME \
                   --set nfs.server=$NFS_SERVER \
                   --set nfs.path=$NFS_PATH \
                   --set storageClass.name=$ELK_STORAGE_CLASS_NAME \
@@ -117,7 +117,7 @@ function deleteELK(){
      export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
      cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
          kubectl delete -n $NAMESPACE -f -
-     helm delete --namespace $NAMESPACE --purge $NFSCP_NAME
+     $HELM delete --namespace $NAMESPACE --purge $NFSCP_NAME
    fi
 
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
@@ -171,45 +171,100 @@ function deleteCAT(){
    $HELM delete $CAT_NAME
 }
 
-if [ -z "$1" ]; then
-  echo "Supported commands: deployELK, deleteELK, deployNFS, deleteNFS, deployCAT, deleteCAT, createAll, deleteAll";
-  exit
+function print_apps_help() {
+  echo "\
+usage: $0 <action> <app>
+  actions: deploy, delete
+  apps: cat, elk, nfs, all
+  -h|--help      Print this help message.
+"
+}
+
+if [[ $# = 0 ]]; then
+  print_apps_help
+  exit 1
 fi
 
-case $1 in
-  deployELK)
-    deployELK
+while [[ $# > 0 ]]
+  do
+  key="$1"
+  case $key in
+    -h|--help)
+      print_apps_help
+      exit 0
+      ;;
+    deploy)
+      ACTION="deploy"
+      APP="$2"
+      shift # past argument
+      ;;
+    delete)
+      ACTION="delete"
+      APP="$2"
+      shift # past argument
+      ;;
+    loadFunctions)
+      echo "just loading functions"
+      ACTION="loadFunctions"
+      ;;
+    *)
+      # unknown option
+      print_apps_help
+      exit 1
+      ;;
+  esac
+  shift # past argument or value
+done
+
+case $ACTION in
+  deploy)
+    case $APP in
+      all)
+        deployNFS
+        deployELK
+        deployCAT
+        ;;
+      cat)
+        deployCAT
+        ;;
+      elk)
+        deployELK
+        ;;
+      nfs)
+        deployNFS
+        ;;
+      *)
+        print_apps_help
+        exit 1
+        ;;
+    esac
     ;;
-  deleteELK)
-    deleteELK
-    ;;
-  deployNFS)
-    deployNFS
-    ;;
-  deleteNFS)
-    deleteNFS
-    ;;
-  deployCAT)
-    deployCAT
-    ;;
-  deleteCAT)
-    deleteCAT
-    ;;
-  deployAll)
-    deployELK
-    deployNFS
-    deployCAT
-    ;;
-  deleteAll)
-    deleteCAT
-    deleteNFS
-    deleteELK
+  delete)
+    case $APP in
+      all)
+        deleteCAT
+        deleteELK
+        deleteNFS
+        ;;
+      cat)
+        deleteCAT
+        ;;
+      elk)
+        deleteELK
+        ;;
+      nfs)
+        deleteNFS
+        ;;
+      *)
+        print_apps_help
+        exit 1
+        ;;
+    esac
     ;;
   loadFunctions)
-    echo "just loading functions"
     ;;
   *)
-    echo "Unknown command $1"
+    print_apps_help
     exit 1
-  ;;
+    ;;
 esac

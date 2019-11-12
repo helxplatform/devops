@@ -75,6 +75,7 @@ PREEMPTIBLE=${PREEMPTIBLE-false}
 EXTRA_CREATE_ARGS=${EXTRA_CREATE_ARGS-""}
 USE_STATIC_IP=${USE_STATIC_IP-false}
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-${SCRIPT_PATH}/..}
+POST_CLUSTER_WAIT=${POST_CLUSTER_WAIT-60}
 
 # app variables (used in k8s-apps.sh)
 HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-${K8S_DEVOPS_CORE_HOME}/..}
@@ -90,7 +91,7 @@ KUBECONFIG_DIR=${KUBECONFIG_DIR-${K8S_DEVOPS_CORE_HOME}/kubeconfigs/${PROJECT}-$
 ZONE=${REGION}-${ZONE_EXTENSION}
 USER_KUBECONFIG=$KUBECONFIG
 SCRIPT_KUBECONFIG=${KUBECONFIG_DIR}/config
-KUBECONFIG=${SCRIPT_KUBECONFIG}
+export KUBECONFIG=${SCRIPT_KUBECONFIG}
 KUBECONFIG_USER=${PROJECT}-${CLUSTER_NAME_ENV}-admin-user
 external_ip_name=${CLUSTER_NAME_ENV}-external-ip
 
@@ -98,7 +99,7 @@ external_ip_name=${CLUSTER_NAME_ENV}-external-ip
 source $SCRIPT_PATH/gke-common.sh;
 source $SCRIPT_PATH/k8s-apps.sh loadFunctions;
 
-function bootstrap(){
+function deployCluster(){
   set -e
   validate_required_tools;
 
@@ -181,10 +182,12 @@ function bootstrap(){
   echo "To add to your own kubectl configurations use:"
   echo "  export KUBECONFIG=\$KUBECONFIG:$KUBECONFIG"
   echo "######"
+  echo "Waiting $POST_CLUSTER_WAIT seconds for cluster to settle..."
+  sleep $POST_CLUSTER_WAIT
 }
 
 #Deletes everything created during bootstrap
-function cleanup_gke_resources(){
+function deleteCluster(){
   validate_required_tools;
   gcloud container clusters delete -q $CLUSTER_NAME_ENV --zone $ZONE --project $PROJECT;
   echo "Deleted $CLUSTER_NAME_ENV cluster successfully";
@@ -233,64 +236,119 @@ function deleteNodePool(){
    --zone ${ZONE} --project $PROJECT --cluster ${CLUSTER_NAME_ENV}
 }
 
-case $1 in
-  createCluster)
-    bootstrap
+function print_help() {
+  echo "\
+usage: $0 <action> -a <app>
+  actions: deploy, delete
+  apps: cat, cluster, elk, nfs, node-pool, all
+      note: all does not create a node pool
+  --np-name      Specify node pool name if deploying a node pool
+  -h|--help      Print this help message.
+"
+}
+
+if [[ $# = 0 ]]; then
+  print_help
+  exit 1
+fi
+
+NP_NAME="custom-node-pool"
+
+while [[ $# > 0 ]]
+  do
+  key="$1"
+  case $key in
+    -h|--help)
+      print_help
+      exit 0
+      ;;
+    deploy)
+      ACTION="deploy"
+      APP="$2"
+      shift # past argument
+      ;;
+    delete)
+      ACTION="delete"
+      APP="$2"
+      shift # past argument
+      ;;
+    --np-name)
+      NP_NAME="$2"
+      shift # past argument
+      ;;
+    *)
+      # unknown option
+      print_help
+      exit 1
+      ;;
+  esac
+  shift # past argument or value
+done
+
+case $ACTION in
+  deploy)
+    case $APP in
+      all)
+        deployCluster
+        deployNFS
+        deployELK
+        deployCAT
+        ;;
+      cat)
+        deployCAT
+        ;;
+      cluster)
+        deployCluster
+        ;;
+      elk)
+        deployELK
+        ;;
+      nfs)
+        deployNFS
+        ;;
+      node-pool)
+        createNodePool $NP_NAME
+        ;;
+      *)
+        print_help
+        exit 1
+        ;;
+    esac
     ;;
-  deleteCluster)
-    cleanup_gke_resources
+  delete)
+    case $APP in
+      all)
+        deleteCAT
+        deleteELK
+        deleteNFS
+        deleteCluster
+        ;;
+      cat)
+        deleteCAT
+        ;;
+      cluster)
+        deleteCluster
+        ;;
+      elk)
+        deleteELK
+        ;;
+      nfs)
+        deleteNFS
+        ;;
+      node-pool)
+        deleteNodePool $NP_NAME
+        ;;
+      *)
+        print_help
+        exit 1
+        ;;
+    esac
     ;;
-  createNodePool)
-    if [ -z "$2" ]; then
-       echo "createNodePool requires a node pool name"
-       exit
-    fi
-    createNodePool $2
-    ;;
-  deleteNodePool)
-    if [ -z "$2" ]; then
-       echo "deleteNodePool requires a node pool name"
-       exit
-    fi
-    deleteNodePool $2
-    ;;
-  chaos)
-    $SCRIPT_PATH/kube-monkey.sh
-    ;;
-  deployELK)
-    deployELK
-    ;;
-  deleteELK)
-    deleteELK
-    ;;
-  deployNFS)
-    deployNFS
-    ;;
-  deleteNFS)
-    deleteNFS
-    ;;
-  deployCAT)
-    deployCAT
-    ;;
-  deleteCAT)
-    deleteCAT
-    ;;
-  createClusterAll)
-    bootstrap
-    # wait for cluster to come up a bit more
-    sleep 60
-    deployELK
-    deployNFS
-    deployCAT
-    ;;
-  deleteClusterAll)
-    deleteCAT
-    deleteELK
-    deleteNFS
-    cleanup_gke_resources
+  loadFunctions)
+    echo "just loading functions"
     ;;
   *)
-    echo "Unknown command $1"
+    print_help
     exit 1
-  ;;
+    ;;
 esac
