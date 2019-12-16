@@ -13,9 +13,12 @@ export GKE_CLUSTER_CONFIG=$HELIUMPLUSDATASTAGE_HOME/env-vars-$USER-test-dev.sh
 mkdir -p $HELIUMPLUSDATASTAGE_HOME
 
 # These variables can also be set as environment variables rather than in a
-# config file.
-# CLUSTER_NAME will default to "$USER-cluster" if not set.
-echo "export CLUSTER_NAME=$USER-test-cluster" > $GKE_CLUSTER_CONFIG
+# config file.  Look towards the beginning of "gke-cluster.sh" in
+# the "heliumplus-k8s-devops-core/bin/" directory for other variables that can
+# be set.
+# CLUSTER_NAME will default to "$USER-cluster" if not set.  This is an example
+# of how that is done.
+echo "export CLUSTER_NAME=$USER-cluster" > $GKE_CLUSTER_CONFIG
 # Check the Google console for what cluster versions are available to use.
 # This can found in "Master version" property when you start the creation of
 # a cluster.
