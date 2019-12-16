@@ -1,11 +1,40 @@
 # heliumplus-k8s-devops-core
 
-This resource deploys a Rstudio on the cloud and leveraging cloud scalable nature(using Google Kubernetes Engine) to support multiple 
-users.
-To capture audit logs for ecah command executed on the Rstudio terminal we use auditd. A filebeat agent is used to ship logs to the 
-ELK stack deployed on the same cluster using Storage Classes, Headless Services and Stateful Sets.
-I will provide walk-throughs for building resources on the cluster through the Google Cloud Shell (command line) as well as the 
-Google Cloud Platform (GCP) console.
+To install depoy HeLx 1.0 you will need to have an account with Google Cloud Platform and configure the Google Cloud SDK on your local system.  
+
+Check your Google Cloud SDK is setup correctly.
+```
+glcoud info
+```
+Decide which directory you want the code to deploy HeLx to be and execute the following commands to checkout code from their GitHub repositories.  Some variables might need to be changed.  These commands were done in a BASH shell checked on MacOS and will probably work on Linux, maybe on Windows if you use Cygwin, the Windows Subsystem for Linux (WSL), or something similar.
+```
+export HELIUMPLUSDATASTAGE_HOME=$HOME/src/heliumplusdatastage-test
+export GKE_CLUSTER_CONFIG=$HELIUMPLUSDATASTAGE_HOME/env-vars-$USER-test-dev.sh
+mkdir -p $HELIUMPLUSDATASTAGE_HOME
+
+# These variables can also be set as environment variables rather than in a
+# config file.
+# CLUSTER_NAME will default to "$USER-cluster" if not set.
+echo "export CLUSTER_NAME=$USER-test-cluster" > $GKE_CLUSTER_CONFIG
+# Check the Google console for what cluster versions are available to use.
+# This can found in "Master version" property when you start the creation of
+# a cluster.
+echo "export CLUSTER_VERSION=1.13.11-gke.14" >> $GKE_CLUSTER_CONFIG
+# Set the Google project that you want the cluster to be created in.
+echo "PROJECT=nih-nhlbi-renci-copdgene-dev" >> $GKE_CLUSTER_CONFIG
+
+cd $HELIUMPLUSDATASTAGE_HOME
+git clone https://github.com/heliumplusdatastage/CAT_helm.git
+git clone https://github.com/heliumplusdatastage/heliumplus-k8s-devops-core.git
+git clone https://github.com/heliumplusdatastage/tycho.git
+
+cd $HELIUMPLUSDATASTAGE_HOME/heliumplus-k8s-devops-core/bin
+./gke-cluster.sh deploy all
+
+# Work with cluster and then terminate it.
+./gke-cluster.sh delete all
+```
+# Doing Specific Installs
 
 ## Setup a Kubernetes Cluster.
 
@@ -60,11 +89,11 @@ Kubectl apply -R -f kibana/
 
 ## Setup Logstash
 ### Installing Logstash
-Step-1: Run the following commmand to deploy the Logstash. 
+Step-1: Run the following commmand to deploy the Logstash.
 ```
 Kubectl apply -R -f logstash/
 ```
-The configuration for the Logstash is defined in a ConfigMap(logstash-configmap.yaml). 
+The configuration for the Logstash is defined in a ConfigMap(logstash-configmap.yaml).
 
 ## Setup NFS server
 ### Installing NFS server
@@ -77,9 +106,18 @@ Step-2: Run the following command to deploy NFS server.
 kubectl apply -R -f nfs-server
 ```
 
+## TBD
+
+This resource deploys a Rstudio on the cloud and leveraging cloud scalable nature(using Google Kubernetes Engine) to support multiple
+users.
+To capture audit logs for ecah command executed on the Rstudio terminal we use auditd. A filebeat agent is used to ship logs to the
+ELK stack deployed on the same cluster using Storage Classes, Headless Services and Stateful Sets.
+I will provide walk-throughs for building resources on the cluster through the Google Cloud Shell (command line) as well as the
+Google Cloud Platform (GCP) console.
+
 ## Setup Rstudio
 ### Installing Rstudio
-Step-1: Run the following command to deploy the Rstudio app. 
+Step-1: Run the following command to deploy the Rstudio app.
 ```
 Kubectl apply -R -f rstudio/
 ```
@@ -93,10 +131,10 @@ The image used for the container is "muralikarthikk/rstudio-serv:v8" which is cu
 The ConfigMap is used to add more users on the Rstudio server. The format for defining the users is "username <uid> <gid>", seperated by tabs. Whenever a new user is added to the server. Change the PVC name to pvc-for-rstudio-<number> and re-deploy the application using the command shown in the beginning. The python script inside the container will add users as per the uid and gid mentioned and creates a home directory on the Rstudio server.
 The Persistent Volume is used to persist the data stored by users. The PV still persists even when the Deployment, Service and ConfigMaps are deleted. Whenever any configuration is made to the Rstudio deployment, we can use the same PVC and PV to re-deploy the application.
 
-Note: When a PVC is deleted. The claim for the PV is lost and the data on it is erased to make it available for re-claim. 
-The Persistent Volume Claim is used to bind the Rstudio app to the persistent disk created before. 
-  
-## TBD
+Note: When a PVC is deleted. The claim for the PV is lost and the data on it is erased to make it available for re-claim.
+The Persistent Volume Claim is used to bind the Rstudio app to the persistent disk created before.
+
+
 ### Rstudio Deployment.
 1) Configure the filebeat to resolve the DNS for logstash instead of manually adding the logstash IP Address which is exposed using a LoadBlancer type Service.
 2) Securing Communication between filebeat and Logstash using SSL.
