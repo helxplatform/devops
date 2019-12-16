@@ -16,7 +16,7 @@ mkdir -p $HELIUMPLUSDATASTAGE_HOME
 # config file.  Look towards the beginning of "gke-cluster.sh" in
 # the "heliumplus-k8s-devops-core/bin/" directory for other variables that can
 # be set.
-# CLUSTER_NAME will default to "$USER-cluster" if not set.  This is an example
+# CLUSTER_NAME will default to "$USER-cluster-dev" if not set.  This is an example
 # of how that is done.
 echo "export CLUSTER_NAME=$USER-cluster" > $GKE_CLUSTER_CONFIG
 # Check the Google console for what cluster versions are available to use.
@@ -35,7 +35,11 @@ cd $HELIUMPLUSDATASTAGE_HOME/heliumplus-k8s-devops-core/bin
 ./gke-cluster.sh deploy all
 
 # Work with cluster and then terminate it.
-./gke-cluster.sh delete all
+echo "When you are done with the cluster you can terminate it with"
+echo "these commands."
+echo "export GKE_CLUSTER_CONFIG=$HELIUMPLUSDATASTAGE_HOME/env-vars-$USER-test-dev.sh"
+echo "cd $HELIUMPLUSDATASTAGE_HOME/heliumplus-k8s-devops-core/bin"
+echo "./gke-cluster.sh delete all"
 ```
 # Doing Specific Installs
 
