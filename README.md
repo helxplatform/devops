@@ -11,6 +11,11 @@ Decide which directory you want the code to deploy HeLx to be and execute the fo
 export HELIUMPLUSDATASTAGE_HOME=$HOME/src/heliumplusdatastage
 export PROJECT="A_GOOGLE_PROJECT_ID"
 export GKE_CLUSTER_CONFIG=$HELIUMPLUSDATASTAGE_HOME/env-vars-$USER-test-dev.sh
+# Copy "hydroshare-secret.yaml" to
+#   "$HELIUMPLUSDATASTAGE_HOME/hydroshare-secret.yaml" or set
+#   HYDROSHARE_SECRET_SRC_FILE to point to it's location below, which is
+#   currently the default value.
+# export HYDROSHARE_SECRET_SRC_FILE="$HELIUMPLUSDATASTAGE_HOME/hydroshare-secret.yaml"}
 mkdir -p $HELIUMPLUSDATASTAGE_HOME
 
 # These variables can also be set as environment variables rather than in a
