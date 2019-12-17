@@ -8,18 +8,65 @@
 # then set the variable "GKE_CLUSTER_CONFIG" to the location of that file.
 # Setting at least CLUSTER_NAME, e.g., "pjl-stage", would be good for developer
 # testing.
-if  [ -z ${GKE_CLUSTER_CONFIG+x} ]
+
+if [ "$1" == "loadFunctions" ]
 then
-  echo "Using values from shell or defaults in this script."
+  echo "k8s-apps: Ignoring GKE_CLUSTER_CONFIG and only loading functions."
 else
-  if [ "$1" == "loadFunctions" ]
+  if  [ -z ${GKE_CLUSTER_CONFIG+x} ]
   then
-    echo "Ignoring GKE_CLUSTER_CONFIG and only loading functions."
+    echo "Using values from shell or defaults in this script."
   else
-    echo "Sourcing ${GKE_CLUSTER_CONFIG}"
+    echo "k8s-apps: Sourcing ${GKE_CLUSTER_CONFIG}"
     source ${GKE_CLUSTER_CONFIG}
   fi
 fi
+
+function print_apps_help() {
+  echo "\
+usage: $0 <action> <app>
+  actions: deploy, delete
+  apps: cat, elk, nfs, all
+  -h|--help      Print this help message.
+"
+}
+
+if [[ $# = 0 ]]; then
+  print_apps_help
+  exit 1
+fi
+
+while [[ $# > 0 ]]
+  do
+  key="$1"
+  case $key in
+    -h|--help)
+      print_apps_help
+      exit 0
+      ;;
+    deploy)
+      APPS_ACTION="deploy"
+      APP="$2"
+      shift # past argument
+      ;;
+    delete)
+      APPS_ACTION="delete"
+      APP="$2"
+      shift # past argument
+      ;;
+    loadFunctions)
+      echo "just loading functions"
+      APPS_ACTION="loadFunctions"
+      ;;
+    *)
+      # unknown option
+      print_apps_help
+      exit 1
+      ;;
+  esac
+  shift # past argument or value
+done
+
 
 # set -e
 
@@ -35,12 +82,8 @@ fi
 # default user-definable variable definitions
 #
 NAMESPACE=${NAMESPACE-default}
-K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-${SCRIPT_PATH}/..}
-HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-${K8S_DEVOPS_CORE_HOME}/..}
-HELIUMDATACOMMONS_HOME=${HELIUMDATACOMMONS_HOME-${HELIUMPLUSDATASTAGE_HOME}/../heliumdatacommons}
-COMMONSSHARE_K8S=${COMMONSSHARE_K8S-${HELIUMDATACOMMONS_HOME}/commonsshare/k8s}
-APPSTORE_K8S=${APPSTORE_K8S-${HELIUMDATACOMMONS_HOME}/CommonsShare_AppStore/CS_AppsStore/kubernetes}
-TYCHO_K8S=${TYCHO_K8S-${HELIUMPLUSDATASTAGE_HOME}/tycho/kubernetes}
+HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-"../.."}
+K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELIUMPLUSDATASTAGE_HOME}/heliumplus-k8s-devops-core"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-true}
 
 NFS_SERVER=${NFS_SERVER-"nfs.testserver.org"}
@@ -54,7 +97,8 @@ NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/"}
 # for GKE deployment use...
 NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.default.svc.cluster.local"}
 NFS_CLNT_SVC_CLSTRIP_DEC=${NFS_CLNT_SVC_CLSTRIP_DEC-""}
-# for local stars deployment use something like this in your variables file...
+# for local bare-metal kubernetes deployment use something like this in your
+# variables file...
 # export NFS_CLNT_PV_NFS_SRVR="10.233.58.201"
 # export NFS_CLNT_SVC_CLSTRIP_DEC="clusterIP: 10.233.58.201"
 NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"nfs-client-pv"}
@@ -62,8 +106,13 @@ NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"nfs-client-pvc"}
 NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"nfs-client-sc"}
 
 HELM=${HELM-helm}
-CAT_HELM_DIR=${CAT_HELM_DIR-${HELIUMPLUSDATASTAGE_HOME}/CAT_helm}
+CAT_HELM_DIR=${CAT_HELM_DIR-"${HELIUMPLUSDATASTAGE_HOME}/CAT_helm"}
 CAT_NAME=${CAT_NAME-cat}
+
+# This is temporary until we figure out something to use to encrypt secret
+# files, like git-crypt.
+HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELIUMPLUSDATASTAGE_HOME/hydroshare-secret.yaml"}
+HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/commonsshare/templates/hydroshare-secret.yaml"}
 
 #
 # end default user-definable variable definitions
@@ -162,6 +211,14 @@ function deleteNFS(){
 }
 
 function deployCAT(){
+   if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
+   then
+     echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
+    echo "  \"$HYDROSHARE_SECRET_DST_FILE\""
+     cp $HYDROSHARE_SECRET_SRC_FILE $HYDROSHARE_SECRET_DST_FILE
+   else
+     echo "### Not copying hydroshare secret file. ###"
+   fi
    echo "executing $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE"
    $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE
 }
@@ -171,52 +228,7 @@ function deleteCAT(){
    $HELM delete $CAT_NAME
 }
 
-function print_apps_help() {
-  echo "\
-usage: $0 <action> <app>
-  actions: deploy, delete
-  apps: cat, elk, nfs, all
-  -h|--help      Print this help message.
-"
-}
-
-if [[ $# = 0 ]]; then
-  print_apps_help
-  exit 1
-fi
-
-while [[ $# > 0 ]]
-  do
-  key="$1"
-  case $key in
-    -h|--help)
-      print_apps_help
-      exit 0
-      ;;
-    deploy)
-      ACTION="deploy"
-      APP="$2"
-      shift # past argument
-      ;;
-    delete)
-      ACTION="delete"
-      APP="$2"
-      shift # past argument
-      ;;
-    loadFunctions)
-      echo "just loading functions"
-      ACTION="loadFunctions"
-      ;;
-    *)
-      # unknown option
-      print_apps_help
-      exit 1
-      ;;
-  esac
-  shift # past argument or value
-done
-
-case $ACTION in
+case $APPS_ACTION in
   deploy)
     case $APP in
       all)

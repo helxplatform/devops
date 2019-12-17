@@ -24,18 +24,68 @@
 # * Delete all old GKE clusters.
 #
 
+function print_help() {
+  echo "\
+usage: $0 <action> -a <app>
+  actions: deploy, delete
+  apps: cat, cluster, elk, nfs, node-pool, all
+      note: all does not create a node pool
+  --np-name      Specify node pool name if deploying a node pool
+  -h|--help      Print this help message.
+"
+}
+
+if [[ $# = 0 ]]; then
+  print_help
+  exit 1
+fi
+
+while [[ $# > 0 ]]
+  do
+  key="$1"
+  case $key in
+    -h|--help)
+      print_help
+      exit 0
+      ;;
+    deploy)
+      ACTION="deploy"
+      APP="$2"
+      shift
+      ;;
+    delete)
+      ACTION="delete"
+      APP="$2"
+      shift
+      ;;
+    --np-name)
+      NP_NAME="$2"
+      shift
+      ;;
+    -c)
+      GKE_CLUSTER_CONFIG="$2"
+      shift
+      ;;
+    *)
+      # unknown option
+      print_help
+      exit 1
+      ;;
+  esac
+  shift # past argument or value
+done
+
 # To override the variables below you can can export them out in a file and
 # then set the variable "GKE_CLUSTER_CONFIG" to the location of that file.
 # Setting at least CLUSTER_NAME, e.g., "pjl-stage", would be good for developer
 # testing.
 if  [ -z ${GKE_CLUSTER_CONFIG+x} ]
 then
-  echo "Using values from shell or defaults in this script."
+  echo "gke-cluster.sh: Using values from shell or defaults in this script."
 else
-  echo "Sourcing ${GKE_CLUSTER_CONFIG}"
+  echo "gke-cluster.sh: Sourcing ${GKE_CLUSTER_CONFIG}"
   source ${GKE_CLUSTER_CONFIG}
 fi
-
 # set -e
 
 # MacOS does not support readlink, but it does have perl
@@ -57,6 +107,7 @@ CLUSTER_NAME=${CLUSTER_NAME-${USER}-cluster}
 CLUSTER_VERSION=${CLUSTER_VERSION-1.13.11-gke.14}
 MACHINE_TYPE=${MACHINE_TYPE-n1-standard-2}
 ADD_CLUSTER_ACCELERATOR=${ADD_CLUSTER_ACCELERATOR-false}
+NP_NAME=${NP_NAME-"custom-node-pool"}
 CLUSTER_ACCELERATOR_TYPE=${CLUSTER_ACCELERATOR_TYPE-"nvidia-tesla-p100"}
 CLUSTER_ACCELERATOR_COUNT=${CLUSTER_ACCELERATOR_COUNT-1}
 NP_ACCELERATOR_TYPE=${NP_ACCELERATOR_TYPE-"nvidia-tesla-p100"}
@@ -75,11 +126,6 @@ USE_STATIC_IP=${USE_STATIC_IP-false}
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-${SCRIPT_PATH}/..}
 POST_CLUSTER_WAIT=${POST_CLUSTER_WAIT-60}
 
-# app variables (used in k8s-apps.sh)
-HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-${K8S_DEVOPS_CORE_HOME}/..}
-HELIUMDATACOMMONS_HOME=${HELIUMDATACOMMONS_HOME-${HELIUMPLUSDATASTAGE_HOME}/../heliumdatacommons}
-COMMONSSHARE_K8S=${COMMONSSHARE_K8S-${HELIUMDATACOMMONS_HOME}/commonsshare/k8s}
-TYCHO_K8S=${TYCHO_K8S-${HELIUMPLUSDATASTAGE_HOME}/tycho/kubernetes}
 #
 # end default user-definable variable definitions
 #
@@ -96,6 +142,7 @@ external_ip_name=${CLUSTER_NAME_ENV}-external-ip
 # We seem to need common.sh
 source $SCRIPT_PATH/gke-common.sh;
 source $SCRIPT_PATH/k8s-apps.sh loadFunctions;
+
 
 function deployCluster(){
   set -e
@@ -184,6 +231,7 @@ function deployCluster(){
   sleep $POST_CLUSTER_WAIT
 }
 
+
 #Deletes everything created during bootstrap
 function deleteCluster(){
   validate_required_tools;
@@ -200,6 +248,7 @@ function deleteCluster(){
   echo "  gke-${CLUSTER_NAME_ENV}-"
   echo "######";
 }
+
 
 function createNodePool(){
   set -e
@@ -220,6 +269,7 @@ function createNodePool(){
    fi
 }
 
+
 function installAcceleratorDaemonset(){
   sleep 15 # Wait a little for nodes to come up.
   # Deploy Nvidia device drivers to the nodes if an accelerator is used.
@@ -228,60 +278,13 @@ function installAcceleratorDaemonset(){
   # kubectl create -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/stable/daemonset.yaml
 }
 
+
 function deleteNodePool(){
    echo "deleting NodePool with name $1"
    yes | gcloud container node-pools delete $1 \
    --zone ${ZONE} --project $PROJECT --cluster ${CLUSTER_NAME_ENV}
 }
 
-function print_help() {
-  echo "\
-usage: $0 <action> -a <app>
-  actions: deploy, delete
-  apps: cat, cluster, elk, nfs, node-pool, all
-      note: all does not create a node pool
-  --np-name      Specify node pool name if deploying a node pool
-  -h|--help      Print this help message.
-"
-}
-
-if [[ $# = 0 ]]; then
-  print_help
-  exit 1
-fi
-
-NP_NAME="custom-node-pool"
-
-while [[ $# > 0 ]]
-  do
-  key="$1"
-  case $key in
-    -h|--help)
-      print_help
-      exit 0
-      ;;
-    deploy)
-      ACTION="deploy"
-      APP="$2"
-      shift # past argument
-      ;;
-    delete)
-      ACTION="delete"
-      APP="$2"
-      shift # past argument
-      ;;
-    --np-name)
-      NP_NAME="$2"
-      shift # past argument
-      ;;
-    *)
-      # unknown option
-      print_help
-      exit 1
-      ;;
-  esac
-  shift # past argument or value
-done
 
 case $ACTION in
   deploy)

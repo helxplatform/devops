@@ -6,30 +6,31 @@ Check your Google Cloud SDK is setup correctly.
 ```
 glcoud info
 ```
-Decide which directory you want the code to deploy HeLx to be and execute the following commands to checkout code from their GitHub repositories.  Some variables might need to be changed.  These commands were done in a BASH shell checked on MacOS and will probably work on Linux, maybe on Windows if you use Cygwin, the Windows Subsystem for Linux (WSL), or something similar.
+Decide which directory you want the code to deploy HeLx to be and execute the following commands to checkout code from their GitHub repositories.  Some variables will need to be changed.  These commands were done in a BASH shell checked on MacOS and will probably work on Linux, maybe on Windows if you use Cygwin, the Windows Subsystem for Linux (WSL), or something similar.
 ```
 export HELIUMPLUSDATASTAGE_HOME=$HOME/src/heliumplusdatastage-test
+export PROJECT="A_GOOGLE_PROJECT_ID"
 export GKE_CLUSTER_CONFIG=$HELIUMPLUSDATASTAGE_HOME/env-vars-$USER-test-dev.sh
 mkdir -p $HELIUMPLUSDATASTAGE_HOME
 
 # These variables can also be set as environment variables rather than in a
 # config file.  Look towards the beginning of "gke-cluster.sh" in
 # the "heliumplus-k8s-devops-core/bin/" directory for other variables that can
-# be set.
-# CLUSTER_NAME will default to "$USER-cluster-dev" if not set.  This is an example
-# of how that is done.
+# be set.  The one variable that is required to be set is PROJECT.
+# CLUSTER_NAME will default to "$USER-cluster" if not set.  CLUSTER_ENV, which
+# defaults to 'dev', is added to CLUSTER_NAME and is what is shown in the Google
+# Console. This is an example of how that is done.
 echo "export CLUSTER_NAME=$USER-cluster" > $GKE_CLUSTER_CONFIG
 # Check the Google console for what cluster versions are available to use.
 # This can found in "Master version" property when you start the creation of
 # a cluster.
 echo "export CLUSTER_VERSION=1.13.11-gke.14" >> $GKE_CLUSTER_CONFIG
 # Set the Google project that you want the cluster to be created in.
-echo "PROJECT=nih-nhlbi-renci-copdgene-dev" >> $GKE_CLUSTER_CONFIG
+echo "PROJECT=$PROJECT" >> $GKE_CLUSTER_CONFIG
 
 cd $HELIUMPLUSDATASTAGE_HOME
 git clone https://github.com/heliumplusdatastage/CAT_helm.git
 git clone https://github.com/heliumplusdatastage/heliumplus-k8s-devops-core.git
-git clone https://github.com/heliumplusdatastage/tycho.git
 
 cd $HELIUMPLUSDATASTAGE_HOME/heliumplus-k8s-devops-core/bin
 ./gke-cluster.sh deploy all
