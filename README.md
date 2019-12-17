@@ -11,27 +11,28 @@ file.  Look towards the top of "heliumplus-k8s-devops-core/bin/gke-cluster.sh"
 to see a list of variables.
 ```
 # Set the Google project ID that you want the cluster to be created in.
-export PROJECT="A_GOOGLE_PROJECT_ID"
+PROJECT="A_GOOGLE_PROJECT_ID"
 # Check the Google console for what cluster versions are available to use.
 # This can found in "Master version" property when you start the creation of
 # a cluster.
 CLUSTER_VERSION="1.13.11-gke.14"
 HELIUMPLUSDATASTAGE_HOME=$HOME/src/heliumplusdatastage
 CLUSTER_NAME="$USER-cluster"
-# The previous variables can also be exported instead of using a configuration
-# file with GKE_CLUSTER_CONFIG exported below.
-export GKE_CLUSTER_CONFIG=$HELIUMPLUSDATASTAGE_HOME/env-vars-$USER-test-dev.sh
 # Copy "hydroshare-secret.yaml" to
 #   "$HELIUMPLUSDATASTAGE_HOME/hydroshare-secret.yaml" or set
 #   HYDROSHARE_SECRET_SRC_FILE to point to it's location below, which is
 #   currently the default value.
-# export HYDROSHARE_SECRET_SRC_FILE="$HELIUMPLUSDATASTAGE_HOME/hydroshare-secret.yaml"
+HYDROSHARE_SECRET_SRC_FILE="$HELIUMPLUSDATASTAGE_HOME/hydroshare-secret.yaml"
+# The previous variables can also be exported instead of using a configuration
+# file with GKE_CLUSTER_CONFIG exported below.
+export GKE_CLUSTER_CONFIG=$HELIUMPLUSDATASTAGE_HOME/env-vars-$USER-test-dev.sh
 
 # Create directory to hold the source repositories.
 mkdir -p $HELIUMPLUSDATASTAGE_HOME
 echo "export CLUSTER_NAME=$CLUSTER_NAME" > $GKE_CLUSTER_CONFIG
 echo "export CLUSTER_VERSION=$CLUSTER_VERSION" >> $GKE_CLUSTER_CONFIG
-echo "PROJECT=$PROJECT" >> $GKE_CLUSTER_CONFIG
+echo "export PROJECT=$PROJECT" >> $GKE_CLUSTER_CONFIG
+echo "export HYDROSHARE_SECRET_SRC_FILE=$HYDROSHARE_SECRET_SRC_FILE" >> $GKE_CLUSTER_CONFIG
 
 cd $HELIUMPLUSDATASTAGE_HOME
 git clone https://github.com/heliumplusdatastage/CAT_helm.git
