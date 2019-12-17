@@ -235,7 +235,9 @@ case $APPS_ACTION in
         deployNFS
         deployELK
         # pause to allow for previous deployments
-        sleep 30
+        POST_ELK_WAIT="30"
+        echo "Waiting $POST_ELK_WAIT seconds for deployments to happen."
+        sleep $POST_ELK_WAIT
         deployCAT
         ;;
       cat)
