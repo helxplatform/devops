@@ -6,31 +6,31 @@ Check your Google Cloud SDK is setup correctly.
 ```
 glcoud info
 ```
-Decide which directory you want the code to deploy HeLx to be and execute the following commands to checkout code from their GitHub repositories.  Some variables will need to be changed.  These commands were done in a BASH shell checked on MacOS and will probably work on Linux, maybe on Windows if you use Cygwin, the Windows Subsystem for Linux (WSL), or something similar.
+Decide which directory you want the code to deploy HeLx to be and execute the following commands to checkout code from their GitHub repositories.  Some variables will need to be changed.  These commands were done in a BASH shell checked on MacOS and will probably work on Linux, maybe on Windows if you use Cygwin, the Windows Subsystem for Linux (WSL), or something similar.  Most variables can be set as either environment variables or within the configuration
+file.  Look towards the top of "heliumplus-k8s-devops-core/bin/gke-cluster.sh"
+to see a list of variables.
 ```
-export HELIUMPLUSDATASTAGE_HOME=$HOME/src/heliumplusdatastage
+# Set the Google project ID that you want the cluster to be created in.
 export PROJECT="A_GOOGLE_PROJECT_ID"
+# Check the Google console for what cluster versions are available to use.
+# This can found in "Master version" property when you start the creation of
+# a cluster.
+CLUSTER_VERSION="1.13.11-gke.14"
+HELIUMPLUSDATASTAGE_HOME=$HOME/src/heliumplusdatastage
+CLUSTER_NAME="$USER-cluster"
+# The previous variables can also be exported instead of using a configuration
+# file with GKE_CLUSTER_CONFIG exported below.
 export GKE_CLUSTER_CONFIG=$HELIUMPLUSDATASTAGE_HOME/env-vars-$USER-test-dev.sh
 # Copy "hydroshare-secret.yaml" to
 #   "$HELIUMPLUSDATASTAGE_HOME/hydroshare-secret.yaml" or set
 #   HYDROSHARE_SECRET_SRC_FILE to point to it's location below, which is
 #   currently the default value.
-# export HYDROSHARE_SECRET_SRC_FILE="$HELIUMPLUSDATASTAGE_HOME/hydroshare-secret.yaml"}
-mkdir -p $HELIUMPLUSDATASTAGE_HOME
+# export HYDROSHARE_SECRET_SRC_FILE="$HELIUMPLUSDATASTAGE_HOME/hydroshare-secret.yaml"
 
-# These variables can also be set as environment variables rather than in a
-# config file.  Look towards the beginning of "gke-cluster.sh" in
-# the "heliumplus-k8s-devops-core/bin/" directory for other variables that can
-# be set.  The one variable that is required to be set is PROJECT.
-# CLUSTER_NAME will default to "$USER-cluster" if not set.  CLUSTER_ENV, which
-# defaults to 'dev', is added to CLUSTER_NAME and is what is shown in the Google
-# Console. This is an example of how that is done.
-echo "export CLUSTER_NAME=$USER-cluster" > $GKE_CLUSTER_CONFIG
-# Check the Google console for what cluster versions are available to use.
-# This can found in "Master version" property when you start the creation of
-# a cluster.
-echo "export CLUSTER_VERSION=1.13.11-gke.14" >> $GKE_CLUSTER_CONFIG
-# Set the Google project that you want the cluster to be created in.
+# Create directory to hold the source repositories.
+mkdir -p $HELIUMPLUSDATASTAGE_HOME
+echo "export CLUSTER_NAME=$CLUSTER_NAME" > $GKE_CLUSTER_CONFIG
+echo "export CLUSTER_VERSION=$CLUSTER_VERSION" >> $GKE_CLUSTER_CONFIG
 echo "PROJECT=$PROJECT" >> $GKE_CLUSTER_CONFIG
 
 cd $HELIUMPLUSDATASTAGE_HOME
