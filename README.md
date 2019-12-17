@@ -42,6 +42,7 @@ cd $HELIUMPLUSDATASTAGE_HOME/heliumplus-k8s-devops-core/bin
 ./gke-cluster.sh deploy all
 
 # Work with cluster and then terminate it.
+echo "###"
 echo "When you are done with the cluster you can terminate it with"
 echo "these commands."
 echo "export GKE_CLUSTER_CONFIG=$HELIUMPLUSDATASTAGE_HOME/env-vars-$USER-test-dev.sh"
