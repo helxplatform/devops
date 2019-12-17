@@ -119,7 +119,7 @@ HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/co
 #
 
 function deployELK(){
-   echo "deploying ELK"
+   echo "# deploying ELK"
    # deploy ELK
    if $GKE_DEPLOYMENT; then
      # setup persistent storage for GKE
@@ -147,10 +147,12 @@ function deployELK(){
 
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/logstash/
+   echo "# end deploying ELK"
 }
 
+
 function deleteELK(){
-   echo "deleting ELK"
+   echo "# deleting ELK"
    # delete ELK
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
@@ -171,13 +173,14 @@ function deleteELK(){
 
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/logstash/
-
+   echo "# end deleting ELK"
 }
+
 
 function deployNFS(){
    # An NFS server is deployed within the cluster since GKE does not support
    # a PV that is ReadWriteMany.
-   echo "deploying NFS"
+   echo "# deploying NFS"
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
    export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
@@ -191,10 +194,12 @@ function deployNFS(){
    # deploy NFS PVC for NFS clients
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
        kubectl create -n $NAMESPACE -f -
+    echo "# end deploying NFS"
 }
 
+
 function deleteNFS(){
-   echo "deleting NFS"
+   echo "# deleting NFS"
    # delete NFS server
    export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
    export PV_NFS_SERVER=$NFS_CLNT_PV_NFS_SRVR
@@ -208,24 +213,36 @@ function deleteNFS(){
        kubectl delete -n $NAMESPACE -f -
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
+   echo "# end deleting NFS"
 }
 
+
 function deployCAT(){
+   echo "# deploying CAT"
    if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
    then
      echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
     echo "  \"$HYDROSHARE_SECRET_DST_FILE\""
      cp $HYDROSHARE_SECRET_SRC_FILE $HYDROSHARE_SECRET_DST_FILE
    else
+     echo "Hydroshare secret source file not found:"
+     echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
      echo "### Not copying hydroshare secret file. ###"
    fi
    echo "executing $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE"
    $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE
+   # pause to allow for previous deployments
+   POST_ELK_WAIT="30"
+   echo "Waiting $POST_ELK_WAIT seconds for ELK deployment to progress."
+   sleep $POST_ELK_WAIT
+   echo "# end deploying CAT"
 }
 
 function deleteCAT(){
+  echo "# deleting CAT"
    echo "executing $HELM delete $CAT_NAME"
    $HELM delete $CAT_NAME
+   echo "# end deleting CAT"
 }
 
 case $APPS_ACTION in
@@ -234,10 +251,6 @@ case $APPS_ACTION in
       all)
         deployNFS
         deployELK
-        # pause to allow for previous deployments
-        POST_ELK_WAIT="30"
-        echo "Waiting $POST_ELK_WAIT seconds for deployments to happen."
-        sleep $POST_ELK_WAIT
         deployCAT
         ;;
       cat)
