@@ -8,7 +8,7 @@ glcoud info
 ```
 Decide which directory you want the code to deploy HeLx to be and execute the following commands to checkout code from their GitHub repositories.  Some variables will need to be changed.  These commands were done in a BASH shell checked on MacOS and will probably work on Linux, maybe on Windows if you use Cygwin, the Windows Subsystem for Linux (WSL), or something similar.
 ```
-export HELIUMPLUSDATASTAGE_HOME=$HOME/src/heliumplusdatastage-test
+export HELIUMPLUSDATASTAGE_HOME=$HOME/src/heliumplusdatastage
 export PROJECT="A_GOOGLE_PROJECT_ID"
 export GKE_CLUSTER_CONFIG=$HELIUMPLUSDATASTAGE_HOME/env-vars-$USER-test-dev.sh
 mkdir -p $HELIUMPLUSDATASTAGE_HOME
