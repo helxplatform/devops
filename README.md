@@ -39,7 +39,12 @@ git clone https://github.com/heliumplusdatastage/CAT_helm.git
 git clone https://github.com/heliumplusdatastage/heliumplus-k8s-devops-core.git
 
 cd $HELIUMPLUSDATASTAGE_HOME/heliumplus-k8s-devops-core/bin
-./gke-cluster.sh deploy all
+# To create the cluster using the config file specified as a command line
+# argument run this.
+./gke-cluster.sh -c $GKE_CLUSTER_CONFIG deploy all
+
+# ...or with the GKE_CLUSTER_CONFIG variable exported you can just run this.
+# ./gke-cluster.sh deploy all
 
 # Work with cluster and then terminate it.
 echo "###"
