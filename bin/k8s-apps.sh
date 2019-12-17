@@ -234,6 +234,8 @@ case $APPS_ACTION in
       all)
         deployNFS
         deployELK
+        # pause to allow for previous deployments
+        sleep 30
         deployCAT
         ;;
       cat)
