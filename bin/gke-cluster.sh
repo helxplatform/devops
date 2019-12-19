@@ -168,7 +168,7 @@ function deployCluster(){
     --cluster-version $CLUSTER_VERSION --machine-type $MACHINE_TYPE \
     --scopes "https://www.googleapis.com/auth/ndev.clouddns.readwrite",\
 "https://www.googleapis.com/auth/compute",\
-"https://www.googleapis.com/auth/devstorage.read_only",\
+"https://www.googleapis.com/auth/devstorage.read_write",\
 "https://www.googleapis.com/auth/logging.write",\
 "https://www.googleapis.com/auth/monitoring",\
 "https://www.googleapis.com/auth/servicecontrol",\
