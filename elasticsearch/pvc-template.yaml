@@ -4,8 +4,8 @@ metadata:
   name: $PVC_NAME
 spec:
   accessModes:
-    - ReadWriteOnce
-  storageClassName: $PVC_STORAGE_CLASS_NAME
+  - ReadWriteOnce
   resources:
     requests:
       storage: $PVC_STORAGE_REQUESTED
+  storageClassName: $PVC_STORAGE_CLASS_NAME

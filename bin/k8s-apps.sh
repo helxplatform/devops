@@ -4,24 +4,6 @@
 # Install base applications to Kubernetes cluster.
 #
 
-# To override the variables below you can can export them out in a file and
-# then set the variable "GKE_CLUSTER_CONFIG" to the location of that file.
-# Setting at least CLUSTER_NAME, e.g., "pjl-stage", would be good for developer
-# testing.
-
-if [ "$1" == "loadFunctions" ]
-then
-  echo "k8s-apps: Ignoring GKE_CLUSTER_CONFIG and only loading functions."
-else
-  if  [ -z ${GKE_CLUSTER_CONFIG+x} ]
-  then
-    echo "Using values from shell or defaults in this script."
-  else
-    echo "k8s-apps: Sourcing ${GKE_CLUSTER_CONFIG}"
-    source ${GKE_CLUSTER_CONFIG}
-  fi
-fi
-
 function print_apps_help() {
   echo "\
 usage: $0 <action> <app>
@@ -58,6 +40,10 @@ while [[ $# > 0 ]]
       echo "just loading functions"
       APPS_ACTION="loadFunctions"
       ;;
+    -c)
+      CLUSTER_CONFIG="$2"
+      shift
+      ;;
     *)
       # unknown option
       print_apps_help
@@ -68,7 +54,21 @@ while [[ $# > 0 ]]
 done
 
 
-# set -e
+# To override the variables below you can can export them out in a file and
+# then set the variable "CLUSTER_CONFIG" to the location of that file.
+# Setting at least CLUSTER_NAME, e.g., "pjl-stage", would be good for developer
+# testing.
+
+if  [ "${APPS_ACTION}" != "loadFunctions" ]
+then
+  if  [ -z ${CLUSTER_CONFIG+x} ]
+  then
+    echo "Using values from shell or defaults in this script."
+  else
+    echo "k8s-apps: Sourcing ${CLUSTER_CONFIG}"
+    source ${CLUSTER_CONFIG}
+  fi
+fi
 
 # MacOS does not support readlink, but it does have perl
 KERNEL_NAME=$(uname -s)
@@ -122,24 +122,29 @@ function deployELK(){
    echo "# deploying ELK"
    # deploy ELK
    if $GKE_DEPLOYMENT; then
+     echo "Deploying storage for GKE."
      # setup persistent storage for GKE
      kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage-gke.yaml
    else
+     echo "Deploying storage for non-GKE environments."
+     # This will work, but might want to use a static NFS PV instead or just
+     # use the default storage class.
      # setup persistent storage for bare-metal k8s
-     $HELM install --name $NFSCP_NAME \
+     $HELM install \
                   --set nfs.server=$NFS_SERVER \
                   --set nfs.path=$NFS_PATH \
                   --set storageClass.name=$ELK_STORAGE_CLASS_NAME \
                   --namespace $NAMESPACE \
-                  stable/nfs-client-provisioner
-     # used for ELK storage template
-     export PVC_NAME=$ELK_PVC_NAME
-     export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
-     export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
-     cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
-         kubectl create -n $NAMESPACE -f -
+                  $NFSCP_NAME stable/nfs-client-provisioner
+
+     # # create the ELK PVC dynamicly
+     # export PVC_NAME=$ELK_PVC_NAME
+     # export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
+     # export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
+     # cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
+     #     kubectl create -n $NAMESPACE -f -
+     # create the ELK via a static YAML file
      kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
-     # kubectl apply -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
    fi
 
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
@@ -162,13 +167,16 @@ function deleteELK(){
    else
      # delete persistent storage for bare-metal k8s
      kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
-     # used for ELK storage template
-     export PVC_NAME=$ELK_PVC_NAME
-     export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
-     export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
-     cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
-         kubectl delete -n $NAMESPACE -f -
-     $HELM delete --namespace $NAMESPACE --purge $NFSCP_NAME
+     # # delete ELK PVC that was created dynamicly from a tempalte
+     # export PVC_NAME=$ELK_PVC_NAME
+     # export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
+     # export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
+     # cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
+     #     kubectl delete -n $NAMESPACE -f -
+     # delete ELK PVS created from a static YAML file
+     kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
+
+     $HELM delete --namespace $NAMESPACE $NFSCP_NAME
    fi
 
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/

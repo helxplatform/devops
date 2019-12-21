@@ -63,7 +63,7 @@ while [[ $# > 0 ]]
       shift
       ;;
     -c)
-      GKE_CLUSTER_CONFIG="$2"
+      CLUSTER_CONFIG="$2"
       shift
       ;;
     *)
@@ -76,15 +76,15 @@ while [[ $# > 0 ]]
 done
 
 # To override the variables below you can can export them out in a file and
-# then set the variable "GKE_CLUSTER_CONFIG" to the location of that file.
+# then set the variable "CLUSTER_CONFIG" to the location of that file.
 # Setting at least CLUSTER_NAME, e.g., "pjl-stage", would be good for developer
 # testing.
-if  [ -z ${GKE_CLUSTER_CONFIG+x} ]
+if  [ -z ${CLUSTER_CONFIG+x} ]
 then
   echo "gke-cluster.sh: Using values from shell or defaults in this script."
 else
-  echo "gke-cluster.sh: Sourcing ${GKE_CLUSTER_CONFIG}"
-  source ${GKE_CLUSTER_CONFIG}
+  echo "gke-cluster.sh: Sourcing ${CLUSTER_CONFIG}"
+  source ${CLUSTER_CONFIG}
 fi
 # set -e
 

@@ -7,6 +7,5 @@ spec:
   - ReadWriteOnce
   resources:
      requests:
-       # storage size to use
        storage: 10Gi
   storageClassName: elk-sc
