@@ -166,8 +166,7 @@ function deleteELK(){
      kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage-gke.yaml
    else
      # delete persistent storage for bare-metal k8s
-     kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
-     # # delete ELK PVC that was created dynamicly from a tempalte
+     # # delete ELK PVC that was created dynamicly from a template
      # export PVC_NAME=$ELK_PVC_NAME
      # export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
      # export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
