@@ -24,14 +24,18 @@
 # * Delete all old GKE clusters.
 #
 
+# expand variables and print commands
+set -x
+
 function print_help() {
   echo "\
-usage: $0 <action> -a <app>
+usage: $0 <action> <app> <option>
   actions: deploy, delete
   apps: cat, cluster, elk, nfs, node-pool, all
       note: all does not create a node pool
-  --np-name      Specify node pool name if deploying a node pool
-  -h|--help      Print this help message.
+  --np-name [name]  Specify node pool name if deploying a node pool
+  -c [config file]  Specify config file.
+  -h|--help         Print this help message.
 "
 }
 
@@ -104,7 +108,7 @@ REGION=${REGION-us-east1}
 ZONE_EXTENSION=${ZONE_EXTENSION-b}
 CLUSTER_ENV=${CLUSTER_ENV-dev}
 CLUSTER_NAME=${CLUSTER_NAME-${USER}-cluster}
-CLUSTER_VERSION=${CLUSTER_VERSION-1.13.11-gke.14}
+CLUSTER_VERSION=${CLUSTER_VERSION-1.13.12-gke.25}
 MACHINE_TYPE=${MACHINE_TYPE-n1-standard-2}
 ADD_CLUSTER_ACCELERATOR=${ADD_CLUSTER_ACCELERATOR-false}
 NP_NAME=${NP_NAME-"custom-node-pool"}
@@ -121,6 +125,7 @@ MIN_POOL_NODES=${MIN_POOL_NODES-0}
 MAX_POOL_NODES=${MAX_POOL_NODES-3}
 INT_NETWORK=${INT_NETWORK-default}
 PREEMPTIBLE=${PREEMPTIBLE-false}
+MASTER_AUTHORIZED_NETWORKS=${MASTER_AUTHORIZED_NETWORKS-0.0.0.0/0}
 EXTRA_CREATE_ARGS=${EXTRA_CREATE_ARGS-""}
 USE_STATIC_IP=${USE_STATIC_IP-false}
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-${SCRIPT_PATH}/..}
@@ -174,9 +179,12 @@ function deployCluster(){
 "https://www.googleapis.com/auth/servicecontrol",\
 "https://www.googleapis.com/auth/service.management.readonly",\
 "https://www.googleapis.com/auth/trace.append" \
-    --node-version $CLUSTER_VERSION --num-nodes $NUM_NODES \
-    --enable-ip-alias --network $INT_NETWORK \
-    --project $PROJECT --enable-basic-auth $EXTRA_CREATE_ARGS;
+    --node-version $CLUSTER_VERSION --num-nodes $NUM_NODES --project $PROJECT \
+    --enable-ip-alias --enable-master-authorized-networks \
+    --master-authorized-networks $MASTER_AUTHORIZED_NETWORKS \
+    --network $INT_NETWORK $EXTRA_CREATE_ARGS;
+    # --enable-basic-auth
+    # --enable-ip-alias --enable-private-nodes --enable-master-authorized-networks \
 
   if ${USE_STATIC_IP}; then
     gcloud compute addresses create $external_ip_name --region $REGION --project $PROJECT;

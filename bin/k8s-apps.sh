@@ -6,10 +6,11 @@
 
 function print_apps_help() {
   echo "\
-usage: $0 <action> <app>
+usage: $0 <action> <app> <option>
   actions: deploy, delete
   apps: cat, elk, nfs, all
-  -h|--help      Print this help message.
+  -c [config file]  Specify config file.
+  -h|--help         Print this help message.
 "
 }
 
@@ -130,6 +131,9 @@ function deployELK(){
      # This will work, but might want to use a static NFS PV instead or just
      # use the default storage class.
      # setup persistent storage for bare-metal k8s
+     # Another note: Does this need to be ELK-specific?  Maybe there should be
+     # a NFSCP for different storage types, like SSD, magnetic drives, data to
+     # be backed up, etc.
      $HELM install \
                   --set nfs.server=$NFS_SERVER \
                   --set nfs.path=$NFS_PATH \
@@ -137,14 +141,14 @@ function deployELK(){
                   --namespace $NAMESPACE \
                   $NFSCP_NAME stable/nfs-client-provisioner
 
-     # # create the ELK PVC dynamicly
-     # export PVC_NAME=$ELK_PVC_NAME
-     # export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
-     # export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
-     # cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
-     #     kubectl create -n $NAMESPACE -f -
+     # create the ELK PVC dynamicly
+     export PVC_NAME=$ELK_PVC_NAME
+     export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
+     export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
+     cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
+         kubectl create -n $NAMESPACE -f -
      # create the ELK via a static YAML file
-     kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
+     # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
    fi
 
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
@@ -166,14 +170,14 @@ function deleteELK(){
      kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage-gke.yaml
    else
      # delete persistent storage for bare-metal k8s
-     # # delete ELK PVC that was created dynamicly from a template
-     # export PVC_NAME=$ELK_PVC_NAME
-     # export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
-     # export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
-     # cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
-     #     kubectl delete -n $NAMESPACE -f -
+     # delete ELK PVC that was created dynamicly from a template
+     export PVC_NAME=$ELK_PVC_NAME
+     export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
+     export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
+     cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
+         kubectl delete -n $NAMESPACE -f -
      # delete ELK PVS created from a static YAML file
-     kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
+     # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
 
      $HELM delete --namespace $NAMESPACE $NFSCP_NAME
    fi
@@ -192,16 +196,17 @@ function deployNFS(){
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
    export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
    export PV_NFS_SERVER=$NFS_CLNT_PV_NFS_SRVR
-   export SVC_CLSTRIP_DEC=$NFS_CLNT_SVC_CLSTRIP_DEC
    export PV_NAME=$NFS_CLNT_PV_NAME
    export PVC_NAME=$NFS_CLNT_PVC_NAME
    export STORAGECLASS_NAME=$NFS_CLNT_STORAGECLASS
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
-       kubectl create -n $NAMESPACE -f -
    # deploy NFS PVC for NFS clients
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
        kubectl create -n $NAMESPACE -f -
-    echo "# end deploying NFS"
+   export SVC_CLSTRIP_DEC=$NFS_CLNT_SVC_CLSTRIP_DEC
+   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
+       kubectl create -n $NAMESPACE -f -
+
+   echo "# end deploying NFS"
 }
 
 
