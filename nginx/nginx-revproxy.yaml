@@ -1,0 +1,83 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ambassador-nginx-conf
+data:
+  default.conf: |
+        server {
+                listen                  80;
+                listen                  [::]:80;
+                server_name             <nginx IP>;
+
+                location = /appsstore {
+                         proxy_http_version 1.1;
+                         proxy_pass http://<ambassador IP>:<ambassador port>/appstore;
+                }
+
+                location = /commonsshare {
+                         proxy_http_version 1.1;
+                         proxy_pass http://<ambassador IP>:<ambassador port>/commonsshare;
+                }
+
+                location /apps {
+                         proxy_http_version 1.1;
+                         auth_request /auth;
+                         auth_request_set $remoteUser $upstream_http_REMOTE_USER;
+                         proxy_set_header REMOTE_USER $remoteUser;
+                         add_header REMOTE_USER $remoteUser;
+                         if (!-e $upstream_http_REMOTE_USER) {
+                             return 403; 
+                         }
+                         proxy_pass http://<ambassador IP>:<ambassador port>/$uri;
+
+                location /auth {
+                         proxy_http_version 1.1;
+                         proxy_pass http://<ambassador IP>:<ambassador port>/appstore/auth;
+
+                location / {
+                         proxy_http_version 1.1;
+                         proxy_pass http://<ambassador IP>:<ambassador port>;
+                }
+
+        }
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-revproxy
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-revproxy
+    spec:
+      containers:
+      - image: heliumdatastage/nginx:bd-cat-test 
+        imagePullPolicy: Always
+        name: ambassador-nginx-conf
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: ambassador-nginx-conf
+          mountPath: /etc/nginx/conf.d
+      # Load the configuration files for nginx
+      volumes:
+        - name: ambassador-nginx-conf
+          configMap:
+            name: ambassador-nginx-conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-revproxy
+spec:
+  type: LoadBalancer
+  loadBalancerIP: <nginx static IP>
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: nginx-revproxy
