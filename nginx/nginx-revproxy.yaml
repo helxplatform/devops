@@ -10,12 +10,12 @@ data:
                 listen                  [::]:80;
                 server_name             <nginx IP>;
 
-                location = /appsstore {
+                location /appsstore {
                          proxy_http_version 1.1;
                          proxy_pass http://<ambassador IP>:<ambassador port>/appstore;
                 }
 
-                location = /commonsshare {
+                location /commonsshare {
                          proxy_http_version 1.1;
                          proxy_pass http://<ambassador IP>:<ambassador port>/commonsshare;
                 }
@@ -27,11 +27,11 @@ data:
                          proxy_set_header REMOTE_USER $remoteUser;
                          add_header REMOTE_USER $remoteUser;
                          if (!-e $upstream_http_REMOTE_USER) {
-                             return 403; 
+                             return 403;
                          }
                          proxy_pass http://<ambassador IP>:<ambassador port>/$uri;
 
-                location = /auth {
+                location /auth {
                          proxy_http_version 1.1;
                          proxy_pass http://<ambassador IP>:<ambassador port>/appstore/auth;
 
@@ -54,7 +54,7 @@ spec:
         app: nginx-revproxy
     spec:
       containers:
-      - image: heliumdatastage/nginx:bd-cat-test 
+      - image: heliumdatastage/nginx:bd-cat-test
         imagePullPolicy: Always
         name: ambassador-nginx-conf
         ports:
