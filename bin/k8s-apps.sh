@@ -4,6 +4,9 @@
 # Install base applications to Kubernetes cluster.
 #
 
+# expand variables and print commands
+set -x
+
 function print_apps_help() {
   echo "\
 usage: $0 <action> <app> <option>
@@ -94,17 +97,9 @@ ELK_STORAGE_CLASS_NAME=${ELK_STORAGE_CLASS_NAME-"elk-sc"}
 ELK_PVC_NAME=${ELK_PVC_NAME-"elk-pvc"}
 ELK_PVC_STORAGE_SIZE=${ELK_PVC_STORAGE_SIZE-"10Gi"}
 
-NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/"}
-# for GKE deployment use...
-NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.default.svc.cluster.local"}
-NFS_CLNT_SVC_CLSTRIP_DEC=${NFS_CLNT_SVC_CLSTRIP_DEC-""}
-# for local bare-metal kubernetes deployment use something like this in your
-# variables file...
-# export NFS_CLNT_PV_NFS_SRVR="10.233.58.201"
-# export NFS_CLNT_SVC_CLSTRIP_DEC="clusterIP: 10.233.58.201"
-NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"nfs-client-pv"}
-NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"nfs-client-pvc"}
-NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"nfs-client-sc"}
+NFS_PROVISIONER_NAME=${NFS_PROVISIONER_NAME-"nfs"}
+NFS_PROVISIONER_PERSISTENCE_ENABLED=${NFS_PROVISIONER_PERSISTENCE_ENABLED-"false"}
+NFS_PROVISIONER_PERSISTENCE_SIZE=${NFS_PROVISIONER_PERSISTENCE_SIZE-"10Gi"}
 
 HELM=${HELM-helm}
 CAT_HELM_DIR=${CAT_HELM_DIR-"${HELIUMPLUSDATASTAGE_HOME}/CAT_helm"}
@@ -118,6 +113,12 @@ HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/co
 #
 # end default user-definable variable definitions
 #
+
+# ToDo:  Deploy the NFS server provisioner first, if needed and use it's storage
+# for ELK, ImageJ, and Nextflow.  Then remove or adjust PVC for ELK below.
+# Maybe use the NFS server provisioner everywhere?  It's probably good to have
+# the option of not using the NFS server provisioner where we don't have to (not
+# on Google).
 
 function deployELK(){
    echo "# deploying ELK"
@@ -192,40 +193,39 @@ function deployNFS(){
    # An NFS server is deployed within the cluster since GKE does not support
    # a PV that is ReadWriteMany.
    echo "# deploying NFS"
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
-   export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
-   export PV_NFS_SERVER=$NFS_CLNT_PV_NFS_SRVR
-   export PV_NAME=$NFS_CLNT_PV_NAME
-   export PVC_NAME=$NFS_CLNT_PVC_NAME
-   export STORAGECLASS_NAME=$NFS_CLNT_STORAGECLASS
-   # deploy NFS PVC for NFS clients
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
-       kubectl create -n $NAMESPACE -f -
-   export SVC_CLSTRIP_DEC=$NFS_CLNT_SVC_CLSTRIP_DEC
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
-       kubectl create -n $NAMESPACE -f -
-
+   echo "executing $HELM install $NFS_PROVISIONER_NAME -n $NAMESPACE"
+   $HELM install $NFS_PROVISIONER_NAME -n $NAMESPACE --set persistence.enabled=$NFS_PROVISIONER_PERSISTENCE_ENABLED,persistence.size=$NFS_PROVISIONER_PERSISTENCE_SIZE stable/nfs-server-provisioner
    echo "# end deploying NFS"
 }
 
 
 function deleteNFS(){
    echo "# deleting NFS"
-   # delete NFS server
-   export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
-   export PV_NFS_SERVER=$NFS_CLNT_PV_NFS_SRVR
-   export SVC_CLSTRIP_DEC=$NFS_CLNT_SVC_CLSTRIP_DEC
-   export PV_NAME=$NFS_CLNT_PV_NAME
-   export PVC_NAME=$NFS_CLNT_PVC_NAME
-   export STORAGECLASS_NAME=$NFS_CLNT_STORAGECLASS
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
-       kubectl delete -n $NAMESPACE -f -
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
-       kubectl delete -n $NAMESPACE -f -
-   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
-   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
+   echo "executing $HELM delete $NFS_PROVISIONER_NAME"
+   $HELM delete $NFS_PROVISIONER_NAME
    echo "# end deleting NFS"
+}
+
+
+function createNFSPVC(){
+   export PVC_NAME=$1
+   export PVC_STORAGE_CLASS_NAME=$2
+   export PVC_STORAGE_SIZE=$3
+   echo "# creating $PVC_NAME PVC"
+   cat $K8S_DEVOPS_CORE_HOME/nfs-server/pvc-template.yaml | envsubst | \
+       kubectl create -n $NAMESPACE -f -
+   echo "# $PVC_NAME PVC deleted"
+}
+
+
+function deleteNFSPVC(){
+    export PVC_NAME=$1
+    export PVC_STORAGE_CLASS_NAME=$2
+    export PVC_STORAGE_SIZE=$3
+    echo "# deleting $PVC_NAME PVC"
+    cat $K8S_DEVOPS_CORE_HOME/nfs-server/pvc-template.yaml | envsubst | \
+        kubectl delete -n $NAMESPACE -f -
+    echo "# $PVC_NAME PVC deleted"
 }
 
 
@@ -262,6 +262,8 @@ case $APPS_ACTION in
     case $APP in
       all)
         deployNFS
+        createNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
+        createNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
         deployELK
         deployCAT
         ;;
@@ -273,6 +275,8 @@ case $APPS_ACTION in
         ;;
       nfs)
         deployNFS
+        createNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
+        createNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
         ;;
       *)
         print_apps_help
@@ -285,6 +289,8 @@ case $APPS_ACTION in
       all)
         deleteCAT
         deleteELK
+        deleteNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
+        deleteNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
         deleteNFS
         ;;
       cat)
@@ -294,6 +300,8 @@ case $APPS_ACTION in
         deleteELK
         ;;
       nfs)
+        deleteNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
+        deleteNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
         deleteNFS
         ;;
       *)
