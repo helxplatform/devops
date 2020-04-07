@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ambassador
+  namespace: cat
+spec:
+  type: ClusterIP
+  #externalTrafficPolicy: Local
+  ports:
+   - port: 80
+     targetPort: 8080
+  selector:
+    service: ambassador
