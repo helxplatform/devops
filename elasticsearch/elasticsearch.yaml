@@ -81,7 +81,8 @@ spec:
     spec:
       accessModes:
         - ReadWriteOnce
-      storageClassName: elk-sc
+      # storageClassName: elk-sc
+      storageClassName: nfs
       resources:
         requests:
           storage: 10Gi

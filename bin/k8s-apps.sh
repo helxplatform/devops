@@ -85,15 +85,16 @@ fi
 #
 # default user-definable variable definitions
 #
-NAMESPACE=${NAMESPACE-default}
+NAMESPACE=${NAMESPACE-"default"}
 HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-"../.."}
-K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELIUMPLUSDATASTAGE_HOME}/heliumplus-k8s-devops-core"}
+K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELIUMPLUSDATASTAGE_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-true}
 
 NFS_SERVER=${NFS_SERVER-"nfs.testserver.org"}
 NFS_PATH=${NFS_PATH-"/some/shared/nfs/folder"}
 NFSCP_NAME=${NFSCP_NAME-"elk-nfscp"}
 ELK_STORAGE_CLASS_NAME=${ELK_STORAGE_CLASS_NAME-"elk-sc"}
+# "elk-pvc" is set staticly in "elasticsearch-storage-gke.yaml"
 ELK_PVC_NAME=${ELK_PVC_NAME-"elk-pvc"}
 ELK_PVC_STORAGE_SIZE=${ELK_PVC_STORAGE_SIZE-"10Gi"}
 
@@ -122,35 +123,44 @@ HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/co
 
 function deployELK(){
    echo "# deploying ELK"
-   # deploy ELK
-   if $GKE_DEPLOYMENT; then
-     echo "Deploying storage for GKE."
-     # setup persistent storage for GKE
-     kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage-gke.yaml
-   else
-     echo "Deploying storage for non-GKE environments."
-     # This will work, but might want to use a static NFS PV instead or just
-     # use the default storage class.
-     # setup persistent storage for bare-metal k8s
-     # Another note: Does this need to be ELK-specific?  Maybe there should be
-     # a NFSCP for different storage types, like SSD, magnetic drives, data to
-     # be backed up, etc.
-     $HELM install \
-                  --set nfs.server=$NFS_SERVER \
-                  --set nfs.path=$NFS_PATH \
-                  --set storageClass.name=$ELK_STORAGE_CLASS_NAME \
-                  --namespace $NAMESPACE \
-                  $NFSCP_NAME stable/nfs-client-provisioner
 
-     # create the ELK PVC dynamicly
-     export PVC_NAME=$ELK_PVC_NAME
-     export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
-     export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
-     cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
-         kubectl create -n $NAMESPACE -f -
-     # create the ELK via a static YAML file
-     # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
-   fi
+   # # Creating storage.
+   # if $GKE_DEPLOYMENT; then
+   #   echo "Deploying storage for GKE."
+   #   # setup persistent storage for GKE
+   #   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage-gke.yaml
+   # else
+   #   echo "Deploying storage for non-GKE environments."
+   #   # This will work, but might want to use a static NFS PV instead or just
+   #   # use the default storage class.
+   #   # setup persistent storage for bare-metal k8s
+   #   # Another note: Does this need to be ELK-specific?  Maybe there should be
+   #   # a NFSCP for different storage types, like SSD, magnetic drives, data to
+   #   # be backed up, etc.
+   #
+   #   # Instead of Using a NFSCP, let's use the NFS Server that's created in
+   #   # the cluster.
+   #   # $HELM install \
+   #   #              --set nfs.server=$NFS_SERVER \
+   #   #              --set nfs.path=$NFS_PATH \
+   #   #              --set storageClass.name=$ELK_STORAGE_CLASS_NAME \
+   #   #              --namespace $NAMESPACE \
+   #   #              $NFSCP_NAME stable/nfs-client-provisioner
+   #
+   #   # create the ELK PVC dynamicly
+   #   export PVC_NAME=$ELK_PVC_NAME
+   #   # Use the "nfs" storage class from the NFS server that's created in the
+   #   # cluster.
+   #   # export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
+   #   export PVC_STORAGE_CLASS_NAME="nfs"
+   #   export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
+   #   cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
+   #       kubectl create -n $NAMESPACE -f -
+   #   # create the ELK via a static YAML file
+   #   # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
+   # fi
+
+   createNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
 
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
@@ -166,25 +176,28 @@ function deleteELK(){
    # delete ELK
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
-   if $GKE_DEPLOYMENT; then
-     # delete persistent storage for GKE
-     kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage-gke.yaml
-   else
-     # delete persistent storage for bare-metal k8s
-     # delete ELK PVC that was created dynamicly from a template
-     export PVC_NAME=$ELK_PVC_NAME
-     export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
-     export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
-     cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
-         kubectl delete -n $NAMESPACE -f -
-     # delete ELK PVS created from a static YAML file
-     # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
-
-     $HELM delete --namespace $NAMESPACE $NFSCP_NAME
-   fi
-
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/logstash/
+
+   deleteNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
+
+   # if $GKE_DEPLOYMENT; then
+   #   # delete persistent storage for GKE
+   #   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage-gke.yaml
+   # else
+   #   # delete persistent storage for bare-metal k8s
+   #   # delete ELK PVC that was created dynamicly from a template
+   #   export PVC_NAME=$ELK_PVC_NAME
+   #   export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
+   #   export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
+   #   cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
+   #       kubectl delete -n $NAMESPACE -f -
+   #   # delete ELK PVS created from a static YAML file
+   #   # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
+   #
+   #   $HELM delete --namespace $NAMESPACE $NFSCP_NAME
+   # fi
+
    echo "# end deleting ELK"
 }
 
@@ -214,7 +227,7 @@ function createNFSPVC(){
    echo "# creating $PVC_NAME PVC"
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/pvc-template.yaml | envsubst | \
        kubectl create -n $NAMESPACE -f -
-   echo "# $PVC_NAME PVC deleted"
+   echo "# $PVC_NAME PVC created"
 }
 
 
@@ -231,6 +244,7 @@ function deleteNFSPVC(){
 
 function deployCAT(){
    echo "# deploying CAT"
+   createNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
    if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
    then
      echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
@@ -242,11 +256,11 @@ function deployCAT(){
      echo "### Not copying hydroshare secret file. ###"
    fi
    echo "executing $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE"
-   $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE
+   $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE --debug --logtostderr
    # pause to allow for previous deployments
-   POST_ELK_WAIT="30"
-   echo "Waiting $POST_ELK_WAIT seconds for ELK deployment to progress."
-   sleep $POST_ELK_WAIT
+   # POST_INSTALL_WAIT="15"
+   # echo "Waiting $POST_INSTALL_WAIT seconds for CAT deployment to progress."
+   # sleep $POST_INSTALL_WAIT
    echo "# end deploying CAT"
 }
 
@@ -254,6 +268,7 @@ function deleteCAT(){
   echo "# deleting CAT"
    echo "executing $HELM delete $CAT_NAME"
    $HELM delete $CAT_NAME
+   deleteNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
    echo "# end deleting CAT"
 }
 
@@ -262,8 +277,9 @@ case $APPS_ACTION in
     case $APP in
       all)
         deployNFS
-        createNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
-        createNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
+        # createNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
+        # createNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
+        # createNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
         deployELK
         deployCAT
         ;;
@@ -275,8 +291,9 @@ case $APPS_ACTION in
         ;;
       nfs)
         deployNFS
-        createNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
-        createNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
+        # createNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
+        # createNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
+        # createNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
         ;;
       *)
         print_apps_help
@@ -289,8 +306,9 @@ case $APPS_ACTION in
       all)
         deleteCAT
         deleteELK
-        deleteNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
-        deleteNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
+        # deleteNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
+        # deleteNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
+        # deleteNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
         deleteNFS
         ;;
       cat)
@@ -300,8 +318,9 @@ case $APPS_ACTION in
         deleteELK
         ;;
       nfs)
-        deleteNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
-        deleteNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
+        # deleteNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
+        # deleteNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
+        # deleteNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
         deleteNFS
         ;;
       *)
