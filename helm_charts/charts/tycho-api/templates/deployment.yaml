@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    service: {{ template "tycho-api.name" . }}
+  name: {{ template "tycho-api.name" . }}
+  namespace: braini
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      service: {{ template "tycho-api.name" . }}
+  template:
+    metadata:
+      labels:
+        service: {{ template "tycho-api.name" . }}
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/gunicorn
+        - --workers=2
+        - --name=tycho
+        - --timeout=600
+        - tycho.api:app
+        image: heliumdatastage/tycho-api:v1.0
+        imagePullPolicy: "Always"
+        name: {{ template "tycho-api.name" . }}
+        ports:
+        - containerPort: 8099
+          protocol: TCP
+      restartPolicy: Always
