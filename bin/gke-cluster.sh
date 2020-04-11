@@ -108,7 +108,7 @@ REGION=${REGION-us-east1}
 ZONE_EXTENSION=${ZONE_EXTENSION-b}
 CLUSTER_ENV=${CLUSTER_ENV-dev}
 CLUSTER_NAME=${CLUSTER_NAME-${USER}-cluster}
-CLUSTER_VERSION=${CLUSTER_VERSION-1.13.12-gke.25}
+CLUSTER_VERSION=${CLUSTER_VERSION-1.15.11-gke.3}
 MACHINE_TYPE=${MACHINE_TYPE-n1-standard-2}
 ADD_CLUSTER_ACCELERATOR=${ADD_CLUSTER_ACCELERATOR-false}
 NP_NAME=${NP_NAME-"custom-node-pool"}
@@ -126,6 +126,9 @@ MAX_POOL_NODES=${MAX_POOL_NODES-3}
 INT_NETWORK=${INT_NETWORK-default}
 PREEMPTIBLE=${PREEMPTIBLE-false}
 MASTER_AUTHORIZED_NETWORKS=${MASTER_AUTHORIZED_NETWORKS-0.0.0.0/0}
+# Define MASTER_AUTHORIZED_NETWORKS_OPTIONS to be "" to disable master
+# authorized networks.
+MASTER_AUTHORIZED_NETWORKS_OPTIONS=${MASTER_AUTHORIZED_NETWORKS_OPTIONS-"--enable-master-authorized-networks --master-authorized-networks $MASTER_AUTHORIZED_NETWORKS"}
 EXTRA_CREATE_ARGS=${EXTRA_CREATE_ARGS-""}
 USE_STATIC_IP=${USE_STATIC_IP-false}
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-${SCRIPT_PATH}/..}
@@ -180,9 +183,12 @@ function deployCluster(){
 "https://www.googleapis.com/auth/service.management.readonly",\
 "https://www.googleapis.com/auth/trace.append" \
     --node-version $CLUSTER_VERSION --num-nodes $NUM_NODES --project $PROJECT \
-    --enable-ip-alias --enable-master-authorized-networks \
-    --master-authorized-networks $MASTER_AUTHORIZED_NETWORKS \
+    --enable-ip-alias \
+    $MASTER_AUTHORIZED_NETWORKS_OPTIONS \
     --network $INT_NETWORK $EXTRA_CREATE_ARGS;
+
+
+
     # --enable-basic-auth
     # --enable-ip-alias --enable-private-nodes --enable-master-authorized-networks \
 

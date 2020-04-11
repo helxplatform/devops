@@ -5,7 +5,7 @@ metadata:
   name: $PV_NAME
 spec:
   capacity:
-    storage: 10Gi
+    storage: 1Gi
   accessModes:
     - ReadWriteMany
   nfs:
@@ -24,4 +24,4 @@ spec:
   storageClassName: $STORAGECLASS_NAME
   resources:
     requests:
-      storage: 10Gi
+      storage: 1Gi

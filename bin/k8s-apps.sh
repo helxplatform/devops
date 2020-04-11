@@ -90,21 +90,44 @@ HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-"../.."}
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELIUMPLUSDATASTAGE_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-true}
 
-NFS_SERVER=${NFS_SERVER-"nfs.testserver.org"}
-NFS_PATH=${NFS_PATH-"/some/shared/nfs/folder"}
-NFSCP_NAME=${NFSCP_NAME-"elk-nfscp"}
-ELK_STORAGE_CLASS_NAME=${ELK_STORAGE_CLASS_NAME-"elk-sc"}
-# "elk-pvc" is set staticly in "elasticsearch-storage-gke.yaml"
-ELK_PVC_NAME=${ELK_PVC_NAME-"elk-pvc"}
-ELK_PVC_STORAGE_SIZE=${ELK_PVC_STORAGE_SIZE-"10Gi"}
-
-NFS_PROVISIONER_NAME=${NFS_PROVISIONER_NAME-"nfs"}
-NFS_PROVISIONER_PERSISTENCE_ENABLED=${NFS_PROVISIONER_PERSISTENCE_ENABLED-"false"}
-NFS_PROVISIONER_PERSISTENCE_SIZE=${NFS_PROVISIONER_PERSISTENCE_SIZE-"10Gi"}
+GCE_PERSISTENT_DISK=${GCE_PERSISTENT_DISK-"nfs-cloud-top"}
+NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/exports"}
+NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.default.svc.cluster.local"}
+NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"cloud-top-pv"}
+NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"cloud-top"}
+NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"cat-sc"}
 
 HELM=${HELM-helm}
 CAT_HELM_DIR=${CAT_HELM_DIR-"${HELIUMPLUSDATASTAGE_HOME}/CAT_helm"}
 CAT_NAME=${CAT_NAME-cat}
+CAT_PVC_NAME=${CAT_PVC_NAME-"cloud-top"}
+CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"1Gi"}
+
+# Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
+DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
+
+NFSSP_NAME=${NFSSP_NAME-"$CAT_NAME-nfssp"}
+# NFSSP persistent storage does not work on NFS storage.
+NFSSP_PERSISTENCE_ENABLED=${NFSSP_PERSISTENCE_ENABLED-"false"}
+NFSSP_PERSISTENCE_SIZE=${NFSSP_PERSISTENCE_SIZE-"10Gi"}
+# The default storageClass for GKE is standard.
+NFSSP_PERSISTENCE_STORAGECLASS=${NFSSP_PERSISTENCE_STORAGECLASS-""}
+NFSSP_STORAGECLASS=${NFSSP_STORAGECLASS-"$CAT_NAME-sc"}
+
+NFSCP_NAME=${NFSCP_NAME-"$CAT_NAME-nfscp"}
+NFSCP_STORAGECLASS=${NFSCP_STORAGECLASS-"$CAT_NAME-sc"}
+
+if $DYNAMIC_NFSCP_DEPLOYMENT; then
+  NFSP_STORAGECLASS=$NFSCP_STORAGECLASS
+else
+  NFSP_STORAGECLASS=$NFSSP_STORAGECLASS
+fi
+
+ELASTIC_PVC_STORAGE=${ELASTIC_PVC_STORAGE-"1Gi"}
+# Set X_STORAGECLASS to "" to use the default storage class.
+ELASTIC_STORAGECLASS=${ELASTIC_STORAGECLASS-$NFSP_STORAGECLASS}
+APPSTORE_DB_STORAGECLASS=${APPSTORE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
+COMMONSSHARE_DB_STORAGECLASS=${COMMONSSHARE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
 
 # This is temporary until we figure out something to use to encrypt secret
 # files, like git-crypt.
@@ -115,54 +138,45 @@ HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/co
 # end default user-definable variable definitions
 #
 
-# ToDo:  Deploy the NFS server provisioner first, if needed and use it's storage
-# for ELK, ImageJ, and Nextflow.  Then remove or adjust PVC for ELK below.
-# Maybe use the NFS server provisioner everywhere?  It's probably good to have
-# the option of not using the NFS server provisioner where we don't have to (not
-# on Google).
+
+function deployDynamicPVCP() {
+  if $DYNAMIC_NFSCP_DEPLOYMENT; then
+    echo "Deploying NFS Client Provisioner for Dynamic PVCs"
+    $HELM install \
+                 --set nfs.server=$NFSCP_SERVER \
+                 --set nfs.path=$NFSCP_PATH \
+                 --set storageClass.name=$NFSCP_STORAGECLASS \
+                 --namespace $NAMESPACE \
+                 $NFSCP_NAME stable/nfs-client-provisioner
+  else
+    echo "Deploying NFS Server Provisioner for Dynamic PVCs"
+    HELM_VALUES="persistence.enabled=$NFSSP_PERSISTENCE_ENABLED"
+    HELM_VALUES+=",storageClass.name=$NFSSP_STORAGECLASS"
+    HELM_VALUES+=",persistence.size=$NFSSP_PERSISTENCE_SIZE"
+    HELM_VALUES+=",persistence.storageClass=$NFSSP_PERSISTENCE_STORAGECLASS"
+    $HELM install $NFSSP_NAME -n $NAMESPACE --set $HELM_VALUES stable/nfs-server-provisioner
+  fi
+}
+
+
+function deleteDynamicPVCP() {
+  if $DYNAMIC_NFSCP_DEPLOYMENT; then
+    echo "Deleting NFS Client Provisioner for Dynamic PVCs"
+    $HELM delete $NFSCP_NAME
+  else
+    echo "Deleting NFS Server Provisioner for Dynamic PVCs"
+    $HELM delete $NFSSP_NAME
+  fi
+}
+
 
 function deployELK(){
    echo "# deploying ELK"
-
-   # # Creating storage.
-   # if $GKE_DEPLOYMENT; then
-   #   echo "Deploying storage for GKE."
-   #   # setup persistent storage for GKE
-   #   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage-gke.yaml
-   # else
-   #   echo "Deploying storage for non-GKE environments."
-   #   # This will work, but might want to use a static NFS PV instead or just
-   #   # use the default storage class.
-   #   # setup persistent storage for bare-metal k8s
-   #   # Another note: Does this need to be ELK-specific?  Maybe there should be
-   #   # a NFSCP for different storage types, like SSD, magnetic drives, data to
-   #   # be backed up, etc.
-   #
-   #   # Instead of Using a NFSCP, let's use the NFS Server that's created in
-   #   # the cluster.
-   #   # $HELM install \
-   #   #              --set nfs.server=$NFS_SERVER \
-   #   #              --set nfs.path=$NFS_PATH \
-   #   #              --set storageClass.name=$ELK_STORAGE_CLASS_NAME \
-   #   #              --namespace $NAMESPACE \
-   #   #              $NFSCP_NAME stable/nfs-client-provisioner
-   #
-   #   # create the ELK PVC dynamicly
-   #   export PVC_NAME=$ELK_PVC_NAME
-   #   # Use the "nfs" storage class from the NFS server that's created in the
-   #   # cluster.
-   #   # export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
-   #   export PVC_STORAGE_CLASS_NAME="nfs"
-   #   export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
-   #   cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
-   #       kubectl create -n $NAMESPACE -f -
-   #   # create the ELK via a static YAML file
-   #   # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
-   # fi
-
-   createNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
-
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
+   export PVC_STORAGE_CLASS_NAME=$ELASTIC_STORAGECLASS
+   export ELASTIC_PVC_STORAGE
+   cat $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
+          kubectl apply -n $NAMESPACE -f -
+   # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
 
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
@@ -175,55 +189,72 @@ function deleteELK(){
    echo "# deleting ELK"
    # delete ELK
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
-   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
-   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
+
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/logstash/
+   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
 
-   deleteNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
-
-   # if $GKE_DEPLOYMENT; then
-   #   # delete persistent storage for GKE
-   #   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage-gke.yaml
-   # else
-   #   # delete persistent storage for bare-metal k8s
-   #   # delete ELK PVC that was created dynamicly from a template
-   #   export PVC_NAME=$ELK_PVC_NAME
-   #   export PVC_STORAGE_CLASS_NAME=$ELK_STORAGE_CLASS_NAME
-   #   export PVC_STORAGE_REQUESTED=$ELK_PVC_STORAGE_SIZE
-   #   cat $K8S_DEVOPS_CORE_HOME/elasticsearch/pvc-template.yaml | envsubst | \
-   #       kubectl delete -n $NAMESPACE -f -
-   #   # delete ELK PVS created from a static YAML file
-   #   # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-storage.yaml
-   #
-   #   $HELM delete --namespace $NAMESPACE $NFSCP_NAME
-   # fi
-
+   # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
+   export PVC_STORAGE_CLASS_NAME=$NFSP_STORAGECLASS
+   export ELASTIC_PVC_STORAGE
+   cat $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
+          kubectl delete -n $NAMESPACE -f -
    echo "# end deleting ELK"
 }
 
 
 function deployNFS(){
-   # An NFS server is deployed within the cluster since GKE does not support
-   # a PV that is ReadWriteMany.
    echo "# deploying NFS"
-   echo "executing $HELM install $NFS_PROVISIONER_NAME -n $NAMESPACE"
-   $HELM install $NFS_PROVISIONER_NAME -n $NAMESPACE --set persistence.enabled=$NFS_PROVISIONER_PERSISTENCE_ENABLED,persistence.size=$NFS_PROVISIONER_PERSISTENCE_SIZE stable/nfs-server-provisioner
+   # These will create storage using the default storage class.
+   # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
+   # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
+   export GCE_PERSISTENT_DISK
+   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
+       kubectl create -n $NAMESPACE -f -
+   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
+   export SVC_CLSTRIP_DEC=$NFS_SERVICE_IP
+   # cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
+   #     kubectl create -n $NAMESPACE -f -
+   # Create PV and PVC for cloud-top
+   export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
+   export PV_NFS_SERVER=$NFS_CLNT_PV_NFS_SRVR
+   export PV_NAME=$NFS_CLNT_PV_NAME
+   export PVC_NAME=$NFS_CLNT_PVC_NAME
+   export SVC_CLSTRIP_DEC=$NFS_SERVICE_IP
+   export STORAGECLASS_NAME=$NFS_CLNT_STORAGECLASS
+   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
+       kubectl create -n $NAMESPACE -f -
    echo "# end deploying NFS"
 }
 
 
 function deleteNFS(){
    echo "# deleting NFS"
-   echo "executing $HELM delete $NFS_PROVISIONER_NAME"
-   $HELM delete $NFS_PROVISIONER_NAME
+   # delete NFS server
+   export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
+   export PV_NFS_SERVER=$NFS_CLNT_PV_NFS_SRVR
+   export PV_NAME=$NFS_CLNT_PV_NAME
+   export PVC_NAME=$NFS_CLNT_PVC_NAME
+   export STORAGECLASS_NAME=$NFS_CLNT_STORAGECLASS
+   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
+       kubectl delete -n $NAMESPACE -f -
+   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
+   export SVC_CLSTRIP_DEC=$NFS_SERVICE_IP
+   # cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
+   #     kubectl delete -n $NAMESPACE -f -
+   export GCE_PERSISTENT_DISK
+   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
+       kubectl delete -n $NAMESPACE -f -
+   # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
+   # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
    echo "# end deleting NFS"
 }
 
 
-function createNFSPVC(){
+function createPVC(){
    export PVC_NAME=$1
-   export PVC_STORAGE_CLASS_NAME=$2
-   export PVC_STORAGE_SIZE=$3
+   export PVC_STORAGE_SIZE=$2
+   # PVC_STORAGE_CLASS_NAME can be empty.
+   export PVC_STORAGE_CLASS_NAME=$3
    echo "# creating $PVC_NAME PVC"
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/pvc-template.yaml | envsubst | \
        kubectl create -n $NAMESPACE -f -
@@ -231,10 +262,11 @@ function createNFSPVC(){
 }
 
 
-function deleteNFSPVC(){
+function deletePVC(){
     export PVC_NAME=$1
-    export PVC_STORAGE_CLASS_NAME=$2
-    export PVC_STORAGE_SIZE=$3
+    export PVC_STORAGE_SIZE=$2
+    # PVC_STORAGE_CLASS_NAME can be empty.
+    export PVC_STORAGE_CLASS_NAME=$3
     echo "# deleting $PVC_NAME PVC"
     cat $K8S_DEVOPS_CORE_HOME/nfs-server/pvc-template.yaml | envsubst | \
         kubectl delete -n $NAMESPACE -f -
@@ -242,9 +274,121 @@ function deleteNFSPVC(){
 }
 
 
+function createExternalNFSPV(){
+   PV_NAME=$1
+   PV_NFS_SERVER=$2
+   PV_NFS_PATH=$3
+   PV_STORAGECLASS=$4
+   PV_STORAGE_SIZE=$5
+   PV_ACCESSMODE=$6
+   echo "# creating $PV_NAME NFS PV"
+   echo -e "
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: $PV_NAME
+spec:
+ capacity:
+   storage: $PV_STORAGE_SIZE
+ accessModes:
+   - $PV_ACCESSMODE
+ persistentVolumeReclaimPolicy:
+   Retain
+ storageClassName: $PV_STORAGECLASS
+ nfs:
+   path: $PV_NFS_PATH
+   server: $PV_NFS_SERVER
+---
+" | kubectl create -n $NAMESPACE -f -
+   echo "# $PV_NAME NFS PV created"
+}
+
+
+function createExternalNFSPVC(){
+  PVC_NAME=$1
+  PVC_STORAGECLASS=$2
+  PVC_STORAGE_SIZE=$3
+  PVC_ACCESSMODE=$4
+  echo "# creating $PVC_NAME NFS PVC"
+  echo -e "
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: $PVC_NAME
+spec:
+ accessModes:
+ - $PVC_ACCESSMODE
+ resources:
+    requests:
+      storage: $PVC_STORAGE_SIZE
+ storageClassName: $PVC_STORAGECLASS
+" | kubectl create -n $NAMESPACE -f -
+   echo "# $PVC_NAME NFC PVC created"
+}
+
+
+function deleteExternalNFSPV(){
+   PV_NAME=$1
+   PV_NFS_SERVER=$2
+   PV_NFS_PATH=$3
+   PV_STORAGECLASS=$4
+   PV_STORAGE_SIZE=$5
+   PV_ACCESSMODE=$6
+   echo "# deleting $PV_NAME NFS PV"
+   echo -e "
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: $PV_NAME
+spec:
+ capacity:
+   storage: $PV_STORAGE_SIZE
+ accessModes:
+   - $PV_ACCESS_MODE
+ persistentVolumeReclaimPolicy:
+   Retain
+ storageClassName: $PV_STORAGECLASS
+ nfs:
+   path: $PV_NFS_PATH
+   server: $PV_NFS_SERVER
+---
+" | kubectl delete -n $NAMESPACE -f -
+   echo "# $PV_NAME NFS PV deleted"
+}
+
+
+function deleteExternalNFSPVC(){
+  PVC_NAME=$1
+  PVC_NFS_SERVER=$2
+  PVC_NFS_PATH=$3
+  PVC_STORAGECLASS=$4
+  PVC_STORAGE_SIZE=$5
+  PVC_ACCESSMODE=$6
+  echo "# deleting $PVC_NAME NFS PVC"
+  echo -e "
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: $PVC_NAME
+spec:
+ accessModes:
+ - $PVC_ACCESSMODE
+ resources:
+    requests:
+      storage: $PVC_STORAGE_SIZE
+ storageClassName: $PVC_STORAGECLASS
+" | kubectl delete -n $NAMESPACE -f -
+   echo "# $PVC_NAME NFC PVC deleted"
+}
+
+
 function deployCAT(){
    echo "# deploying CAT"
-   createNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
+   createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $NFSP_STORAGECLASS
    if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
    then
      echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
@@ -255,45 +399,70 @@ function deployCAT(){
      echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
      echo "### Not copying hydroshare secret file. ###"
    fi
-   echo "executing $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE"
-   $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE --debug --logtostderr
-   # pause to allow for previous deployments
-   # POST_INSTALL_WAIT="15"
-   # echo "Waiting $POST_INSTALL_WAIT seconds for CAT deployment to progress."
-   # sleep $POST_INSTALL_WAIT
+   CAT_HELM_VALUES="appstore.db.storageClass=\"$APPSTORE_DB_STORAGECLASS\""
+   CAT_HELM_VALUES+=",commonsshare.web.db.storageClass=\"$COMMONSSHARE_DB_STORAGECLASS\""
+   $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE --debug --logtostderr \
+       --set $VALUES
    echo "# end deploying CAT"
 }
+
 
 function deleteCAT(){
   echo "# deleting CAT"
    echo "executing $HELM delete $CAT_NAME"
    $HELM delete $CAT_NAME
-   deleteNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
+   deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $NFSP_STORAGECLASS
    echo "# end deleting CAT"
 }
+
+
+function deployAmbassador(){
+   echo "# deploying CAT"
+}
+
+
+function deleteAmbassador(){
+   echo "# deleting CAT"
+}
+
+
+function deployNginx(){
+   echo "# deploying Nginx"
+}
+
+
+function deleteNginx(){
+   echo "# deleting Nginx"
+}
+
 
 case $APPS_ACTION in
   deploy)
     case $APP in
       all)
-        deployNFS
-        # createNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
-        # createNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
-        # createNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
+        deployDynamicPVCP
+        # createPVC "deepgtex-prp" "5Gi" $NFSP_STORAGECLASS
         deployELK
         deployCAT
         ;;
+      ambassador)
+        deployAmbassador
+        ;;
       cat)
         deployCAT
+        ;;
+      dynamicPVC)
+        deployDynamicPVCP
         ;;
       elk)
         deployELK
         ;;
       nfs)
         deployNFS
-        # createNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
-        # createNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
-        # createNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
+        # createPVC "deepgtex-prp" "5Gi" $NFSP_STORAGECLASS
+        ;;
+      nginx)
+        deployNginx
         ;;
       *)
         print_apps_help
@@ -306,21 +475,21 @@ case $APPS_ACTION in
       all)
         deleteCAT
         deleteELK
-        # deleteNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
-        # deleteNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
-        # deleteNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
+        # deletePVC "deepgtex-prp" "5Gi" $NFSP_STORAGECLASS
         deleteNFS
+        deleteDynamicPVCP
         ;;
       cat)
         deleteCAT
+        ;;
+      dynamicPVC)
+        deleteDynamicPVCP
         ;;
       elk)
         deleteELK
         ;;
       nfs)
-        # deleteNFSPVC "cloud-top" $NFS_PROVISIONER_NAME "5Gi"
-        # deleteNFSPVC "elk-pvc" $NFS_PROVISIONER_NAME "5Gi"
-        # deleteNFSPVC "deepgtex-prp" $NFS_PROVISIONER_NAME "5Gi"
+        # deletePVC "deepgtex-prp" "5Gi"  $NFSP_STORAGECLASS
         deleteNFS
         ;;
       *)

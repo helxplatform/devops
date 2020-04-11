@@ -14,5 +14,3 @@ spec:
   selector:
     role: nfs-server
   type: ClusterIP
-  # need to specify IP to work around a bug in resolving service name
-  clusterIP: $NFS_SERVICE_IP
