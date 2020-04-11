@@ -103,12 +103,15 @@ CAT_NAME=${CAT_NAME-cat}
 CAT_PVC_NAME=${CAT_PVC_NAME-"cloud-top"}
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"1Gi"}
 
+AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR=""}
+NGINX_HELM_DIR=${NGINX_HELM_DIR=""}
+
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
 
 NFSSP_NAME=${NFSSP_NAME-"$CAT_NAME-nfssp"}
 # NFSSP persistent storage does not work on NFS storage.
-NFSSP_PERSISTENCE_ENABLED=${NFSSP_PERSISTENCE_ENABLED-"false"}
+NFSSP_PERSISTENCE_ENABLED=${NFSSP_PERSISTENCE_ENABLED-false}
 NFSSP_PERSISTENCE_SIZE=${NFSSP_PERSISTENCE_SIZE-"10Gi"}
 # The default storageClass for GKE is standard.
 NFSSP_PERSISTENCE_STORAGECLASS=${NFSSP_PERSISTENCE_STORAGECLASS-""}
@@ -140,7 +143,7 @@ HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/co
 
 
 function deployDynamicPVCP() {
-  if $DYNAMIC_NFSCP_DEPLOYMENT; then
+  if [ "$DYNAMIC_NFSCP_DEPLOYMENT" = true ]; then
     echo "Deploying NFS Client Provisioner for Dynamic PVCs"
     $HELM install \
                  --set nfs.server=$NFSCP_SERVER \
@@ -160,7 +163,7 @@ function deployDynamicPVCP() {
 
 
 function deleteDynamicPVCP() {
-  if $DYNAMIC_NFSCP_DEPLOYMENT; then
+  if [ "$DYNAMIC_NFSCP_DEPLOYMENT" = true ]; then
     echo "Deleting NFS Client Provisioner for Dynamic PVCs"
     $HELM delete $NFSCP_NAME
   else
@@ -324,6 +327,7 @@ spec:
     requests:
       storage: $PVC_STORAGE_SIZE
  storageClassName: $PVC_STORAGECLASS
+---
 " | kubectl create -n $NAMESPACE -f -
    echo "# $PVC_NAME NFC PVC created"
 }
@@ -381,6 +385,7 @@ spec:
     requests:
       storage: $PVC_STORAGE_SIZE
  storageClassName: $PVC_STORAGECLASS
+---
 " | kubectl delete -n $NAMESPACE -f -
    echo "# $PVC_NAME NFC PVC deleted"
 }
@@ -402,7 +407,7 @@ function deployCAT(){
    CAT_HELM_VALUES="appstore.db.storageClass=\"$APPSTORE_DB_STORAGECLASS\""
    CAT_HELM_VALUES+=",commonsshare.web.db.storageClass=\"$COMMONSSHARE_DB_STORAGECLASS\""
    $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE --debug --logtostderr \
-       --set $VALUES
+       --set $CAT_HELM_VALUES
    echo "# end deploying CAT"
 }
 
@@ -417,7 +422,11 @@ function deleteCAT(){
 
 
 function deployAmbassador(){
-   echo "# deploying CAT"
+   echo "# deploying Ambassador"
+   HELM_VALUES=""
+   $HELM install ambassador $AMBASSADOR_HELM_DIR -n $NAMESPACE --debug --logtostderr \
+       --set $HELM_VALUES
+   echo "# end deploying Ambassador"
 }
 
 
@@ -428,11 +437,77 @@ function deleteAmbassador(){
 
 function deployNginx(){
    echo "# deploying Nginx"
+   HELM_VALUES=""
+   $HELM install nginx-revproxy $NGINX_HELM_DIR -n $NAMESPACE --debug --logtostderr \
+       --set $HELM_VALUES
+   echo "# end deploying Nginx"
 }
 
 
 function deleteNginx(){
    echo "# deleting Nginx"
+}
+
+function createGCEDisk(){
+  PV_NAME="cat-nfssp-nfs-server-provisioner"
+  PV_STORAGE="10Gi"
+  DISK_SIZE="10GB"
+  PD_NAME="nfssp-helx-dev-cat"
+  NAMESPACE="default"
+  CLAIMREF="data-cat-nfssp-nfs-server-provisioner-0"
+  AVAILABILITY_ZONE="us-east1-b"
+  gcloud compute disks create --size=$DISK_SIZE --zone=$AVAILABILITY_ZONE $PD_NAME
+  echo -e "
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: $PV_NAME
+spec:
+  capacity:
+    storage: $PV_STORAGE
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    fsType: \"ext4\"
+    pdName: "$PD_NAME"
+  claimRef:
+    namespace: $NAMESPACE
+    name: $CLAIMREF
+---
+" | kubectl create -f -
+}
+
+
+function deleteGCEDisk(){
+  PV_NAME="cat-nfssp-nfs-server-provisioner"
+  PV_STORAGE="10Gi"
+  DISK_SIZE="10GB"
+  PD_NAME="nfssp-helx-dev-cat"
+  NAMESPACE="default"
+  CLAIMREF="data-cat-nfssp-nfs-server-provisioner-0"
+  AVAILABILITY_ZONE="us-east1-b"
+  kubectl delete pvc $CLAIMREF
+  echo -e "
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: $PV_NAME
+spec:
+  capacity:
+    storage: $PV_STORAGE
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    fsType: \"ext4\"
+    pdName: "$PD_NAME"
+  claimRef:
+    namespace: $NAMESPACE
+    name: $CLAIMREF
+---
+" | kubectl delete -f -
+  gcloud compute disks delete $PD_NAME --zone $AVAILABILITY_ZONE
 }
 
 
@@ -450,6 +525,9 @@ case $APPS_ACTION in
         ;;
       cat)
         deployCAT
+        ;;
+      gcedisk)
+        createGCEDisk
         ;;
       dynamicPVC)
         deployDynamicPVCP
@@ -479,8 +557,13 @@ case $APPS_ACTION in
         deleteNFS
         deleteDynamicPVCP
         ;;
+      ambassador)
+        deployAmbassador
       cat)
         deleteCAT
+        ;;
+      gcedisk)
+        deleteGCEDisk
         ;;
       dynamicPVC)
         deleteDynamicPVCP
@@ -491,6 +574,9 @@ case $APPS_ACTION in
       nfs)
         # deletePVC "deepgtex-prp" "5Gi"  $NFSP_STORAGECLASS
         deleteNFS
+        ;;
+      nginx)
+        deleteNginx
         ;;
       *)
         print_apps_help
