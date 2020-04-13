@@ -105,6 +105,8 @@ CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"1Gi"}
 
 AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/charts/ambassador"}
 NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/charts/nginx"}
+NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
+NGINX_IP=${NGINX_IP-""}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
@@ -438,8 +440,10 @@ function deleteAmbassador(){
 
 function deployNginx(){
    echo "# deploying Nginx"
+   HELM_VALUES="service.serverName=$NGINX_SERVERNAME"
+   HELM_VALUES+=",service.IP=$NGINX_IP"
    $HELM install nginx-revproxy $NGINX_HELM_DIR -n $NAMESPACE --debug \
-       --logtostderr
+       --logtostderr --set $HELM_VALUES
    echo "# end deploying Nginx"
 }
 

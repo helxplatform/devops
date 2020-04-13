@@ -4,7 +4,7 @@ metadata:
   name: nginx-revproxy
 spec:
   type: LoadBalancer
-  #loadBalancerIP: {{ .Values.service.IP }}
+  loadBalancerIP: {{ .Values.service.IP }}
   ports:
   - port: 80
     targetPort: 80
