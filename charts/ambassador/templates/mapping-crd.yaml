@@ -4,7 +4,6 @@ metadata:
   labels:
     product: aes
   name: mappings.getambassador.io
-  namespace: cat
 spec:
   additionalPrinterColumns:
   - JSONPath: .spec.prefix

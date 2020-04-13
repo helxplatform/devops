@@ -103,8 +103,8 @@ CAT_NAME=${CAT_NAME-cat}
 CAT_PVC_NAME=${CAT_PVC_NAME-"cloud-top"}
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"1Gi"}
 
-AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR=""}
-NGINX_HELM_DIR=${NGINX_HELM_DIR=""}
+AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/charts/ambassador"}
+NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/charts/nginx"}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
@@ -423,29 +423,31 @@ function deleteCAT(){
 
 function deployAmbassador(){
    echo "# deploying Ambassador"
-   HELM_VALUES=""
-   $HELM install ambassador $AMBASSADOR_HELM_DIR -n $NAMESPACE --debug --logtostderr \
-       --set $HELM_VALUES
+   $HELM install ambassador $AMBASSADOR_HELM_DIR -n $NAMESPACE --debug \
+       --logtostderr
    echo "# end deploying Ambassador"
 }
 
 
 function deleteAmbassador(){
    echo "# deleting CAT"
+   $HELM delete ambassador
+   echo "# end deleting Ambassador"
 }
 
 
 function deployNginx(){
    echo "# deploying Nginx"
-   HELM_VALUES=""
-   $HELM install nginx-revproxy $NGINX_HELM_DIR -n $NAMESPACE --debug --logtostderr \
-       --set $HELM_VALUES
+   $HELM install nginx-revproxy $NGINX_HELM_DIR -n $NAMESPACE --debug \
+       --logtostderr
    echo "# end deploying Nginx"
 }
 
 
 function deleteNginx(){
    echo "# deleting Nginx"
+   $HELM delete nginx-revproxy
+   echo "# end deleting Nginx"
 }
 
 function createGCEDisk(){
@@ -558,7 +560,7 @@ case $APPS_ACTION in
         deleteDynamicPVCP
         ;;
       ambassador)
-        deployAmbassador
+        deleteAmbassador
         ;;
       cat)
         deleteCAT

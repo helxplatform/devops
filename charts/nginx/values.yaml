@@ -15,5 +15,6 @@ fullnameOverride: ""
 
 service:
   type: LoadBalancer
-  IP: 35.185.107.64 
-  port: 80 
+  # IP: 35.185.107.64
+  port: 80
+  serverName: helx.helx-dev.renci.org

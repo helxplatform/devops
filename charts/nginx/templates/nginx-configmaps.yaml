@@ -2,16 +2,15 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ambassador-nginx-conf
-  namespace: cat
 data:
   default.conf: |
         server {
                 listen                  80;
                 listen                  [::]:80;
-                server_name             helx.helx-dev.renci.org;
+                server_name             {{ .Values.service.serverName }};
 
                 location /private/ {
-                         resolver kube-dns.kube-system.svc.cluster.local;
+                         resolver coredns.kube-system.svc;
                          proxy_http_version 1.1;
                          proxy_read_timeout 3600;
                          auth_request /auth;
@@ -29,7 +28,7 @@ data:
                          proxy_pass_request_body off;
                          proxy_set_header        Content-Length "";
                          proxy_set_header        X-Original-URI $request_uri;
-                         resolver kube-dns.kube-system.svc.cluster.local;
+                         resolver coredns.kube-system.svc;
                 }
 
                 location / {
@@ -39,7 +38,7 @@ data:
                          proxy_http_version 1.1;
                          proxy_pass http://ambassador:80;
                          proxy_set_header requestUri $request_uri;
-                         resolver kube-dns.kube-system.svc.cluster.local;
+                         resolver coredns.kube-system.svc;
                 }
 
 

@@ -1,17 +1,19 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-revproxy
-  namespace: cat
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-revproxy
   template:
     metadata:
       labels:
         app: nginx-revproxy
     spec:
       containers:
-      - image: heliumdatastage/nginx:bdcat-nginx-amb-2 
+      - image: heliumdatastage/nginx:bdcat-nginx-amb-2
         imagePullPolicy: Always
         name: ambassador-nginx-conf
         ports:
