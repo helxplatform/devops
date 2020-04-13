@@ -559,6 +559,7 @@ case $APPS_ACTION in
         ;;
       ambassador)
         deployAmbassador
+        ;;
       cat)
         deleteCAT
         ;;
