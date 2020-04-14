@@ -17,4 +17,9 @@ service:
   type: LoadBalancer
   IP:
   port: 80
-  serverName: helx.helx-dev.renci.org
+  serverName: helx.example.com
+
+# Uncomment these SSL lines and create secret to use TLS/SSL
+# kubectl create secret tls nginx-tls-secret --key nginx.key --cert nginx.crt
+# SSL:
+#   nginxTLSSecret: nginx-tls-secret

@@ -18,11 +18,23 @@ spec:
         name: ambassador-nginx-conf
         ports:
         - containerPort: 80
+        {{- if .Values.SSL }}
+        - containerPort: 443
+        {{- end }}
         volumeMounts:
         - name: ambassador-nginx-conf
           mountPath: /etc/nginx/conf.d
+        {{- if .Values.SSL }}
+        - name: secret-volume
+          mountPath: /etc/nginx/ssl
+        {{- end }}
       # Load the configuration files for nginx
       volumes:
         - name: ambassador-nginx-conf
           configMap:
             name: ambassador-nginx-conf
+        {{- if .Values.SSL }}
+        - name: secret-volume
+          secret:
+            secretName: {{ .Values.SSL.nginxTLSSecret }}
+        {{- end }}

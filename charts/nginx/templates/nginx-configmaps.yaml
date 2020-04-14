@@ -4,10 +4,23 @@ metadata:
   name: ambassador-nginx-conf
 data:
   default.conf: |
+        {{- if .Values.SSL }}
         server {
-                listen                  80;
-                listen                  [::]:80;
-                server_name             {{ .Values.service.serverName }};
+                listen      80 default_server;
+                server_name {{ .Values.service.serverName }};
+                return 301 https://$host$request_uri;
+        }
+        {{- end }}
+        server {
+                {{- if .Values.SSL }}
+                listen               443 ssl;
+                ssl_certificate      /etc/nginx/ssl/tls.crt;
+                ssl_certificate_key  /etc/nginx/ssl/tls.key;
+                {{- else }}
+                listen               80;
+                listen               [::]:80;
+                {{- end }}
+                server_name          {{ .Values.service.serverName }};
 
                 location /private/ {
                          resolver coredns.kube-system.svc;
