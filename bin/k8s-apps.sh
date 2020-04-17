@@ -103,6 +103,8 @@ CAT_NAME=${CAT_NAME-cat}
 CAT_PVC_NAME=${CAT_PVC_NAME-"cloud-top"}
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"1Gi"}
 
+NEXTFLOW_PVC=${NEXTFLOW_PVC-"deepgtex-prp"}
+
 AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/charts/ambassador"}
 NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/charts/nginx"}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
@@ -530,7 +532,7 @@ case $APPS_ACTION in
     case $APP in
       all)
         deployDynamicPVCP
-        # createPVC "deepgtex-prp" "5Gi" $NFSP_STORAGECLASS
+        # createPVC "$NEXTFLOW_PVC" "5Gi" $NFSP_STORAGECLASS
         deployELK
         deployCAT
         ;;
@@ -551,7 +553,7 @@ case $APPS_ACTION in
         ;;
       nfs)
         deployNFS
-        # createPVC "deepgtex-prp" "5Gi" $NFSP_STORAGECLASS
+        # createPVC "$NEXTFLOW_PVC" "5Gi" $NFSP_STORAGECLASS
         ;;
       nginx)
         deployNginx
