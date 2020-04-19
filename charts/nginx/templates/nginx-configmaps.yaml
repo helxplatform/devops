@@ -23,7 +23,7 @@ data:
                 server_name          {{ .Values.service.serverName }};
 
                 location /private/ {
-                         resolver coredns.kube-system.svc;
+                         resolver {{ .Values.service.resolver }};
                          proxy_http_version 1.1;
                          proxy_read_timeout 3600;
                          auth_request /auth;
@@ -41,7 +41,7 @@ data:
                          proxy_pass_request_body off;
                          proxy_set_header        Content-Length "";
                          proxy_set_header        X-Original-URI $request_uri;
-                         resolver coredns.kube-system.svc;
+                         resolver {{ .Values.service.resolver }};
                 }
 
                 location / {
@@ -54,7 +54,7 @@ data:
                          proxy_http_version 1.1;
                          proxy_pass http://ambassador:80;
                          proxy_set_header requestUri $request_uri;
-                         resolver coredns.kube-system.svc;
+                         resolver {{ .Values.service.resolver }};
                 }
 
 

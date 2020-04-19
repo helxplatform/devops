@@ -5,7 +5,7 @@ metadata:
   labels:
     service: kibana
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - port: 5601
     name: external

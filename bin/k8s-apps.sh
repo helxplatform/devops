@@ -110,6 +110,7 @@ NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/charts/nginx"}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
 NGINX_IP=${NGINX_IP-""}
 NGINX_TLS_SECRET=${NGINX_TLS_SECRET-""}
+NGINX_DNS_RESOLVER=${NGINX_DNS_RESOLVER-""}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
@@ -255,6 +256,7 @@ function deleteNFS(){
    export GCE_PERSISTENT_DISK
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl delete -n $NAMESPACE -f -
+   kubectl delete -n $NAMESPACE svc nfs-server
    # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
    # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
    echo "# end deleting NFS"
@@ -440,6 +442,7 @@ function deployAmbassador(){
 function deleteAmbassador(){
    echo "# deleting CAT"
    $HELM delete ambassador
+   kubectl delete -n $NAMESPACE CustomResourceDefinition  mappings.getambassador.io
    echo "# end deleting Ambassador"
 }
 
@@ -451,6 +454,10 @@ function deployNginx(){
    if [ ! -z "$NGINX_TLS_SECRET" ]
    then
      HELM_VALUES+=",SSL.nginxTLSSecret=$NGINX_TLS_SECRET"
+   fi
+   if [ ! -z "$NGINX_DNS_RESOLVER" ]
+   then
+     HELM_VALUES+=",service.resolver=$NGINX_DNS_RESOLVER"
    fi
    $HELM install nginx-revproxy $NGINX_HELM_DIR -n $NAMESPACE --debug \
        --logtostderr --set $HELM_VALUES
@@ -464,15 +471,31 @@ function deleteNginx(){
    echo "# end deleting Nginx"
 }
 
+
 function createGCEDisk(){
-  PV_NAME="cat-nfssp-nfs-server-provisioner"
-  PV_STORAGE="10Gi"
-  DISK_SIZE="10GB"
-  PD_NAME="nfssp-helx-dev-cat"
-  NAMESPACE="default"
-  CLAIMREF="data-cat-nfssp-nfs-server-provisioner-0"
-  AVAILABILITY_ZONE="us-east1-b"
-  gcloud compute disks create --size=$DISK_SIZE --zone=$AVAILABILITY_ZONE $PD_NAME
+  PD_NAME=${1-"nfssp-helx-dev-cat"}
+  DISK_SIZE=${2-"10GB"}
+  AVAILABILITY_ZONE=${3-"us-east1-b"}
+  gcloud compute disks create --project $PROJECT --size=$DISK_SIZE --zone=$AVAILABILITY_ZONE $PD_NAME
+}
+
+
+function deleteGCEDisk(){
+  PD_NAME=${1-"nfssp-helx-dev-cat"}
+  AVAILABILITY_ZONE=${2-"us-east1-b"}
+  gcloud compute disks delete $PD_NAME --project $PROJECT --zone $AVAILABILITY_ZONE --quiet
+}
+
+
+function createGCEPV(){
+  PD_NAME=${1-"nfssp-helx-dev-cat"}
+  PV_NAME=${2-"cat-nfssp-nfs-server-provisioner"}
+  PV_STORAGE=${3-"10Gi"}
+  DISK_SIZE=${4-"10GB"}
+  CLAIMREF=${5-"data-$PV_NAME-0"}
+  AVAILABILITY_ZONE=${6-"us-east1-b"}
+  NAMESPACE=${7-"default"}
+  createGCEDisk $PD_NAME $DISK_SIZE $AVAILABILITY_ZONE
   echo -e "
 ---
 apiVersion: v1
@@ -495,14 +518,14 @@ spec:
 }
 
 
-function deleteGCEDisk(){
-  PV_NAME="cat-nfssp-nfs-server-provisioner"
-  PV_STORAGE="10Gi"
-  DISK_SIZE="10GB"
-  PD_NAME="nfssp-helx-dev-cat"
-  NAMESPACE="default"
-  CLAIMREF="data-cat-nfssp-nfs-server-provisioner-0"
-  AVAILABILITY_ZONE="us-east1-b"
+function deleteGCEPV(){
+  PD_NAME=${1-"nfssp-helx-dev-cat"}
+  PV_NAME=${2-"cat-nfssp-nfs-server-provisioner"}
+  PV_STORAGE=${3-"10Gi"}
+  DISK_SIZE=${4-"10GB"}
+  CLAIMREF=${5-"data-$PV_NAME-0"}
+  AVAILABILITY_ZONE=${6-"us-east1-b"}
+  NAMESPACE=${7-"default"}
   kubectl delete pvc $CLAIMREF
   echo -e "
 ---
@@ -523,7 +546,7 @@ spec:
     name: $CLAIMREF
 ---
 " | kubectl delete -f -
-  gcloud compute disks delete $PD_NAME --zone $AVAILABILITY_ZONE
+  deleteGCEDisk $PD_NAME $AVAILABILITY_ZONE
 }
 
 
@@ -533,8 +556,12 @@ case $APPS_ACTION in
       all)
         deployDynamicPVCP
         # createPVC "$NEXTFLOW_PVC" "5Gi" $NFSP_STORAGECLASS
+        # create disks (GKE or BM)
+        # Install SSL/TLS certificates.  Reserve static IP.  Set DNS IP.
         deployELK
         deployCAT
+        deployAmbassador
+        deployNginx
         ;;
       ambassador)
         deployAmbassador
@@ -542,8 +569,9 @@ case $APPS_ACTION in
       cat)
         deployCAT
         ;;
-      gcedisk)
-        createGCEDisk
+      gcedisks)
+        createGCEPV
+        createGCEDisk $CAT_PVC_NAME
         ;;
       dynamicPVC)
         deployDynamicPVCP
@@ -567,6 +595,8 @@ case $APPS_ACTION in
   delete)
     case $APP in
       all)
+        deleteNginx
+        deleteAmbassador
         deleteCAT
         deleteELK
         # deletePVC "deepgtex-prp" "5Gi" $NFSP_STORAGECLASS
@@ -579,8 +609,9 @@ case $APPS_ACTION in
       cat)
         deleteCAT
         ;;
-      gcedisk)
-        deleteGCEDisk
+      gcedisks)
+        deleteGCEDisk $CAT_PVC_NAME
+        deleteGCEPV
         ;;
       dynamicPVC)
         deleteDynamicPVCP

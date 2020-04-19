@@ -18,6 +18,8 @@ service:
   IP:
   port: 80
   serverName: helx.example.com
+  resolver: coredns.kube-system.svc
+  # resolver: kube-dns.kube-system.svc
 
 # Uncomment these SSL lines and create secret to use TLS/SSL
 # kubectl create secret tls nginx-tls-secret --key nginx.key --cert nginx.crt
