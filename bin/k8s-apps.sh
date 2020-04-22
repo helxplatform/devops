@@ -425,7 +425,7 @@ function deployCAT(){
 function deleteCAT(){
   echo "# deleting CAT"
    echo "executing $HELM delete $CAT_NAME"
-   $HELM delete $CAT_NAME
+   $HELM -n $NAMESPACE delete $CAT_NAME
    deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $NFSP_STORAGECLASS
    echo "# end deleting CAT"
 }
