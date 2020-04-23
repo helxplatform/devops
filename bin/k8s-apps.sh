@@ -97,12 +97,6 @@ NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"cloud-top-pv"}
 NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"cloud-top"}
 NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"cat-sc"}
 
-HELM=${HELM-helm}
-CAT_HELM_DIR=${CAT_HELM_DIR-"${HELIUMPLUSDATASTAGE_HOME}/CAT_helm"}
-CAT_NAME=${CAT_NAME-cat}
-CAT_PVC_NAME=${CAT_PVC_NAME-"cloud-top"}
-CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"1Gi"}
-
 NEXTFLOW_PVC=${NEXTFLOW_PVC-"deepgtex-prp"}
 
 AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/charts/ambassador"}
@@ -112,22 +106,35 @@ NGINX_IP=${NGINX_IP-""}
 NGINX_TLS_SECRET=${NGINX_TLS_SECRET-""}
 NGINX_DNS_RESOLVER=${NGINX_DNS_RESOLVER-""}
 
+HELM=${HELM-helm}
+CAT_HELM_DIR=${CAT_HELM_DIR-"${HELIUMPLUSDATASTAGE_HOME}/CAT_helm"}
+CAT_NAME=${CAT_NAME-"cloud-top"}
+CAT_PVC_NAME=${CAT_PVC_NAME-$CAT_NAME}
+CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"10Gi"}
+
+CAT_PV_NAME=${CAT_PV_NAME-"$CAT_NAME-pv"}
+CAT_NFS_SERVER=${CAT_NFS_SERVER-""}
+CAT_NFS_PATH=${CAT_NFS_PATH-""}
+CAT_PV_STORAGECLASS=${CAT_PV_STORAGECLASS-"$CAT_NAME-sc"}
+CAT_PV_STORAGE_SIZE=${CAT_PV_STORAGE_SIZE-"10Gi"}
+CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
+
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
 
-NFSSP_NAME=${NFSSP_NAME-"$CAT_NAME-nfssp"}
+NFSSP_NAME=${NFSSP_NAME-"nfssp"}
 # NFSSP persistent storage does not work on NFS storage.
 NFSSP_PERSISTENCE_ENABLED=${NFSSP_PERSISTENCE_ENABLED-false}
 NFSSP_PERSISTENCE_SIZE=${NFSSP_PERSISTENCE_SIZE-"10Gi"}
 # The default storageClass for GKE is standard.
 NFSSP_PERSISTENCE_STORAGECLASS=${NFSSP_PERSISTENCE_STORAGECLASS-""}
-NFSSP_STORAGECLASS=${NFSSP_STORAGECLASS-"$CAT_NAME-sc"}
+NFSSP_STORAGECLASS=${NFSSP_STORAGECLASS-"$NFSSP_NAME-sc"}
 
 NFSCP_SERVER=${NFSCP_SERVER-""}
 # Currently the NFSCP_PATH directory needs to exist on the NFS server.
 NFSCP_PATH=${NFSCP_PATH-""}
-NFSCP_NAME=${NFSCP_NAME-"$CAT_NAME-nfscp"}
-NFSCP_STORAGECLASS=${NFSCP_STORAGECLASS-"$CAT_NAME-sc"}
+NFSCP_NAME=${NFSCP_NAME-"nfscp"}
+NFSCP_STORAGECLASS=${NFSCP_STORAGECLASS-"$NFSCP_NAME-sc"}
 
 if $DYNAMIC_NFSCP_DEPLOYMENT; then
   NFSP_STORAGECLASS=$NFSCP_STORAGECLASS
@@ -154,7 +161,7 @@ HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/co
 function deployDynamicPVCP() {
   if [ "$DYNAMIC_NFSCP_DEPLOYMENT" = true ]; then
     echo "Deploying NFS Client Provisioner for Dynamic PVCs"
-    $HELM install \
+    $HELM upgrade --install \
                  --set nfs.server=$NFSCP_SERVER \
                  --set nfs.path=$NFSCP_PATH \
                  --set storageClass.name=$NFSCP_STORAGECLASS \
@@ -166,7 +173,7 @@ function deployDynamicPVCP() {
     HELM_VALUES+=",storageClass.name=$NFSSP_STORAGECLASS"
     HELM_VALUES+=",persistence.size=$NFSSP_PERSISTENCE_SIZE"
     HELM_VALUES+=",persistence.storageClass=$NFSSP_PERSISTENCE_STORAGECLASS"
-    $HELM install $NFSSP_NAME -n $NAMESPACE --set $HELM_VALUES stable/nfs-server-provisioner
+    $HELM upgrade --install $NFSSP_NAME -n $NAMESPACE --set $HELM_VALUES stable/nfs-server-provisioner
   fi
 }
 
@@ -403,7 +410,7 @@ spec:
 
 function deployCAT(){
    echo "# deploying CAT"
-   createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $NFSP_STORAGECLASS
+   createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
    if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
    then
      echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
@@ -416,7 +423,7 @@ function deployCAT(){
    fi
    CAT_HELM_VALUES="appstore.db.storageClass=\"$APPSTORE_DB_STORAGECLASS\""
    CAT_HELM_VALUES+=",commonsshare.web.db.storageClass=\"$COMMONSSHARE_DB_STORAGECLASS\""
-   $HELM install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE --debug --logtostderr \
+   $HELM upgrade --install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE --debug --logtostderr \
        --set $CAT_HELM_VALUES
    echo "# end deploying CAT"
 }
@@ -426,14 +433,14 @@ function deleteCAT(){
   echo "# deleting CAT"
    echo "executing $HELM delete $CAT_NAME"
    $HELM -n $NAMESPACE delete $CAT_NAME
-   deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $NFSP_STORAGECLASS
+   deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
    echo "# end deleting CAT"
 }
 
 
 function deployAmbassador(){
    echo "# deploying Ambassador"
-   $HELM install ambassador $AMBASSADOR_HELM_DIR -n $NAMESPACE --debug \
+   $HELM upgrade --install ambassador $AMBASSADOR_HELM_DIR -n $NAMESPACE --debug \
        --logtostderr
    echo "# end deploying Ambassador"
 }
@@ -459,7 +466,7 @@ function deployNginx(){
    then
      HELM_VALUES+=",service.resolver=$NGINX_DNS_RESOLVER"
    fi
-   $HELM install nginx-revproxy $NGINX_HELM_DIR -n $NAMESPACE --debug \
+   $HELM upgrade --install nginx-revproxy $NGINX_HELM_DIR -n $NAMESPACE --debug \
        --logtostderr --set $HELM_VALUES
    echo "# end deploying Nginx"
 }
@@ -586,6 +593,10 @@ case $APPS_ACTION in
       nginx)
         deployNginx
         ;;
+      staticNFSPV)
+        createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+            $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+        ;;
       *)
         print_apps_help
         exit 1
@@ -626,6 +637,10 @@ case $APPS_ACTION in
       nginx)
         deleteNginx
         ;;
+      staticNFSPV)
+        deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+            $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+         ;;
       *)
         print_apps_help
         exit 1
