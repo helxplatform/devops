@@ -86,9 +86,9 @@ fi
 # default user-definable variable definitions
 #
 NAMESPACE=${NAMESPACE-"default"}
-HELIUMPLUSDATASTAGE_HOME=${HELIUMPLUSDATASTAGE_HOME-"../.."}
-K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELIUMPLUSDATASTAGE_HOME}/devops"}
-GKE_DEPLOYMENT=${GKE_DEPLOYMENT-true}
+HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"../.."}
+K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELXPLATFORM_HOME}/devops"}
+GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
 
 GCE_PERSISTENT_DISK=${GCE_PERSISTENT_DISK-"nfs-cloud-top"}
 NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/exports"}
@@ -104,10 +104,13 @@ NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/charts/nginx"}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
 NGINX_IP=${NGINX_IP-""}
 NGINX_TLS_SECRET=${NGINX_TLS_SECRET-""}
+NGINX_TLS_KEY=${NGINX_TLS_KEY-""}
+NGINX_TLS_CRT=${NGINX_TLS_CRT-""}
+NGINX_TLS_CA_CRT=${NGINX_TLS_CA_CRT-""}
 NGINX_DNS_RESOLVER=${NGINX_DNS_RESOLVER-""}
 
 HELM=${HELM-helm}
-CAT_HELM_DIR=${CAT_HELM_DIR-"${HELIUMPLUSDATASTAGE_HOME}/CAT_helm"}
+CAT_HELM_DIR=${CAT_HELM_DIR-"${HELXPLATFORM_HOME}/CAT_helm"}
 CAT_NAME=${CAT_NAME-"cloud-top"}
 CAT_PVC_NAME=${CAT_PVC_NAME-$CAT_NAME}
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"10Gi"}
@@ -118,6 +121,8 @@ CAT_NFS_PATH=${CAT_NFS_PATH-""}
 CAT_PV_STORAGECLASS=${CAT_PV_STORAGECLASS-"$CAT_NAME-sc"}
 CAT_PV_STORAGE_SIZE=${CAT_PV_STORAGE_SIZE-"10Gi"}
 CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
+
+APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
@@ -142,7 +147,7 @@ else
   NFSP_STORAGECLASS=$NFSSP_STORAGECLASS
 fi
 
-ELASTIC_PVC_STORAGE=${ELASTIC_PVC_STORAGE-"1Gi"}
+ELASTIC_PVC_STORAGE=${ELASTIC_PVC_STORAGE-"10Gi"}
 # Set X_STORAGECLASS to "" to use the default storage class.
 ELASTIC_STORAGECLASS=${ELASTIC_STORAGECLASS-$NFSP_STORAGECLASS}
 APPSTORE_DB_STORAGECLASS=${APPSTORE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
@@ -150,7 +155,7 @@ COMMONSSHARE_DB_STORAGECLASS=${COMMONSSHARE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
 
 # This is temporary until we figure out something to use to encrypt secret
 # files, like git-crypt.
-HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELIUMPLUSDATASTAGE_HOME/hydroshare-secret.yaml"}
+HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/hydroshare-secret.yaml"}
 HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/commonsshare/templates/hydroshare-secret.yaml"}
 
 #
@@ -256,7 +261,7 @@ function deleteNFS(){
    export STORAGECLASS_NAME=$NFS_CLNT_STORAGECLASS
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
        kubectl delete -n $NAMESPACE -f -
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
+   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
    export SVC_CLSTRIP_DEC=$NFS_SERVICE_IP
    # cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
    #     kubectl delete -n $NAMESPACE -f -
@@ -410,6 +415,14 @@ spec:
 
 function deployCAT(){
    echo "# deploying CAT"
+   if [ "$GKE_DEPLOYMENT" = true ]; then
+     createGCEPV
+     createGCEDisk $CAT_PVC_NAME
+   else
+     # The shared directories on the NFS server need to exist.
+     createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+         $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+   fi
    createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
    if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
    then
@@ -421,20 +434,34 @@ function deployCAT(){
      echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
      echo "### Not copying hydroshare secret file. ###"
    fi
-   CAT_HELM_VALUES="appstore.db.storageClass=\"$APPSTORE_DB_STORAGECLASS\""
-   CAT_HELM_VALUES+=",commonsshare.web.db.storageClass=\"$COMMONSSHARE_DB_STORAGECLASS\""
+   HELM_VALUES="appstore.db.storageClass=\"$APPSTORE_DB_STORAGECLASS\""
+   HELM_VALUES+=",commonsshare.web.db.storageClass=\"$COMMONSSHARE_DB_STORAGECLASS\""
+   if [ ! -z "$APPSTORE_IMAGE" ]
+   then
+     HELM_VALUES+=",appstore.image=$APPSTORE_IMAGE"
+   fi
+   # For some reason deleting Helm chart for cat does not remove this secret
+   # and upgrading Helm chart fails.
+   # kubectl -n $NAMESPACE delete secret hydroshare-secret
+   # kubectl -n $NAMESPACE delete configmap csappstore-env hydroshare-env
    $HELM upgrade --install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE --debug --logtostderr \
-       --set $CAT_HELM_VALUES
+       --set $HELM_VALUES
    echo "# end deploying CAT"
 }
 
 
 function deleteCAT(){
   echo "# deleting CAT"
-   echo "executing $HELM delete $CAT_NAME"
-   $HELM -n $NAMESPACE delete $CAT_NAME
-   deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-   echo "# end deleting CAT"
+  deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+  $HELM -n $NAMESPACE delete $CAT_NAME
+  if [ "$GKE_DEPLOYMENT" = true ]; then
+    deleteGCEDisk $CAT_PVC_NAME
+    deleteGCEPV
+  else
+    deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+      $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+  fi
+  echo "# end deleting CAT"
 }
 
 
@@ -456,6 +483,14 @@ function deleteAmbassador(){
 
 function deployNginx(){
    echo "# deploying Nginx"
+   if [ ! -z "$NGINX_TLS_KEY" ]
+   then
+     # create TLS secret for nginx
+     kubectl --namespace $NAMESPACE create secret generic $NGINX_TLS_SECRET \
+        --from-file=tls.crt=$NGINX_TLS_CRT \
+        --from-file=tls.key=$NGINX_TLS_KEY \
+        --from-file=ca.crt=$NGINX_TLS_CA_CRT
+   fi
    HELM_VALUES="service.serverName=$NGINX_SERVERNAME"
    HELM_VALUES+=",service.IP=$NGINX_IP"
    if [ ! -z "$NGINX_TLS_SECRET" ]
@@ -473,9 +508,13 @@ function deployNginx(){
 
 
 function deleteNginx(){
-   echo "# deleting Nginx"
-   $HELM delete nginx-revproxy
-   echo "# end deleting Nginx"
+  echo "# deleting Nginx"
+  $HELM delete nginx-revproxy
+  if [ ! -z "$NGINX_TLS_KEY" ]
+  then
+   kubectl --namespace $NAMESPACE delete secret $NGINX_TLS_SECRET
+  fi
+  echo "# end deleting Nginx"
 }
 
 
@@ -576,6 +615,15 @@ case $APPS_ACTION in
       cat)
         deployCAT
         ;;
+      disks)
+        if [ "$GKE_DEPLOYMENT" = true ]; then
+          createGCEPV
+          createGCEDisk $CAT_PVC_NAME
+        else
+          createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+              $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+        fi
+        ;;
       gcedisks)
         createGCEPV
         createGCEDisk $CAT_PVC_NAME
@@ -619,6 +667,15 @@ case $APPS_ACTION in
         ;;
       cat)
         deleteCAT
+        ;;
+      disks)
+        if [ "$GKE_DEPLOYMENT" = true ]; then
+          deleteGCEDisk $CAT_PVC_NAME
+          deleteGCEPV
+        else
+          deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+              $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+        fi
         ;;
       gcedisks)
         deleteGCEDisk $CAT_PVC_NAME
