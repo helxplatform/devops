@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: ambassador
+  namespace: {{ .Release.Namespace }} 
+rules:
+- apiGroups: [""]
+  resources: [ "endpoints", "namespaces", "secrets", "services" ]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [ "getambassador.io" ]
+  resources: [ "*" ]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [ "networking.internal.knative.dev" ]
+  resources: [ "clusteringresses", "ingresses" ]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [ "networking.internal.knative.dev" ]
+  resources: [ "ingresses/status", "clusteringresses/status" ]
+  verbs: ["update"]
+- apiGroups: [ "extensions", "networking.k8s.io" ]
+  resources: [ "ingresses" ]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [ "extensions", "networking.k8s.io" ]
+  resources: [ "ingresses/status" ]
+  verbs: ["update"]
