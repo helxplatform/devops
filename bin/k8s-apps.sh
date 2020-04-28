@@ -232,7 +232,7 @@ function deployNFS(){
    # These will create storage using the default storage class.
    # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
    # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
-   export GCE_PERSISTENT_DISK
+   export GCE_PERSISTENT_DISK=${1-$GCE_PERSISTENT_DISK}
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl create -n $NAMESPACE -f -
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
@@ -266,7 +266,7 @@ function deleteNFS(){
    export SVC_CLSTRIP_DEC=$NFS_SERVICE_IP
    # cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
    #     kubectl delete -n $NAMESPACE -f -
-   export GCE_PERSISTENT_DISK
+   export GCE_PERSISTENT_DISK=${1-$GCE_PERSISTENT_DISK}
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl delete -n $NAMESPACE -f -
    kubectl delete -n $NAMESPACE svc nfs-server
@@ -416,15 +416,16 @@ spec:
 
 function deployCAT(){
    echo "# deploying CAT"
-   if [ "$GKE_DEPLOYMENT" = true ]; then
-     createGCEDisk $CAT_PVC_NAME $CAT_DISK_SIZE $AVAILABILITY_ZONE
-     createGCEPV
-   else
-     # The shared directories on the NFS server need to exist.
-     createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-         $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-   fi
-   createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+   # Create PVC for CAT before deploying CAT.
+   # if [ "$GKE_DEPLOYMENT" = true ]; then
+   #   createGCEDisk $CAT_PVC_NAME $CAT_DISK_SIZE $AVAILABILITY_ZONE
+   #   createGCEPV
+   # else
+   #   # The shared directories on the NFS server need to exist.
+   #   createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+   #       $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+   # fi
+   # createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
    if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
    then
      echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
@@ -453,15 +454,15 @@ function deployCAT(){
 
 function deleteCAT(){
   echo "# deleting CAT"
-  deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
   $HELM -n $NAMESPACE delete $CAT_NAME
-  if [ "$GKE_DEPLOYMENT" = true ]; then
-    deleteGCEPV
-    deleteGCEDisk $CAT_PVC_NAME
-  else
-    deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-      $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-  fi
+  # if [ "$GKE_DEPLOYMENT" = true ]; then
+  #   deleteGCEPV
+  #   deleteGCEDisk $CAT_PVC_NAME
+  # else
+  #   deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+  #     $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+  # fi
+  # deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
   echo "# end deleting CAT"
 }
 
@@ -618,16 +619,16 @@ case $APPS_ACTION in
         ;;
       disks)
         if [ "$GKE_DEPLOYMENT" = true ]; then
-          createGCEPV
           createGCEDisk $CAT_PVC_NAME
+          createGCEPV
         else
           createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
               $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
         fi
         ;;
       gcedisks)
-        createGCEPV
         createGCEDisk $CAT_PVC_NAME
+        createGCEPV
         ;;
       dynamicPVC)
         deployDynamicPVCP
@@ -635,8 +636,9 @@ case $APPS_ACTION in
       elk)
         deployELK
         ;;
-      nfs)
+      nfs-server)
         deployNFS
+        createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
         # createPVC "$NEXTFLOW_PVC" "5Gi" $NFSP_STORAGECLASS
         ;;
       nginx)
@@ -671,16 +673,16 @@ case $APPS_ACTION in
         ;;
       disks)
         if [ "$GKE_DEPLOYMENT" = true ]; then
-          deleteGCEDisk $CAT_PVC_NAME
           deleteGCEPV
+          deleteGCEDisk $CAT_PVC_NAME
         else
           deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
               $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
         fi
         ;;
       gcedisks)
-        deleteGCEDisk $CAT_PVC_NAME
         deleteGCEPV
+        deleteGCEDisk $CAT_PVC_NAME
         ;;
       dynamicPVC)
         deleteDynamicPVCP
@@ -688,8 +690,9 @@ case $APPS_ACTION in
       elk)
         deleteELK
         ;;
-      nfs)
+      nfs-server)
         # deletePVC "deepgtex-prp" "5Gi"  $NFSP_STORAGECLASS
+        deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
         deleteNFS
         ;;
       nginx)
