@@ -120,6 +120,7 @@ CAT_NFS_SERVER=${CAT_NFS_SERVER-""}
 CAT_NFS_PATH=${CAT_NFS_PATH-""}
 CAT_PV_STORAGECLASS=${CAT_PV_STORAGECLASS-"$CAT_NAME-sc"}
 CAT_PV_STORAGE_SIZE=${CAT_PV_STORAGE_SIZE-"10Gi"}
+CAT_DISK_SIZE=${CAT_DISK_SIZE-"10GB"}
 CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
 
 APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
@@ -416,8 +417,8 @@ spec:
 function deployCAT(){
    echo "# deploying CAT"
    if [ "$GKE_DEPLOYMENT" = true ]; then
+     createGCEDisk $CAT_PVC_NAME $CAT_DISK_SIZE $AVAILABILITY_ZONE
      createGCEPV
-     createGCEDisk $CAT_PVC_NAME
    else
      # The shared directories on the NFS server need to exist.
      createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
@@ -455,8 +456,8 @@ function deleteCAT(){
   deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
   $HELM -n $NAMESPACE delete $CAT_NAME
   if [ "$GKE_DEPLOYMENT" = true ]; then
-    deleteGCEDisk $CAT_PVC_NAME
     deleteGCEPV
+    deleteGCEDisk $CAT_PVC_NAME
   else
     deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
       $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
@@ -541,7 +542,7 @@ function createGCEPV(){
   CLAIMREF=${5-"data-$PV_NAME-0"}
   AVAILABILITY_ZONE=${6-"us-east1-b"}
   NAMESPACE=${7-"default"}
-  createGCEDisk $PD_NAME $DISK_SIZE $AVAILABILITY_ZONE
+  # createGCEDisk $PD_NAME $DISK_SIZE $AVAILABILITY_ZONE
   echo -e "
 ---
 apiVersion: v1
