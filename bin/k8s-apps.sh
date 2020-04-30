@@ -98,6 +98,7 @@ NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"cloud-top"}
 NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"cat-sc"}
 
 NEXTFLOW_PVC=${NEXTFLOW_PVC-"deepgtex-prp"}
+NEXTFLOW_STORAGE_SIZE=${NEXTFLOW_STORAGE_SIZE-"5Gi"}
 
 AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/charts/ambassador"}
 NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/charts/nginx"}
@@ -124,6 +125,7 @@ CAT_DISK_SIZE=${CAT_DISK_SIZE-"10GB"}
 CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
 
 APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
+TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-"LoadBalancer"}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
@@ -438,6 +440,7 @@ function deployCAT(){
    fi
    HELM_VALUES="appstore.db.storageClass=\"$APPSTORE_DB_STORAGECLASS\""
    HELM_VALUES+=",commonsshare.web.db.storageClass=\"$COMMONSSHARE_DB_STORAGECLASS\""
+   HELM_VALUES+=",tycho-api.service.type=\"$TYCHO_API_SERVICE_TYPE\""
    if [ ! -z "$APPSTORE_IMAGE" ]
    then
      HELM_VALUES+=",appstore.image=$APPSTORE_IMAGE"
@@ -603,7 +606,7 @@ case $APPS_ACTION in
     case $APP in
       all)
         deployDynamicPVCP
-        # createPVC "$NEXTFLOW_PVC" "5Gi" $NFSP_STORAGECLASS
+        createPVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         # create disks (GKE or BM)
         # Install SSL/TLS certificates.  Reserve static IP.  Set DNS IP.
         deployELK
@@ -637,9 +640,10 @@ case $APPS_ACTION in
         deployELK
         ;;
       nfs-server)
+        createGCEDisk $GCE_PERSISTENT_DISK
         deployNFS
         createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-        # createPVC "$NEXTFLOW_PVC" "5Gi" $NFSP_STORAGECLASS
+        createPVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         ;;
       nginx)
         deployNginx
@@ -661,7 +665,7 @@ case $APPS_ACTION in
         deleteAmbassador
         deleteCAT
         deleteELK
-        # deletePVC "deepgtex-prp" "5Gi" $NFSP_STORAGECLASS
+        deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         deleteNFS
         deleteDynamicPVCP
         ;;
@@ -691,9 +695,10 @@ case $APPS_ACTION in
         deleteELK
         ;;
       nfs-server)
-        # deletePVC "deepgtex-prp" "5Gi"  $NFSP_STORAGECLASS
+        deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE  $NFSP_STORAGECLASS
         deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
         deleteNFS
+        deleteGCEDisk $GCE_PERSISTENT_DISK
         ;;
       nginx)
         deleteNginx
