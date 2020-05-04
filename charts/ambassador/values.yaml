@@ -16,3 +16,10 @@ fullnameOverride: ""
 service:
   type: ClusterIP
   port: 80
+
+adminservice:
+  type: ClusterIP
+
+prp:
+   # PRP cluster deployment: <True or False>
+   deployment: False

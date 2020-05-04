@@ -101,6 +101,7 @@ NEXTFLOW_PVC=${NEXTFLOW_PVC-"deepgtex-prp"}
 NEXTFLOW_STORAGE_SIZE=${NEXTFLOW_STORAGE_SIZE-"5Gi"}
 
 AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/charts/ambassador"}
+PRP_DEPLOYMENT=${PRP_DEPLOYMENT-false}
 NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/charts/nginx"}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
 NGINX_IP=${NGINX_IP-""}
@@ -109,6 +110,7 @@ NGINX_TLS_KEY=${NGINX_TLS_KEY-""}
 NGINX_TLS_CRT=${NGINX_TLS_CRT-""}
 NGINX_TLS_CA_CRT=${NGINX_TLS_CA_CRT-""}
 NGINX_DNS_RESOLVER=${NGINX_DNS_RESOLVER-""}
+NGINX_SERVICE_TYPE=${NGINX_SERVICE_TYPE-"LoadBalancer"}
 
 HELM=${HELM-helm}
 CAT_HELM_DIR=${CAT_HELM_DIR-"${HELXPLATFORM_HOME}/CAT_helm"}
@@ -472,14 +474,20 @@ function deleteCAT(){
 
 function deployAmbassador(){
    echo "# deploying Ambassador"
+   if [ "$PRP_DEPLOYMENT" = true ]; then
+     HELM_VALUES="prp.deployment=True"
+     HELM_SET_ARG="--set $HELM_VALUES"
+   else
+     HELM_SET_ARG=""
+   fi
    $HELM upgrade --install ambassador $AMBASSADOR_HELM_DIR -n $NAMESPACE --debug \
-       --logtostderr
+       --logtostderr $HELM_SET_ARG
    echo "# end deploying Ambassador"
 }
 
 
 function deleteAmbassador(){
-   echo "# deleting CAT"
+   echo "# deleting Ambassador"
    $HELM delete ambassador
    kubectl delete -n $NAMESPACE CustomResourceDefinition  mappings.getambassador.io
    echo "# end deleting Ambassador"
@@ -498,6 +506,7 @@ function deployNginx(){
    fi
    HELM_VALUES="service.serverName=$NGINX_SERVERNAME"
    HELM_VALUES+=",service.IP=$NGINX_IP"
+   HELM_VALUES+=",service.type=\"$NGINX_SERVICE_TYPE\""
    if [ ! -z "$NGINX_TLS_SECRET" ]
    then
      HELM_VALUES+=",SSL.nginxTLSSecret=$NGINX_TLS_SECRET"

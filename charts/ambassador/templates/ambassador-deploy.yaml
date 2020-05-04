@@ -6,7 +6,7 @@ metadata:
     service: ambassador-admin
   name: ambassador-admin
 spec:
-  type: NodePort
+  type: {{ .Values.adminservice.type }}
   ports:
   - name: ambassador-admin
     port: 8877
