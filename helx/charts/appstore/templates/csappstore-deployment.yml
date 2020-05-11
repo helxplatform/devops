@@ -20,7 +20,7 @@ spec:
         command: ['sh', '-c', 'until nslookup {{ .Values.db.name }}; do echo waiting for postgres; sleep 2; done;']
       containers:
       - name: cs-{{ .Values.db.name }}
-        image: heliumdatastage/commonsshare_appstore:1.0.2
+        image: heliumdatastage/commonsshare_appstore:dev-1.0
         imagePullPolicy: Always
         command: ['/bin/bash', '-c']
         args: ['python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --no-input && gunicorn --timeout 1200 --bind 0.0.0.0:8000 CS_AppsStore.wsgi:application']
