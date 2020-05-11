@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cs-{{ template "appstore.name" . }}
+  labels:
+    app: cs-{{ template "appstore.name" . }}
+  {{- if .Values.ambassador.flag }}
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind:  Mapping
+      name:  appstore-mapping
+      prefix: /
+      service: cs-appstore:8000
+      timeout_ms: 300000
+      idle_timeout_ms: 500000
+      connect_timeout_ms: 500000
+   {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: 8000
+    targetPort: 8000
+  selector:
+    app: cs-{{ template "appstore.name" . }}

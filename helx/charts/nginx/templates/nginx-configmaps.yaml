@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ambassador-nginx-conf
+data:
+  default.conf: |
+        {{- if .Values.SSL }}
+        server {
+                listen      80 default_server;
+                server_name {{ .Values.service.serverName }};
+                return 301 https://$host$request_uri;
+        }
+        {{- end }}
+        server {
+                {{- if .Values.SSL }}
+                listen               443 ssl;
+                ssl_certificate      /etc/nginx/ssl/tls.crt;
+                ssl_certificate_key  /etc/nginx/ssl/tls.key;
+                {{- else }}
+                listen               80;
+                listen               [::]:80;
+                {{- end }}
+                server_name          {{ .Values.service.serverName }};
+
+                location /private/ {
+                         resolver {{ .Values.service.resolver }};
+                         proxy_http_version 1.1;
+                         proxy_read_timeout 3600;
+                         auth_request /auth;
+                         auth_request_set $remoteUser $upstream_http_remote_user;
+                         proxy_set_header REMOTE_USER $remoteUser;
+                         add_header REMOTE_USER $remoteUser;
+                         proxy_pass http://ambassador:80$request_uri;
+                         proxy_pass_request_headers      on;
+                }
+
+                location = /auth {
+                         proxy_http_version 1.1;
+                         proxy_pass http://ambassador:80/auth/;
+                         proxy_read_timeout 3600;
+                         proxy_pass_request_body off;
+                         proxy_set_header        Content-Length "";
+                         proxy_set_header        X-Original-URI $request_uri;
+                         resolver {{ .Values.service.resolver }};
+                }
+
+                location / {
+                         proxy_set_header Host $http_host;
+                         proxy_set_header X-Real-IP $remote_addr;
+                         proxy_set_header X-Scheme $scheme;
+                         proxy_connect_timeout   60s;
+                         proxy_send_timeout      60s;
+                         proxy_read_timeout 60s;
+                         proxy_http_version 1.1;
+                         proxy_pass http://ambassador:80;
+                         proxy_set_header requestUri $request_uri;
+                         resolver {{ .Values.service.resolver }};
+                }
+
+
+        }

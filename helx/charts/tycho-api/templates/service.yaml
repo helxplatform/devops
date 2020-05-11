@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  labels:
+    service: {{ template "tycho-api.name" . }}
+  name: {{ template "tycho-api.name" . }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ template "tycho-api.name" . }}
+  ports:
+  - name: http
+    port: 8099
+    protocol: TCP
+    targetPort: 8099
