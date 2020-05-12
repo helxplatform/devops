@@ -24,8 +24,10 @@
 2) Copy the role.yaml(for PRP) or serviceaccount.yaml(for SciDas and Braini) from /devops/helx to /devops/helx/charts/tycho-api/templates/. 
 
 ***NOTE***: 
+
 a) role.yaml - set of permissions binding to a single namespace(service account) using Role and Rolebinding having access to only that namespace.      
 b) serviceaccount.yaml - set of permissions binding to a single namespace(service account) using ClusterRole(cluster-admin) and ClusterRoleBinding having access to entire cluster.
+
 3) helm install **release-name** tycho-api/ -n <namespace>
   
 
