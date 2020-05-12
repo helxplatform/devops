@@ -48,6 +48,9 @@ c) The current version of tycho-api on Braini/Scidas needs a LoadBalancer IP, bu
 3) helm install **release-name** tycho-api/ -n <namespace>
   
 
+
+
+
 # devops
 
 To deploy HeLx 1.0 on the Google Kubernetes Engine you will need to have an account with Google Cloud Platform and configure the [Google Cloud SDK](https://cloud.google.com/sdk/docs/quickstarts) on your local system.  
