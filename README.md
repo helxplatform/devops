@@ -21,7 +21,8 @@ helm install release-name helx/ -n namespace
 1) Edit the values.yaml (***Important***: service(ClusterIP or LoadBalancer, ambassador.flag(True or False) and image).
 2) helm install **release-name** appstore/ -n <namespace>
 
-***NOTE***: 
+***NOTE***:
+
 a) LoadBalancer IP won't be necessary when used with nginx reverse proxy and ambassador. Mapping for AppsStore is defined in the ambassador routing tables using service [annotations](https://github.com/helxplatform/devops/blob/f570196be7545df557debb82b8e69333dcd124ef/helx/charts/appstore/templates/csappstore-service.yml#L8-L18). Ambassador maps all requests to "/" to the appstore service.
 b) ambassador.flag has to be set to True, when using ambassador.
 
@@ -31,6 +32,7 @@ b) ambassador.flag has to be set to True, when using ambassador.
 2) helm install **release-name** nginx/ -n <namespace>
   
 ***NOTE***: 
+
 a) Use kube-dns.kube-system.svc for GKE clusters and coredns.kube-system.svc for on-prem clusters.
   
 ### tycho-api
