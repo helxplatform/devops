@@ -8,16 +8,16 @@
 ## Install charts
 ### Ambassador
 1) Edit the values.yaml (***Important***: service(ClusterIP or LoadBalancer) and prp(True or False)).
-2) helm install **release name** ambassador/ -n <namespace>
+2) helm install **release-name** ambassador/ -n <namespace>
   
 ### AppsStore
 1) Edit the values.yaml (***Important***: service(ClusterIP or LoadBalancer) and ambassador.flag(True or False)).
 2) Edit the image in /devops/helx/charts/appstore/templates/csappstore-deployment.yml
-2) helm install **release name** appstore/ -n <namespace>
+2) helm install **release-name** appstore/ -n <namespace>
   
 ### nginx
 1) Edit the values.yaml (***Important***: resolver(coredns.kube-system.svc or kube-dns.kube-system.svc)).
-2) helm install **release name** nginx/ -n <namespace>
+2) helm install **release-name** nginx/ -n <namespace>
   
 ### tycho-api
 1) Edit the values.yaml (***Important***: service(ClusterIP or LoadBalancer) and image).
@@ -25,7 +25,7 @@
 ***NOTE***: 
 a) role.yaml - set of permissions binding to a single namespace(service account) using Role and Rolebinding having access to only that namespace.      
 b) serviceaccount.yaml - set of permissions binding to a single namespace(service account) using ClusterRole(cluster-admin) and ClusterRoleBinding having access to entire cluster.
-3) helm install **release name** tycho-api/ -n <namespace>
+3) helm install **release-name** tycho-api/ -n <namespace>
   
 
 # devops
