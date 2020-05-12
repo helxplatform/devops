@@ -7,7 +7,7 @@
 
 ## Install all charts using a single command
 ```
-helm install **release-name** helx/ -n namespace
+helm install release-name helx/ -n namespace
 ```
 
 ## Install charts individually
