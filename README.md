@@ -11,8 +11,7 @@
 2) helm install **release-name** ambassador/ -n <namespace>
   
 ### AppsStore
-1) Edit the values.yaml (***Important***: service(ClusterIP or LoadBalancer) and ambassador.flag(True or False)).
-2) Edit the image in /devops/helx/charts/appstore/templates/csappstore-deployment.yml
+1) Edit the values.yaml (***Important***: service(ClusterIP or LoadBalancer, ambassador.flag(True or False) and image).
 2) helm install **release-name** appstore/ -n <namespace>
   
 ### nginx
