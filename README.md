@@ -24,6 +24,7 @@ helm install release-name helx/ -n namespace
 ***NOTE***:
 
 a) LoadBalancer IP won't be necessary when used with nginx reverse proxy and ambassador. Mapping for AppsStore is defined in the ambassador routing tables using service [annotations](https://github.com/helxplatform/devops/blob/f570196be7545df557debb82b8e69333dcd124ef/helx/charts/appstore/templates/csappstore-service.yml#L8-L18). Ambassador maps all requests to "/" to the appstore service.
+
 b) ambassador.flag has to be set to True, when using ambassador.
 
   
