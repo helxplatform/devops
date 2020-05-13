@@ -1,3 +1,57 @@
+# Install helx
+
+## Install helm3
+1) [Download](https://github.com/helm/helm/releases) any helm3 release.
+2) Unpack it using tar (tar -zxvf helm-v3.0.0-linux-amd64.tar.gz).
+3) Move the helm binary to a desired location (mv linux-amd64/helm /usr/local/bin/helm).
+
+## Install all charts using a single command
+```
+helm install release-name helx/ -n namespace
+```
+
+## Install charts individually
+### Ambassador
+1) Edit the values.yaml (***Important***: service(ClusterIP or LoadBalancer) and prp(True or False)).
+2) helm install **release-name** ambassador/ -n <namespace>
+
+
+  
+### AppsStore
+1) Edit the values.yaml (***Important***: service(ClusterIP or LoadBalancer, ambassador.flag(True or False) and image).
+2) helm install **release-name** appstore/ -n <namespace>
+
+***NOTE***:
+
+a) LoadBalancer IP won't be necessary when used with nginx reverse proxy and ambassador. Mapping for AppsStore is defined in the ambassador routing tables using service [annotations](https://github.com/helxplatform/devops/blob/f570196be7545df557debb82b8e69333dcd124ef/helx/charts/appstore/templates/csappstore-service.yml#L8-L18). Ambassador maps all requests to "/" to the appstore service.
+
+b) ambassador.flag has to be set to True, when using ambassador.
+
+  
+### nginx
+1) Edit the values.yaml (***Important***: resolver(coredns.kube-system.svc or kube-dns.kube-system.svc)).
+2) helm install **release-name** nginx/ -n <namespace>
+  
+***NOTE***: 
+
+a) Use kube-dns.kube-system.svc for GKE clusters and coredns.kube-system.svc for on-prem clusters.
+  
+### tycho-api
+1) Edit the values.yaml (***Important***: service(ClusterIP or LoadBalancer) and image).
+2) Copy the role.yaml(for PRP) or serviceaccount.yaml(for SciDas and Braini) from /devops/helx to /devops/helx/charts/tycho-api/templates/. 
+
+***NOTE***: 
+
+a) role.yaml - set of permissions binding to a single namespace(service account) using Role and Rolebinding having access to only that namespace.      
+b) serviceaccount.yaml - set of permissions binding to a single namespace(service account) using ClusterRole(cluster-admin) and ClusterRoleBinding having access to entire cluster.
+c) The current version of tycho-api on Braini/Scidas needs a LoadBalancer IP, but the later versions we will not need that.
+
+3) helm install **release-name** tycho-api/ -n <namespace>
+  
+
+
+
+
 # devops
 
 To deploy HeLx 1.0 on the Google Kubernetes Engine you will need to have an account with Google Cloud Platform and configure the [Google Cloud SDK](https://cloud.google.com/sdk/docs/quickstarts) on your local system.  

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cs-{{ template "appstore.name" . }}
+  labels:
+    app: cs-{{ template "appstore.name" . }}
+spec:
+  #replicas: 3
+  selector:
+    matchLabels:
+      app: cs-{{ template "appstore.name" . }}
+  template:
+    metadata:
+      labels:
+        app: cs-{{ template "appstore.name" . }}
+    spec:
+      initContainers:
+      - name: {{ .Values.db.name }}-init
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nslookup {{ .Values.db.name }}; do echo waiting for postgres; sleep 2; done;']
+      containers:
+      - name: cs-{{ .Values.db.name }}
+        image: {{ .Values.image }}
+        imagePullPolicy: Always
+        command: ['/bin/bash', '-c']
+        args: ['python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --no-input && gunicorn --timeout 1200 --bind 0.0.0.0:8000 CS_AppsStore.wsgi:application']
+        env:
+        - name: OAUTH_SERVICE_SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              key: OAUTH_SERVICE_SERVER_URL
+              name: csappstore-env
+        - name: OAUTH_APP_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: OAUTH_APP_KEY
+              name: csappstore-env
+        - name: DATABASE_USER
+          valueFrom:
+            configMapKeyRef:
+              key: DATABASE_USER
+              name: csappstore-env
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: DATABASE_PASSWORD
+              name: csappstore-env
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_HOST
+              name: csappstore-env
+        ports:
+        - containerPort: 8000
+        #volumeMounts:
+        #- mountPath: /usr/src/inst-mgmt/static
+        #  name: static-volume
+      restartPolicy: Always
+      #volumes:
+      #  - name: static-volume
+      #    persistentVolumeClaim:
+      #      claimName: static-volume

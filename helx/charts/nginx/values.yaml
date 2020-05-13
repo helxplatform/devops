@@ -1,0 +1,27 @@
+# Default values for nginx.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  tag: stable
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: LoadBalancer
+  IP:
+  port: 80
+  serverName: _
+  #resolver: coredns.kube-system.svc
+  resolver: kube-dns.kube-system.svc
+
+# Uncomment these SSL lines and create secret to use TLS/SSL
+# kubectl create secret tls nginx-tls-secret --key nginx.key --cert nginx.crt
+# SSL:
+#   nginxTLSSecret: nginx-tls-secret

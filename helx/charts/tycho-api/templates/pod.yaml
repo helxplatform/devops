@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    service: {{ template "tycho-api.name" . }}
+    app: tycho-api
+  name: {{ template "tycho-api.name" . }}
+spec:
+  containers:
+  - command:
+    - /usr/local/bin/gunicorn
+    - --workers=2
+    - --name=tycho
+    - --timeout=600
+    - tycho.api:app
+    image: {{ .Values.image }}
+    imagePullPolicy: "Always"
+    name: {{ template "tycho-api.name" . }}
+    ports:
+    - containerPort: 8099
+      protocol: TCP
+    resources:
+      requests:
+        cpu: 100m
+  restartPolicy: Always
