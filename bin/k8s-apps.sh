@@ -126,7 +126,15 @@ CAT_PV_STORAGE_SIZE=${CAT_PV_STORAGE_SIZE-"10Gi"}
 CAT_DISK_SIZE=${CAT_DISK_SIZE-"10GB"}
 CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
 
+APPSTORE_OAUTH_PV_NAME=${APPSTORE_OAUTH_PV_NAME-"appstore-oauth-pv"}
+APPSTORE_OAUTH_NFS_SERVER=${APPSTORE_OAUTH_NFS_SERVER-$CAT_NFS_SERVER}
+APPSTORE_OAUTH_NFS_PATH=${APPSTORE_OAUTH_NFS_PATH-""}
+APPSTORE_OAUTH_PV_STORAGECLASS=${APPSTORE_OAUTH_PV_STORAGECLASS-"appstore-oauth-sc"}
+APPSTORE_OAUTH_PV_STORAGE_SIZE=${APPSTORE_OAUTH_PV_STORAGE_SIZE-"10Gi"}
+APPSTORE_OAUTH_PV_ACCESSMODE=${APPSTORE_OAUTH_PV_ACCESSMODE-"ReadWriteOnce"}
+
 APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
+APPSTORE_IMAGE_PULL_SECRETS=${APPSTORE_IMAGE_PULL_SECRETS-""}
 TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-"LoadBalancer"}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
@@ -441,12 +449,20 @@ function deployCAT(){
      echo "### Not copying hydroshare secret file. ###"
    fi
    HELM_VALUES="appstore.db.storageClass=\"$APPSTORE_DB_STORAGECLASS\""
+   HELM_VALUES+=",appstore.sqlite3db.storageClass=\"$APPSTORE_OAUTH_PV_STORAGECLASS\""
    HELM_VALUES+=",commonsshare.web.db.storageClass=\"$COMMONSSHARE_DB_STORAGECLASS\""
    HELM_VALUES+=",tycho-api.service.type=\"$TYCHO_API_SERVICE_TYPE\""
    if [ ! -z "$APPSTORE_IMAGE" ]
    then
      HELM_VALUES+=",appstore.image=$APPSTORE_IMAGE"
    fi
+   if [ ! -z "$APPSTORE_IMAGE_PULL_SECRETS" ]
+   then
+     HELM_VALUES+=",appstore.imagePullSecrets=\"$APPSTORE_IMAGE_PULL_SECRETS\""
+  fi
+  if [ "$PRP_DEPLOYMENT" = true ]; then
+    HELM_VALUES+=",tycho-api.prp.deployment=True"
+  fi
    # For some reason deleting Helm chart for cat does not remove this secret
    # and upgrading Helm chart fails.
    # kubectl -n $NAMESPACE delete secret hydroshare-secret
@@ -480,7 +496,7 @@ function deployAmbassador(){
    else
      HELM_SET_ARG=""
    fi
-   $HELM upgrade --install ambassador $AMBASSADOR_HELM_DIR -n $NAMESPACE --debug \
+   $HELM -n $NAMESPACE upgrade --install ambassador $AMBASSADOR_HELM_DIR --debug \
        --logtostderr $HELM_SET_ARG
    echo "# end deploying Ambassador"
 }
@@ -488,7 +504,7 @@ function deployAmbassador(){
 
 function deleteAmbassador(){
    echo "# deleting Ambassador"
-   $HELM delete ambassador
+   $HELM -n $NAMESPACE delete ambassador
    kubectl delete -n $NAMESPACE CustomResourceDefinition  mappings.getambassador.io
    echo "# end deleting Ambassador"
 }
@@ -610,6 +626,25 @@ spec:
 }
 
 
+function deployNFSRODS(){
+  echo "deploying NFSRODS"
+  # Create directory on NFS server to hold NFSRODS configuration files.
+  # Copy configuration files to NFS dir.
+  # Create PV/PVC to point to NFSRODS config.
+  # Deploy NFSRODS.
+  # Create cloud-top PVC to point to NFSRODS NFS share.
+  echo "NFSRODS deployed"
+}
+
+
+function deleteNFSRODS(){
+  echo "deleting NFSRODS"
+  # Delete cloud-top PV/PVC (keep data).
+  # Delete NFSRODS deployment.
+  echo "NFSRODS deleted"
+}
+
+
 case $APPS_ACTION in
   deploy)
     case $APP in
@@ -654,12 +689,18 @@ case $APPS_ACTION in
         createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
         createPVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         ;;
+      nfsrods)
+        deployNFSRODS
+        ;;
       nginx)
         deployNginx
         ;;
       staticNFSPV)
         createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
             $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+        createExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
+            $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
+            $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
         ;;
       *)
         print_apps_help
@@ -709,10 +750,16 @@ case $APPS_ACTION in
         deleteNFS
         deleteGCEDisk $GCE_PERSISTENT_DISK
         ;;
+      nfsrods)
+        deleteNFSRODS
+        ;;
       nginx)
         deleteNginx
         ;;
       staticNFSPV)
+        deleteExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
+            $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
+            $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
         deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
             $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
          ;;
