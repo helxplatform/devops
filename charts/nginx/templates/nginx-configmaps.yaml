@@ -32,6 +32,8 @@ data:
                          add_header REMOTE_USER $remoteUser;
                          proxy_pass http://ambassador:80$request_uri;
                          proxy_pass_request_headers      on;
+                         proxy_set_header Upgrade $http_upgrade;
+                         proxy_set_header Connection "upgrade";
                 }
 
                 location = /auth {
@@ -42,6 +44,8 @@ data:
                          proxy_set_header        Content-Length "";
                          proxy_set_header        X-Original-URI $request_uri;
                          resolver {{ .Values.service.resolver }};
+                         proxy_set_header Upgrade $http_upgrade;
+                         proxy_set_header Connection "upgrade";
                 }
 
                 location / {
@@ -55,6 +59,8 @@ data:
                          proxy_pass http://ambassador:80;
                          proxy_set_header requestUri $request_uri;
                          resolver {{ .Values.service.resolver }};
+                         proxy_set_header Upgrade $http_upgrade;
+                         proxy_set_header Connection "upgrade";
                 }
 
 
