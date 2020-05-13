@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: nginx-revproxy
 spec:
-  type: LoadBalancer
+  type: {{ .Values.service.type }}
   loadBalancerIP: {{ .Values.service.IP }}
   ports:
   - name: http
