@@ -61,7 +61,7 @@ tolerations: []
 
 affinity: {}
 
-image: heliumdatastage/tycho-api:dev-1.0
+image: heliumdatastage/commonsshare_appstore:1.1.25
 
 db:
   name: postgres
