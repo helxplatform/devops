@@ -12,7 +12,7 @@ serviceAccount:
   name: tycho-api
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
 
 resources:

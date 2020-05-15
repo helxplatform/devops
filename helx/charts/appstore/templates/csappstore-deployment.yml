@@ -5,7 +5,6 @@ metadata:
   labels:
     app: cs-{{ template "appstore.name" . }}
 spec:
-  #replicas: 3
   selector:
     matchLabels:
       app: cs-{{ template "appstore.name" . }}
@@ -23,7 +22,10 @@ spec:
         image: {{ .Values.image }}
         imagePullPolicy: Always
         command: ['/bin/bash', '-c']
-        args: ['python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --no-input && gunicorn --timeout 1200 --bind 0.0.0.0:8000 CS_AppsStore.wsgi:application']
+        # args: ['python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --no-input && gunicorn --timeout 1200 --bind 0.0.0.0:8000 CS_AppsStore.wsgi:application']
+        # args: ['python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --no-input && python manage.py runserver 0.0.0.0:8000']
+        args: ['python manage.py makemigrations --settings={{ .Values.settingsModule }} && python manage.py migrate --settings={{ .Values.settingsModule }} && python manage.py collectstatic --no-input --settings={{ .Values.settingsModule }} && python manage.py createsuperuser --settings={{ .Values.settingsModule }} && python manage.py runserver --settings={{ .Values.settingsModule }} 0.0.0.0:8000']
+        # args: ["-c", "while true; do date; sleep 5; done"]
         env:
         - name: OAUTH_SERVICE_SERVER_URL
           valueFrom:
@@ -50,13 +52,12 @@ spec:
             configMapKeyRef:
               key: POSTGRES_HOST
               name: csappstore-env
+        # - name: SECRET_KEY
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       key: POSTGRES_HOST
+        #       name: csappstore-env
         ports:
         - containerPort: 8000
-        #volumeMounts:
-        #- mountPath: /usr/src/inst-mgmt/static
-        #  name: static-volume
       restartPolicy: Always
-      #volumes:
-      #  - name: static-volume
-      #    persistentVolumeClaim:
-      #      claimName: static-volume
+
