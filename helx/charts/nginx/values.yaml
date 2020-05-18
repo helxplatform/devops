@@ -21,6 +21,10 @@ service:
   #resolver: coredns.kube-system.svc
   resolver: kube-dns.kube-system.svc
 
+# Set the DEV_PHASE.dev True, if Appstore/Tycho running locally. Else, set it to False
+DEV_PHASE:
+  dev: True
+
 # Uncomment these SSL lines and create secret to use TLS/SSL
 # kubectl create secret tls nginx-tls-secret --key nginx.key --cert nginx.crt
 # SSL:
