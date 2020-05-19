@@ -127,9 +127,13 @@ CAT_DISK_SIZE=${CAT_DISK_SIZE-"10GB"}
 CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
 
 APPSTORE_OAUTH_PV_NAME=${APPSTORE_OAUTH_PV_NAME-"appstore-oauth-pv"}
+# Definie APPSTORE_OAUTH_PVC to use a PVC for the oauth sqlite3 db storage.
+APPSTORE_OAUTH_PVC=${APPSTORE_OAUTH_PVC-""}
+# Define APPSTORE_OAUTH_PV_STORAGECLASS to create a PVC and not use one already
+# created.
+APPSTORE_OAUTH_PV_STORAGECLASS=${APPSTORE_OAUTH_PV_STORAGECLASS-""}
 APPSTORE_OAUTH_NFS_SERVER=${APPSTORE_OAUTH_NFS_SERVER-$CAT_NFS_SERVER}
 APPSTORE_OAUTH_NFS_PATH=${APPSTORE_OAUTH_NFS_PATH-""}
-APPSTORE_OAUTH_PV_STORAGECLASS=${APPSTORE_OAUTH_PV_STORAGECLASS-"appstore-oauth-sc"}
 APPSTORE_OAUTH_PV_STORAGE_SIZE=${APPSTORE_OAUTH_PV_STORAGE_SIZE-"10Gi"}
 APPSTORE_OAUTH_PV_ACCESSMODE=${APPSTORE_OAUTH_PV_ACCESSMODE-"ReadWriteOnce"}
 
@@ -170,6 +174,8 @@ COMMONSSHARE_DB_STORAGECLASS=${COMMONSSHARE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
 # files, like git-crypt.
 HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/hydroshare-secret.yaml"}
 HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/commonsshare/templates/hydroshare-secret.yaml"}
+
+NFSRODS_HOME=${NFSRODS_HOME-"$K8S_DEVOPS_CORE_HOME/nfsrods"}
 
 #
 # end default user-definable variable definitions
@@ -449,9 +455,16 @@ function deployCAT(){
      echo "### Not copying hydroshare secret file. ###"
    fi
    HELM_VALUES="appstore.db.storageClass=\"$APPSTORE_DB_STORAGECLASS\""
-   HELM_VALUES+=",appstore.sqlite3db.storageClass=\"$APPSTORE_OAUTH_PV_STORAGECLASS\""
    HELM_VALUES+=",commonsshare.web.db.storageClass=\"$COMMONSSHARE_DB_STORAGECLASS\""
    HELM_VALUES+=",tycho-api.service.type=\"$TYCHO_API_SERVICE_TYPE\""
+   if [ ! -z "$APPSTORE_OAUTH_PVC" ]
+   then
+     HELM_VALUES+=",appstore.oauth.pvcname=$APPSTORE_OAUTH_PVC"
+   fi
+   if [ ! -z "$APPSTORE_OAUTH_PV_STORAGECLASS" ]
+   then
+     HELM_VALUES+=",appstore.oauth.storageClass=$APPSTORE_OAUTH_PV_STORAGECLASS"
+   fi
    if [ ! -z "$APPSTORE_IMAGE" ]
    then
      HELM_VALUES+=",appstore.image=$APPSTORE_IMAGE"
@@ -629,10 +642,14 @@ spec:
 function deployNFSRODS(){
   echo "deploying NFSRODS"
   # Create directory on NFS server to hold NFSRODS configuration files.
+  kubectl -n $NAMESPACE create -f $NFSRODS_HOME/nfsrods-config-pv-pvc.yaml
   # Copy configuration files to NFS dir.
+  
   # Create PV/PVC to point to NFSRODS config.
   # Deploy NFSRODS.
+  kubectl -n $NAMESPACE apply -f $NFSRODS_HOME/nfsrods-deployment.yaml
   # Create cloud-top PVC to point to NFSRODS NFS share.
+  kubectl -n $NAMESPACE apply -f $NFSRODS_HOME/cloud-top-pv-pvc-nfsrods.yaml
   echo "NFSRODS deployed"
 }
 
@@ -640,7 +657,10 @@ function deployNFSRODS(){
 function deleteNFSRODS(){
   echo "deleting NFSRODS"
   # Delete cloud-top PV/PVC (keep data).
+  kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/cloud-top-pv-pvc-nfsrods.yaml
   # Delete NFSRODS deployment.
+  kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/nfsrods-deployment.yaml
+  kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/nfsrods-config-pv-pvc.yaml
   echo "NFSRODS deleted"
 }
 
@@ -695,9 +715,10 @@ case $APPS_ACTION in
       nginx)
         deployNginx
         ;;
-      staticNFSPV)
+      staticNFSPVPVC)
         createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
             $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+        createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
         createExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
             $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
             $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
@@ -756,10 +777,11 @@ case $APPS_ACTION in
       nginx)
         deleteNginx
         ;;
-      staticNFSPV)
+      staticNFSPVPVC)
         deleteExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
             $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
             $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
+        deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
         deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
             $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
          ;;
