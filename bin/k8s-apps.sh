@@ -86,14 +86,16 @@ fi
 # default user-definable variable definitions
 #
 NAMESPACE=${NAMESPACE-"default"}
+ENVIRONMENT=${ENVIRONMENT-"dev"}
+PV_PREFIX=${PV_PREFIX-"$ENVIRONMENT-$USER-"}
 HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"../.."}
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELXPLATFORM_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
 
-GCE_PERSISTENT_DISK=${GCE_PERSISTENT_DISK-"nfs-cloud-top"}
+GCE_PERSISTENT_DISK=${GCE_PERSISTENT_DISK-"${PV_PREFIX}nfs-cloud-top"}
 NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/exports"}
 NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.default.svc.cluster.local"}
-NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"cloud-top-pv"}
+NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"${PV_PREFIX}cloud-top-pv"}
 NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"cloud-top"}
 NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"cat-sc"}
 
@@ -118,7 +120,7 @@ CAT_NAME=${CAT_NAME-"cloud-top"}
 CAT_PVC_NAME=${CAT_PVC_NAME-$CAT_NAME}
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"10Gi"}
 
-CAT_PV_NAME=${CAT_PV_NAME-"$CAT_NAME-pv"}
+CAT_PV_NAME=${CAT_PV_NAME-"${PV_PREFIX}$CAT_NAME-pv"}
 CAT_NFS_SERVER=${CAT_NFS_SERVER-""}
 CAT_NFS_PATH=${CAT_NFS_PATH-""}
 CAT_PV_STORAGECLASS=${CAT_PV_STORAGECLASS-"$CAT_NAME-sc"}
@@ -126,7 +128,7 @@ CAT_PV_STORAGE_SIZE=${CAT_PV_STORAGE_SIZE-"10Gi"}
 CAT_DISK_SIZE=${CAT_DISK_SIZE-"10GB"}
 CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
 
-APPSTORE_OAUTH_PV_NAME=${APPSTORE_OAUTH_PV_NAME-"appstore-oauth-pv"}
+APPSTORE_OAUTH_PV_NAME=${APPSTORE_OAUTH_PV_NAME-"${PV_PREFIX}appstore-oauth-pv"}
 # Definie APPSTORE_OAUTH_PVC to use a PVC for the oauth sqlite3 db storage.
 APPSTORE_OAUTH_PVC=${APPSTORE_OAUTH_PVC-""}
 # Define APPSTORE_OAUTH_PV_STORAGECLASS to create a PVC and not use one already
@@ -454,9 +456,10 @@ function deployCAT(){
      echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
      echo "### Not copying hydroshare secret file. ###"
    fi
-   HELM_VALUES="appstore.db.storageClass=\"$APPSTORE_DB_STORAGECLASS\""
-   HELM_VALUES+=",commonsshare.web.db.storageClass=\"$COMMONSSHARE_DB_STORAGECLASS\""
-   HELM_VALUES+=",tycho-api.service.type=\"$TYCHO_API_SERVICE_TYPE\""
+   HELM_VALUES="appstore.db.storageClass=$APPSTORE_DB_STORAGECLASS"
+   HELM_VALUES+=",commonsshare.web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
+   HELM_VALUES+=",tycho-api.service.type=$TYCHO_API_SERVICE_TYPE"
+   HELM_VALUES+=",tycho-api.serviceAccount.name=${PV_PREFIX}tycho-api"
    if [ ! -z "$APPSTORE_OAUTH_PVC" ]
    then
      HELM_VALUES+=",appstore.oauth.pvcname=$APPSTORE_OAUTH_PVC"
@@ -471,7 +474,7 @@ function deployCAT(){
    fi
    if [ ! -z "$APPSTORE_IMAGE_PULL_SECRETS" ]
    then
-     HELM_VALUES+=",appstore.imagePullSecrets=\"$APPSTORE_IMAGE_PULL_SECRETS\""
+     HELM_VALUES+=",appstore.imagePullSecrets=$APPSTORE_IMAGE_PULL_SECRETS"
   fi
   if [ "$PRP_DEPLOYMENT" = true ]; then
     HELM_VALUES+=",tycho-api.prp.deployment=True"
@@ -644,7 +647,7 @@ function deployNFSRODS(){
   # Create directory on NFS server to hold NFSRODS configuration files.
   kubectl -n $NAMESPACE create -f $NFSRODS_HOME/nfsrods-config-pv-pvc.yaml
   # Copy configuration files to NFS dir.
-  
+
   # Create PV/PVC to point to NFSRODS config.
   # Deploy NFSRODS.
   kubectl -n $NAMESPACE apply -f $NFSRODS_HOME/nfsrods-deployment.yaml
