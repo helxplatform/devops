@@ -177,7 +177,17 @@ COMMONSSHARE_DB_STORAGECLASS=${COMMONSSHARE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
 HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/hydroshare-secret.yaml"}
 HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/commonsshare/templates/hydroshare-secret.yaml"}
 
+NFSRODS_NAME=${NFSRODS_NAME-"nfsrods"}
+NFSRODS_HELM_DIR=${NFSRODS_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/charts/nfsrods"}
+NFSRODS_FOR_USER_DATA=${NFSRODS_FOR_USER_DATA-false}
 NFSRODS_HOME=${NFSRODS_HOME-"$K8S_DEVOPS_CORE_HOME/nfsrods"}
+NFSRODS_CONFIG_PV_NAME=${NFSRODS_CONFIG_PV_NAME-"${PV_PREFIX}$NFSRODS_NAME-config-pv"}
+NFSRODS_CONFIG_CLAIMNAME=${NFSRODS_CONFIG_CLAIMNAME-"$NFSRODS_NAME-config-pvc"}
+NFSRODS_CONFIG_NFS_SERVER=${NFSRODS_CONFIG_NFS_SERVER-""}
+NFSRODS_CONFIG_NFS_PATH=${NFSRODS_CONFIG_NFS_PATH-""}
+NFSRODS_CONFIG_PV_STORAGECLASS=${NFSRODS_CONFIG_PV_STORAGECLASS-"$NFSRODS_NAME-config-sc"}
+NFSRODS_CONFIG_PV_STORAGE_SIZE=${NFSRODS_CONFIG_PV_STORAGE_SIZE-"10Mi"}
+NFSRODS_CONFIG_PV_ACCESSMODE=${NFSRODS_CONFIG_PV_ACCESSMODE-"ReadWriteMany"}
 
 #
 # end default user-definable variable definitions
@@ -644,15 +654,21 @@ spec:
 
 function deployNFSRODS(){
   echo "deploying NFSRODS"
-  # Create directory on NFS server to hold NFSRODS configuration files.
-  kubectl -n $NAMESPACE create -f $NFSRODS_HOME/nfsrods-config-pv-pvc.yaml
-  # Copy configuration files to NFS dir.
+  # # Create directory on NFS server to hold NFSRODS configuration files.
+  # kubectl -n $NAMESPACE create -f $NFSRODS_HOME/nfsrods-config-pv-pvc.yaml
+  # # Copy configuration files to NFS dir.
+  #
+  # # Create PV/PVC to point to NFSRODS config.
+  # # Deploy NFSRODS.
+  # kubectl -n $NAMESPACE apply -f $NFSRODS_HOME/nfsrods-deployment.yaml
+  # # Create cloud-top PVC to point to NFSRODS NFS share.
+  # kubectl -n $NAMESPACE apply -f $NFSRODS_HOME/cloud-top-pv-pvc-nfsrods.yaml
 
-  # Create PV/PVC to point to NFSRODS config.
-  # Deploy NFSRODS.
-  kubectl -n $NAMESPACE apply -f $NFSRODS_HOME/nfsrods-deployment.yaml
-  # Create cloud-top PVC to point to NFSRODS NFS share.
-  kubectl -n $NAMESPACE apply -f $NFSRODS_HOME/cloud-top-pv-pvc-nfsrods.yaml
+  HELM_VALUES="config.claimName=$NFSRODS_CONFIG_CLAIMNAME"
+  HELM_VALUES+=",config.storageClass=$NFSRODS_CONFIG_PV_STORAGECLASS"
+  $HELM -n $NAMESPACE upgrade --install $NFSRODS_NAME $NFSRODS_HELM_DIR --debug \
+      --logtostderr --set $HELM_VALUES
+
   echo "NFSRODS deployed"
 }
 
@@ -660,10 +676,13 @@ function deployNFSRODS(){
 function deleteNFSRODS(){
   echo "deleting NFSRODS"
   # Delete cloud-top PV/PVC (keep data).
-  kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/cloud-top-pv-pvc-nfsrods.yaml
-  # Delete NFSRODS deployment.
-  kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/nfsrods-deployment.yaml
-  kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/nfsrods-config-pv-pvc.yaml
+  # kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/cloud-top-pv-pvc-nfsrods.yaml
+  # # Delete NFSRODS deployment.
+  # kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/nfsrods-deployment.yaml
+  # kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/nfsrods-config-pv-pvc.yaml
+
+  $HELM -n $NAMESPACE delete $NFSRODS_NAME
+
   echo "NFSRODS deleted"
 }
 
@@ -721,7 +740,13 @@ case $APPS_ACTION in
       staticNFSPVPVC)
         createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
             $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-        createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+        if [ "$NFSRODS_FOR_USER_DATA" = false ]; then
+          createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+        else
+          createExternalNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
+              $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
+              $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
+        fi
         createExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
             $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
             $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
@@ -784,7 +809,13 @@ case $APPS_ACTION in
         deleteExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
             $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
             $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
-        deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+        if [ "$NFSRODS_FOR_USER_DATA" = false ]; then
+          deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+        else
+          deleteExternalNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
+              $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
+              $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
+        fi
         deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
             $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
          ;;
