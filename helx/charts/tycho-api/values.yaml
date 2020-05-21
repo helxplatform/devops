@@ -24,3 +24,6 @@ resources:
      memory: 128Mi
 
 image: heliumdatastage/tycho-api:v1.0
+
+# Set True to use a cluster role or False for a nemspace role.
+useClusterRole: False

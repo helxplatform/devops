@@ -22,9 +22,8 @@ spec:
         image: {{ .Values.image }}
         imagePullPolicy: Always
         command: ['/bin/bash', '-c']
-        # args: ['python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --no-input && gunicorn --timeout 1200 --bind 0.0.0.0:8000 CS_AppsStore.wsgi:application']
-        # args: ['python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --no-input && python manage.py runserver 0.0.0.0:8000']
-        args: ['python manage.py makemigrations --settings={{ .Values.settingsModule }} && python manage.py migrate --settings={{ .Values.settingsModule }} && python manage.py collectstatic --no-input --settings={{ .Values.settingsModule }} && python manage.py createsuperuser --settings={{ .Values.settingsModule }} && python manage.py runserver --settings={{ .Values.settingsModule }} 0.0.0.0:8000']
+        args: ["bin/appstore updatedb {{ .Values.djangoSettings }} && bin/appstore createsuperuser && bin/appstore run {{ .Values.djangoSettings }}"]
+        # For debugging when things go wrong.
         # args: ["-c", "while true; do date; sleep 5; done"]
         env:
         - name: OAUTH_SERVICE_SERVER_URL
@@ -52,12 +51,101 @@ spec:
             configMapKeyRef:
               key: POSTGRES_HOST
               name: csappstore-env
-        # - name: SECRET_KEY
-        #   valueFrom:
-        #     configMapKeyRef:
-        #       key: POSTGRES_HOST
-        #       name: csappstore-env
+        - name: OAUTH_DB_DIR
+          valueFrom:
+            configMapKeyRef:
+              key: OAUTH_DB_DIR
+              name: csappstore-env
+        - name: OAUTH_DB_FILE
+          valueFrom:
+            configMapKeyRef:
+              key: OAUTH_DB_FILE
+              name: csappstore-env
+        - name: ACCOUNT_DEFAULT_HTTP_PROTOCOL
+          valueFrom:
+            configMapKeyRef:
+              key: ACCOUNT_DEFAULT_HTTP_PROTOCOL
+              name: csappstore-env
+        - name: TYCHO_URL
+          valueFrom:
+            configMapKeyRef:
+              key: TYCHO_URL
+              name: csappstore-env
+        - name: CSAPPSTORE_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: SECRET_KEY
+              name: csappstore-secret
+        - name: APPSTORE_DJANGO_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: APPSTORE_DJANGO_USERNAME
+              name: csappstore-secret
+        - name: APPSTORE_DJANGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: APPSTORE_DJANGO_PASSWORD
+              name: csappstore-secret
+        - name: OAUTH_PROVIDERS
+          valueFrom:
+            secretKeyRef:
+              key: OAUTH_PROVIDERS
+              name: csappstore-secret
+        - name: GITHUB_NAME
+          valueFrom:
+            secretKeyRef:
+              key: GITHUB_NAME
+              name: csappstore-secret
+        - name: GITHUB_SITES
+          valueFrom:
+            secretKeyRef:
+              key: GITHUB_SITES
+              name: csappstore-secret
+        - name: GITHUB_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: GITHUB_CLIENT_ID
+              name: csappstore-secret
+        - name: GITHUB_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: GITHUB_SECRET
+              name: csappstore-secret
+        - name: GOOGLE_NAME
+          valueFrom:
+            secretKeyRef:
+              key: GOOGLE_NAME
+              name: csappstore-secret
+        - name: GOOGLE_SITES
+          valueFrom:
+            secretKeyRef:
+              key: GOOGLE_SITES
+              name: csappstore-secret
+        - name: GOOGLE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: GOOGLE_CLIENT_ID
+              name: csappstore-secret
+        - name: GOOGLE_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: GOOGLE_SECRET
+              name: csappstore-secret
         ports:
         - containerPort: 8000
+      {{- if .Values.oauth.pvcname }}
+        volumeMounts:
+          - mountPath: /var/lib/sqlite3
+            name: appstore-oauth-volume
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
+      {{- end }}
       restartPolicy: Always
-
+      {{- if .Values.oauth.pvcname }}
+      volumes:
+        - name: appstore-oauth-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.oauth.pvcname }}
+      {{- end }}

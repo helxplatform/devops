@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: {{ template "commonsshare.name" .}}
   name: {{ template "commonsshare.name" .}}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       io.kompose.service: {{ template "commonsshare.name" .}}
@@ -91,7 +91,7 @@ spec:
           value: solr
         - name: TMP
           value: /hs_tmp
-        image: heliumdatastage/cs-k8s
+        image: {{ .Values.image }}
         name: hydroshare
         ports:
         - containerPort: 8000

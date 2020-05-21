@@ -1,0 +1,15 @@
+{{- if .Values.oauth.storageClass }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.oauth.pvcname }}
+  labels:
+    app: cs-{{ template "appstore.name" . }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+  storageClassName: {{ .Values.oauth.storageClass }}
+{{- end }}

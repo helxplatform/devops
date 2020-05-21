@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   labels:
     service: {{ template "tycho-api.name" . }}
-    app: tycho-api
+    app: {{ template "tycho-api.name" . }}
   name: {{ template "tycho-api.name" . }}
 spec:
   containers:
@@ -21,5 +21,5 @@ spec:
       protocol: TCP
     resources:
       requests:
-        cpu: 100m
+        cpu: {{ .Values.resources.requests.cpu | quote }}
   restartPolicy: Always

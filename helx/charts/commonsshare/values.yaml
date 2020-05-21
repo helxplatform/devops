@@ -4,10 +4,11 @@
 
 replicaCount: 1
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
+# image:
+#   repository: nginx
+#   pullPolicy: IfNotPresent
 
+image: heliumdatastage/cs-k8s:latest
 imagePullSecrets: []
 nameOverride: "hydroshare"
 fullnameOverride: ""

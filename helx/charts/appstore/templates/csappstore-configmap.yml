@@ -5,9 +5,15 @@ data:
   POSTGRES_DB: postgres
   POSTGRES_HOST: postgres
   DATABASE_USER: postgres
-  DATABASE_PASSWORD: renci 
+  DATABASE_PASSWORD: renci
+  # /usr/src/inst-mgmt is default location if db is created in the container.
+  # OAUTH_DB_DIR: /usr/src/inst-mgmt
+  # /var/lib/sqlite3 is used for PVC mount point.
+  OAUTH_DB_DIR: /var/lib/sqlite3
+  OAUTH_DB_FILE: DATABASE.sqlite3
+  ACCOUNT_DEFAULT_HTTP_PROTOCOL: https
+  TYCHO_URL: http://tycho-api:8099
 kind: ConfigMap
 metadata:
-  creationTimestamp: null
   labels:
   name: csappstore-env
