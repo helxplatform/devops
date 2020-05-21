@@ -102,9 +102,9 @@ NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"cat-sc"}
 NEXTFLOW_PVC=${NEXTFLOW_PVC-"deepgtex-prp"}
 NEXTFLOW_STORAGE_SIZE=${NEXTFLOW_STORAGE_SIZE-"5Gi"}
 
-AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/charts/ambassador"}
+AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/ambassador"}
 PRP_DEPLOYMENT=${PRP_DEPLOYMENT-false}
-NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/charts/nginx"}
+NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/helx/charts/nginx"}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
 NGINX_IP=${NGINX_IP-""}
 NGINX_TLS_SECRET=${NGINX_TLS_SECRET-""}
@@ -117,7 +117,7 @@ NGINX_SERVICE_TYPE=${NGINX_SERVICE_TYPE-"LoadBalancer"}
 HELM=${HELM-helm}
 CAT_HELM_DIR=${CAT_HELM_DIR-"${HELXPLATFORM_HOME}/CAT_helm"}
 CAT_NAME=${CAT_NAME-"cloud-top"}
-CAT_PVC_NAME=${CAT_PVC_NAME-$CAT_NAME}
+CAT_PVC_NAME=${CAT_PVC_NAME-"stdnfs"}
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"10Gi"}
 
 CAT_PV_NAME=${CAT_PV_NAME-"${PV_PREFIX}$CAT_NAME-pv"}
@@ -142,6 +142,7 @@ APPSTORE_OAUTH_PV_ACCESSMODE=${APPSTORE_OAUTH_PV_ACCESSMODE-"ReadWriteOnce"}
 APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
 APPSTORE_IMAGE_PULL_SECRETS=${APPSTORE_IMAGE_PULL_SECRETS-""}
 TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-"LoadBalancer"}
+TYCHO_API_IMAGE=${TYCHO_API_IMAGE-""}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
@@ -178,9 +179,8 @@ HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/hydr
 HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/commonsshare/templates/hydroshare-secret.yaml"}
 
 NFSRODS_NAME=${NFSRODS_NAME-"nfsrods"}
-NFSRODS_HELM_DIR=${NFSRODS_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/charts/nfsrods"}
+NFSRODS_HELM_DIR=${NFSRODS_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/nfsrods"}
 NFSRODS_FOR_USER_DATA=${NFSRODS_FOR_USER_DATA-false}
-NFSRODS_HOME=${NFSRODS_HOME-"$K8S_DEVOPS_CORE_HOME/nfsrods"}
 NFSRODS_CONFIG_PV_NAME=${NFSRODS_CONFIG_PV_NAME-"${PV_PREFIX}$NFSRODS_NAME-config-pv"}
 NFSRODS_CONFIG_CLAIMNAME=${NFSRODS_CONFIG_CLAIMNAME-"$NFSRODS_NAME-config-pvc"}
 NFSRODS_CONFIG_NFS_SERVER=${NFSRODS_CONFIG_NFS_SERVER-""}
@@ -197,11 +197,10 @@ NFSRODS_CONFIG_PV_ACCESSMODE=${NFSRODS_CONFIG_PV_ACCESSMODE-"ReadWriteMany"}
 function deployDynamicPVCP() {
   if [ "$DYNAMIC_NFSCP_DEPLOYMENT" = true ]; then
     echo "Deploying NFS Client Provisioner for Dynamic PVCs"
-    $HELM upgrade --install \
+    $HELM -n $NAMESPACE upgrade --install \
                  --set nfs.server=$NFSCP_SERVER \
                  --set nfs.path=$NFSCP_PATH \
                  --set storageClass.name=$NFSCP_STORAGECLASS \
-                 --namespace $NAMESPACE \
                  $NFSCP_NAME stable/nfs-client-provisioner
   else
     echo "Deploying NFS Server Provisioner for Dynamic PVCs"
@@ -209,7 +208,8 @@ function deployDynamicPVCP() {
     HELM_VALUES+=",storageClass.name=$NFSSP_STORAGECLASS"
     HELM_VALUES+=",persistence.size=$NFSSP_PERSISTENCE_SIZE"
     HELM_VALUES+=",persistence.storageClass=$NFSSP_PERSISTENCE_STORAGECLASS"
-    $HELM upgrade --install $NFSSP_NAME -n $NAMESPACE --set $HELM_VALUES stable/nfs-server-provisioner
+    $HELM -n $NAMESPACE upgrade --install $NFSSP_NAME \
+        --set $HELM_VALUES stable/nfs-server-provisioner
   fi
 }
 
@@ -217,10 +217,10 @@ function deployDynamicPVCP() {
 function deleteDynamicPVCP() {
   if [ "$DYNAMIC_NFSCP_DEPLOYMENT" = true ]; then
     echo "Deleting NFS Client Provisioner for Dynamic PVCs"
-    $HELM delete $NFSCP_NAME
+    $HELM -n $NAMESPACE delete $NFSCP_NAME
   else
     echo "Deleting NFS Server Provisioner for Dynamic PVCs"
-    $HELM delete $NFSSP_NAME
+    $HELM -n $NAMESPACE delete $NFSSP_NAME
   fi
 }
 
@@ -459,17 +459,15 @@ function deployCAT(){
    if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
    then
      echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
-    echo "  \"$HYDROSHARE_SECRET_DST_FILE\""
+     echo "  \"$HYDROSHARE_SECRET_DST_FILE\""
      cp $HYDROSHARE_SECRET_SRC_FILE $HYDROSHARE_SECRET_DST_FILE
    else
      echo "Hydroshare secret source file not found:"
      echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
      echo "### Not copying hydroshare secret file. ###"
    fi
-   HELM_VALUES="appstore.db.storageClass=$APPSTORE_DB_STORAGECLASS"
-   HELM_VALUES+=",commonsshare.web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
-   HELM_VALUES+=",tycho-api.service.type=$TYCHO_API_SERVICE_TYPE"
-   HELM_VALUES+=",tycho-api.serviceAccount.name=${PV_PREFIX}tycho-api"
+   HELM_VALUES="commonsshare.web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
+   HELM_VALUES+=",appstore.db.storageClass=$APPSTORE_DB_STORAGECLASS"
    if [ ! -z "$APPSTORE_OAUTH_PVC" ]
    then
      HELM_VALUES+=",appstore.oauth.pvcname=$APPSTORE_OAUTH_PVC"
@@ -489,12 +487,18 @@ function deployCAT(){
   if [ "$PRP_DEPLOYMENT" = true ]; then
     HELM_VALUES+=",tycho-api.prp.deployment=True"
   fi
+  HELM_VALUES+=",tycho-api.service.type=$TYCHO_API_SERVICE_TYPE"
+  HELM_VALUES+=",tycho-api.serviceAccount.name=${PV_PREFIX}tycho-api"
+  if [ ! -z "$TYCHO_API_IMAGE" ]
+  then
+    HELM_VALUES+=",tycho-api.image=$TYCHO_API_IMAGE"
+  fi
    # For some reason deleting Helm chart for cat does not remove this secret
    # and upgrading Helm chart fails.
    # kubectl -n $NAMESPACE delete secret hydroshare-secret
    # kubectl -n $NAMESPACE delete configmap csappstore-env hydroshare-env
-   $HELM upgrade --install $CAT_NAME $CAT_HELM_DIR -n $NAMESPACE --debug --logtostderr \
-       --set $HELM_VALUES
+   $HELM -n $NAMESPACE upgrade --install $CAT_NAME $CAT_HELM_DIR --debug \
+       --logtostderr --set $HELM_VALUES
    echo "# end deploying CAT"
 }
 
@@ -557,7 +561,7 @@ function deployNginx(){
    then
      HELM_VALUES+=",service.resolver=$NGINX_DNS_RESOLVER"
    fi
-   $HELM upgrade --install nginx-revproxy $NGINX_HELM_DIR -n $NAMESPACE --debug \
+   $HELM -n $NAMESPACE upgrade --install nginx-revproxy $NGINX_HELM_DIR --debug \
        --logtostderr --set $HELM_VALUES
    echo "# end deploying Nginx"
 }
@@ -565,7 +569,7 @@ function deployNginx(){
 
 function deleteNginx(){
   echo "# deleting Nginx"
-  $HELM delete nginx-revproxy
+  $HELM -n $NAMESPACE delete nginx-revproxy
   if [ ! -z "$NGINX_TLS_KEY" ]
   then
    kubectl --namespace $NAMESPACE delete secret $NGINX_TLS_SECRET
@@ -654,35 +658,17 @@ spec:
 
 function deployNFSRODS(){
   echo "deploying NFSRODS"
-  # # Create directory on NFS server to hold NFSRODS configuration files.
-  # kubectl -n $NAMESPACE create -f $NFSRODS_HOME/nfsrods-config-pv-pvc.yaml
-  # # Copy configuration files to NFS dir.
-  #
-  # # Create PV/PVC to point to NFSRODS config.
-  # # Deploy NFSRODS.
-  # kubectl -n $NAMESPACE apply -f $NFSRODS_HOME/nfsrods-deployment.yaml
-  # # Create cloud-top PVC to point to NFSRODS NFS share.
-  # kubectl -n $NAMESPACE apply -f $NFSRODS_HOME/cloud-top-pv-pvc-nfsrods.yaml
-
   HELM_VALUES="config.claimName=$NFSRODS_CONFIG_CLAIMNAME"
   HELM_VALUES+=",config.storageClass=$NFSRODS_CONFIG_PV_STORAGECLASS"
   $HELM -n $NAMESPACE upgrade --install $NFSRODS_NAME $NFSRODS_HELM_DIR --debug \
       --logtostderr --set $HELM_VALUES
-
   echo "NFSRODS deployed"
 }
 
 
 function deleteNFSRODS(){
   echo "deleting NFSRODS"
-  # Delete cloud-top PV/PVC (keep data).
-  # kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/cloud-top-pv-pvc-nfsrods.yaml
-  # # Delete NFSRODS deployment.
-  # kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/nfsrods-deployment.yaml
-  # kubectl -n $NAMESPACE delete -f $NFSRODS_HOME/nfsrods-config-pv-pvc.yaml
-
   $HELM -n $NAMESPACE delete $NFSRODS_NAME
-
   echo "NFSRODS deleted"
 }
 
