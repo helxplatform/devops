@@ -1,0 +1,301 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Appstore metadata branch build</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>5</daysToKeep>
+        <numToKeep>3</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.5">
+      <projectUrl>https://github.com/helxplatform/appstore/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@4.1.1">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/helxplatform/appstore</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>refs/heads/metadata</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.29.5">
+      <spec></spec>
+    </com.cloudbees.jenkins.GitHubPushTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>set -ex
+
+echo &quot;Branch: $BRANCH_NAME&quot;
+echo &quot;Git commit: $GIT_COMMIT&quot;
+echo &quot;Change ID: $CHANGE_ID&quot;
+echo &quot;Change author: $CHANGE_AUTHOR&quot;
+echo &quot;Change author display name: $CHANGE_AUTHOR_DISPLAY_NAME&quot;
+echo &quot;Change author email: $CHANGE_AUTHOR_EMAIL&quot;
+echo &quot;Build number: $BUILD_NUMBER&quot;
+echo &quot;Build ID: $BUILD_ID&quot;
+echo &quot;Job name: $JOB_NAME&quot;
+echo &quot;Build tag: $BUILD_TAG&quot;
+echo &quot;Node name: $NODE_NAME&quot;
+echo &quot;Node labels: $NODE_LABELS&quot;
+echo &quot;Workspace: $WORKSPACE&quot;
+echo &quot;Jenkins URL: $JENKINS_URL&quot;
+
+
+WS=&quot;/var/lib/jenkins/jobs/appstore/jobs/appstore/workspace&quot;
+GITDIR=&quot;appstore&quot;
+APPDIR=&quot;appstore&quot;
+CLONE_HOME=&quot;$WS/$GITDIR&quot;
+APP_HOME=&quot;$CLONE_HOME/$APPDIR&quot;
+
+AJA_DIR=&quot;/var/lib/jenkins/jobs/appstore/jobs/appstore&quot;
+VERSION_FILE=&quot;$AJA_DIR/version/metadata/ver&quot;
+
+BUILD_BRANCH=&quot;metadata&quot;
+APPSTORE_URL=&quot;https://github.com/helxplatform/appstore.git&quot;
+TYCHO_URL=&quot;https://github.com/helxplatform/tycho.git&quot;
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Version file functions: get_ver, incr_ver
+#   --&gt; TODO: Place these on the server as a separate script called 
+#             version.sh so they can be used by separate builds from one 
+#             place once I get sudo access. Update code to source them 
+#             and use appropriately.
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+# -----------------------------------------------------------------------
+# get_ver
+#
+# Description: Retrieves the current version number for a build.
+#
+# Inputs: $VERSION_FILE: A file that: 
+#           Contains a single version number in one of these formats:
+#           n
+#           n.n
+#           n.n.nn, where n is an integer from 0-9
+#
+# Outputs: ver, a one to three place version number 
+#
+# Returns: 0 on success
+#          255 when $VERSION_FILE file is not found
+#
+# Notes: $VERSION_FILE requires a newline.
+# -----------------------------------------------------------------------
+function get_ver () {
+    if [ ! -f &quot;$VERSION_FILE&quot; ]
+    then
+        echo &quot;Version file $VERSION_FILE does not exist.&quot;
+        echo &quot;Skipping build.&quot;
+        echo &quot;Please check for or re-create it.&quot;
+        return 255
+    fi
+
+    ver=$(&lt; $VERSION_FILE)
+    echo &quot;$ver&quot;
+    return 0
+}
+
+
+# -----------------------------------------------------------------------
+# incr_ver
+#
+# Description: Increments a version number for a build.
+#
+# Inputs: $VERSION_FILE: A file that:
+#           Contains a single version number in one of these formats:
+#           n
+#           n.n
+#           n.n.nn, where n is an integer from 0-9
+#
+# Outputs: newver, an incremented version number that rolls over when 
+#             it reaches its max value for the number of digit places 
+#             available.
+#          Updated $VERSION_FILE  with the new version number
+#
+# Returns: 0 on success
+#          255 when $VERSION_FILE is not found
+#
+# Notes: $VERSION_FILE requires a newline since this script uses awk.
+# -----------------------------------------------------------------------
+function incr_ver () {
+    SUBMINOR_OVERFLOW=99
+    MINOR_OVERFLOW=9
+
+    oldver=$(get_ver)
+    rc=$?
+    case $rc in
+        0) ;;
+        255) echo &quot;Version file not found.&quot;; exit $rc;;
+        *) echo &quot;Unknown error&quot;;;
+    esac 
+    echo &quot;Old version: [$oldver].&quot;
+    read -r major minor subminor &lt;&lt;&lt; $(echo $oldver | awk -F. &apos;{print $1, $2, $3}&apos;)
+
+    newsubminor=&apos;&apos;
+    if [ -n &quot;${subminor}&quot; ] &amp;&amp; [ $subminor -lt $SUBMINOR_OVERFLOW ]
+    then
+        # increment normally
+        newsubminor=$(($subminor + 1))
+    else
+        # we overflowed
+        newsubminor=0
+    fi
+
+    newminor=&quot;$minor&quot;
+    if [ -n &quot;${minor}&quot; ]
+    then
+        if [ -z &quot;${subminor}&quot; ] ||
+           [ -n &quot;${subminor}&quot; ] &amp;&amp; [ $newsubminor -eq 0 ]
+        then
+            if [ $minor -lt $MINOR_OVERFLOW ]
+            then
+                # increment normally
+                newminor=$(($minor + 1))
+            else
+                # we overflowed
+                newminor=0
+            fi
+        fi
+    fi
+
+    newmajor=&quot;$major&quot;
+    if [ -z &quot;${minor}&quot; ] || [ $newminor -eq 0 -a ! $minor -eq 0 ]
+    then
+         newmajor=$(($major + 1))        
+    fi
+
+    newver=&quot;$newmajor&quot;
+    if [ -n &quot;${minor}&quot; ]; then newver=$newver&quot;.$newminor&quot;; fi
+    if [ -n &quot;${subminor}&quot; ]; then newver=$newver&quot;.$newsubminor&quot;; fi
+
+    echo &quot;New version: [$newver].&quot;
+    echo &quot;$newver&quot;
+    echo &quot;$newver&quot; &gt; $VERSION_FILE
+    return 0
+}
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Initial version file setup: remove after 1 iteration!!!!
+#   --&gt; Needed because no sudo access.
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#echo &quot;CREATING VERSION FILE&quot;
+#mkdir &quot;$AJA_DIR/version&quot;
+#mkdir &quot;$AJA_DIR/version/metadata&quot;
+#cat &lt;&lt;EOF &gt;$VERSION_FILE
+#v0.0.7
+#EOF
+#echo &quot;VERSION FILE CREATED&quot;
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Clean the workspace:
+#   --&gt; Jenkins is leaving git artifacts causing build failure
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ls -ld $CLONE_HOME
+if [ $? -eq 0 ]
+then
+  # Directory exists, remove it so git clone will work . . .
+  echo &quot;Removing existing appstore directory for git clone.&quot;
+  rm -rf $CLONE_HOME
+fi
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Set up the code:
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Clone the repo
+git clone $APPSTORE_URL
+sleep 10
+
+
+# Checkout target branch
+cd appstore
+git checkout $BUILD_BRANCH
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Build the image:
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# We&apos;re building, so increment and get updated version
+ov=`get_ver`
+echo &quot;OLD VERSION: $ov&quot;
+incr_ver
+ver=`get_ver`
+echo &quot;NEW VERSION: $ver&quot;
+
+# Build the docker container.
+cd appstore
+docker build --no-cache -t heliumdatastage/appstore:metadata-$ver \
+               -t heliumdatastage/appstore:metadata-latest .
+
+if [ $? -ne 0 ]
+then
+  echo &quot;Build failed, skipping tests and not pushing to Dockerhub.&quot; &gt;&amp;2
+  exit 2
+fi
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Execute unit tests:
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# virtualenv cmd didn&apos;t work so using this form . . .
+/usr/bin/python3 -m venv venv &amp;&amp; \
+source venv/bin/activate &amp;&amp; \
+pip install -r requirements.txt --upgrade pip &amp;&amp; \
+if [ ! -d $APP_HOME/tycho ]; then git clone --branch $BUILD_BRANCH $TYCHO_URL ; fi &amp;&amp; \
+pip install -r ./tycho/requirements.txt &amp;&amp; \
+bin/appstore tests braini
+
+if [ $? -ne 0 ]
+then
+  echo &quot;Unit tests failed, not pushing to DockerHub.&quot; &gt;&amp;2
+  exit 3
+fi
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Push to DockerHub:
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+docker push heliumdatastage/appstore:metadata-$ver
+docker push heliumdatastage/appstore:metadata-latest</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.38">
+      <deleteDirs>false</deleteDirs>
+      <cleanupParameter></cleanupParameter>
+      <externalDelete></externalDelete>
+      <disableDeferredWipeout>false</disableDeferredWipeout>
+    </hudson.plugins.ws__cleanup.PreBuildCleanup>
+  </buildWrappers>
+</project>
