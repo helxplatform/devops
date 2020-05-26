@@ -298,11 +298,11 @@ docker images -a | grep &quot;heliumdatastage/appstore&quot; | awk &apos;{print 
   </builders>
   <publishers>
     <hudson.plugins.emailext.ExtendedEmailPublisher plugin="email-ext@2.69">
-      <recipientList>bennettc@renci.org </recipientList>
+      <recipientList>bennettc@renci.org, pjl@renci.org</recipientList>
       <configuredTriggers>
         <hudson.plugins.emailext.plugins.trigger.FailureTrigger>
           <email>
-            <recipientList>bennettc@renci.org</recipientList>
+            <recipientList>bennettc@renci.org, pjl@renci.org</recipientList>
             <subject>$PROJECT_DEFAULT_SUBJECT</subject>
             <body>$PROJECT_DEFAULT_CONTENT</body>
             <recipientProviders>
@@ -318,7 +318,7 @@ docker images -a | grep &quot;heliumdatastage/appstore&quot; | awk &apos;{print 
         </hudson.plugins.emailext.plugins.trigger.FailureTrigger>
         <hudson.plugins.emailext.plugins.trigger.SuccessTrigger>
           <email>
-            <recipientList>bennett@@renci.org</recipientList>
+            <recipientList>bennettc@renci.org, pjl@renci.org</recipientList>
             <subject>$PROJECT_DEFAULT_SUBJECT</subject>
             <body>$PROJECT_DEFAULT_CONTENT</body>
             <recipientProviders>
@@ -334,7 +334,7 @@ docker images -a | grep &quot;heliumdatastage/appstore&quot; | awk &apos;{print 
         </hudson.plugins.emailext.plugins.trigger.SuccessTrigger>
         <hudson.plugins.emailext.plugins.trigger.BuildingTrigger>
           <email>
-            <recipientList>bennettc@renci.org</recipientList>
+            <recipientList>bennettc@renci.org, pjl@renci.org</recipientList>
             <subject>$PROJECT_DEFAULT_SUBJECT</subject>
             <body>$PROJECT_DEFAULT_CONTENT</body>
             <recipientProviders>
@@ -350,7 +350,7 @@ docker images -a | grep &quot;heliumdatastage/appstore&quot; | awk &apos;{print 
         </hudson.plugins.emailext.plugins.trigger.BuildingTrigger>
         <hudson.plugins.emailext.plugins.trigger.FixedUnhealthyTrigger>
           <email>
-            <recipientList>bennettc@renci.org</recipientList>
+            <recipientList>bennettc@renci.org, pjl@renci.org</recipientList>
             <subject>$PROJECT_DEFAULT_SUBJECT</subject>
             <body>$PROJECT_DEFAULT_CONTENT</body>
             <recipientProviders>
