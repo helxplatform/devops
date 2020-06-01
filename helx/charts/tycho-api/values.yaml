@@ -12,7 +12,7 @@ serviceAccount:
   name: tycho-api
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
 
 resources:
@@ -25,5 +25,6 @@ resources:
 
 image: heliumdatastage/tycho-api:v1.0
 
-# Set True to use a cluster role or False for a nemspace role.
-useClusterRole: False
+# Set either useClusterRole or useRole to true.
+useClusterRole: false
+useRole: true

@@ -27,8 +27,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh", "-c"]
-          # args: ["/usr/sbin/useradd -m -u 999 -s /bin/bash rods; ./start.sh"]
-          args: ["./start.sh"]
+          args: ["{{ .Values.runArgs }}"]
           volumeMounts:
             - name: nfsrods-config-vol
               mountPath: /nfsrods_config

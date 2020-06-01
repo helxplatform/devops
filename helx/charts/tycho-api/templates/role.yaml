@@ -1,4 +1,4 @@
-{{- if not .Values.useClusterRole }}
+{{- if .Values.useRole }}
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -13,7 +13,6 @@ rules:
   - services
   - services/status
   - persistentvolumeclaims
-  - persistentvolumes
   - deployments/rollback
   - deployments/scale
   - ingresses
@@ -24,6 +23,7 @@ rules:
   - replicasets
   - ingresses
   - namespaces
+  - persistentvolumes
   verbs:
   - '*'
 ---

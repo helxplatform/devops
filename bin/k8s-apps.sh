@@ -103,7 +103,7 @@ NEXTFLOW_PVC=${NEXTFLOW_PVC-"deepgtex-prp"}
 NEXTFLOW_STORAGE_SIZE=${NEXTFLOW_STORAGE_SIZE-"5Gi"}
 
 AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/ambassador"}
-PRP_DEPLOYMENT=${PRP_DEPLOYMENT-false}
+USE_CLUSTER_ROLES=${USE_CLUSTER_ROLES-false}
 NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/helx/charts/nginx"}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
 NGINX_IP=${NGINX_IP-""}
@@ -113,9 +113,13 @@ NGINX_TLS_CRT=${NGINX_TLS_CRT-""}
 NGINX_TLS_CA_CRT=${NGINX_TLS_CA_CRT-""}
 NGINX_DNS_RESOLVER=${NGINX_DNS_RESOLVER-""}
 NGINX_SERVICE_TYPE=${NGINX_SERVICE_TYPE-"LoadBalancer"}
+NGINX_INGRESS_HOST=${NGINX_INGRESS_HOST-""}
+NGINX_INGRESS_CLASS=${NGINX_INGRESS_CLASS-""}
 
 HELM=${HELM-helm}
-CAT_HELM_DIR=${CAT_HELM_DIR-"${HELXPLATFORM_HOME}/CAT_helm"}
+COMMONSSHARE_NAME=${COMMONSSHARE_NAME-"commonsshare"}
+APPSTORE_NAME=${APPSTORE_NAME-"appstore"}
+CAT_HELM_DIR=${CAT_HELM_DIR-"${K8S_DEVOPS_CORE_HOME}/helx"}
 CAT_NAME=${CAT_NAME-"cloud-top"}
 CAT_PVC_NAME=${CAT_PVC_NAME-"stdnfs"}
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"10Gi"}
@@ -138,11 +142,12 @@ APPSTORE_OAUTH_NFS_SERVER=${APPSTORE_OAUTH_NFS_SERVER-$CAT_NFS_SERVER}
 APPSTORE_OAUTH_NFS_PATH=${APPSTORE_OAUTH_NFS_PATH-""}
 APPSTORE_OAUTH_PV_STORAGE_SIZE=${APPSTORE_OAUTH_PV_STORAGE_SIZE-"10Gi"}
 APPSTORE_OAUTH_PV_ACCESSMODE=${APPSTORE_OAUTH_PV_ACCESSMODE-"ReadWriteOnce"}
-
 APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
 APPSTORE_IMAGE_PULL_SECRETS=${APPSTORE_IMAGE_PULL_SECRETS-""}
-TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-"LoadBalancer"}
+TYCHO_NAME=${TYCHO_NAME-"tycho"}
+TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-""}
 TYCHO_API_IMAGE=${TYCHO_API_IMAGE-""}
+TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
@@ -180,6 +185,16 @@ HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/co
 
 NFSRODS_NAME=${NFSRODS_NAME-"nfsrods"}
 NFSRODS_HELM_DIR=${NFSRODS_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/nfsrods"}
+NFSRODS_PV_NAME=${NFSRODS_PV_NAME-"${PV_PREFIX}$NFSRODS_NAME-pv"}
+NFSRODS_PV_STORAGE_SIZE=${NFSRODS_PV_STORAGE_SIZE-"100Gi"}
+NFSRODS_PV_STORAGECLASS=${NFSRODS_PV_STORAGECLASS-"$NFSRODS_NAME-sc"}
+# ToDo: Pull this IP from from the service after it's created and use that to
+# create the PVC.
+NFSRODS_PV_NFS_SERVER_IP=${NFSRODS_PV_NFS_SERVER_IP-"10.233.58.200"}
+NFSRODS_PV_NFS_PATH=${NFSRODS_PV_NFS_PATH-"/"}
+NFSRODS_PV_ACCESSMODE=${NFSRODS_PV_ACCESSMODE-"ReadWriteMany"}
+NFSRODS_PVC_CLAIMNAME=${NFSRODS_PVC_CLAIMNAME-"$NFSRODS_NAME-pvc"}
+NFSRODS_PVC_STORAGE_SIZE=${NFSRODS_PVC_STORAGE_SIZE-"10Gi"}
 NFSRODS_FOR_USER_DATA=${NFSRODS_FOR_USER_DATA-false}
 NFSRODS_CONFIG_PV_NAME=${NFSRODS_CONFIG_PV_NAME-"${PV_PREFIX}$NFSRODS_NAME-config-pv"}
 NFSRODS_CONFIG_CLAIMNAME=${NFSRODS_CONFIG_CLAIMNAME-"$NFSRODS_NAME-config-pvc"}
@@ -445,83 +460,105 @@ spec:
 
 
 function deployCAT(){
-   echo "# deploying CAT"
-   # Create PVC for CAT before deploying CAT.
-   # if [ "$GKE_DEPLOYMENT" = true ]; then
-   #   createGCEDisk $CAT_PVC_NAME $CAT_DISK_SIZE $AVAILABILITY_ZONE
-   #   createGCEPV
-   # else
-   #   # The shared directories on the NFS server need to exist.
-   #   createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-   #       $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-   # fi
-   # createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-   if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
-   then
-     echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
-     echo "  \"$HYDROSHARE_SECRET_DST_FILE\""
-     cp $HYDROSHARE_SECRET_SRC_FILE $HYDROSHARE_SECRET_DST_FILE
-   else
-     echo "Hydroshare secret source file not found:"
-     echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
-     echo "### Not copying hydroshare secret file. ###"
-   fi
-   HELM_VALUES="commonsshare.web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
-   HELM_VALUES+=",appstore.db.storageClass=$APPSTORE_DB_STORAGECLASS"
-   if [ ! -z "$APPSTORE_OAUTH_PVC" ]
-   then
-     HELM_VALUES+=",appstore.oauth.pvcname=$APPSTORE_OAUTH_PVC"
-   fi
-   if [ ! -z "$APPSTORE_OAUTH_PV_STORAGECLASS" ]
-   then
-     HELM_VALUES+=",appstore.oauth.storageClass=$APPSTORE_OAUTH_PV_STORAGECLASS"
-   fi
-   if [ ! -z "$APPSTORE_IMAGE" ]
-   then
-     HELM_VALUES+=",appstore.image=$APPSTORE_IMAGE"
-   fi
-   if [ ! -z "$APPSTORE_IMAGE_PULL_SECRETS" ]
-   then
-     HELM_VALUES+=",appstore.imagePullSecrets=$APPSTORE_IMAGE_PULL_SECRETS"
+  echo "# deploying CAT"
+  # Create PVC for CAT before deploying CAT.
+  # if [ "$GKE_DEPLOYMENT" = true ]; then
+  #   createGCEDisk $CAT_PVC_NAME $CAT_DISK_SIZE $AVAILABILITY_ZONE
+  #   createGCEPV
+  # else
+  #   # The shared directories on the NFS server need to exist.
+  #   createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+  #       $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+  # fi
+  # createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+  if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
+  then
+   echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
+   echo "  \"$HYDROSHARE_SECRET_DST_FILE\""
+   cp $HYDROSHARE_SECRET_SRC_FILE $HYDROSHARE_SECRET_DST_FILE
+  else
+   echo "Hydroshare secret source file not found:"
+   echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
+   echo "### Not copying hydroshare secret file. ###"
   fi
-  if [ "$PRP_DEPLOYMENT" = true ]; then
-    HELM_VALUES+=",tycho-api.prp.deployment=True"
+  HELM_VALUES="web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
+  $HELM -n $NAMESPACE upgrade --install $COMMONSSHARE_NAME \
+    $CAT_HELM_DIR/charts/commonsshare --debug --logtostderr --set $HELM_VALUES
+
+  HELM_VALUES="db.storageClass=$APPSTORE_DB_STORAGECLASS"
+  if [ ! -z "$APPSTORE_OAUTH_PVC" ]
+  then
+   HELM_VALUES+=",oauth.pvcname=$APPSTORE_OAUTH_PVC"
   fi
-  HELM_VALUES+=",tycho-api.service.type=$TYCHO_API_SERVICE_TYPE"
-  HELM_VALUES+=",tycho-api.serviceAccount.name=${PV_PREFIX}tycho-api"
+  if [ ! -z "$APPSTORE_OAUTH_PV_STORAGECLASS" ]
+  then
+   HELM_VALUES+=",oauth.storageClass=$APPSTORE_OAUTH_PV_STORAGECLASS"
+  fi
+  if [ ! -z "$APPSTORE_IMAGE" ]
+  then
+   HELM_VALUES+=",image=$APPSTORE_IMAGE"
+  fi
+  if [ ! -z "$APPSTORE_IMAGE_PULL_SECRETS" ]
+  then
+   HELM_VALUES+=",imagePullSecrets=$APPSTORE_IMAGE_PULL_SECRETS"
+  fi
+  $HELM -n $NAMESPACE upgrade --install $APPSTORE_NAME \
+     $CAT_HELM_DIR/charts/appstore --debug --logtostderr --set $HELM_VALUES
+
+  if [ "$TYCHO_USE_ROLE" = false ]
+  then
+   HELM_VALUES+=",useRole=false"
+  fi
+  if [ "$USE_CLUSTER_ROLES" = true ]
+  then
+    HELM_VALUES+=",useClusterRole=true"
+  fi
+  if [ ! -z "$TYCHO_API_SERVICE_TYPE" ]
+  then
+    HELM_VALUES+=",service.type=$TYCHO_API_SERVICE_TYPE"
+  fi
+  HELM_VALUES+=",serviceAccount.name=${PV_PREFIX}tycho-api"
   if [ ! -z "$TYCHO_API_IMAGE" ]
   then
-    HELM_VALUES+=",tycho-api.image=$TYCHO_API_IMAGE"
+    HELM_VALUES+=",image=$TYCHO_API_IMAGE"
   fi
+  $HELM -n $NAMESPACE upgrade --install $TYCHO_NAME \
+     $CAT_HELM_DIR/charts/tycho-api --debug --logtostderr --set $HELM_VALUES
    # For some reason deleting Helm chart for cat does not remove this secret
    # and upgrading Helm chart fails.
    # kubectl -n $NAMESPACE delete secret hydroshare-secret
    # kubectl -n $NAMESPACE delete configmap csappstore-env hydroshare-env
-   $HELM -n $NAMESPACE upgrade --install $CAT_NAME $CAT_HELM_DIR --debug \
-       --logtostderr --set $HELM_VALUES
+   # $HELM -n $NAMESPACE upgrade --install $CAT_NAME $CAT_HELM_DIR --debug \
+   #      --logtostderr --set $HELM_VALUES
    echo "# end deploying CAT"
 }
 
 
 function deleteCAT(){
   echo "# deleting CAT"
-  $HELM -n $NAMESPACE delete $CAT_NAME
-  # if [ "$GKE_DEPLOYMENT" = true ]; then
-  #   deleteGCEPV
-  #   deleteGCEDisk $CAT_PVC_NAME
-  # else
-  #   deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-  #     $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-  # fi
-  # deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+  $HELM -n $NAMESPACE delete $COMMONSSHARE_NAME
+  $HELM -n $NAMESPACE delete $APPSTORE_NAME
+  $HELM -n $NAMESPACE delete $TYCHO_NAME
+  if [ "$GKE_DEPLOYMENT" = true ]; then
+    deleteGCEPV
+    deleteGCEDisk $CAT_PVC_NAME
+  else
+    deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+    deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+      $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+    # The helm chart handles deletion of PVC.
+    deleteExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
+      $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
+      $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
+  fi
   echo "# end deleting CAT"
 }
 
 
 function deployAmbassador(){
    echo "# deploying Ambassador"
-   if [ "$PRP_DEPLOYMENT" = true ]; then
-     HELM_VALUES="prp.deployment=True"
+   if [ "$USE_CLUSTER_ROLES" = false ]; then
+     HELM_VALUES="prp.deployment=true"
      HELM_SET_ARG="--set $HELM_VALUES"
    else
      HELM_SET_ARG=""
@@ -560,6 +597,14 @@ function deployNginx(){
    if [ ! -z "$NGINX_DNS_RESOLVER" ]
    then
      HELM_VALUES+=",service.resolver=$NGINX_DNS_RESOLVER"
+   fi
+   if [ ! -z "$NGINX_INGRESS_HOST" ]
+   then
+     HELM_VALUES+=",ingress.host=$NGINX_INGRESS_HOST"
+   fi
+   if [ ! -z "$NGINX_INGRESS_CLASS" ]
+   then
+     HELM_VALUES+=",ingress.class=\"$NGINX_INGRESS_CLASS\""
    fi
    $HELM -n $NAMESPACE upgrade --install nginx-revproxy $NGINX_HELM_DIR --debug \
        --logtostderr --set $HELM_VALUES
@@ -660,6 +705,7 @@ function deployNFSRODS(){
   echo "deploying NFSRODS"
   HELM_VALUES="config.claimName=$NFSRODS_CONFIG_CLAIMNAME"
   HELM_VALUES+=",config.storageClass=$NFSRODS_CONFIG_PV_STORAGECLASS"
+  HELM_VALUES+=",service.ip=$NFSRODS_PV_NFS_SERVER_IP"
   $HELM -n $NAMESPACE upgrade --install $NFSRODS_NAME $NFSRODS_HELM_DIR --debug \
       --logtostderr --set $HELM_VALUES
   echo "NFSRODS deployed"
@@ -699,6 +745,10 @@ case $APPS_ACTION in
         else
           createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
               $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+          createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+          createExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
+              $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
+              $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
         fi
         ;;
       gcedisks)
@@ -718,7 +768,16 @@ case $APPS_ACTION in
         createPVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         ;;
       nfsrods)
+        if [ "$NFSRODS_FOR_USER_DATA" = true ]; then
+          createExternalNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
+              $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
+              $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
+        fi
         deployNFSRODS
+        createExternalNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
+            $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
+            $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
+        createPVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
         ;;
       nginx)
         deployNginx
@@ -726,13 +785,7 @@ case $APPS_ACTION in
       staticNFSPVPVC)
         createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
             $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-        if [ "$NFSRODS_FOR_USER_DATA" = false ]; then
-          createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-        else
-          createExternalNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
-              $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
-              $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
-        fi
+        createPVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
         createExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
             $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
             $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
@@ -751,7 +804,15 @@ case $APPS_ACTION in
         deleteCAT
         deleteELK
         deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
+        deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
+        deleteExternalNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
+            $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
+            $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
         deleteNFS
+        deleteNFSRODS
+        deleteExternalNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
+            $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
+            $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
         deleteDynamicPVCP
         ;;
       ambassador)
@@ -765,6 +826,10 @@ case $APPS_ACTION in
           deleteGCEPV
           deleteGCEDisk $CAT_PVC_NAME
         else
+          deleteExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
+              $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
+              $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
+          deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
           deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
               $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
         fi
@@ -786,7 +851,17 @@ case $APPS_ACTION in
         deleteGCEDisk $GCE_PERSISTENT_DISK
         ;;
       nfsrods)
+        deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
+        deleteExternalNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
+            $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
+            $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
         deleteNFSRODS
+        deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
+        if [ "$NFSRODS_FOR_USER_DATA" = true ]; then
+          deleteExternalNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
+              $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
+              $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
+        fi
         ;;
       nginx)
         deleteNginx
@@ -795,13 +870,7 @@ case $APPS_ACTION in
         deleteExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
             $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
             $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
-        if [ "$NFSRODS_FOR_USER_DATA" = false ]; then
-          deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-        else
-          deleteExternalNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
-              $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
-              $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
-        fi
+        deletePVC $CAT_PVC_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
         deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
             $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
          ;;

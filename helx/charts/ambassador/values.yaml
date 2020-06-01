@@ -22,4 +22,4 @@ adminservice:
 
 prp:
    # PRP cluster deployment: <True or False>
-   deployment: False
+   deployment: false

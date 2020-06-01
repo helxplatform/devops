@@ -19,3 +19,7 @@ spec:
       name: rpcbind
   selector:
     {{- include "nfsrods.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.service.type }}
+  # Need to specify IP so that nodes can mount the NFS share.  PVCs need to use
+  # the same IP in their YAML.
+  clusterIP: {{ .Values.service.ip }}

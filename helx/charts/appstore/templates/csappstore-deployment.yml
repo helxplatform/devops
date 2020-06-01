@@ -131,6 +131,46 @@ spec:
             secretKeyRef:
               key: GOOGLE_SECRET
               name: csappstore-secret
+        - name: BRAINI_RODS
+          valueFrom:
+            secretKeyRef:
+              key: BRAINI_RODS
+              name: csappstore-secret
+        - name: NRC_MICROSCOPY_IRODS
+          valueFrom:
+            secretKeyRef:
+              key: NRC_MICROSCOPY_IRODS
+              name: csappstore-secret
+        - name: RODS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: RODS_USERNAME
+              name: csappstore-secret
+        - name: RODS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: RODS_PASSWORD
+              name: csappstore-secret
+        - name: IROD_COLLECTIONS
+          valueFrom:
+            secretKeyRef:
+              key: IROD_COLLECTIONS
+              name: csappstore-secret
+        - name: IROD_ZONE
+          valueFrom:
+            secretKeyRef:
+              key: IROD_ZONE
+              name: csappstore-secret
+        - name: EMAIL_HOST_USER
+          valueFrom:
+            secretKeyRef:
+              key: EMAIL_HOST_USER
+              name: csappstore-secret
+        - name: EMAIL_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: EMAIL_HOST_PASSWORD
+              name: csappstore-secret
         ports:
         - containerPort: 8000
       {{- if .Values.oauth.pvcname }}

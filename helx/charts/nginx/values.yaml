@@ -29,3 +29,8 @@ DEV_PHASE:
 # kubectl create secret tls nginx-tls-secret --key nginx.key --cert nginx.crt
 # SSL:
 #   nginxTLSSecret: nginx-tls-secret
+
+# ingress:
+#   host: example.com
+#   # ToDo: Make this cleaner.
+#   class: traefik

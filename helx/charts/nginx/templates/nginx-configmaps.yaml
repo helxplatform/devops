@@ -35,6 +35,11 @@ data:
                          {{- end }}
                          proxy_pass http://ambassador:80$request_uri;
                          proxy_pass_request_headers      on;
+                         # for guacamole
+                         proxy_buffering off;
+                         proxy_set_header Upgrade $http_upgrade;
+                         proxy_set_header Connection $http_connection;
+                         # end guacamole additons
                 }
 
                 location = /auth {

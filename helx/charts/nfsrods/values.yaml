@@ -29,6 +29,7 @@ service:
   nfsPort: 2049
   mountdPort: 20048
   rpcbindPort: 111
+  ip: 10.233.58.200
 
 resources:
   requests:
@@ -47,3 +48,5 @@ affinity: {}
 config:
   claimName: nfsrods-config-pvc
   storageClass: nfsrods-config-sc
+
+runArgs: "/usr/sbin/useradd -m -u 999 -s /bin/bash rods; ./start.sh"
