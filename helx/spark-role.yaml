@@ -2,13 +2,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: spark
-  namespace: restart
+  namespace: <namespace>
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: spark-role
-  namespace: restart
+  namespace: <namespace>
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -16,4 +16,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: spark
-  namespace: restart
+  namespace: <namespace>
