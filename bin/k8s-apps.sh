@@ -86,6 +86,10 @@ fi
 # default user-definable variable definitions
 #
 NAMESPACE=${NAMESPACE-"default"}
+PROJECT=${PROJECT-"A_GOOGLE_PROJECT_ID"}
+REGION=${REGION-"us-east1"}
+ZONE_EXTENSION=${ZONE_EXTENSION-b}
+AVAILABILITY_ZONE=${AVAILABILITY_ZONE-${REGION}-${ZONE_EXTENSION}}
 ENVIRONMENT=${ENVIRONMENT-"dev"}
 PV_PREFIX=${PV_PREFIX-"$ENVIRONMENT-$USER-"}
 HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"../.."}
@@ -93,6 +97,7 @@ K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELXPLATFORM_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
 
 GCE_NFS_SERVER_DISK=${GCE_NFS_SERVER_DISK-"${PV_PREFIX}stdnfs-disk"}
+
 NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/exports"}
 NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.default.svc.cluster.local"}
 NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"${PV_PREFIX}stdnfs-pv"}
@@ -151,7 +156,7 @@ TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
 
-NFSSP_NAME=${NFSSP_NAME-"nfssp"}
+NFSSP_NAME=${NFSSP_NAME-"${PV_PREFIX}nfssp"}
 # NFSSP persistent storage does not work on NFS storage.
 NFSSP_PERSISTENCE_ENABLED=${NFSSP_PERSISTENCE_ENABLED-false}
 NFSSP_PERSISTENCE_SIZE=${NFSSP_PERSISTENCE_SIZE-"10Gi"}
@@ -170,6 +175,12 @@ if $DYNAMIC_NFSCP_DEPLOYMENT; then
 else
   NFSP_STORAGECLASS=$NFSSP_STORAGECLASS
 fi
+
+# GCE_DYN_STORAGE_PD_NAME="${PV_PREFIX}nfssp"
+GCE_DYN_STORAGE_PD_NAME="${NFSSP_NAME}"
+GCE_DYN_STORAGE_PV_NAME="${GCE_DYN_STORAGE_PD_NAME}-nfs-server-provisioner"
+GCE_DYN_STORAGE_PV_STORAGE="10Gi"
+GCE_DYN_STORAGE_CLAIMREF="data-$GCE_DYN_STORAGE_PV_NAME-0"
 
 ELASTIC_PVC_STORAGE=${ELASTIC_PVC_STORAGE-"10Gi"}
 # Set X_STORAGECLASS to "" to use the default storage class.
@@ -208,6 +219,55 @@ NFSRODS_CONFIG_PV_ACCESSMODE=${NFSRODS_CONFIG_PV_ACCESSMODE-"ReadWriteMany"}
 #
 
 
+function createGCEDisk(){
+  local PD_NAME=$1
+  local DISK_SIZE=$2
+  gcloud compute disks create --project $PROJECT --zone=$AVAILABILITY_ZONE --size=$DISK_SIZE $PD_NAME
+}
+
+
+function deleteGCEDisk(){
+  local PD_NAME=$1
+  gcloud compute disks delete --project $PROJECT --zone $AVAILABILITY_ZONE --quiet $PD_NAME
+}
+
+
+function createGCEPV(){
+  local PD_NAME=$1
+  local PV_NAME=$2
+  local PV_STORAGE=$3
+  local CLAIMREF=$4
+  echo -e "
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: $PV_NAME
+spec:
+  capacity:
+    storage: $PV_STORAGE
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    fsType: \"ext4\"
+    pdName: "$PD_NAME"
+  claimRef:
+    namespace: $NAMESPACE
+    name: $CLAIMREF
+---
+" | kubectl create -f -
+}
+
+
+function deleteGCEPV(){
+  local PD_NAME=$1
+  local PV_NAME=$2
+  local CLAIMREF=$3
+  kubectl -n $NAMESPACE delete pvc $CLAIMREF
+  kubectl -n $NAMESPACE delete pv $PV_NAME
+}
+
+
 function deployDynamicPVCP() {
   if [ "$DYNAMIC_NFSCP_DEPLOYMENT" = true ]; then
     echo "Deploying NFS Client Provisioner for Dynamic PVCs"
@@ -217,6 +277,11 @@ function deployDynamicPVCP() {
                  --set storageClass.name=$NFSCP_STORAGECLASS \
                  $NFSCP_NAME stable/nfs-client-provisioner
   else
+    if [ "$GKE_DEPLOYMENT" = true ]; then
+      createGCEDisk $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_STORAGE
+      createGCEPV $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_NAME \
+          $GCE_DYN_STORAGE_PV_STORAGE $GCE_DYN_STORAGE_CLAIMREF
+    fi
     echo "Deploying NFS Server Provisioner for Dynamic PVCs"
     HELM_VALUES="persistence.enabled=$NFSSP_PERSISTENCE_ENABLED"
     HELM_VALUES+=",storageClass.name=$NFSSP_STORAGECLASS"
@@ -235,6 +300,13 @@ function deleteDynamicPVCP() {
   else
     echo "Deleting NFS Server Provisioner for Dynamic PVCs"
     $HELM -n $NAMESPACE delete $NFSSP_NAME
+    if [ "$GKE_DEPLOYMENT" = true ]; then
+      deleteGCEPV $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_NAME \
+          $GCE_DYN_STORAGE_CLAIMREF
+      echo "Pausing for PV to be deleted fully."
+      sleep 15
+      deleteGCEDisk $GCE_DYN_STORAGE_PD_NAME
+    fi
   fi
 }
 
@@ -475,15 +547,19 @@ spec:
 function deployCAT(){
   echo "# deploying CAT"
   # Create PVC for CAT before deploying CAT.
-  # if [ "$GKE_DEPLOYMENT" = true ]; then
-  #   createGCEDisk $CAT_USER_STORAGE_NAME $CAT_DISK_SIZE $AVAILABILITY_ZONE
-  #   createGCEPV
-  # else
-  #   # The shared directories on the NFS server need to exist.
-  #   createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-  #       $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-  # fi
-  # createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+  if [ "$GKE_DEPLOYMENT" = true ]; then
+    createGCEDisk $CAT_USER_STORAGE_NAME $CAT_DISK_SIZE $AVAILABILITY_ZONE
+    createGCEPV
+    createGCEDisk $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_PV_STORAGE_SIZE $AVAILABILITY_ZONE
+    createGCEPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PVC
+  else
+    createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+    createExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
+        $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
+        $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
+  fi
   if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
   then
    echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
@@ -636,84 +712,6 @@ function deleteNginx(){
 }
 
 
-function createGCEDisk(){
-  PD_NAME=${1-"nfssp-helx-dev-cat"}
-  DISK_SIZE=${2-"10GB"}
-  AVAILABILITY_ZONE=${3-"us-east1-b"}
-  gcloud compute disks create --project $PROJECT --size=$DISK_SIZE --zone=$AVAILABILITY_ZONE $PD_NAME
-}
-
-
-function deleteGCEDisk(){
-  PD_NAME=${1-"nfssp-helx-dev-cat"}
-  AVAILABILITY_ZONE=${2-"us-east1-b"}
-  gcloud compute disks delete $PD_NAME --project $PROJECT --zone $AVAILABILITY_ZONE --quiet
-}
-
-
-function createGCEPV(){
-  PD_NAME=${1-"nfssp-helx-dev-cat"}
-  PV_NAME=${2-"cat-nfssp-nfs-server-provisioner"}
-  PV_STORAGE=${3-"10Gi"}
-  DISK_SIZE=${4-"10GB"}
-  CLAIMREF=${5-"data-$PV_NAME-0"}
-  AVAILABILITY_ZONE=${6-"us-east1-b"}
-  NAMESPACE=${7-"default"}
-  # createGCEDisk $PD_NAME $DISK_SIZE $AVAILABILITY_ZONE
-  echo -e "
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: $PV_NAME
-spec:
-  capacity:
-    storage: $PV_STORAGE
-  accessModes:
-    - ReadWriteOnce
-  gcePersistentDisk:
-    fsType: \"ext4\"
-    pdName: "$PD_NAME"
-  claimRef:
-    namespace: $NAMESPACE
-    name: $CLAIMREF
----
-" | kubectl create -f -
-}
-
-
-function deleteGCEPV(){
-  PD_NAME=${1-"nfssp-helx-dev-cat"}
-  PV_NAME=${2-"cat-nfssp-nfs-server-provisioner"}
-  PV_STORAGE=${3-"10Gi"}
-  DISK_SIZE=${4-"10GB"}
-  CLAIMREF=${5-"data-$PV_NAME-0"}
-  AVAILABILITY_ZONE=${6-"us-east1-b"}
-  NAMESPACE=${7-"default"}
-  kubectl delete pvc $CLAIMREF
-  echo -e "
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: $PV_NAME
-spec:
-  capacity:
-    storage: $PV_STORAGE
-  accessModes:
-    - ReadWriteOnce
-  gcePersistentDisk:
-    fsType: \"ext4\"
-    pdName: "$PD_NAME"
-  claimRef:
-    namespace: $NAMESPACE
-    name: $CLAIMREF
----
-" | kubectl delete -f -
-  deleteGCEDisk $PD_NAME $AVAILABILITY_ZONE
-}
-
-
 function deployNFSRODS(){
   echo "deploying NFSRODS"
   HELM_VALUES="config.claimName=$NFSRODS_CONFIG_CLAIMNAME"
@@ -768,11 +766,14 @@ case $APPS_ACTION in
         createGCEDisk $CAT_USER_STORAGE_NAME
         createGCEPV
         ;;
-      dynamicPVC)
+      dynamicPVCP)
         deployDynamicPVCP
         ;;
       elk)
         deployELK
+        ;;
+      nextflowPVC)
+        createPVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         ;;
       nfs-server)
         kubectl create namespace $NAMESPACE
@@ -852,11 +853,14 @@ case $APPS_ACTION in
         deleteGCEPV
         deleteGCEDisk $CAT_USER_STORAGE_NAME
         ;;
-      dynamicPVC)
+      dynamicPVCP)
         deleteDynamicPVCP
         ;;
       elk)
         deleteELK
+        ;;
+      nextflowPVC)
+        deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         ;;
       nfs-server)
         # deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE  $NFSP_STORAGECLASS
