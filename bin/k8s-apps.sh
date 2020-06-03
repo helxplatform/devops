@@ -97,6 +97,7 @@ K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELXPLATFORM_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
 
 GCE_NFS_SERVER_DISK=${GCE_NFS_SERVER_DISK-"${PV_PREFIX}stdnfs-disk"}
+GCE_NFS_SERVER_STORAGE=${GCE_NFS_SERVER_STORAGE-"10Gi"}
 
 NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/exports"}
 NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.default.svc.cluster.local"}
@@ -189,7 +190,7 @@ APPSTORE_DB_STORAGECLASS=${APPSTORE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
 COMMONSSHARE_DB_STORAGECLASS=${COMMONSSHARE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
 
 # This is temporary until we figure out something to use to encrypt secret
-# files, like git-crypt.
+# files, like git-crypt.  ToDo: Also add something like this for appstore.
 HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/hydroshare-secret.yaml"}
 HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/commonsshare/templates/hydroshare-secret.yaml"}
 
@@ -343,28 +344,17 @@ function deleteELK(){
 }
 
 
-function deployNFS(){
+function deployNFSServer(){
    echo "# deploying NFS"
-   # These will create storage using the default storage class.
-   # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
-   # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
+   kubectl create namespace $NAMESPACE
+   createGCEDisk $GCE_NFS_SERVER_DISK $GCE_NFS_SERVER_STORAGE
    export GCE_NFS_SERVER_DISK=${1-$GCE_NFS_SERVER_DISK}
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl create -n $NAMESPACE -f -
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
-   # export SVC_CLSTRIP_DEC=$NFS_SERVICE_IP
-   # cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
-   #     kubectl create -n $NAMESPACE -f -
-   # Create PV and PVC for cloud-top
-   # export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
-   # export PV_NFS_SERVER=$NFS_CLNT_PV_NFS_SRVR
-   # export PV_NAME=$NFS_CLNT_PV_NAME
-   # export PVC_NAME=$NFS_CLNT_PVC_NAME
-   # # export SVC_CLSTRIP_DEC=$NFS_SERVICE_IP
-   # export STORAGECLASS_NAME=$NFS_CLNT_STORAGECLASS
-   # cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
-   #     kubectl create -n $NAMESPACE -f -
-   createNFSServerPVPVC $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_PV_NFS_SRVR $NFS_CLNT_PV_NAME $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS
+   kubectl apply -n $NAMESPACE -R -f \
+       $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
+   createNFSServerPVPVC $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_PV_NFS_SRVR \
+       $NFS_CLNT_PV_NAME $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS
    echo "# end deploying NFS"
 }
 
@@ -382,26 +372,12 @@ function createNFSServerPVPVC(){
 
 function deleteNFS(){
    echo "# deleting NFS"
-   # delete NFS server
-   # export PV_NFS_PATH=$NFS_CLNT_PV_NFS_PATH
-   # export PV_NFS_SERVER=$NFS_CLNT_PV_NFS_SRVR
-   # export PV_NAME=$NFS_CLNT_PV_NAME
-   # export PVC_NAME=$NFS_CLNT_PVC_NAME
-   # export STORAGECLASS_NAME=$NFS_CLNT_STORAGECLASS
-   # cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
-   #     kubectl delete -n $NAMESPACE -f -
-   # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
    kubectl -n $NAMESPACE delete pvc $NFS_CLNT_PVC_NAME
    kubectl -n $NAMESPACE delete pv $NFS_CLNT_PV_NAME
-   # export SVC_CLSTRIP_DEC=$NFS_SERVICE_IP
-   # cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc-template.yaml | envsubst | \
-   #     kubectl delete -n $NAMESPACE -f -
    export GCE_NFS_SERVER_DISK=${1-$GCE_NFS_SERVER_DISK}
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl delete -n $NAMESPACE -f -
    kubectl delete -n $NAMESPACE svc nfs-server
-   # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server.yaml
-   # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-pvc.yaml
    echo "# end deleting NFS"
 }
 
@@ -548,7 +524,7 @@ function deployCAT(){
   echo "# deploying CAT"
   # Create PVC for CAT before deploying CAT.
   if [ "$GKE_DEPLOYMENT" = true ]; then
-    createGCEDisk $CAT_USER_STORAGE_NAME $CAT_DISK_SIZE $AVAILABILITY_ZONE
+    createGCEDisk $CAT_USER_STORAGE_NAME $CAT_DISK_SIZE
     createGCEPV
     createGCEDisk $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_PV_STORAGE_SIZE $AVAILABILITY_ZONE
     createGCEPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PVC
@@ -776,9 +752,7 @@ case $APPS_ACTION in
         createPVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         ;;
       nfs-server)
-        kubectl create namespace $NAMESPACE
-        createGCEDisk $GCE_NFS_SERVER_DISK
-        deployNFS
+        deployNFSServer
         # createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
         # createPVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         ;;
