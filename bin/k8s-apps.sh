@@ -95,14 +95,17 @@ PV_PREFIX=${PV_PREFIX-"$ENVIRONMENT-$USER-"}
 HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"../.."}
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELXPLATFORM_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
+SECRET_FILENAME_SUFFIX=${SECRET_FILENAME_SUFFIX-""}
 
 GCE_NFS_SERVER_DISK=${GCE_NFS_SERVER_DISK-"${PV_PREFIX}stdnfs-disk"}
-GCE_NFS_SERVER_STORAGE=${GCE_NFS_SERVER_STORAGE-"10Gi"}
+GCE_NFS_SERVER_DISK_DELETE_W_APP=${GCE_NFS_SERVER_DISK_DELETE_W_APP-false}
+GCE_NFS_SERVER_STORAGE=${GCE_NFS_SERVER_STORAGE-"100Gi"}
 
 NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/exports"}
-NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.default.svc.cluster.local"}
+NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.$NAMESPACE.svc.cluster.local"}
 NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"${PV_PREFIX}stdnfs-pv"}
 NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"stdnfs"}
+NFS_CLNT_STORAGE_SIZE=${NFS_CLNT_STORAGE_SIZE-"5Gi"}
 NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"stdnfs-sc"}
 
 NEXTFLOW_PVC=${NEXTFLOW_PVC-"deepgtex-prp"}
@@ -138,6 +141,7 @@ CAT_DISK_SIZE=${CAT_DISK_SIZE-"10GB"}
 CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
 
 APPSTORE_OAUTH_PD_NAME=${APPSTORE_OAUTH_PD_NAME-"${PV_PREFIX}appstore-oauth-disk"}
+APPSTORE_OAUTH_PD_DELETE_W_APP=${APPSTORE_OAUTH_PD_DELETE_W_APP-false}
 APPSTORE_OAUTH_PV_NAME=${APPSTORE_OAUTH_PV_NAME-"${PV_PREFIX}appstore-oauth-pv"}
 # Definie APPSTORE_OAUTH_PVC to use a PVC for the oauth sqlite3 db storage.
 APPSTORE_OAUTH_PVC=${APPSTORE_OAUTH_PVC-""}
@@ -149,7 +153,11 @@ APPSTORE_OAUTH_NFS_PATH=${APPSTORE_OAUTH_NFS_PATH-""}
 APPSTORE_OAUTH_PV_STORAGE_SIZE=${APPSTORE_OAUTH_PV_STORAGE_SIZE-"10Gi"}
 APPSTORE_OAUTH_PV_ACCESSMODE=${APPSTORE_OAUTH_PV_ACCESSMODE-"ReadWriteOnce"}
 APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
+APPSTORE_DJANGO_SETTINGS=${APPSTORE_DJANGO_SETTINGS-""}
 APPSTORE_IMAGE_PULL_SECRETS=${APPSTORE_IMAGE_PULL_SECRETS-""}
+APPSTORE_SECRET_SRC_FILE=${APPSTORE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/devops/helx/secrets/csappstore-secret${SECRET_FILENAME_SUFFIX}.yml"}
+APPSTORE_SECRET_DST_FILE=${APPSTORE_SECRET_DST_FILE-"$HELXPLATFORM_HOME/devops/helx/charts/appstore/templates/csappstore-secret.yml"}
+
 TYCHO_NAME=${TYCHO_NAME-"tycho"}
 TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-""}
 TYCHO_API_IMAGE=${TYCHO_API_IMAGE-""}
@@ -192,7 +200,7 @@ COMMONSSHARE_DB_STORAGECLASS=${COMMONSSHARE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
 
 # This is temporary until we figure out something to use to encrypt secret
 # files, like git-crypt.  ToDo: Also add something like this for appstore.
-HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/hydroshare-secret.yaml"}
+HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/secrets/hydroshare-secret.yaml"}
 HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/commonsshare/templates/hydroshare-secret.yaml"}
 
 NFSRODS_NAME=${NFSRODS_NAME-"nfsrods"}
@@ -215,6 +223,11 @@ NFSRODS_CONFIG_NFS_PATH=${NFSRODS_CONFIG_NFS_PATH-""}
 NFSRODS_CONFIG_PV_STORAGECLASS=${NFSRODS_CONFIG_PV_STORAGECLASS-"$NFSRODS_NAME-config-sc"}
 NFSRODS_CONFIG_PV_STORAGE_SIZE=${NFSRODS_CONFIG_PV_STORAGE_SIZE-"10Mi"}
 NFSRODS_CONFIG_PV_ACCESSMODE=${NFSRODS_CONFIG_PV_ACCESSMODE-"ReadWriteMany"}
+
+# Some commands need to be given time to execute after they are run before
+# running other related commands (like deleting a PV then deleting the related
+# disk).
+KUBE_WAIT_TIME=15
 
 #
 # end default user-definable variable definitions
@@ -326,10 +339,10 @@ function deleteDynamicPVCP() {
     echo "Deleting NFS Server Provisioner for Dynamic PVCs"
     $HELM -n $NAMESPACE delete $NFSSP_NAME
     if [ "$GKE_DEPLOYMENT" = true ]; then
-      deleteGKEPV $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_NAME \
-          $GCE_DYN_STORAGE_CLAIMREF
+      deleteGKEPVC $GCE_DYN_STORAGE_CLAIMREF
+      deleteGKEPV $GCE_DYN_STORAGE_PV_NAME
       echo "Pausing for PV to be deleted fully."
-      sleep 15
+      sleep $KUBE_WAIT_TIME
       deleteGCEDisk $GCE_DYN_STORAGE_PD_NAME
     fi
   fi
@@ -372,7 +385,7 @@ function deployNFSServer(){
    echo "# deploying NFS"
    kubectl create namespace $NAMESPACE
    createGCEDisk $GCE_NFS_SERVER_DISK $GCE_NFS_SERVER_STORAGE
-   export GCE_NFS_SERVER_DISK=${1-$GCE_NFS_SERVER_DISK}
+   export GCE_NFS_SERVER_DISK
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl create -n $NAMESPACE -f -
    kubectl apply -n $NAMESPACE -R -f \
@@ -383,17 +396,6 @@ function deployNFSServer(){
 }
 
 
-# function createNFSServerPVPVC(){
-#   export PV_NFS_PATH=$1
-#   export PV_NFS_SERVER=$2
-#   export PV_NAME=$3
-#   export PVC_NAME=$4
-#   export STORAGECLASS_NAME=$5
-#   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-client-pvc-pv-template.yaml | envsubst | \
-#       kubectl create -n $NAMESPACE -f -
-# }
-
-
 function deleteNFSServer(){
    echo "# deleting NFS"
    kubectl -n $NAMESPACE delete pvc $NFS_CLNT_PVC_NAME
@@ -402,11 +404,18 @@ function deleteNFSServer(){
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl delete -n $NAMESPACE -f -
    kubectl delete -n $NAMESPACE svc nfs-server
+   if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" = true ]; then
+     echo "### Deleting NFS Server Persistent disk."
+     sleep $KUBE_WAIT_TIME
+     deleteGCEDisk $GCE_NFS_SERVER_DISK
+   else
+     echo "### Not deleting NFS Server Persistent disk."
+   fi
    echo "# end deleting NFS"
 }
 
 
-function createPVC(){
+function createPVCWithDefaultStorageClass(){
    export PVC_NAME=$1
    export PVC_STORAGE_SIZE=$2
    # PVC_STORAGE_CLASS_NAME can be empty.
@@ -430,7 +439,7 @@ function deletePVC(){
 }
 
 
-function createExternalNFSPV(){
+function createNFSPV(){
    PV_NAME=$1
    PV_NFS_SERVER=$2
    PV_NFS_PATH=$3
@@ -461,7 +470,7 @@ spec:
 }
 
 
-function createExternalNFSPVC(){
+function createNFSPVC(){
   PVC_NAME=$1
   PVC_STORAGECLASS=$2
   PVC_STORAGE_SIZE=$3
@@ -486,7 +495,7 @@ spec:
 }
 
 
-function deleteExternalNFSPV(){
+function deleteNFSPV(){
    PV_NAME=$1
    PV_NFS_SERVER=$2
    PV_NFS_PATH=$3
@@ -517,7 +526,7 @@ spec:
 }
 
 
-function deleteExternalNFSPVC(){
+function deleteNFSPVC(){
   PVC_NAME=$1
   PVC_NFS_SERVER=$2
   PVC_NFS_PATH=$3
@@ -546,18 +555,21 @@ spec:
 
 function deployCAT(){
   echo "# deploying CAT"
-  # Create PVC for CAT before deploying CAT.
   if [ "$GKE_DEPLOYMENT" = true ]; then
-    # createGCEDisk $CAT_PD_NAME $CAT_DISK_SIZE
-    # createGKEPV $CAT_PD_NAME $CAT_PV_NAME $CAT_PVC_STORAGE $CAT_USER_STORAGE_NAME
+    createNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
+        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
+        "ReadWriteMany"
+    createNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
+        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
     createGCEDisk $APPSTORE_OAUTH_PD_NAME $APPSTORE_OAUTH_PV_STORAGE_SIZE
-    createGKEPV $APPSTORE_OAUTH_PD_NAME $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PVC
+    createGKEPV $APPSTORE_OAUTH_PD_NAME $APPSTORE_OAUTH_PV_NAME \
+        $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PVC
     createGKEPVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PV_STORAGE_SIZE
   else
-    createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+    createNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
         $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-    createExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
+    createPVCWithDefaultStorageClass $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+    createNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
         $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
         $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
   fi
@@ -571,10 +583,23 @@ function deployCAT(){
    echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
    echo "### Not copying hydroshare secret file. ###"
   fi
+  if [ -f "$APPSTORE_SECRET_SRC_FILE" ]
+  then
+   echo "copying \"$APPSTORE_SECRET_SRC_FILE\" to"
+   echo "  \"$APPSTORE_SECRET_DST_FILE\""
+   cp $APPSTORE_SECRET_SRC_FILE $APPSTORE_SECRET_DST_FILE
+  else
+   echo "Appstore secret source file not found:"
+   echo "  file: \"$APPSTORE_SECRET_SRC_FILE\""
+   echo "### Not copying appstore secret file. ###"
+  fi
+
+  ## Deploy CommonsShare
   HELM_VALUES="web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
   $HELM -n $NAMESPACE upgrade --install $COMMONSSHARE_NAME \
     $CAT_HELM_DIR/charts/commonsshare --debug --logtostderr --set $HELM_VALUES
 
+  ## Deploy AppStore
   HELM_VALUES="db.storageClass=$APPSTORE_DB_STORAGECLASS"
   if [ ! -z "$APPSTORE_OAUTH_PVC" ]
   then
@@ -592,9 +617,14 @@ function deployCAT(){
   then
    HELM_VALUES+=",imagePullSecrets=$APPSTORE_IMAGE_PULL_SECRETS"
   fi
+  if [ ! -z "$APPSTORE_DJANGO_SETTINGS" ]
+  then
+   HELM_VALUES+=",djangoSettings=$APPSTORE_DJANGO_SETTINGS"
+  fi
   $HELM -n $NAMESPACE upgrade --install $APPSTORE_NAME \
      $CAT_HELM_DIR/charts/appstore --debug --logtostderr --set $HELM_VALUES
 
+  ## Deploy Tycho-API
   if [ "$TYCHO_USE_ROLE" = false ]
   then
    HELM_VALUES+=",useRole=false"
@@ -614,12 +644,6 @@ function deployCAT(){
   fi
   $HELM -n $NAMESPACE upgrade --install $TYCHO_NAME \
      $CAT_HELM_DIR/charts/tycho-api --debug --logtostderr --set $HELM_VALUES
-   # For some reason deleting Helm chart for cat does not remove this secret
-   # and upgrading Helm chart fails.
-   # kubectl -n $NAMESPACE delete secret hydroshare-secret
-   # kubectl -n $NAMESPACE delete configmap csappstore-env hydroshare-env
-   # $HELM -n $NAMESPACE upgrade --install $CAT_USER_STORAGE_NAME $CAT_HELM_DIR --debug \
-   #      --logtostderr --set $HELM_VALUES
    echo "# end deploying CAT"
 }
 
@@ -630,17 +654,25 @@ function deleteCAT(){
   $HELM -n $NAMESPACE delete $APPSTORE_NAME
   $HELM -n $NAMESPACE delete $TYCHO_NAME
   if [ "$GKE_DEPLOYMENT" = true ]; then
-    # deleteGKEPV $CAT_PD_NAME $CAT_PV_NAME $CAT_USER_STORAGE_NAME
-    # deleteGCEDisk $CAT_PD_NAME
+    deleteNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
+        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
+    deleteNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
+        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
+        "ReadWriteMany"
     deleteGKEPVC $APPSTORE_OAUTH_PVC
     deleteGKEPV $APPSTORE_OAUTH_PV_NAME
-    deleteGCEDisk $APPSTORE_OAUTH_PD_NAME
+    if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" = true ]; then
+      echo "### Deleting AppStore Oauth Persistent disk."
+      sleep $KUBE_WAIT_TIME
+      deleteGCEDisk $APPSTORE_OAUTH_PD_NAME
+    else
+      echo "### Not deleting AppStore Oauth Persistent disk."
+    fi
   else
     deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-    deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+    deleteNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
       $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-    # The helm chart handles deletion of PVC.
-    deleteExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
+    deleteNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
       $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
       $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
   fi
@@ -739,7 +771,7 @@ case $APPS_ACTION in
     case $APP in
       all)
         deployDynamicPVCP
-        createPVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
+        createPVCWithDefaultStorageClass $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         # create disks (GKE or BM)
         # Install SSL/TLS certificates.  Reserve static IP.  Set DNS IP.
         deployELK
@@ -753,23 +785,6 @@ case $APPS_ACTION in
       cat)
         deployCAT
         ;;
-      disks)
-        if [ "$GKE_DEPLOYMENT" = true ]; then
-          createGCEDisk $CAT_USER_STORAGE_NAME
-          createGKEPV
-        else
-          createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-              $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-          createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-          createExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
-              $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
-              $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
-        fi
-        ;;
-      gcedisks)
-        createGCEDisk $CAT_USER_STORAGE_NAME
-        createGKEPV
-        ;;
       dynamicPVCP)
         deployDynamicPVCP
         ;;
@@ -777,35 +792,25 @@ case $APPS_ACTION in
         deployELK
         ;;
       nextflowPVC)
-        createPVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
+        createPVCWithDefaultStorageClass $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         ;;
       nfs-server)
         deployNFSServer
-        # createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-        # createPVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         ;;
       nfsrods)
         if [ "$NFSRODS_FOR_USER_DATA" = true ]; then
-          createExternalNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
+          createNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
               $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
               $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
         fi
         deployNFSRODS
-        createExternalNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
+        createNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
             $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
             $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
-        createPVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
+        createPVCWithDefaultStorageClass $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
         ;;
       nginx)
         deployNginx
-        ;;
-      staticNFSPVPVC)
-        createExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-            $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-        createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-        createExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
-            $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
-            $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
         ;;
       *)
         print_apps_help
@@ -822,12 +827,12 @@ case $APPS_ACTION in
         deleteELK
         deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
-        deleteExternalNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
+        deleteNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
             $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
             $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
         deleteNFSServer
         deleteNFSRODS
-        deleteExternalNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
+        deleteNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
             $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
             $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
         deleteDynamicPVCP
@@ -837,23 +842,6 @@ case $APPS_ACTION in
         ;;
       cat)
         deleteCAT
-        ;;
-      disks)
-        if [ "$GKE_DEPLOYMENT" = true ]; then
-          deleteGKEPV
-          deleteGCEDisk $CAT_USER_STORAGE_NAME
-        else
-          deleteExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
-              $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
-              $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
-          deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-          deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-              $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-        fi
-        ;;
-      gcedisks)
-        deleteGKEPV
-        deleteGCEDisk $CAT_USER_STORAGE_NAME
         ;;
       dynamicPVCP)
         deleteDynamicPVCP
@@ -865,21 +853,17 @@ case $APPS_ACTION in
         deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         ;;
       nfs-server)
-        # deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE  $NFSP_STORAGECLASS
-        # deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
         deleteNFSServer
-        sleep 20
-        deleteGCEDisk $GCE_NFS_SERVER_DISK
         ;;
       nfsrods)
         deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
-        deleteExternalNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
+        deleteNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
             $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
             $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
         deleteNFSRODS
         deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
         if [ "$NFSRODS_FOR_USER_DATA" = true ]; then
-          deleteExternalNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
+          deleteNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
               $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
               $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
         fi
@@ -887,14 +871,6 @@ case $APPS_ACTION in
       nginx)
         deleteNginx
         ;;
-      staticNFSPVPVC)
-        deleteExternalNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
-            $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
-            $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
-        deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-        deleteExternalNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-            $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-         ;;
       *)
         print_apps_help
         exit 1
