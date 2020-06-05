@@ -86,3 +86,5 @@ image: "heliumdatastage/commonsshare_appstore:1.1.25"
 # imagePullSecrets: some-secret
 
 djangoSettings: cat
+
+postrges: False

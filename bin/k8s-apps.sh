@@ -95,7 +95,7 @@ PV_PREFIX=${PV_PREFIX-"$ENVIRONMENT-$USER-"}
 HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"../.."}
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELXPLATFORM_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
-SECRET_FILENAME_SUFFIX=${SECRET_FILENAME_SUFFIX-""}
+SECRET_FILENAME_SUFFIX=${SECRET_FILENAME_SUFFIX-"-${CLUSTER_NAME}-${NAMESPACE}"}
 
 GCE_NFS_SERVER_DISK=${GCE_NFS_SERVER_DISK-"${PV_PREFIX}stdnfs-disk"}
 GCE_NFS_SERVER_DISK_DELETE_W_APP=${GCE_NFS_SERVER_DISK_DELETE_W_APP-false}
@@ -355,9 +355,7 @@ function deployELK(){
    export ELASTIC_PVC_STORAGE
    cat $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
           kubectl apply -n $NAMESPACE -f -
-   # kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
-
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
    kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/logstash/
    echo "# end deploying ELK"
@@ -368,11 +366,8 @@ function deleteELK(){
    echo "# deleting ELK"
    # delete ELK
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
-
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/logstash/
    kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
-
-   # kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch.yaml
    export PVC_STORAGE_CLASS_NAME=$NFSP_STORAGECLASS
    export ELASTIC_PVC_STORAGE
    cat $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
@@ -390,8 +385,6 @@ function deployNFSServer(){
        kubectl create -n $NAMESPACE -f -
    kubectl apply -n $NAMESPACE -R -f \
        $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
-   # createNFSServerPVPVC $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_PV_NFS_SRVR \
-   #     $NFS_CLNT_PV_NAME $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS
    echo "# end deploying NFS"
 }
 
@@ -750,18 +743,33 @@ function deleteNginx(){
 
 function deployNFSRODS(){
   echo "deploying NFSRODS"
+  createNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
+      $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
+      $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
   HELM_VALUES="config.claimName=$NFSRODS_CONFIG_CLAIMNAME"
   HELM_VALUES+=",config.storageClass=$NFSRODS_CONFIG_PV_STORAGECLASS"
   HELM_VALUES+=",service.ip=$NFSRODS_PV_NFS_SERVER_IP"
   $HELM -n $NAMESPACE upgrade --install $NFSRODS_NAME $NFSRODS_HELM_DIR --debug \
       --logtostderr --set $HELM_VALUES
+  createNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
+      $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
+      $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
+  createPVCWithDefaultStorageClass $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
   echo "NFSRODS deployed"
 }
 
 
 function deleteNFSRODS(){
   echo "deleting NFSRODS"
+  deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
+  deleteNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
+      $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
+      $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
   $HELM -n $NAMESPACE delete $NFSRODS_NAME
+  deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
+  deleteNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
+      $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
+      $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
   echo "NFSRODS deleted"
 }
 
@@ -771,9 +779,15 @@ case $APPS_ACTION in
     case $APP in
       all)
         deployDynamicPVCP
+        if [ "$GKE_DEPLOYMENT" = true ];
+        then
+          deployNFSServer
+        fi
+        if [ "$NFSRODS_FOR_USER_DATA" = true ]
+        then
+          deployNFSRODS
+        fi
         createPVCWithDefaultStorageClass $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
-        # create disks (GKE or BM)
-        # Install SSL/TLS certificates.  Reserve static IP.  Set DNS IP.
         deployELK
         deployCAT
         deployAmbassador
@@ -798,16 +812,7 @@ case $APPS_ACTION in
         deployNFSServer
         ;;
       nfsrods)
-        if [ "$NFSRODS_FOR_USER_DATA" = true ]; then
-          createNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
-              $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
-              $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
-        fi
         deployNFSRODS
-        createNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
-            $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
-            $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
-        createPVCWithDefaultStorageClass $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
         ;;
       nginx)
         deployNginx
@@ -826,15 +831,13 @@ case $APPS_ACTION in
         deleteCAT
         deleteELK
         deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
-        deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
-        deleteNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
-            $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
-            $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
-        deleteNFSServer
-        deleteNFSRODS
-        deleteNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
-            $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
-            $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
+        if [ "$NFSRODS_FOR_USER_DATA" = true ]; then
+          deleteNFSRODS
+        fi
+        if [ "$GKE_DEPLOYMENT" = true ];
+        then
+          deleteNFSServer
+        fi
         deleteDynamicPVCP
         ;;
       ambassador)
@@ -856,17 +859,7 @@ case $APPS_ACTION in
         deleteNFSServer
         ;;
       nfsrods)
-        deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
-        deleteNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
-            $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
-            $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
         deleteNFSRODS
-        deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
-        if [ "$NFSRODS_FOR_USER_DATA" = true ]; then
-          deleteNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
-              $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
-              $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
-        fi
         ;;
       nginx)
         deleteNginx
