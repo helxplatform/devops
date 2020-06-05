@@ -14,9 +14,11 @@ spec:
         app: cs-{{ template "appstore.name" . }}
     spec:
       initContainers:
+      {{- if .Values.postgres }}
       - name: {{ .Values.db.name }}-init
         image: busybox:1.28
         command: ['sh', '-c', 'until nslookup {{ .Values.db.name }}; do echo waiting for postgres; sleep 2; done;']
+      {{- end }}
       containers:
       - name: cs-{{ .Values.db.name }}
         image: {{ .Values.image }}
@@ -26,16 +28,16 @@ spec:
         # For debugging when things go wrong.
         # args: ["-c", "while true; do date; sleep 5; done"]
         env:
-        - name: DATABASE_USER
-          valueFrom:
-            secretKeyRef:
-              key: DATABASE_USER
-              name: csappstore-secret
-        - name: DATABASE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: DATABASE_PASSWORD
-              name: csappstore-secret
+        # - name: DATABASE_USER
+        #   valueFrom:
+        #     secretKeyRef:
+        #       key: DATABASE_USER
+        #       name: csappstore-secret
+        # - name: DATABASE_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       key: DATABASE_PASSWORD
+        #       name: csappstore-secret
         - name: OAUTH_DB_DIR
           valueFrom:
             configMapKeyRef:
