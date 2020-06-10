@@ -63,6 +63,16 @@ spec:
             configMapKeyRef:
               key: DEV_PHASE
               name: csappstore-env
+        - name: BRAINI_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: BRAINI_PORT
+              name: csappstore-env
+        - name: NRC_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: NRC_PORT
+              name: csappstore-env
         - name: CSAPPSTORE_SECRET_KEY
           valueFrom:
             secretKeyRef:
