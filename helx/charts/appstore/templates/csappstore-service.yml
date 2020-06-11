@@ -19,8 +19,9 @@ metadata:
    {{- end }}
 spec:
   type: {{ .Values.service.type }}
-  ports:
-  - port: 8000
+  - name: {{ .Values.httpProtocol }}
+    protocol: TCP
+    port: 8000
     targetPort: 8000
   selector:
     app: cs-{{ template "appstore.name" . }}

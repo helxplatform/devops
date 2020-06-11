@@ -89,6 +89,8 @@ djangoSettings: cat
 
 postgres: False
 
+httpProtocol: https
+
 CLOUD_TOP_USER_HOME: '/home/cloud-top'
 CLOUD_TOP_USER_NAME: 'cloud-top'
 CLOUD_TOP_VNC_PW: ''
