@@ -19,7 +19,7 @@ metadata:
    {{- end }}
 spec:
   type: {{ .Values.service.type }}
-  - name: {{ .Values.defaultHTTPprotocol }}
+  - name: {{ .Values.httpProtocol }}
     protocol: TCP
     port: 8000
     targetPort: 8000
