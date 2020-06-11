@@ -89,7 +89,7 @@ djangoSettings: cat
 
 postgres: False
 
-defaultHTTPprotocol: https
+httpProtocol: https
 
 CLOUD_TOP_USER_HOME: '/home/cloud-top'
 CLOUD_TOP_USER_NAME: 'cloud-top'
