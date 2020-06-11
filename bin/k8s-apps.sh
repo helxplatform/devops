@@ -101,7 +101,7 @@ GCE_NFS_SERVER_DISK=${GCE_NFS_SERVER_DISK-"${PV_PREFIX}stdnfs-disk"}
 GCE_NFS_SERVER_DISK_DELETE_W_APP=${GCE_NFS_SERVER_DISK_DELETE_W_APP-false}
 GCE_NFS_SERVER_STORAGE=${GCE_NFS_SERVER_STORAGE-"100Gi"}
 
-NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/exports"}
+NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/stdnfs"}
 NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.$NAMESPACE.svc.cluster.local"}
 NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"${PV_PREFIX}stdnfs-pv"}
 NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"stdnfs"}
@@ -109,7 +109,12 @@ NFS_CLNT_STORAGE_SIZE=${NFS_CLNT_STORAGE_SIZE-"5Gi"}
 NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"stdnfs-sc"}
 
 NEXTFLOW_PVC=${NEXTFLOW_PVC-"deepgtex-prp"}
-NEXTFLOW_STORAGE_SIZE=${NEXTFLOW_STORAGE_SIZE-"5Gi"}
+# NEXTFLOW_STORAGE_SIZE=${NEXTFLOW_STORAGE_SIZE-"5Gi"}
+NEXTFLOW_PV_STORAGE_SIZE=${NEXTFLOW_PV_STORAGE_SIZE-"5Gi"}
+NEXTFLOW_PV_ACCESSMODE=${NEXTFLOW_PV_ACCESSMODE-"ReadWriteMany"}
+NEXTFLOW_NFS_SERVER=${NEXTFLOW_NFS_SERVER-$NFS_CLNT_PV_NFS_SRVR}
+NEXTFLOW_NFS_PATH=${NEXTFLOW_NFS_PATH-"/nextflow"}
+NEXTFLOW_PV_STORAGECLASS=${NEXTFLOW_PV_STORAGECLASS-"nextflow-sc"}
 
 AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/ambassador"}
 USE_CLUSTER_ROLES=${USE_CLUSTER_ROLES-false}
@@ -134,7 +139,7 @@ CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"10Gi"}
 CAT_PD_NAME=${CAT_PD_NAME-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-disk"}
 CAT_PV_NAME=${CAT_PV_NAME-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-pv"}
 CAT_NFS_SERVER=${CAT_NFS_SERVER-""}
-CAT_NFS_PATH=${CAT_NFS_PATH-""}
+CAT_NFS_PATH=${CAT_NFS_PATH-"/sfdnfs"}
 CAT_PV_STORAGECLASS=${CAT_PV_STORAGECLASS-"$CAT_USER_STORAGE_NAME-sc"}
 CAT_PV_STORAGE_SIZE=${CAT_PV_STORAGE_SIZE-"10Gi"}
 CAT_DISK_SIZE=${CAT_DISK_SIZE-"10GB"}
@@ -155,8 +160,18 @@ APPSTORE_OAUTH_PV_ACCESSMODE=${APPSTORE_OAUTH_PV_ACCESSMODE-"ReadWriteOnce"}
 APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
 APPSTORE_DJANGO_SETTINGS=${APPSTORE_DJANGO_SETTINGS-""}
 APPSTORE_IMAGE_PULL_SECRETS=${APPSTORE_IMAGE_PULL_SECRETS-""}
-APPSTORE_SECRET_SRC_FILE=${APPSTORE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/devops/helx/secrets/csappstore-secret${SECRET_FILENAME_SUFFIX}.yml"}
-APPSTORE_SECRET_DST_FILE=${APPSTORE_SECRET_DST_FILE-"$HELXPLATFORM_HOME/devops/helx/charts/appstore/templates/csappstore-secret.yml"}
+APPSTORE_SECRET_SRC_FILE=${APPSTORE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/devops/helx/secrets/csappstore-secrets${SECRET_FILENAME_SUFFIX}.yml"}
+APPSTORE_SECRET_DST_FILE=${APPSTORE_SECRET_DST_FILE-"$HELXPLATFORM_HOME/devops/helx/charts/appstore/templates/csappstore-secrets.yml"}
+APPSTORE_CLOUD_TOP_SECRETS_SRC_FILE=${APPSTORE_CLOUD_TOP_SECRETS_SRC_FILE-"$HELXPLATFORM_HOME/devops/helx/charts/appstore/templates/cloud-top-secrets.yml"}
+export CLOUD_TOP_USER_HOME=${CLOUD_TOP_USER_HOME-"/home/cloud-top"}
+export CLOUD_TOP_USER_NAME=${CLOUD_TOP_USER_NAME-"cloud-top"}
+export CLOUD_TOP_VNC_PW=${CLOUD_TOP_VNC_PW-""}
+export IMAGEJ_USER_HOME=${IMAGEJ_USER_HOME-$CLOUD_TOP_USER_HOME}
+export IMAGEJ_USER_NAME=${IMAGEJ_USER_NAME-$CLOUD_TOP_USER_NAME}
+export IMAGEJ_VNC_PW=${IMAGEJ_VNC_PW-$CLOUD_TOP_VNC_PW}
+export NAPARI_USER_HOME=${NAPARI_USER_HOME-$CLOUD_TOP_USER_HOME}
+export NAPARI_USER_NAME=${NAPARI_USER_NAME-$CLOUD_TOP_USER_NAME}
+export NAPARI_VNC_PW=${NAPARI_VNC_PW-$CLOUD_TOP_VNC_PW}
 
 TYCHO_NAME=${TYCHO_NAME-"tycho"}
 TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-""}
@@ -408,14 +423,25 @@ function deleteNFSServer(){
 }
 
 
-function createPVCWithDefaultStorageClass(){
+function createPVC(){
    export PVC_NAME=$1
    export PVC_STORAGE_SIZE=$2
    # PVC_STORAGE_CLASS_NAME can be empty.
    export PVC_STORAGE_CLASS_NAME=$3
    echo "# creating $PVC_NAME PVC"
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/pvc-template.yaml | envsubst | \
-       kubectl create -n $NAMESPACE -f -
+   echo -e "
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "${PVC_NAME}"
+spec:
+  storageClassName: "${PVC_STORAGE_CLASS_NAME}"
+  accessModes:
+   - ReadWriteMany
+  resources:
+    requests:
+      storage: "${PVC_STORAGE_SIZE}"
+" | kubectl -n $NAMESPACE create -f -
    echo "# $PVC_NAME PVC created"
 }
 
@@ -546,6 +572,12 @@ spec:
 }
 
 
+function encodeString(){
+  ENCODED_STRING=`echo -n "$1" | base64`
+  echo $ENCODED_STRING
+}
+
+
 function deployCAT(){
   echo "# deploying CAT"
   if [ "$GKE_DEPLOYMENT" = true ]; then
@@ -561,7 +593,7 @@ function deployCAT(){
   else
     createNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
         $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-    createPVCWithDefaultStorageClass $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
     createNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
         $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
         $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
@@ -572,9 +604,9 @@ function deployCAT(){
    echo "  \"$HYDROSHARE_SECRET_DST_FILE\""
    cp $HYDROSHARE_SECRET_SRC_FILE $HYDROSHARE_SECRET_DST_FILE
   else
-   echo "Hydroshare secret source file not found:"
+   echo "Hydroshare secrets source file not found:"
    echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
-   echo "### Not copying hydroshare secret file. ###"
+   echo "### Not copying hydroshare secrets file. ###"
   fi
   if [ -f "$APPSTORE_SECRET_SRC_FILE" ]
   then
@@ -582,9 +614,9 @@ function deployCAT(){
    echo "  \"$APPSTORE_SECRET_DST_FILE\""
    cp $APPSTORE_SECRET_SRC_FILE $APPSTORE_SECRET_DST_FILE
   else
-   echo "Appstore secret source file not found:"
+   echo "Appstore secrets source file not found:"
    echo "  file: \"$APPSTORE_SECRET_SRC_FILE\""
-   echo "### Not copying appstore secret file. ###"
+   echo "### Not copying appstore secrets file. ###"
   fi
 
   ## Deploy CommonsShare
@@ -614,10 +646,20 @@ function deployCAT(){
   then
    HELM_VALUES+=",djangoSettings=$APPSTORE_DJANGO_SETTINGS"
   fi
+  HELM_VALUES+=",CLOUD_TOP_USER_HOME=\"`encodeString "$CLOUD_TOP_USER_HOME"`\""
+  HELM_VALUES+=",CLOUD_TOP_USER_NAME=\"`encodeString "$CLOUD_TOP_USER_NAME"`\""
+  HELM_VALUES+=",CLOUD_TOP_VNC_PW=\"`encodeString "$CLOUD_TOP_VNC_PW"`\""
+  HELM_VALUES+=",IMAGEJ_USER_HOME=\"`encodeString "$IMAGEJ_USER_HOME"`\""
+  HELM_VALUES+=",IMAGEJ_USER_NAME=\"`encodeString "$IMAGEJ_USER_NAME"`\""
+  HELM_VALUES+=",IMAGEJ_VNC_PW=\"`encodeString "$IMAGEJ_VNC_PW"`\""
+  HELM_VALUES+=",NAPARI_USER_HOME=\"`encodeString "$NAPARI_USER_HOME"`\""
+  HELM_VALUES+=",NAPARI_USER_NAME=\"`encodeString "$NAPARI_USER_NAME"`\""
+  HELM_VALUES+=",NAPARI_VNC_PW=\"`encodeString "$NAPARI_VNC_PW"`\""
   $HELM -n $NAMESPACE upgrade --install $APPSTORE_NAME \
      $CAT_HELM_DIR/charts/appstore --debug --logtostderr --set $HELM_VALUES
 
   ## Deploy Tycho-API
+  HELM_VALUES="serviceAccount.name=${PV_PREFIX}tycho-api"
   if [ "$TYCHO_USE_ROLE" = false ]
   then
    HELM_VALUES+=",useRole=false"
@@ -630,7 +672,6 @@ function deployCAT(){
   then
     HELM_VALUES+=",service.type=$TYCHO_API_SERVICE_TYPE"
   fi
-  HELM_VALUES+=",serviceAccount.name=${PV_PREFIX}tycho-api"
   if [ ! -z "$TYCHO_API_IMAGE" ]
   then
     HELM_VALUES+=",image=$TYCHO_API_IMAGE"
@@ -754,7 +795,7 @@ function deployNFSRODS(){
   createNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
       $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
       $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
-  createPVCWithDefaultStorageClass $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
+  createPVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
   echo "NFSRODS deployed"
 }
 
@@ -774,6 +815,54 @@ function deleteNFSRODS(){
 }
 
 
+function createNextflowStorage(){
+  echo "# creating storage for Nextflow"
+  if [ "$GKE_DEPLOYMENT" = true ]; then
+    createNFSPV $NEXTFLOW_PD_NAME $NFS_CLNT_PV_NFS_SRVR \
+        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NEXTFLOW_PV_STORAGE_SIZE \
+        $NEXTFLOW_PV_ACCESSMODE
+    createNFSPVC $NEXTFLOW_PVC $NFS_CLNT_STORAGECLASS \
+        $NEXTFLOW_PV_STORAGE_SIZE $NEXTFLOW_PV_ACCESSMODE
+  else
+    createNFSPV $NEXTFLOW_PV_NAME $NEXTFLOW_NFS_SERVER \
+        $NEXTFLOW_NFS_PATH $NEXTFLOW_PV_STORAGECLASS \
+        $NEXTFLOW_PV_STORAGE_SIZE $NEXTFLOW_PV_ACCESSMODE
+    createPVC $NEXTFLOW_PVC $NEXTFLOW_PV_STORAGE_SIZE $NEXTFLOW_PV_STORAGECLASS
+  fi
+}
+
+
+function deleteNextflowStorage(){
+  echo "# deleting storage for Nextflow"
+  if [ "$GKE_DEPLOYMENT" = true ]; then
+    deleteNFSPVC $NEXTFLOW_PVC $NFS_CLNT_STORAGECLASS \
+        $NEXTFLOW_PV_STORAGE_SIZE $NEXTFLOW_PV_ACCESSMODE
+    deleteNFSPV $NEXTFLOW_PD_NAME $NFS_CLNT_PV_NFS_SRVR \
+        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NEXTFLOW_PV_STORAGE_SIZE \
+        $NEXTFLOW_PV_ACCESSMODE
+  else
+    deletePVC $NEXTFLOW_PVC $NEXTFLOW_PV_STORAGE_SIZE $NEXTFLOW_PV_STORAGECLASS
+    deleteNFSPV $NEXTFLOW_PV_NAME $NEXTFLOW_NFS_SERVER \
+        $NEXTFLOW_NFS_PATH $NEXTFLOW_PV_STORAGECLASS \
+        $NEXTFLOW_PV_STORAGE_SIZE $NEXTFLOW_PV_ACCESSMODE
+  fi
+}
+
+
+function blackbalsam(){
+  echo "Deploying blackbalsam"
+  # Blackbalsam deployable via HelX
+  # 1)     Create serviceaccount “spark” and assign the edit clusterrole using a rolebinding.
+  # 2)     Install minio,
+  #         a) Install helm3
+  #         b) helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+  #         c) helm install --set accessKey=minio --set secretKey=minio123 --set name=minio minio stable/minio -n <namespace>
+  # 3)     Clone blackbalsam repo to the /home/shared directory on stdnfs PVC.
+  # 4)     Provide a .blackbalsam.yaml config file in the /home/shared.
+
+}
+
+
 case $APPS_ACTION in
   deploy)
     case $APP in
@@ -787,11 +876,11 @@ case $APPS_ACTION in
         then
           deployNFSRODS
         fi
-        createPVCWithDefaultStorageClass $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         deployELK
         deployCAT
         deployAmbassador
         deployNginx
+        createNextflowStorage
         ;;
       ambassador)
         deployAmbassador
@@ -806,7 +895,7 @@ case $APPS_ACTION in
         deployELK
         ;;
       nextflowPVC)
-        createPVCWithDefaultStorageClass $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
+        createNextflowStorage
         ;;
       nfs-server)
         deployNFSServer
@@ -826,11 +915,11 @@ case $APPS_ACTION in
   delete)
     case $APP in
       all)
+        deleteNextflowStorage
         deleteNginx
         deleteAmbassador
         deleteCAT
         deleteELK
-        deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
         if [ "$NFSRODS_FOR_USER_DATA" = true ]; then
           deleteNFSRODS
         fi
@@ -853,7 +942,7 @@ case $APPS_ACTION in
         deleteELK
         ;;
       nextflowPVC)
-        deletePVC $NEXTFLOW_PVC $NEXTFLOW_STORAGE_SIZE $NFSP_STORAGECLASS
+        deleteNextflowStorage
         ;;
       nfs-server)
         deleteNFSServer
