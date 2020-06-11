@@ -7,6 +7,9 @@ data:
   # /usr/src/inst-mgmt is default location if db is created in the container.
   # OAUTH_DB_DIR: /usr/src/inst-mgmt
   # /var/lib/sqlite3 is used for PVC mount point.
+  DJANGO_SETTINGS_MODULE: appstore.settings.{{ .Values.djangoSettings }}_settings
+  # Default is always "True" on the server. Change to "False" in prod.
+  DEBUG: "True"
   OAUTH_DB_DIR: /var/lib/sqlite3
   OAUTH_DB_FILE: DATABASE.sqlite3
   ACCOUNT_DEFAULT_HTTP_PROTOCOL: https
