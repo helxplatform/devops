@@ -38,6 +38,16 @@ spec:
         #     secretKeyRef:
         #       key: DATABASE_PASSWORD
         #       name: csappstore-secret
+        - name: DEBUG
+          valueFrom:
+            configMapKeyRef:
+              key: DEBUG
+              name: csappstore-env
+        - name: DJANGO_SETTINGS_MODULE
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SETTINGS_MODULE
+              name: csappstore-env
         - name: OAUTH_DB_DIR
           valueFrom:
             configMapKeyRef:
