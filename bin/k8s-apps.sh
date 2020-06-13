@@ -91,7 +91,7 @@ REGION=${REGION-"us-east1"}
 ZONE_EXTENSION=${ZONE_EXTENSION-b}
 AVAILABILITY_ZONE=${AVAILABILITY_ZONE-${REGION}-${ZONE_EXTENSION}}
 ENVIRONMENT=${ENVIRONMENT-"dev"}
-PV_PREFIX=${PV_PREFIX-"$ENVIRONMENT-$USER-"}
+PV_PREFIX=${PV_PREFIX-"$NAMESPACE-"}
 HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"../.."}
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELXPLATFORM_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
@@ -165,9 +165,6 @@ APPSTORE_OAUTH_PV_ACCESSMODE=${APPSTORE_OAUTH_PV_ACCESSMODE-"ReadWriteOnce"}
 APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
 APPSTORE_DJANGO_SETTINGS=${APPSTORE_DJANGO_SETTINGS-""}
 APPSTORE_IMAGE_PULL_SECRETS=${APPSTORE_IMAGE_PULL_SECRETS-""}
-APPSTORE_SECRET_SRC_FILE=${APPSTORE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/devops/helx/secrets/csappstore-secrets${SECRET_FILENAME_SUFFIX}.yml"}
-APPSTORE_SECRET_DST_FILE=${APPSTORE_SECRET_DST_FILE-"$HELXPLATFORM_HOME/devops/helx/charts/appstore/templates/csappstore-secrets.yml"}
-APPSTORE_CLOUD_TOP_SECRETS_SRC_FILE=${APPSTORE_CLOUD_TOP_SECRETS_SRC_FILE-"$HELXPLATFORM_HOME/devops/helx/charts/appstore/templates/cloud-top-secrets.yml"}
 APPSTORE_WITH_AMBASSADOR=${APPSTORE_WITH_AMBASSADOR-true}
 
 export CLOUD_TOP_USER_HOME=${CLOUD_TOP_USER_HOME-"/home/cloud-top"}
@@ -633,16 +630,6 @@ function deployCAT(){
      echo "### Not copying hydroshare secrets file. ###"
     fi
   fi
-  if [ -f "$APPSTORE_SECRET_SRC_FILE" ]
-  then
-   echo "copying \"$APPSTORE_SECRET_SRC_FILE\" to"
-   echo "  \"$APPSTORE_SECRET_DST_FILE\""
-   cp $APPSTORE_SECRET_SRC_FILE $APPSTORE_SECRET_DST_FILE
-  else
-   echo "Appstore secrets source file not found:"
-   echo "  file: \"$APPSTORE_SECRET_SRC_FILE\""
-   echo "### Not copying appstore secrets file. ###"
-  fi
 
   if [ "$COMMONSSHARE_DEPLOYMENT" == true ]
   then
@@ -691,15 +678,39 @@ function deployCAT(){
   then
    HELM_VALUES+=",securityContext.fsGroup=$APPSTORE_FSGROUP"
   fi
-  HELM_VALUES+=",CLOUD_TOP_USER_HOME=\"`encodeString "$CLOUD_TOP_USER_HOME"`\""
-  HELM_VALUES+=",CLOUD_TOP_USER_NAME=\"`encodeString "$CLOUD_TOP_USER_NAME"`\""
-  HELM_VALUES+=",CLOUD_TOP_VNC_PW=\"`encodeString "$CLOUD_TOP_VNC_PW"`\""
-  HELM_VALUES+=",IMAGEJ_USER_HOME=\"`encodeString "$IMAGEJ_USER_HOME"`\""
-  HELM_VALUES+=",IMAGEJ_USER_NAME=\"`encodeString "$IMAGEJ_USER_NAME"`\""
-  HELM_VALUES+=",IMAGEJ_VNC_PW=\"`encodeString "$IMAGEJ_VNC_PW"`\""
-  HELM_VALUES+=",NAPARI_USER_HOME=\"`encodeString "$NAPARI_USER_HOME"`\""
-  HELM_VALUES+=",NAPARI_USER_NAME=\"`encodeString "$NAPARI_USER_NAME"`\""
-  HELM_VALUES+=",NAPARI_VNC_PW=\"`encodeString "$NAPARI_VNC_PW"`\""
+
+  HELM_VALUES+=",django.APPSTORE_DJANGO_USERNAME=\"`encodeString "$APPSTORE_DJANGO_USERNAME"`\""
+  HELM_VALUES+=",django.APPSTORE_DJANGO_PASSWORD=\"`encodeString "$APPSTORE_DJANGO_PASSWORD"`\""
+  HELM_VALUES+=",django.SECRET_KEY=\"`encodeString "$SECRET_KEY"`\""
+  HELM_VALUES+=",django.EMAIL_HOST_USER=\"`encodeString "$EMAIL_HOST_USER"`\""
+  HELM_VALUES+=",django.EMAIL_HOST_PASSWORD=\"`encodeString "$EMAIL_HOST_PASSWORD"`\""
+  HELM_VALUES+=",django.oauth.OAUTH_PROVIDERS=\"`encodeString "$OAUTH_PROVIDERS"`\""
+  HELM_VALUES+=",django.oauth.github.GITHUB_NAME=\"`encodeString "$GITHUB_NAME"`\""
+  HELM_VALUES+=",django.oauth.github.GITHUB_KEY=\"`encodeString "$GITHUB_KEY"`\""
+  HELM_VALUES+=",django.oauth.github.GITHUB_SITES=\"`encodeString "$GITHUB_SITES"`\""
+  HELM_VALUES+=",django.oauth.github.GITHUB_CLIENT_ID=\"`encodeString "$GITHUB_CLIENT_ID"`\""
+  HELM_VALUES+=",django.oauth.github.GITHUB_SECRET=\"`encodeString "$GITHUB_SECRET"`\""
+  HELM_VALUES+=",django.oauth.google.GOOGLE_NAME=\"`encodeString "$GOOGLE_NAME"`\""
+  HELM_VALUES+=",django.oauth.google.GOOGLE_KEY=\"`encodeString "$GOOGLE_KEY"`\""
+  HELM_VALUES+=",django.oauth.google.GOOGLE_SITES=\"`encodeString "$GOOGLE_SITES"`\""
+  HELM_VALUES+=",django.oauth.google.GOOGLE_CLIENT_ID=\"`encodeString "$GOOGLE_CLIENT_ID"`\""
+  HELM_VALUES+=",django.oauth.google.GOOGLE_SECRET=\"`encodeString "$GOOGLE_SECRET"`\""
+  HELM_VALUES+=",irods.BRAINI_RODS=\"`encodeString "$BRAINI_RODS"`\""
+  HELM_VALUES+=",irods.NRC_MICROSCOPY_IRODS=\"`encodeString "$NRC_MICROSCOPY_IRODS"`\""
+  HELM_VALUES+=",irods.RODS_USERNAME=\"`encodeString "$RODS_USERNAME"`\""
+  HELM_VALUES+=",irods.RODS_PASSWORD=\"`encodeString "$RODS_PASSWORD"`\""
+  HELM_VALUES+=",irods.IROD_COLLECTIONS=\"`encodeString "$IROD_COLLECTIONS"`\""
+  HELM_VALUES+=",irods.IROD_ZONE=\"`encodeString "$IROD_ZONE"`\""
+
+  HELM_VALUES+=",apps.CLOUD_TOP_USER_HOME=\"`encodeString "$CLOUD_TOP_USER_HOME"`\""
+  HELM_VALUES+=",apps.CLOUD_TOP_USER_NAME=\"`encodeString "$CLOUD_TOP_USER_NAME"`\""
+  HELM_VALUES+=",apps.CLOUD_TOP_VNC_PW=\"`encodeString "$CLOUD_TOP_VNC_PW"`\""
+  HELM_VALUES+=",apps.IMAGEJ_USER_HOME=\"`encodeString "$IMAGEJ_USER_HOME"`\""
+  HELM_VALUES+=",apps.IMAGEJ_USER_NAME=\"`encodeString "$IMAGEJ_USER_NAME"`\""
+  HELM_VALUES+=",apps.IMAGEJ_VNC_PW=\"`encodeString "$IMAGEJ_VNC_PW"`\""
+  HELM_VALUES+=",apps.NAPARI_USER_HOME=\"`encodeString "$NAPARI_USER_HOME"`\""
+  HELM_VALUES+=",apps.NAPARI_USER_NAME=\"`encodeString "$NAPARI_USER_NAME"`\""
+  HELM_VALUES+=",apps.NAPARI_VNC_PW=\"`encodeString "$NAPARI_VNC_PW"`\""
   $HELM -n $NAMESPACE upgrade --install $APPSTORE_NAME \
      $CAT_HELM_DIR/charts/appstore --debug --logtostderr --set $HELM_VALUES
 

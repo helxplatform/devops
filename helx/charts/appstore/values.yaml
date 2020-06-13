@@ -86,12 +86,39 @@ djangoSettings: cat
 
 postgres: False
 
-CLOUD_TOP_USER_HOME: '/home/cloud-top'
-CLOUD_TOP_USER_NAME: 'cloud-top'
-CLOUD_TOP_VNC_PW: ''
-IMAGEJ_USER_HOME: '/home/cloud-top'
-IMAGEJ_USER_NAME: 'cloud-top'
-IMAGEJ_VNC_PW: ''
-NAPARI_USER_HOME: '/home/cloud-top'
-NAPARI_USER_NAME: 'cloud-top'
-NAPARI_VNC_PW: ''
+django:
+  APPSTORE_DJANGO_USERNAME: ""
+  APPSTORE_DJANGO_PASSWORD: ""
+  SECRET_KEY: ""
+  EMAIL_HOST_USER: ""
+  EMAIL_HOST_PASSWORD: ""
+  oauth:
+    OAUTH_PROVIDERS: ""
+    GITHUB_NAME: ""
+    GITHUB_KEY: ""
+    GITHUB_SITES: ""
+    GITHUB_CLIENT_ID: ""
+    GITHUB_SECRET: ""
+    GOOGLE_NAME: ""
+    GOOGLE_KEY: ""
+    GOOGLE_SITES: ""
+    GOOGLE_CLIENT_ID: ""
+    GOOGLE_SECRET: ""
+irods:
+  BRAINI_RODS: ""
+  NRC_MICROSCOPY_IRODS: ""
+  RODS_USERNAME: ""
+  RODS_PASSWORD: ""
+  IROD_COLLECTIONS: ""
+  IROD_ZONE: ""
+
+apps:
+  CLOUD_TOP_USER_HOME: "/home/cloud-top"
+  CLOUD_TOP_USER_NAME: "cloud-top"
+  CLOUD_TOP_VNC_PW: ""
+  IMAGEJ_USER_HOME: "/home/cloud-top"
+  IMAGEJ_USER_NAME: "cloud-top"
+  IMAGEJ_VNC_PW: ""
+  NAPARI_USER_HOME: "/home/cloud-top"
+  NAPARI_USER_NAME: "cloud-top"
+  NAPARI_VNC_PW: ""
