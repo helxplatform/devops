@@ -15,20 +15,16 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext: {}
-  # fsGroup: 2000
+# securityContext:
+#   runAsUser: 1000
+#   runAsGroup: 1000
+#   fsGroup: 1000
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
 service:
   type: ClusterIP
   port: 80
+  name: http
 
 ingress:
   enabled: false
@@ -77,6 +73,7 @@ oauth:
   # pvcname: appstore-oauth-pvc
   storageClass:
   # storageClass: appstore-oauth-sc
+  # existingClaim:
 
 ambassador:
    # flag: <True or False>
@@ -88,8 +85,6 @@ image: "heliumdatastage/commonsshare_appstore:1.1.25"
 djangoSettings: cat
 
 postgres: False
-
-httpProtocol: https
 
 CLOUD_TOP_USER_HOME: '/home/cloud-top'
 CLOUD_TOP_USER_NAME: 'cloud-top'

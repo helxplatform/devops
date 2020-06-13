@@ -8,11 +8,14 @@ rules:
 - apiGroups: [""]
   resources: [ "endpoints", "namespaces", "secrets", "services" ]
   verbs: ["get", "list", "watch"]
+
+{{- if .Values.roleIngresses }}
 - apiGroups: [ "extensions", "networking.k8s.io" ]
   resources: [ "ingresses" ]
   verbs: ["get", "list", "watch"]
+{{- end }}
 
-  {{- if not .Values.prp.deployment }}
+{{- if not .Values.prp.deployment }}
 # Does not work with PRP.
 - apiGroups: [ "getambassador.io" ]
   resources: [ "*" ]
@@ -26,4 +29,4 @@ rules:
 - apiGroups: [ "extensions", "networking.k8s.io" ]
   resources: [ "ingresses/status" ]
   verbs: ["update"]
-  {{- end }}
+{{- end }}

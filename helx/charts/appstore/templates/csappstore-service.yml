@@ -16,10 +16,12 @@ metadata:
       timeout_ms: 300000
       idle_timeout_ms: 500000
       connect_timeout_ms: 500000
-   {{- end }}
+
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
-  - name: {{ .Values.httpProtocol }}
+  ports:
+  - name: {{ .Values.service.name }}
     protocol: TCP
     port: 8000
     targetPort: 8000

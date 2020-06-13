@@ -1,4 +1,4 @@
-{{- if .Values.oauth.storageClass }}
+{{- if not .Values.oauth.existingClaim }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

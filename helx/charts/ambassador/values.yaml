@@ -23,3 +23,5 @@ adminservice:
 prp:
    # PRP cluster deployment: <True or False>
    deployment: false
+
+roleIngresses: true
