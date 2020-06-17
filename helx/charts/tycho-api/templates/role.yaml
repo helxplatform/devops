@@ -8,6 +8,7 @@ rules:
   - "*"
   # added pvc resource
   resources:
+  - secrets
   - configmaps
   - pods
   - services
