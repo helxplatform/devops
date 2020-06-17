@@ -86,8 +86,6 @@ djangoSettings: cat
 
 postgres: False
 
-roleIngresses: True
-
 django:
   APPSTORE_DJANGO_USERNAME: ""
   APPSTORE_DJANGO_PASSWORD: ""
