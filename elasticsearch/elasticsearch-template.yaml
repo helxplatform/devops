@@ -1,0 +1,113 @@
+# Elasticsearch node deployment and configuration
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  labels:
+    service: elasticsearch
+spec:
+  serviceName: es-nodes
+  replicas: 3
+  selector:
+    matchLabels:
+      service: elasticsearch
+  template:
+    metadata:
+      labels:
+        service: elasticsearch
+    spec:
+      terminationGracePeriodSeconds: 300
+      # Utilize Init containers to set ulimit, vm-max-map-count, and volume permissions
+      initContainers:
+      - name: ulimit
+        image: busybox
+        command:
+        - sh
+        - -c
+        - ulimit -n 65536
+        securityContext:
+          privileged: $ELASTICSEARCH_PRIVILEGED_SECURITY_CONTEXT
+      - name: vm-max-map-count
+        image: busybox
+        command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
+        securityContext:
+          privileged: $ELASTICSEARCH_PRIVILEGED_SECURITY_CONTEXT
+      - name: volume-permission
+        image: busybox
+        command:
+        - sh
+        - -c
+        - chown -R 1000:1000 /usr/share/elasticsearch/data
+        securityContext:
+          privileged: $ELASTICSEARCH_PRIVILEGED_SECURITY_CONTEXT
+        volumeMounts:
+        - name: data
+          mountPath: /usr/share/elasticsearch/data
+      # Containers defined for Elasticsearch nodes
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.3.0
+        ports:
+        - containerPort: 9200
+          name: http
+        - containerPort: 9300
+          name: tcp
+        resources:
+          requests:
+            memory: $ELASTICSEARCH_REQUESTS_MEMORY
+          limits:
+            memory: $ELASTICSEARCH_LIMITS_MEMORY
+        env:
+          - name: cluster.name
+            value: elasticsearch-cluster
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: discovery.zen.ping.unicast.hosts
+            # Note that we are using "es-nodes" as defined in our service
+            value: "elasticsearch-0.es-nodes.default.svc.cluster.local,elasticsearch-1.es-nodes.default.svc.cluster.local,elasticsearch-2.es-nodes.default.svc.cluster.local"
+          - name: ES_JAVA_OPTS
+            value: "$ES_JAVA_OPTS"
+        volumeMounts:
+        - name: data
+          mountPath: /usr/share/elasticsearch/data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      # storageClassName: elk-sc
+      # storageClassName: nfs
+      storageClassName: $PVC_STORAGE_CLASS_NAME
+      resources:
+        requests:
+          storage: $ELASTIC_PVC_STORAGE
+# ---
+# kind: StorageClass
+# apiVersion: storage.k8s.io/v1
+# metadata:
+#   name: gc-elk-sc
+# provisioner: kubernetes.io/gce-pd
+# reclaimPolicy: Retain
+# mountOptions:
+#   - debug
+# volumeBindingMode: Immediate
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: pvc-elasticsearch
+#   labels:
+#     app: elasticsearch
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 10Gi
+#   storageClassName: gc-elk-sc
