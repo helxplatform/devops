@@ -117,8 +117,13 @@ NEXTFLOW_NFS_PATH=${NEXTFLOW_NFS_PATH-"/nextflow"}
 NEXTFLOW_PV_STORAGECLASS=${NEXTFLOW_PV_STORAGECLASS-"nextflow-sc"}
 
 AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/ambassador"}
+AMBASSADOR_RUNASUSER=${AMBASSADOR_RUNASUSER-""}
+AMBASSADOR_RUNASGROUP=${AMBASSADOR_RUNASGROUP-""}
+AMBASSADOR_FSGROUP=${AMBASSADOR_FSGROUP-""}
+AMBASSADOR_ROLE_INGRESSES=${AMBASSADOR_ROLE_INGRESSES-""}
 USE_CLUSTER_ROLES=${USE_CLUSTER_ROLES-false}
 NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/helx/charts/nginx"}
+NGINX_IMAGE=${NGINX_IMAGE-""}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
 NGINX_IP=${NGINX_IP-""}
 NGINX_TLS_SECRET=${NGINX_TLS_SECRET-""}
@@ -127,8 +132,16 @@ NGINX_TLS_CRT=${NGINX_TLS_CRT-""}
 NGINX_TLS_CA_CRT=${NGINX_TLS_CA_CRT-""}
 NGINX_DNS_RESOLVER=${NGINX_DNS_RESOLVER-""}
 NGINX_SERVICE_TYPE=${NGINX_SERVICE_TYPE-"LoadBalancer"}
+NGINX_SERVICE_HTTP_PORT=${NGINX_SERVICE_HTTP_PORT-""}
+NGINX_SERVICE_HTTPS_PORT=${NGINX_SERVICE_HTTPS_PORT-""}
+NGINX_TARGET_HTTP_PORT=${NGINX_TARGET_HTTP_PORT-""}
+NGINX_TARGET_HTTPS_PORT=${NGINX_TARGET_HTTPS_PORT-""}
 NGINX_INGRESS_HOST=${NGINX_INGRESS_HOST-""}
 NGINX_INGRESS_CLASS=${NGINX_INGRESS_CLASS-""}
+NGINX_VAR_STORAGE_CLAIMNAME=${NGINX_VAR_STORAGE_CLAIMNAME-""}
+NGINX_VAR_STORAGE_EXISTING_CLAIM=${NGINX_VAR_STORAGE_EXISTING_CLAIM-""}
+NGINX_VAR_STORAGE_SIZE=${NGINX_VAR_STORAGE_SIZE-""}
+NGINX_VAR_STORAGE_CLASS=${NGINX_VAR_STORAGE_CLASS-""}
 
 HELM=${HELM-helm}
 COMMONSSHARE_NAME=${COMMONSSHARE_NAME-"commonsshare"}
@@ -333,7 +346,7 @@ function deleteGKEPV(){
 
 
 function deployDynamicPVCP() {
-  if [ "$DYNAMIC_NFSCP_DEPLOYMENT" = true ]; then
+  if [ "$DYNAMIC_NFSCP_DEPLOYMENT" == true ]; then
     echo "Deploying NFS Client Provisioner for Dynamic PVCs"
     $HELM -n $NAMESPACE upgrade --install \
                  --set nfs.server=$NFSCP_SERVER \
@@ -341,7 +354,7 @@ function deployDynamicPVCP() {
                  --set storageClass.name=$NFSCP_STORAGECLASS \
                  $NFSCP_NAME stable/nfs-client-provisioner
   else
-    if [ "$GKE_DEPLOYMENT" = true ]; then
+    if [ "$GKE_DEPLOYMENT" == true ]; then
       createGCEDisk $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_STORAGE
       createGKEPV $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_NAME \
           $GCE_DYN_STORAGE_PV_STORAGE $GCE_DYN_STORAGE_CLAIMREF
@@ -358,13 +371,13 @@ function deployDynamicPVCP() {
 
 
 function deleteDynamicPVCP() {
-  if [ "$DYNAMIC_NFSCP_DEPLOYMENT" = true ]; then
+  if [ "$DYNAMIC_NFSCP_DEPLOYMENT" == true ]; then
     echo "Deleting NFS Client Provisioner for Dynamic PVCs"
     $HELM -n $NAMESPACE delete $NFSCP_NAME
   else
     echo "Deleting NFS Server Provisioner for Dynamic PVCs"
     $HELM -n $NAMESPACE delete $NFSSP_NAME
-    if [ "$GKE_DEPLOYMENT" = true ]; then
+    if [ "$GKE_DEPLOYMENT" == true ]; then
       deleteGKEPVC $GCE_DYN_STORAGE_CLAIMREF
       deleteGKEPV $GCE_DYN_STORAGE_PV_NAME
       echo "Pausing for PV to be deleted fully."
@@ -427,7 +440,7 @@ function deleteNFSServer(){
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl delete -n $NAMESPACE -f -
    kubectl delete -n $NAMESPACE svc nfs-server
-   if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" = true ]; then
+   if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
      echo "### Deleting NFS Server Persistent disk."
      sleep $KUBE_WAIT_TIME
      deleteGCEDisk $GCE_NFS_SERVER_DISK
@@ -589,13 +602,64 @@ spec:
 
 function encodeString(){
   ENCODED_STRING=`echo -n "$1" | base64`
-  echo $ENCODED_STRING
+  echo -n $ENCODED_STRING
 }
 
 
 function deployCAT(){
   echo "# deploying CAT"
-  if [ "$GKE_DEPLOYMENT" = true ]
+  deployCommonsShare
+  deployAppStore
+  deployTycho
+  echo "# end deploying CAT"
+}
+
+
+function deleteCAT(){
+  echo "# deleting CAT"
+  deleteTycho
+  deleteAppStore
+  deleteCommonsShare
+  echo "# end deleting CAT"
+}
+
+
+function deployTycho(){
+  echo "# deploying Tycho"
+  ## Deploy Tycho-API
+  HELM_VALUES="serviceAccount.name=${PV_PREFIX}tycho-api"
+  if [ "$TYCHO_USE_ROLE" == false ]
+  then
+   HELM_VALUES+=",useRole=false"
+  fi
+  if [ "$USE_CLUSTER_ROLES" == true ]
+  then
+    HELM_VALUES+=",useClusterRole=true"
+  fi
+  if [ ! -z "$TYCHO_API_SERVICE_TYPE" ]
+  then
+    HELM_VALUES+=",service.type=$TYCHO_API_SERVICE_TYPE"
+  fi
+  if [ ! -z "$TYCHO_API_IMAGE" ]
+  then
+    HELM_VALUES+=",image=$TYCHO_API_IMAGE"
+  fi
+  $HELM -n $NAMESPACE upgrade --install $TYCHO_NAME \
+     $CAT_HELM_DIR/charts/tycho-api --debug --logtostderr --set $HELM_VALUES
+   echo "# end deploying Tycho"
+}
+
+
+function deleteTycho(){
+  echo "# deleting Tycho"
+  $HELM -n $NAMESPACE delete $TYCHO_NAME
+  echo "# end deleting Tycho"
+}
+
+
+function deployAppStore(){
+  echo "# deploying AppStore"
+  if [ "$GKE_DEPLOYMENT" == true ]
   then
     createNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
         $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
@@ -610,35 +674,13 @@ function deployCAT(){
   then
     createNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
         $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
     createNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
         $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
         $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
+    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
   else
     createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
   fi
-  if [ "$COMMONSSHARE_DEPLOYMENT" == true ]
-  then
-    if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
-    then
-     echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
-     echo "  \"$HYDROSHARE_SECRET_DST_FILE\""
-     cp $HYDROSHARE_SECRET_SRC_FILE $HYDROSHARE_SECRET_DST_FILE
-    else
-     echo "Hydroshare secrets source file not found:"
-     echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
-     echo "### Not copying hydroshare secrets file. ###"
-    fi
-  fi
-
-  if [ "$COMMONSSHARE_DEPLOYMENT" == true ]
-  then
-    ## Deploy CommonsShare
-    HELM_VALUES="web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
-    $HELM -n $NAMESPACE upgrade --install $COMMONSSHARE_NAME \
-      $CAT_HELM_DIR/charts/commonsshare --debug --logtostderr --set $HELM_VALUES
-  fi
-
   ## Deploy AppStore
   HELM_VALUES="db.storageClass=$APPSTORE_DB_STORAGECLASS"
   if [ ! -z "$APPSTORE_OAUTH_PVC" ]
@@ -662,7 +704,7 @@ function deployCAT(){
   then
    HELM_VALUES+=",djangoSettings=$APPSTORE_DJANGO_SETTINGS"
   fi
-  if [ "$APPSTORE_WITH_AMBASSADOR" = false ]
+  if [ "$APPSTORE_WITH_AMBASSADOR" == false ]
   then
    HELM_VALUES+=",ambassador.flag=false"
   fi
@@ -713,37 +755,14 @@ function deployCAT(){
   HELM_VALUES+=",apps.NAPARI_VNC_PW=\"`encodeString "$NAPARI_VNC_PW"`\""
   $HELM -n $NAMESPACE upgrade --install $APPSTORE_NAME \
      $CAT_HELM_DIR/charts/appstore --debug --logtostderr --set $HELM_VALUES
-
-  ## Deploy Tycho-API
-  HELM_VALUES="serviceAccount.name=${PV_PREFIX}tycho-api"
-  if [ "$TYCHO_USE_ROLE" = false ]
-  then
-   HELM_VALUES+=",useRole=false"
-  fi
-  if [ "$USE_CLUSTER_ROLES" = true ]
-  then
-    HELM_VALUES+=",useClusterRole=true"
-  fi
-  if [ ! -z "$TYCHO_API_SERVICE_TYPE" ]
-  then
-    HELM_VALUES+=",service.type=$TYCHO_API_SERVICE_TYPE"
-  fi
-  if [ ! -z "$TYCHO_API_IMAGE" ]
-  then
-    HELM_VALUES+=",image=$TYCHO_API_IMAGE"
-  fi
-  $HELM -n $NAMESPACE upgrade --install $TYCHO_NAME \
-     $CAT_HELM_DIR/charts/tycho-api --debug --logtostderr --set $HELM_VALUES
-   echo "# end deploying CAT"
+  echo "# end deploying AppStore"
 }
 
 
-function deleteCAT(){
-  echo "# deleting CAT"
-  $HELM -n $NAMESPACE delete $COMMONSSHARE_NAME
+function deleteAppStore(){
+  echo "# deleting AppStore"
   $HELM -n $NAMESPACE delete $APPSTORE_NAME
-  $HELM -n $NAMESPACE delete $TYCHO_NAME
-  if [ "$GKE_DEPLOYMENT" = true ]; then
+  if [ "$GKE_DEPLOYMENT" == true ]; then
     deleteNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
         $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
     deleteNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
@@ -751,32 +770,94 @@ function deleteCAT(){
         "ReadWriteMany"
     deleteGKEPVC $APPSTORE_OAUTH_PVC
     deleteGKEPV $APPSTORE_OAUTH_PV_NAME
-    if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" = true ]; then
+    if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
       echo "### Deleting AppStore Oauth Persistent disk."
       sleep $KUBE_WAIT_TIME
       deleteGCEDisk $APPSTORE_OAUTH_PD_NAME
     else
       echo "### Not deleting AppStore Oauth Persistent disk."
     fi
-  else
+  elif [ "$USE_NFS_PVS" == true ]
+  then
     deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
     deleteNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
       $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
     deleteNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
       $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
       $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
+  else
+    if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
+      echo "### Deleting AppStore Oauth PVC."
+      deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+    else
+      echo "### Not deleting AppStore Oauth PVC."
+    fi
   fi
-  echo "# end deleting CAT"
+  echo "# end deleting AppStore"
 }
 
 
+function deployCommonsShare(){
+  echo "# deploying CommonsShare"
+  if [ "$COMMONSSHARE_DEPLOYMENT" == true ]
+  then
+    if [ -f "$HYDROSHARE_SECRET_SRC_FILE" ]
+    then
+     echo "copying \"$HYDROSHARE_SECRET_SRC_FILE\" to"
+     echo "  \"$HYDROSHARE_SECRET_DST_FILE\""
+     cp $HYDROSHARE_SECRET_SRC_FILE $HYDROSHARE_SECRET_DST_FILE
+    else
+     echo "Hydroshare secrets source file not found:"
+     echo "  file: \"$HYDROSHARE_SECRET_SRC_FILE\""
+     echo "### Not copying hydroshare secrets file. ###"
+    fi
+  fi
+
+  if [ "$COMMONSSHARE_DEPLOYMENT" == true ]
+  then
+    ## Deploy CommonsShare
+    HELM_VALUES="web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
+    $HELM -n $NAMESPACE upgrade --install $COMMONSSHARE_NAME \
+      $CAT_HELM_DIR/charts/commonsshare --debug --logtostderr --set $HELM_VALUES
+  fi
+  echo "# end deploying CommonsShare"
+}
+
+
+function deleteCommonsShare(){
+  echo "# deleting CommonsShare"
+  $HELM -n $NAMESPACE delete $COMMONSSHARE_NAME
+  echo "# end deleting CommonsShare"
+}
+
 function deployAmbassador(){
    echo "# deploying Ambassador"
-   if [ "$USE_CLUSTER_ROLES" = false ]; then
+   if [ "$USE_CLUSTER_ROLES" == false ]; then
      HELM_VALUES="prp.deployment=true"
      HELM_SET_ARG="--set $HELM_VALUES"
    else
      HELM_SET_ARG=""
+   fi
+   if [ ! -z "$AMBASSADOR_RUNASUSER" ]
+   then
+    HELM_VALUES+=",securityContext.runAsUser=$AMBASSADOR_RUNASUSER"
+   fi
+   if [ ! -z "$AMBASSADOR_RUNASGROUP" ]
+   then
+    HELM_VALUES+=",securityContext.runAsGroup=$AMBASSADOR_RUNASGROUP"
+   fi
+   if [ ! -z "$AMBASSADOR_FSGROUP" ]
+   then
+    HELM_VALUES+=",securityContext.fsGroup=$AMBASSADOR_FSGROUP"
+   fi
+   if [ ! -z "$AMBASSADOR_ROLE_INGRESSES" ]
+   then
+    HELM_VALUES+=",roleIngresses=$AMBASSADOR_ROLE_INGRESSES"
+   fi
+   if [ "$HELM_VALUES" = "" ]; then
+     HELM_SET_ARG=""
+   else
+     HELM_SET_ARG="--set $HELM_VALUES"
    fi
    $HELM -n $NAMESPACE upgrade --install ambassador $AMBASSADOR_HELM_DIR --debug \
        --logtostderr $HELM_SET_ARG
@@ -805,6 +886,22 @@ function deployNginx(){
    HELM_VALUES="service.serverName=$NGINX_SERVERNAME"
    HELM_VALUES+=",service.IP=$NGINX_IP"
    HELM_VALUES+=",service.type=\"$NGINX_SERVICE_TYPE\""
+   if [ ! -z "$NGINX_SERVICE_HTTP_PORT" ]
+     then
+     HELM_VALUES+=",service.httpPort=$NGINX_SERVICE_HTTP_PORT"
+   fi
+   if [ ! -z "$NGINX_SERVICE_HTTPS_PORT" ]
+     then
+     HELM_VALUES+=",service.httpsPort=$NGINX_SERVICE_HTTPS_PORT"
+   fi
+   if [ ! -z "$NGINX_TARGET_HTTP_PORT" ]
+     then
+     HELM_VALUES+=",service.httpTargetPort=$NGINX_TARGET_HTTP_PORT"
+   fi
+   if [ ! -z "$NGINX_TARGET_HTTPS_PORT" ]
+     then
+     HELM_VALUES+=",service.httpsTargetPort=$NGINX_TARGET_HTTPS_PORT"
+   fi
    if [ ! -z "$NGINX_TLS_SECRET" ]
    then
      HELM_VALUES+=",SSL.nginxTLSSecret=$NGINX_TLS_SECRET"
@@ -817,9 +914,29 @@ function deployNginx(){
    then
      HELM_VALUES+=",ingress.host=$NGINX_INGRESS_HOST"
    fi
+   if [ ! -z "$NGINX_IMAGE" ]
+   then
+     HELM_VALUES+=",image=\"$NGINX_IMAGE\""
+   fi
    if [ ! -z "$NGINX_INGRESS_CLASS" ]
    then
      HELM_VALUES+=",ingress.class=\"$NGINX_INGRESS_CLASS\""
+   fi
+   if [ ! -z "$NGINX_VAR_STORAGE_CLAIMNAME" ]
+   then
+    HELM_VALUES+=",varStorage.claimName=$NGINX_VAR_STORAGE_CLAIMNAME"
+   fi
+   if [ ! -z "$NGINX_VAR_STORAGE_EXISTING_CLAIM" ]
+   then
+    HELM_VALUES+=",varStorage.existingClaim=$NGINX_VAR_STORAGE_EXISTING_CLAIM"
+   fi
+   if [ ! -z "$NGINX_VAR_STORAGE_SIZE" ]
+   then
+    HELM_VALUES+=",varStorage.storageSize=$NGINX_VAR_STORAGE_SIZE"
+   fi
+   if [ ! -z "$NGINX_VAR_STORAGE_CLASS" ]
+   then
+    HELM_VALUES+=",varStorage.storageClass=$NGINX_VAR_STORAGE_CLASS"
    fi
    $HELM -n $NAMESPACE upgrade --install nginx-revproxy $NGINX_HELM_DIR --debug \
        --logtostderr --set $HELM_VALUES
@@ -873,7 +990,7 @@ function deleteNFSRODS(){
 
 function createNextflowStorage(){
   echo "# creating storage for Nextflow"
-  if [ "$GKE_DEPLOYMENT" = true ]; then
+  if [ "$GKE_DEPLOYMENT" == true ]; then
     createNFSPV $NEXTFLOW_PD_NAME $NFS_CLNT_PV_NFS_SRVR \
         $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NEXTFLOW_PV_STORAGE_SIZE \
         $NEXTFLOW_PV_ACCESSMODE
@@ -890,7 +1007,7 @@ function createNextflowStorage(){
 
 function deleteNextflowStorage(){
   echo "# deleting storage for Nextflow"
-  if [ "$GKE_DEPLOYMENT" = true ]; then
+  if [ "$GKE_DEPLOYMENT" == true ]; then
     deleteNFSPVC $NEXTFLOW_PVC $NFS_CLNT_STORAGECLASS \
         $NEXTFLOW_PV_STORAGE_SIZE $NEXTFLOW_PV_ACCESSMODE
     deleteNFSPV $NEXTFLOW_PD_NAME $NFS_CLNT_PV_NFS_SRVR \
@@ -924,11 +1041,11 @@ case $APPS_ACTION in
     case $APP in
       all)
         deployDynamicPVCP
-        if [ "$GKE_DEPLOYMENT" = true ];
+        if [ "$GKE_DEPLOYMENT" == true ];
         then
           deployNFSServer
         fi
-        if [ "$NFSRODS_FOR_USER_DATA" = true ]
+        if [ "$NFSRODS_FOR_USER_DATA" == true ]
         then
           deployNFSRODS
         fi
@@ -940,6 +1057,12 @@ case $APPS_ACTION in
         ;;
       ambassador)
         deployAmbassador
+        ;;
+      appstore)
+        deployAppStore
+        ;;
+      commonsshare)
+        deployCommonsShare
         ;;
       cat)
         deployCAT
@@ -962,6 +1085,9 @@ case $APPS_ACTION in
       nginx)
         deployNginx
         ;;
+      tycho)
+        deployTycho
+        ;;
       *)
         print_apps_help
         exit 1
@@ -976,10 +1102,10 @@ case $APPS_ACTION in
         deleteAmbassador
         deleteCAT
         deleteELK
-        if [ "$NFSRODS_FOR_USER_DATA" = true ]; then
+        if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
           deleteNFSRODS
         fi
-        if [ "$GKE_DEPLOYMENT" = true ];
+        if [ "$GKE_DEPLOYMENT" == true ];
         then
           deleteNFSServer
         fi
@@ -988,8 +1114,14 @@ case $APPS_ACTION in
       ambassador)
         deleteAmbassador
         ;;
+      appstore)
+        deleteAppStore
+        ;;
       cat)
         deleteCAT
+        ;;
+      commonsshare)
+        deleteCommonsShare
         ;;
       dynamicPVCP)
         deleteDynamicPVCP
@@ -1008,6 +1140,9 @@ case $APPS_ACTION in
         ;;
       nginx)
         deleteNginx
+        ;;
+      tycho)
+        deleteTycho
         ;;
       *)
         print_apps_help

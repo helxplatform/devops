@@ -25,3 +25,8 @@ prp:
    deployment: false
 
 roleIngresses: true
+
+securityContext:
+  runAsUser: 8888
+  # runAsGroup: 8888
+  # fsGroup: 8888

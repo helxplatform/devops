@@ -16,7 +16,10 @@ fullnameOverride: ""
 service:
   type: LoadBalancer
   IP:
-  port: 80
+  httpPort: 80
+  httpTargetPort: 80
+  httpsPort: 443
+  httpsTargetPort: 443
   serverName: _
   resolver: coredns.kube-system.svc
   # resolver: kube-dns.kube-system.svc
@@ -34,3 +37,11 @@ DEV_PHASE:
 #   host: example.com
 #   # ToDo: Make this cleaner.
 #   class: traefik
+
+varStorage:
+  existingClaim: false
+  claimName:
+  storageSize: 2Gi
+  storageClass:
+
+image: heliumdatastage/nginx:bdcat-nginx-amb-2

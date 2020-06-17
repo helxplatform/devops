@@ -13,13 +13,13 @@ spec:
         app: nginx-revproxy
     spec:
       containers:
-      - image: heliumdatastage/nginx:bdcat-nginx-amb-2
+      - image: {{ .Values.image }}
         imagePullPolicy: Always
         name: ambassador-nginx-conf
         ports:
-        - containerPort: 80
+        - containerPort: {{ .Values.service.httpTargetPort }}
         {{- if .Values.SSL }}
-        - containerPort: 443
+        - containerPort: {{ .Values.service.httpsTargetPort }}
         {{- end }}
         volumeMounts:
         - name: ambassador-nginx-conf
@@ -28,6 +28,17 @@ spec:
         - name: secret-volume
           mountPath: /etc/nginx/ssl
         {{- end }}
+        {{- if .Values.varStorage.claimName }}
+        - name: var-mounts-claim
+          mountPath: /var/cache/nginx
+          subPath: var_cache_nginx
+        - name: var-mounts-claim
+          mountPath: /var/run
+          subPath: var_run
+        {{- end }}
+        # Uncomment command/args for debugging when things go wrong.
+        # command: ['/bin/bash', '-c']
+        # args: ["while true; do date; sleep 5; done"]
       # Load the configuration files for nginx
       volumes:
         - name: ambassador-nginx-conf
@@ -37,4 +48,9 @@ spec:
         - name: secret-volume
           secret:
             secretName: {{ .Values.SSL.nginxTLSSecret }}
+        {{- end }}
+        {{- if .Values.varStorage.claimName }}
+        - name: var-mounts-claim
+          persistentVolumeClaim:
+            claimName: {{ .Values.varStorage.claimName }}
         {{- end }}

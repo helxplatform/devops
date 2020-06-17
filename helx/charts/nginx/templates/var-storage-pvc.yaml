@@ -1,0 +1,17 @@
+{{- if not .Values.varStorage.existingClaim }}
+{{- if .Values.varStorage.claimName }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.varStorage.claimName }}
+  labels:
+    app: nginx-revproxy
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.varStorage.storageSize }}
+  storageClassName: {{ .Values.varStorage.storageClass }}
+{{- end }}
+{{- end }}

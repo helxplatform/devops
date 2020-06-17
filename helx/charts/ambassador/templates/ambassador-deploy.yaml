@@ -90,16 +90,26 @@ spec:
         resources:
           limits:
             cpu: 1
-            memory: 400Mi
+            memory: 512Mi
           requests:
             cpu: 200m
-            memory: 100Mi
+            memory: 150Mi
         volumeMounts:
         - mountPath: /tmp/ambassador-pod-info
           name: ambassador-pod-info
       restartPolicy: Always
+      {{- if .Values.securityContext }}
       securityContext:
-        runAsUser: 8888
+        {{- if .Values.securityContext.runAsUser }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- end }}
+        {{- if .Values.securityContext.runAsGroup }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
+        {{- end }}
+        {{- if .Values.securityContext.fsGroup }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        {{- end }}
+      {{- end }}
       serviceAccountName: ambassador
       volumes:
       - downwardAPI:

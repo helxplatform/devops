@@ -7,13 +7,13 @@ spec:
   loadBalancerIP: {{ .Values.service.IP }}
   ports:
   - name: http
-    port: 80
-    targetPort: 80
+    port: {{ .Values.service.httpPort }}
+    targetPort: {{ .Values.service.httpTargetPort }}
     protocol: TCP
   {{- if .Values.SSL }}
   - name: https
-    port: 443
-    targetPort: 443
+    port: {{ .Values.service.httpsPort }}
+    targetPort: {{ .Values.service.httpsTargetPort }}
     protocol: TCP
   {{- end }}
   selector:
