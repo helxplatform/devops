@@ -265,6 +265,26 @@ NFSRODS_CONFIG_PV_ACCESSMODE=${NFSRODS_CONFIG_PV_ACCESSMODE-"ReadWriteMany"}
 
 USE_NFS_PVS=${USE_NFS_PVS-true}
 
+RESTARTR_ROOT=${RESTARTR_ROOT-"$HELXPLATFORM_HOME/restartr"}
+RESTARTR_HELM_DIR=${RESTARTR_HELM_DIR-"$RESTARTR_ROOT/kubernetes/helm"}
+RESTARTR_IMAGE_TAG=${RESTARTR_IMAGE_TAG-""}
+RESTARTR_HELM_RELEASE_NAME=${RESTARTR_HELM_RELEASE_NAME-"restartr"}
+RESTARTR_API_REQUEST_CPU=${RESTARTR_API_REQUEST_CPU-"0.25"}
+RESTARTR_API_REQUEST_MEMORY=${RESTARTR_API_REQUEST_MEMORY-"200Mi"}
+RESTARTR_API_LIMIT_CPU=${RESTARTR_API_LIMIT_CPU-"0.4"}
+RESTARTR_API_LIMIT_MEMORY=${RESTARTR_API_LIMIT_MEMORY-"256Mi"}
+RESTARTR_MONGO_REQUEST_CPU=${RESTARTR_MONGO_REQUEST_CPU-"0.25"}
+RESTARTR_MONGO_REQUEST_MEMORY=${RESTARTR_MONGO_REQUEST_MEMORY-"200Mi"}
+RESTARTR_MONGO_LIMIT_CPU=${RESTARTR_MONGO_LIMIT_CPU-"0.4"}
+RESTARTR_MONGO_LIMIT_MEMORY=${RESTARTR_MONGO_LIMIT_MEMORY-"512Mi"}
+
+EFK_NAMESPACE=${EFK_NAMESPACE-"logging"}
+EFK_RELEASE_NAME=${EFK_RELEASE_NAME-"efk"}
+# EFK_VERSION_ARG=${EFK_VERSION_ARG-""}
+EFK_VERSION_ARG=${EFK_VERSION_ARG-"--version=v2.0.0"}
+# EFK_VERSION_ARG="--version=v2.0.0"
+# EFK_VERSION_ARG="--version=v2.0.1"
+
 # Some commands need to be given time to execute after they are run before
 # running other related commands (like deleting a PV then deleting the related
 # disk).
@@ -422,12 +442,6 @@ function deleteELK(){
 
 
 function deployEFK(){
-  EFK_NAMESPACE=${EFK_NAMESPACE-"logging"}
-  EFK_RELEASE_NAME=${EFK_RELEASE_NAME-"efk"}
-  # EFK_VERSION_ARG=${EFK_VERSION_ARG-""}
-  EFK_VERSION_ARG=${EFK_VERSION_ARG-"--version=v2.0.0"}
-  # EFK_VERSION_ARG="--version=v2.0.0"
-  # EFK_VERSION_ARG="--version=v2.0.1"
   kubectl create namespace $EFK_NAMESPACE
   HELM_VALUES="elasticsearch.enabled=true"
   HELM_VALUES+=",kibana.enabled=true"
@@ -439,8 +453,6 @@ function deployEFK(){
 
 
 function deleteEFK(){
-  EFK_NAMESPACE=${EFK_NAMESPACE-"logging"}
-  EFK_RELEASE_NAME=${EFK_RELEASE_NAME-"efk"}
   helm -n $EFK_NAMESPACE delete $EFK_RELEASE_NAME
 }
 
@@ -1075,6 +1087,36 @@ function blackbalsam(){
 }
 
 
+function restartr(){
+  if [ "$1" == "deploy" ]
+  then
+    echo "deploying restartr"
+    HELM_VALUES="api.request.cpu=$RESTARTR_API_REQUEST_CPU"
+    HELM_VALUES+=",api.request.memory=$RESTARTR_API_REQUEST_MEMORY"
+    HELM_VALUES+=",api.limit.cpu=$RESTARTR_API_LIMIT_CPU"
+    HELM_VALUES+=",api.limit.memory=$RESTARTR_API_LIMIT_MEMORY"
+    HELM_VALUES+=",mongo.request.cpu=$RESTARTR_MONGO_REQUEST_CPU"
+    HELM_VALUES+=",mongo.request.memory=$RESTARTR_MONGO_REQUEST_MEMORY"
+    HELM_VALUES+=",mongo.limit.cpu=$RESTARTR_MONGO_LIMIT_CPU"
+    HELM_VALUES+=",mongo.limit.memory=$RESTARTR_MONGO_LIMIT_MEMORY"
+    if [ ! -z "$RESTARTR_IMAGE" ]
+    then
+      HELM_VALUES+=",api.image_tag=$RESTARTR_IMAGE_TAG"
+    fi
+    $HELM -n $NAMESPACE upgrade --install $RESTARTR_HELM_RELEASE_NAME $RESTARTR_HELM_DIR --debug \
+        --logtostderr --set $HELM_VALUES
+    echo "finished deploying restartr"
+  elif [ "$1" == "delete" ]
+  then
+    echo "deleting restartr"
+    $HELM -n $NAMESPACE delete $RESTARTR_HELM_RELEASE_NAME
+    echo "finished deleting restartr"
+  else
+    echo "unknown option for restartr"
+  fi
+}
+
+
 case $APPS_ACTION in
   deploy)
     case $APP in
@@ -1126,6 +1168,9 @@ case $APPS_ACTION in
         ;;
       nginx)
         deployNginx
+        ;;
+      restartr)
+        restartr deploy
         ;;
       tycho)
         deployTycho
@@ -1185,6 +1230,9 @@ case $APPS_ACTION in
         ;;
       nginx)
         deleteNginx
+        ;;
+      restartr)
+        restartr delete
         ;;
       tycho)
         deleteTycho
