@@ -252,7 +252,7 @@ NFSRODS_PV_STORAGECLASS=${NFSRODS_PV_STORAGECLASS-"${PV_PREFIX}$NFSRODS_NAME-sc"
 NFSRODS_PV_NFS_SERVER_IP=${NFSRODS_PV_NFS_SERVER_IP-"10.233.58.200"}
 NFSRODS_PV_NFS_PATH=${NFSRODS_PV_NFS_PATH-"/"}
 NFSRODS_PV_ACCESSMODE=${NFSRODS_PV_ACCESSMODE-"ReadWriteMany"}
-NFSRODS_PVC_CLAIMNAME=${NFSRODS_PVC_CLAIMNAME-"$NFSRODS_NAME-pvc"}
+NFSRODS_PVC_CLAIMNAME=${NFSRODS_PVC_CLAIMNAME-"$NFSRODS_NAME"}
 NFSRODS_PVC_STORAGE_SIZE=${NFSRODS_PVC_STORAGE_SIZE-"10Gi"}
 NFSRODS_FOR_USER_DATA=${NFSRODS_FOR_USER_DATA-false}
 NFSRODS_CONFIG_PV_NAME=${NFSRODS_CONFIG_PV_NAME-"${PV_PREFIX}$NFSRODS_NAME-config-pv"}
@@ -418,6 +418,30 @@ function deleteELK(){
    cat $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
           kubectl delete -n $NAMESPACE -f -
    echo "# end deleting ELK"
+}
+
+
+function deployEFK(){
+  EFK_NAMESPACE=${EFK_NAMESPACE-"logging"}
+  EFK_RELEASE_NAME=${EFK_RELEASE_NAME-"efk"}
+  # EFK_VERSION_ARG=${EFK_VERSION_ARG-""}
+  EFK_VERSION_ARG=${EFK_VERSION_ARG-"--version=v2.0.0"}
+  # EFK_VERSION_ARG="--version=v2.0.0"
+  # EFK_VERSION_ARG="--version=v2.0.1"
+  kubectl create namespace $EFK_NAMESPACE
+  HELM_VALUES="elasticsearch.enabled=true"
+  HELM_VALUES+=",kibana.enabled=true"
+  HELM_VALUES+=",logstash.enabled=false"
+  HELM_VALUES+=",fluent-bit.enabled=true,fluent-bit.backend.type=es"
+  HELM_VALUES+=",fluent-bit.backend.es.host=$EFK_RELEASE_NAME-elasticsearch-client"
+  helm upgrade --install -n $EFK_NAMESPACE $EFK_VERSION_ARG $EFK_RELEASE_NAME stable/elastic-stack --set $HELM_VALUES
+}
+
+
+function deleteEFK(){
+  EFK_NAMESPACE=${EFK_NAMESPACE-"logging"}
+  EFK_RELEASE_NAME=${EFK_RELEASE_NAME-"efk"}
+  helm -n $EFK_NAMESPACE delete $EFK_RELEASE_NAME
 }
 
 
@@ -1085,6 +1109,9 @@ case $APPS_ACTION in
       dynamicpvcp)
         deployDynamicPVCP
         ;;
+      efk)
+        deployEFK
+        ;;
       elk)
         deployELK
         ;;
@@ -1140,6 +1167,9 @@ case $APPS_ACTION in
         ;;
       dynamicpvcp)
         deleteDynamicPVCP
+        ;;
+      efk)
+        deleteEFK
         ;;
       elk)
         deleteELK
