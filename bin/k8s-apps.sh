@@ -800,8 +800,8 @@ function deployAppStore(){
   HELM_VALUES+=",apps.NAPARI_USER_HOME=\"`encodeString "$NAPARI_USER_HOME"`\""
   HELM_VALUES+=",apps.NAPARI_USER_NAME=\"`encodeString "$NAPARI_USER_NAME"`\""
   HELM_VALUES+=",apps.NAPARI_VNC_PW=\"`encodeString "$NAPARI_VNC_PW"`\""
-  $HELM -n $NAMESPACE upgrade --install $APPSTORE_NAME \
-     $CAT_HELM_DIR/charts/appstore --debug --logtostderr --set $HELM_VALUES
+  $HELM -n $NAMESPACE upgrade $APPSTORE_NAME \
+     $CAT_HELM_DIR/charts/appstore --install --debug --logtostderr --set $HELM_VALUES
   echo "# end deploying AppStore"
 }
 
