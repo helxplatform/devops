@@ -11,7 +11,7 @@ function print_apps_help() {
   echo "\
 usage: $0 <action> <app> <option>
   actions: deploy, delete
-  apps: cat, elk, nfs, all
+  apps: cat, elk, all, nginx-revproxy, efk, ambassador, appstore, commonsshare, tycho, nextflowstorage, nfs-server, nfsrods
   -c [config file]  Specify config file.
   -h|--help         Print this help message.
 "
@@ -118,12 +118,14 @@ NEXTFLOW_PV_STORAGECLASS=${NEXTFLOW_PV_STORAGECLASS-"${PV_PREFIX}nextflow-sc"}
 NEXTFLOW_PV_NAME=${NEXTFLOW_PV_NAME-"${PV_PREFIX}nextflow-pv"}
 
 AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/ambassador"}
+AMBASSADOR_HELM_RELEASE=${AMBASSADOR_HELM_RELEASE-"ambassador"}
 AMBASSADOR_RUNASUSER=${AMBASSADOR_RUNASUSER-""}
 AMBASSADOR_RUNASGROUP=${AMBASSADOR_RUNASGROUP-""}
 AMBASSADOR_FSGROUP=${AMBASSADOR_FSGROUP-""}
 AMBASSADOR_ROLE_INGRESSES=${AMBASSADOR_ROLE_INGRESSES-""}
 USE_CLUSTER_ROLES=${USE_CLUSTER_ROLES-false}
 NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/helx/charts/nginx"}
+NGINX_HELM_RELEASE=${NGINX_HELM_RELEASE-"nginx-revproxy"}
 NGINX_IMAGE=${NGINX_IMAGE-""}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
 NGINX_IP=${NGINX_IP-""}
@@ -145,7 +147,7 @@ NGINX_VAR_STORAGE_SIZE=${NGINX_VAR_STORAGE_SIZE-""}
 NGINX_VAR_STORAGE_CLASS=${NGINX_VAR_STORAGE_CLASS-""}
 
 HELM=${HELM-helm}
-COMMONSSHARE_NAME=${COMMONSSHARE_NAME-"commonsshare"}
+COMMONSSHARE_HELM_RELEASE=${COMMONSSHARE_HELM_RELEASE-"commonsshare"}
 COMMONSSHARE_DEPLOYMENT=${COMMONSSHARE_DEPLOYMENT-false}
 CAT_HELM_DIR=${CAT_HELM_DIR-"${K8S_DEVOPS_CORE_HOME}/helx"}
 CAT_USER_STORAGE_NAME=${CAT_USER_STORAGE_NAME-"stdnfs"}
@@ -159,7 +161,7 @@ CAT_PV_STORAGE_SIZE=${CAT_PV_STORAGE_SIZE-"10Gi"}
 CAT_DISK_SIZE=${CAT_DISK_SIZE-"10GB"}
 CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
 
-APPSTORE_NAME=${APPSTORE_NAME-"appstore"}
+APPSTORE_HELM_RELEASE=${APPSTORE_HELM_RELEASE-"appstore"}
 APPSTORE_RUNASUSER=${APPSTORE_RUNASUSER-""}
 APPSTORE_RUNASGROUP=${APPSTORE_RUNASGROUP-""}
 APPSTORE_FSGROUP=${APPSTORE_FSGROUP-""}
@@ -193,7 +195,7 @@ export NAPARI_USER_HOME=${NAPARI_USER_HOME-$CLOUD_TOP_USER_HOME}
 export NAPARI_USER_NAME=${NAPARI_USER_NAME-$CLOUD_TOP_USER_NAME}
 export NAPARI_VNC_PW=${NAPARI_VNC_PW-$CLOUD_TOP_VNC_PW}
 
-TYCHO_NAME=${TYCHO_NAME-"tycho"}
+TYCHO_HELM_RELEASE=${TYCHO_HELM_RELEASE-"tycho-api"}
 TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-""}
 TYCHO_API_IMAGE=${TYCHO_API_IMAGE-""}
 TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
@@ -242,24 +244,24 @@ COMMONSSHARE_DB_STORAGECLASS=${COMMONSSHARE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
 HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/secrets/hydroshare-secret.yaml"}
 HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/commonsshare/templates/hydroshare-secret.yaml"}
 
-NFSRODS_NAME=${NFSRODS_NAME-"nfsrods"}
+NFSRODS_HELM_RELEASE=${NFSRODS_HELM_RELEASE-"nfsrods"}
 NFSRODS_HELM_DIR=${NFSRODS_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/nfsrods"}
-NFSRODS_PV_NAME=${NFSRODS_PV_NAME-"${PV_PREFIX}$NFSRODS_NAME-pv"}
+NFSRODS_PV_NAME=${NFSRODS_PV_NAME-"${PV_PREFIX}$NFSRODS_HELM_RELEASE-pv"}
 NFSRODS_PV_STORAGE_SIZE=${NFSRODS_PV_STORAGE_SIZE-"100Gi"}
-NFSRODS_PV_STORAGECLASS=${NFSRODS_PV_STORAGECLASS-"${PV_PREFIX}$NFSRODS_NAME-sc"}
+NFSRODS_PV_STORAGECLASS=${NFSRODS_PV_STORAGECLASS-"${PV_PREFIX}$NFSRODS_HELM_RELEASE-sc"}
 # ToDo: Pull this IP from from the service after it's created and use that to
 # create the PVC.
 NFSRODS_PV_NFS_SERVER_IP=${NFSRODS_PV_NFS_SERVER_IP-"10.233.58.200"}
 NFSRODS_PV_NFS_PATH=${NFSRODS_PV_NFS_PATH-"/"}
 NFSRODS_PV_ACCESSMODE=${NFSRODS_PV_ACCESSMODE-"ReadWriteMany"}
-NFSRODS_PVC_CLAIMNAME=${NFSRODS_PVC_CLAIMNAME-"$NFSRODS_NAME"}
+NFSRODS_PVC_CLAIMNAME=${NFSRODS_PVC_CLAIMNAME-"$NFSRODS_HELM_RELEASE"}
 NFSRODS_PVC_STORAGE_SIZE=${NFSRODS_PVC_STORAGE_SIZE-"10Gi"}
 NFSRODS_FOR_USER_DATA=${NFSRODS_FOR_USER_DATA-false}
-NFSRODS_CONFIG_PV_NAME=${NFSRODS_CONFIG_PV_NAME-"${PV_PREFIX}$NFSRODS_NAME-config-pv"}
-NFSRODS_CONFIG_CLAIMNAME=${NFSRODS_CONFIG_CLAIMNAME-"$NFSRODS_NAME-config-pvc"}
+NFSRODS_CONFIG_PV_NAME=${NFSRODS_CONFIG_PV_NAME-"${PV_PREFIX}$NFSRODS_HELM_RELEASE-config-pv"}
+NFSRODS_CONFIG_CLAIMNAME=${NFSRODS_CONFIG_CLAIMNAME-"$NFSRODS_HELM_RELEASE-config-pvc"}
 NFSRODS_CONFIG_NFS_SERVER=${NFSRODS_CONFIG_NFS_SERVER-""}
 NFSRODS_CONFIG_NFS_PATH=${NFSRODS_CONFIG_NFS_PATH-""}
-NFSRODS_CONFIG_PV_STORAGECLASS=${NFSRODS_CONFIG_PV_STORAGECLASS-"${PV_PREFIX}$NFSRODS_NAME-config-sc"}
+NFSRODS_CONFIG_PV_STORAGECLASS=${NFSRODS_CONFIG_PV_STORAGECLASS-"${PV_PREFIX}$NFSRODS_HELM_RELEASE-config-sc"}
 NFSRODS_CONFIG_PV_STORAGE_SIZE=${NFSRODS_CONFIG_PV_STORAGE_SIZE-"10Mi"}
 NFSRODS_CONFIG_PV_ACCESSMODE=${NFSRODS_CONFIG_PV_ACCESSMODE-"ReadWriteMany"}
 
@@ -268,7 +270,7 @@ USE_NFS_PVS=${USE_NFS_PVS-true}
 RESTARTR_ROOT=${RESTARTR_ROOT-"$HELXPLATFORM_HOME/restartr"}
 RESTARTR_HELM_DIR=${RESTARTR_HELM_DIR-"$RESTARTR_ROOT/kubernetes/helm"}
 RESTARTR_IMAGE_TAG=${RESTARTR_IMAGE_TAG-""}
-RESTARTR_HELM_RELEASE_NAME=${RESTARTR_HELM_RELEASE_NAME-"restartr"}
+RESTARTR_HELM_RELEASE=${RESTARTR_HELM_RELEASE-"restartr"}
 RESTARTR_API_REQUEST_CPU=${RESTARTR_API_REQUEST_CPU-"0.25"}
 RESTARTR_API_REQUEST_MEMORY=${RESTARTR_API_REQUEST_MEMORY-"200Mi"}
 RESTARTR_API_LIMIT_CPU=${RESTARTR_API_LIMIT_CPU-"0.4"}
@@ -279,7 +281,7 @@ RESTARTR_MONGO_LIMIT_CPU=${RESTARTR_MONGO_LIMIT_CPU-"0.4"}
 RESTARTR_MONGO_LIMIT_MEMORY=${RESTARTR_MONGO_LIMIT_MEMORY-"512Mi"}
 
 EFK_NAMESPACE=${EFK_NAMESPACE-"logging"}
-EFK_RELEASE_NAME=${EFK_RELEASE_NAME-"efk"}
+EFK_HELM_RELEASE=${EFK_HELM_RELEASE-"efk"}
 # EFK_VERSION_ARG=${EFK_VERSION_ARG-""}
 EFK_VERSION_ARG=${EFK_VERSION_ARG-"--version=v2.0.0"}
 # EFK_VERSION_ARG="--version=v2.0.0"
@@ -447,13 +449,13 @@ function deployEFK(){
   HELM_VALUES+=",kibana.enabled=true"
   HELM_VALUES+=",logstash.enabled=false"
   HELM_VALUES+=",fluent-bit.enabled=true,fluent-bit.backend.type=es"
-  HELM_VALUES+=",fluent-bit.backend.es.host=$EFK_RELEASE_NAME-elasticsearch-client"
-  helm upgrade --install -n $EFK_NAMESPACE $EFK_VERSION_ARG $EFK_RELEASE_NAME stable/elastic-stack --set $HELM_VALUES
+  HELM_VALUES+=",fluent-bit.backend.es.host=$EFK_HELM_RELEASE-elasticsearch-client"
+  helm upgrade --install -n $EFK_NAMESPACE $EFK_VERSION_ARG $EFK_HELM_RELEASE stable/elastic-stack --set $HELM_VALUES
 }
 
 
 function deleteEFK(){
-  helm -n $EFK_NAMESPACE delete $EFK_RELEASE_NAME
+  helm -n $EFK_NAMESPACE delete $EFK_HELM_RELEASE
 }
 
 
@@ -640,7 +642,7 @@ spec:
 
 
 function encodeString(){
-  ENCODED_STRING=`echo -n "$1" | base64`
+  ENCODED_STRING=`echo -n "$1" | base64 | tr -d '\n'`
   echo -n $ENCODED_STRING
 }
 
@@ -683,7 +685,7 @@ function deployTycho(){
   then
     HELM_VALUES+=",image=$TYCHO_API_IMAGE"
   fi
-  $HELM -n $NAMESPACE upgrade --install $TYCHO_NAME \
+  $HELM -n $NAMESPACE upgrade --install $TYCHO_HELM_RELEASE \
      $CAT_HELM_DIR/charts/tycho-api --debug --logtostderr --set $HELM_VALUES
    echo "# end deploying Tycho"
 }
@@ -691,7 +693,7 @@ function deployTycho(){
 
 function deleteTycho(){
   echo "# deleting Tycho"
-  $HELM -n $NAMESPACE delete $TYCHO_NAME
+  $HELM -n $NAMESPACE delete $TYCHO_HELM_RELEASE
   echo "# end deleting Tycho"
 }
 
@@ -800,7 +802,7 @@ function deployAppStore(){
   HELM_VALUES+=",apps.NAPARI_USER_HOME=\"`encodeString "$NAPARI_USER_HOME"`\""
   HELM_VALUES+=",apps.NAPARI_USER_NAME=\"`encodeString "$NAPARI_USER_NAME"`\""
   HELM_VALUES+=",apps.NAPARI_VNC_PW=\"`encodeString "$NAPARI_VNC_PW"`\""
-  $HELM -n $NAMESPACE upgrade $APPSTORE_NAME \
+  $HELM -n $NAMESPACE upgrade $APPSTORE_HELM_RELEASE \
      $CAT_HELM_DIR/charts/appstore --install --debug --logtostderr --set $HELM_VALUES
   echo "# end deploying AppStore"
 }
@@ -808,7 +810,7 @@ function deployAppStore(){
 
 function deleteAppStore(){
   echo "# deleting AppStore"
-  $HELM -n $NAMESPACE delete $APPSTORE_NAME
+  $HELM -n $NAMESPACE delete $APPSTORE_HELM_RELEASE
   if [ "$GKE_DEPLOYMENT" == true ]; then
     deleteNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
         $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
@@ -868,7 +870,7 @@ function deployCommonsShare(){
   then
     ## Deploy CommonsShare
     HELM_VALUES="web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
-    $HELM -n $NAMESPACE upgrade --install $COMMONSSHARE_NAME \
+    $HELM -n $NAMESPACE upgrade --install $COMMONSSHARE_HELM_RELEASE \
       $CAT_HELM_DIR/charts/commonsshare --debug --logtostderr --set $HELM_VALUES
   fi
   echo "# end deploying CommonsShare"
@@ -877,7 +879,7 @@ function deployCommonsShare(){
 
 function deleteCommonsShare(){
   echo "# deleting CommonsShare"
-  $HELM -n $NAMESPACE delete $COMMONSSHARE_NAME
+  $HELM -n $NAMESPACE delete $COMMONSSHARE_HELM_RELEASE
   echo "# end deleting CommonsShare"
 }
 
@@ -910,7 +912,7 @@ function deployAmbassador(){
    else
      HELM_SET_ARG="--set $HELM_VALUES"
    fi
-   $HELM -n $NAMESPACE upgrade --install ambassador $AMBASSADOR_HELM_DIR --debug \
+   $HELM -n $NAMESPACE upgrade --install $AMBASSADOR_HELM_RELEASE $AMBASSADOR_HELM_DIR --debug \
        --logtostderr $HELM_SET_ARG
    echo "# end deploying Ambassador"
 }
@@ -918,13 +920,13 @@ function deployAmbassador(){
 
 function deleteAmbassador(){
    echo "# deleting Ambassador"
-   $HELM -n $NAMESPACE delete ambassador
+   $HELM -n $NAMESPACE delete $AMBASSADOR_HELM_RELEASE
    kubectl delete -n $NAMESPACE CustomResourceDefinition  mappings.getambassador.io
    echo "# end deleting Ambassador"
 }
 
 
-function deployNginx(){
+function deployNginxRevProxy(){
    echo "# deploying Nginx"
    if [ ! -z "$NGINX_TLS_KEY" ]
    then
@@ -989,15 +991,15 @@ function deployNginx(){
    then
     HELM_VALUES+=",varStorage.storageClass=$NGINX_VAR_STORAGE_CLASS"
    fi
-   $HELM -n $NAMESPACE upgrade --install nginx-revproxy $NGINX_HELM_DIR --debug \
+   $HELM -n $NAMESPACE upgrade --install $NGINX_HELM_RELEASE $NGINX_HELM_DIR --debug \
        --logtostderr --set $HELM_VALUES
    echo "# end deploying Nginx"
 }
 
 
-function deleteNginx(){
+function deleteNginxRevProxy(){
   echo "# deleting Nginx"
-  $HELM -n $NAMESPACE delete nginx-revproxy
+  $HELM -n $NAMESPACE delete $NGINX_HELM_RELEASE
   if [ ! -z "$NGINX_TLS_KEY" ]
   then
    kubectl --namespace $NAMESPACE delete secret $NGINX_TLS_SECRET
@@ -1014,7 +1016,7 @@ function deployNFSRODS(){
   HELM_VALUES="config.claimName=$NFSRODS_CONFIG_CLAIMNAME"
   HELM_VALUES+=",config.storageClass=$NFSRODS_CONFIG_PV_STORAGECLASS"
   HELM_VALUES+=",service.ip=$NFSRODS_PV_NFS_SERVER_IP"
-  $HELM -n $NAMESPACE upgrade --install $NFSRODS_NAME $NFSRODS_HELM_DIR --debug \
+  $HELM -n $NAMESPACE upgrade --install $NFSRODS_HELM_RELEASE $NFSRODS_HELM_DIR --debug \
       --logtostderr --set $HELM_VALUES
   createNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
       $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
@@ -1031,7 +1033,7 @@ function deleteNFSRODS(){
   deleteNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
       $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
       $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
-  $HELM -n $NAMESPACE delete $NFSRODS_NAME
+  $HELM -n $NAMESPACE delete $NFSRODS_HELM_RELEASE
   deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
   deleteNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
       $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
@@ -1094,6 +1096,7 @@ function restartr(){
   then
     echo "deploying restartr"
     HELM_VALUES="api.request.cpu=$RESTARTR_API_REQUEST_CPU"
+    HELM_VALUES+=",api_key=$RESTARTR_API_KEY"
     HELM_VALUES+=",api.request.memory=$RESTARTR_API_REQUEST_MEMORY"
     HELM_VALUES+=",api.limit.cpu=$RESTARTR_API_LIMIT_CPU"
     HELM_VALUES+=",api.limit.memory=$RESTARTR_API_LIMIT_MEMORY"
@@ -1105,13 +1108,13 @@ function restartr(){
     then
       HELM_VALUES+=",api.image_tag=$RESTARTR_IMAGE_TAG"
     fi
-    $HELM -n $NAMESPACE upgrade --install $RESTARTR_HELM_RELEASE_NAME $RESTARTR_HELM_DIR --debug \
+    $HELM -n $NAMESPACE upgrade --install $RESTARTR_HELM_RELEASE $RESTARTR_HELM_DIR --debug \
         --logtostderr --set $HELM_VALUES
     echo "finished deploying restartr"
   elif [ "$1" == "delete" ]
   then
     echo "deleting restartr"
-    $HELM -n $NAMESPACE delete $RESTARTR_HELM_RELEASE_NAME
+    $HELM -n $NAMESPACE delete $RESTARTR_HELM_RELEASE
     echo "finished deleting restartr"
   else
     echo "unknown option for restartr"
@@ -1135,7 +1138,7 @@ case $APPS_ACTION in
         # deployELK
         deployCAT
         deployAmbassador
-        deployNginx
+        deployNginxRevProxy
         createNextflowStorage
         ;;
       ambassador)
@@ -1168,8 +1171,8 @@ case $APPS_ACTION in
       nfsrods)
         deployNFSRODS
         ;;
-      nginx)
-        deployNginx
+      nginx-revproxy)
+        deployNginxRevProxy
         ;;
       restartr)
         restartr deploy
@@ -1187,7 +1190,7 @@ case $APPS_ACTION in
     case $APP in
       all)
         deleteNextflowStorage
-        deleteNginx
+        deleteNginxRevProxy
         deleteAmbassador
         deleteCAT
         # deleteELK
@@ -1230,8 +1233,8 @@ case $APPS_ACTION in
       nfsrods)
         deleteNFSRODS
         ;;
-      nginx)
-        deleteNginx
+      nginx-revproxy)
+        deleteNginxRevProxy
         ;;
       restartr)
         restartr delete
