@@ -96,7 +96,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
 ---
-{{- if .Values.useSparkServiceAccount}}
+{{- if .Values.useSparkServiceAccount }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
