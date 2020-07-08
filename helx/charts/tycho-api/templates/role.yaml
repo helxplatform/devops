@@ -95,3 +95,23 @@ roleRef:
   name: {{ template "tycho-api.name" . }}-access
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
+---
+{{- if .Values.useSparkServiceAccount}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spark
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: spark-role
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: spark
+  namespace: {{ .Release.Namespace }}
+{{- end }}
