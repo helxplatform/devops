@@ -45,3 +45,5 @@ varStorage:
   storageClass:
 
 image: heliumdatastage/nginx:bdcat-nginx-amb-2
+
+restartrApi: false
