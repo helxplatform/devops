@@ -5,28 +5,82 @@ metadata:
   name: {{ template "tycho-api.name" . }}-access
 rules:
 - apiGroups:
-  - "*"
-  # added pvc resource
+  - ""
+  attributeRestrictions: null
   resources:
-  - secrets
-  - configmaps
-  - pods
-  - services
-  - services/status
-  - persistentvolumeclaims
-  - deployments/rollback
-  - deployments/scale
-  - ingresses
-  - replicasets
-  - replicasets/scale
-  - networkpolicies
-  - deployments
-  - replicasets
-  - ingresses
   - namespaces
-  - persistentvolumes
   verbs:
-  - '*'
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+    - configmaps
+    - pods
+    - secrets
+    - services
+    - persistentvolumeclaims
+  verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+  - "apps"
+  resources:
+    - deployments
+    - deployments/rollback
+    - deployments/scale
+    - replicasets
+    - replicasets/scale
+  verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+  - extensions
+  attributeRestrictions: null
+  resources:
+    - deployments
+    - deployments/rollback
+    - deployments/scale
+    - ingresses
+    - replicasets
+    - replicasets/scale
+  verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+  - extensions
+  - networking.k8s.io
+  attributeRestrictions: null
+  resources:
+  - networkpolicies
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
