@@ -28,4 +28,6 @@ image: heliumdatastage/tycho-api:v1.0
 # Set either useClusterRole or useRole to true.
 useClusterRole: false
 useRole: true
+
+# Set to true, when using blackbalsam.
 useSparkServiceAccount: true
