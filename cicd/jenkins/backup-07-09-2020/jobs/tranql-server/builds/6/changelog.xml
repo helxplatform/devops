@@ -1,0 +1,49 @@
+commit 876fab3cffb2545eacad1f90a4f79741e6a0e9de
+tree 5de6f9a2b24bb69ded7321db75c939ef46a6d970
+parent 7585347e08e9cb60ec2881a8892502a232ea2db5
+author YaphetKG <kebedey@renci.org> 2020-06-03 10:11:20 -0400
+committer YaphetKG <kebedey@renci.org> 2020-06-03 10:11:20 -0400
+
+    ttl to 3h via values.yaml, and multi reasoner performance test for artillery
+
+
+:000000 100644 0000000000000000000000000000000000000000 ac3abf62e33ac833f86daf8c615aea3b78527fe1 A	docker/tranql-artillery/performance-tests/test-multi-resoner-performance.yaml
+:100644 100644 9ddae79a1bedb82c64fd2fd41deebe8cd352c164 79f74d2d760c1dd7c03e02628afc1818e996ab8f M	kubernetes/helm/templates/varnish_cache.configmap.yaml
+:100644 100644 eddbf4e6b58ed243faf50cf9fceb947a0e8dc373 5a1b7bb1f2317fca2d8928b1cdd98a7bf50f5784 M	kubernetes/helm/values.yaml
+commit 7585347e08e9cb60ec2881a8892502a232ea2db5
+tree 0e309ddb4fe4609b66a5f17d5220adc39219f9d4
+parent 1951f22d32ab999502671fe4bcd159234882a8ee
+author YaphetKG <kebedey@renci.org> 2020-06-03 10:09:18 -0400
+committer YaphetKG <kebedey@renci.org> 2020-06-03 10:09:18 -0400
+
+    artillery performance / integration test and helm test initial setup
+
+
+:000000 100644 0000000000000000000000000000000000000000 3626a025f50d32f2d14a5303602f78e8f7c811f8 A	docker/tranql-artillery/Dockerfile
+:000000 100644 0000000000000000000000000000000000000000 137edf60d7c07e296581e1624587816fd3e80010 A	docker/tranql-artillery/performance-tests/chemical_list.csv
+:000000 100644 0000000000000000000000000000000000000000 60ec8fe6bb745cc534497bbf0efc45bdab596178 A	docker/tranql-artillery/performance-tests/test-get-schema-perfomance.yaml
+:000000 100644 0000000000000000000000000000000000000000 58361051a1e7a8fd5151cb9ca98092c31c3d757d A	docker/tranql-artillery/performance-tests/test-multiple-queries-sharing-partial-path.yaml
+:000000 100644 0000000000000000000000000000000000000000 6653ea13a001a1cc5419916f631700757359682c A	docker/tranql-artillery/performance-tests/test-post-query.yaml
+:000000 100644 0000000000000000000000000000000000000000 149bbb353cb6c8954e3848172265cf4c5a4f3e6e A	kubernetes/helm/templates/tests/test-tranql-preformance.yaml
+commit 1951f22d32ab999502671fe4bcd159234882a8ee
+tree 2f180bdeee7a6dd8f45f252ab340bbca0bd8ef7d
+parent 57821ee6a6f332aebbc3b7d5018d5a436799eebd
+author YaphetKG <kebedey@renci.org> 2020-06-01 10:57:23 -0400
+committer YaphetKG <kebedey@renci.org> 2020-06-01 10:57:23 -0400
+
+    vcl config increasing backend timeout to 10mins
+
+
+:100644 100644 6cda96ccbafa00fe5eedcfbe4911ce6da2a4645d 9ddae79a1bedb82c64fd2fd41deebe8cd352c164 M	kubernetes/helm/templates/varnish_cache.configmap.yaml
+:100644 100644 b80ddd8e9ff339fd7cd85e2463cd07be508de7bf 9b3999908370cfb440cfe164cd2154e8d853aa3d M	varnish-cache/backplane.config.vcl
+:100644 100644 264e3752a6a664a2d10c4f7e92eff08e07fc7422 9ab6a80dc721f24397dd7dfaee7d12c745fdf0f1 M	varnish-cache/frontend.config.vcl
+commit 57821ee6a6f332aebbc3b7d5018d5a436799eebd
+tree 41d173840bc3912181af9bbde05a7077bc8399d7
+parent 6b9dc3a29d72d70f027a24a0f35633c61d5aa5e6
+author YaphetKG <kebedey@renci.org> 2020-06-01 10:56:46 -0400
+committer YaphetKG <kebedey@renci.org> 2020-06-01 10:56:46 -0400
+
+    tranql docker-compose.yml to use renciorg images for the app
+
+
+:100644 100644 5315389d4680c026aa77e98c50a87b44fb170dee ec26d6b082625c6ed792320f457f3a8781235b01 M	docker/docker-compose.yml

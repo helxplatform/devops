@@ -1,0 +1,20 @@
+Started by user [8mha:////4D7tMwQ0RNCiCiyjPL2yRHzJuXKvoY3dBIvnFiW8CCLjAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgYu/dLi1CL94uT8CgBg0uehvwAAAA==[0mSteven Cox
+Building on master in workspace /var/lib/jenkins/jobs/stars/jobs/stars/workspace
+Cloning the remote Git repository
+Cloning repository git@github.com:stevencox/stars.git
+ > git init /var/lib/jenkins/jobs/stars/jobs/stars/workspace # timeout=10
+Fetching upstream changes from git@github.com:stevencox/stars.git
+ > git --version # timeout=10
+ > git fetch --tags --progress git@github.com:stevencox/stars.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url git@github.com:stevencox/stars.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url git@github.com:stevencox/stars.git # timeout=10
+Fetching upstream changes from git@github.com:stevencox/stars.git
+ > git fetch --tags --progress git@github.com:stevencox/stars.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 5dd42b21d263722acf990aac959e4a1c6387964c (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 5dd42b21d263722acf990aac959e4a1c6387964c
+First time build. Skipping changelog.
+Finished: SUCCESS

@@ -1,0 +1,11 @@
+commit 8ade9255611d1c5b7df60a21b8b467235c69a970
+tree 1893b5cb977d807fd3a0cd63559c1d9622afb108
+parent 4a69a9fc203c17e3a6bacb9fbe08bc5e19682801
+author YaphetKG <45075777+YaphetKG@users.noreply.github.com> 2020-06-03 13:24:35 -0400
+committer GitHub <noreply@github.com> 2020-06-03 13:24:35 -0400
+
+    Update tranql_frontend_deployment.yaml
+    
+    Fix backend port
+
+:100644 100644 5baf0d27381c357090a03068f1ac3c9134a0e63f c9dc924d95a68fa52fb49e17ddf84083ad06e559 M	kubernetes/helm/templates/tranql_frontend_deployment.yaml

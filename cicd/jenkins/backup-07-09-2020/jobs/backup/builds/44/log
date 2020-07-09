@@ -1,0 +1,278 @@
+Started by user [8mha:////4AKlbaGiTjK4/6tx36g/NqgzS+rEHIIQCdUcI1vy2PjnAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgZu/dLi1CL9YqDmDADPSPjkwAAAAA==[0mMani Singh
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/backup/workspace
+[EnvInject] - Mask passwords that will be passed as build parameters.
+[workspace] $ /bin/bash -xe /tmp/jenkins5513118462746368723.sh
++ set +x
+Build number: 44
+Build ID: 44
+Job name: backup
+Build tag: jenkins-backup-44
+Node name: master
+Node labels: master
+Workspace: /var/lib/jenkins/jobs/backup/workspace
+Jenkins URL: https://stars-app.renci.org/jenkins/
+Jenkins Home: /var/lib/jenkins
+total 280
+drwxr-xr-x  17 evryscope jenkins           4096 Jul  8 09:56 .
+drwxr-xr-x. 52 root      root              4096 Jun 10 14:17 ..
+drwxr-xr-x   3 evryscope service accounts    25 Feb 25 14:04 caches
+-rw-r--r--   1 evryscope service accounts   441 May 26 15:20 com.cloudbees.hudson.plugins.folder.config.AbstractFolderConfiguration.xml
+-rw-r--r--   1 evryscope service accounts 27091 Jul  8 08:38 config.xml
+-rw-r--r--   1 evryscope service accounts  8358 Mar  6  2017 config.xml~
+-rw-r--r--   1 evryscope service accounts 14439 Jan 10  2018 config.xml.backup-20180110111600
+-rw-r--r--   1 evryscope service accounts  7286 May 28 12:48 credentials.xml
+-rw-r--r--   1 evryscope service accounts   341 Jul  8 08:38 envinject-plugin-configuration.xml
+-rw-r--r--   1 evryscope service accounts   278 May 26 15:20 envInject.xml
+drwxr-xr-x   6 evryscope service accounts    42 Jul  8 08:36 fingerprints
+-rw-r--r--   1 evryscope service accounts   214 May 26 15:20 github-plugin-configuration.xml
+drwxr-xr-x   3 evryscope service accounts    19 Feb 26  2017 .groovy
+-rw-r--r--   1 evryscope service accounts   807 May 26 15:20 hudson.maven.MavenModuleSet.xml
+-rw-r--r--   1 evryscope service accounts   159 Jul  8 08:38 hudson.model.UpdateCenter.xml
+-rw-r--r--   1 evryscope service accounts   252 May 26 15:20 hudson.plugins.build_timeout.operations.BuildStepOperation.xml
+-rw-r--r--   1 evryscope service accounts  1357 May 26 15:20 hudson.plugins.emailext.ExtendedEmailPublisher.xml
+-rw-r--r--   1 evryscope service accounts   443 May 26 15:20 hudson.plugins.git.GitSCM.xml
+-rw-r--r--   1 evryscope service accounts   370 Feb 26  2017 hudson.plugins.git.GitTool.xml
+-rw-r--r--   1 evryscope service accounts   382 May 26 15:20 hudson.plugins.timestamper.TimestamperConfig.xml
+-rw-r--r--   1 evryscope service accounts   362 May 26 15:20 hudson.scm.SubversionSCM.xml
+-rw-r--r--   1 evryscope service accounts   307 May 26 15:20 hudson.tasks.Mailer.xml
+-rw-r--r--   1 evryscope service accounts   140 May 26 15:20 hudson.tasks.Shell.xml
+-rw-r--r--   1 evryscope service accounts   216 May 26 15:20 hudson.triggers.SCMTrigger.xml
+-rw-------   1 evryscope service accounts  1712 Feb 26  2017 identity.key.enc
+drwxr-xr-x   3 evryscope service accounts    18 Feb 26  2017 .java
+-rw-r--r--   1 evryscope service accounts     5 Jul  8 08:38 jenkins.install.InstallUtil.lastExecVersion
+-rw-r--r--   1 evryscope service accounts     4 Feb 26  2017 jenkins.install.UpgradeWizard.state
+-rw-r--r--   1 evryscope service accounts   159 May 26 15:20 jenkins.model.ArtifactManagerConfiguration.xml
+-rw-r--r--   1 evryscope service accounts   138 Aug 27  2019 jenkins.model.DownloadSettings.xml
+-rw-r--r--   1 evryscope service accounts   253 May 26 15:20 jenkins.model.GlobalBuildDiscarderConfiguration.xml
+-rw-r--r--   1 evryscope service accounts   261 May 26 15:20 jenkins.model.JenkinsLocationConfiguration.xml
+-rw-r--r--   1 evryscope service accounts   357 Jul  8 08:38 jenkins.security.apitoken.ApiTokenPropertyConfiguration.xml
+-rw-r--r--   1 evryscope service accounts   169 Jul  8 08:38 jenkins.security.QueueItemAuthenticatorConfiguration.xml
+-rw-r--r--   1 evryscope service accounts    86 May 26 15:20 jenkins.security.ResourceDomainConfiguration.xml
+-rw-r--r--   1 evryscope service accounts   162 Jul  8 08:38 jenkins.security.UpdateSiteWarningsConfiguration.xml
+-rw-r--r--   1 evryscope service accounts   171 Feb 24 13:09 jenkins.telemetry.Correlator.xml
+drwxr-xr-x  24 evryscope service accounts  4096 Jul  7 15:13 jobs
+-rw-r--r--   1 evryscope service accounts     0 Jul  8 08:38 .lastStarted
+drwxr-xr-x   2 evryscope service accounts    21 Mar  3  2017 log
+drwxr-xr-x   4 evryscope service accounts  4096 Jul  6 14:20 logs
+-rw-r--r--   1 evryscope service accounts   909 Jul  8 08:38 nodeMonitors.xml
+drwxr-xr-x   4 evryscope service accounts    33 Oct 15  2019 nodes
+-rw-r--r--   1 evryscope service accounts   272 May 26 15:20 org.jenkinsci.plugins.docker.workflow.declarative.GlobalConfig.xml
+-rw-r--r--   1 evryscope service accounts   275 May 26 15:20 org.jenkinsci.plugins.github_branch_source.GitHubConfiguration.xml
+drwxr-xr-x   3 evryscope service accounts    56 Mar 18 16:23 org.jenkinsci.plugins.github_branch_source.GitHubSCMProbe.cache
+-rw-r--r--   1 evryscope service accounts   291 May 26 15:20 org.jenkinsci.plugins.pipeline.modeldefinition.config.GlobalConfig.xml
+-rw-r--r--   1 evryscope service accounts   504 Jul  8 09:50 org.jenkinsci.plugins.resourcedisposer.AsyncResourceDisposer.xml
+-rw-r--r--   1 evryscope service accounts    46 Jun 25 22:31 org.jenkinsci.plugins.workflow.flow.FlowExecutionList.xml
+-rw-r--r--   1 evryscope service accounts   153 May 26 15:20 org.jenkinsci.plugins.workflow.flow.GlobalDefaultFlowDurabilityLevel.xml
+-rw-r--r--   1 evryscope service accounts   219 May 26 15:20 org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml
+-rw-r--r--   1 evryscope service accounts    50 Jul 28  2018 org.jenkinsci.plugins.workflow.support.steps.StageStep.xml
+-rw-r--r--   1 evryscope service accounts   236 May 26 15:20 org.jenkins.plugins.lockableresources.LockableResourcesManager.xml
+-rw-r--r--   1 evryscope service accounts    69 Jul  8 09:38 .owner
+drwxr-xr-x  92 evryscope service accounts 12288 May 29 12:12 plugins
+-rw-r--r--   1 evryscope service accounts   133 Jul  8 09:56 queue.xml
+-rw-r--r--   1 evryscope service accounts   133 Jul  8 08:38 queue.xml.bak
+-rw-r--r--   1 evryscope service accounts   369 May 20 16:18 scriptApproval.xml
+-rw-r--r--   1 evryscope service accounts    64 Feb 26  2017 secret.key
+-rw-r--r--   1 evryscope service accounts     0 Feb 26  2017 secret.key.not-so-secret
+drwx------   4 evryscope service accounts  4096 Feb 25 14:04 secrets
+drwxr-xr-x   2 evryscope service accounts  4096 Jul  7 15:41 updates
+drwxr-xr-x   2 evryscope service accounts    23 Feb 26  2017 userContent
+drwxr-xr-x  50 evryscope service accounts  4096 Jun 30 14:52 users
+drwxr-xr-x   2 evryscope service accounts     6 Feb 26  2017 workflow-libs
+---------------------
+Removing existing devops directory for git clone.
+Cloning into 'devops'...
+appstore
+backup-07-07-2020
+dug
+my dire  appstore
+dug
+Current Dir- /var/lib/jenkins/jobs/backup/workspace/devops/cicd/jenkins/backup-07-08-2020/jobs
+appstore
+total 28
+drwxr-xr-x 5 evryscope service accounts   135 Jun 26 15:57 .
+drwxr-xr-x 4 evryscope service accounts    47 Apr 22 19:59 ..
+drwxr-xr-x 3 evryscope service accounts    50 Jul  1 16:09 builds
+-rw-r--r-- 1 evryscope service accounts 13420 Jun 24 16:37 config.xml
+-rw-r--r-- 1 evryscope service accounts   635 Jun 26 15:56 github-polling.log
+-rw-r--r-- 1 evryscope service accounts     5 Jun 26 15:57 nextBuildNumber
+-rw-r--r-- 1 evryscope service accounts   516 May 21 17:38 scm-polling.log
+drwxr-xr-x 4 evryscope service accounts    35 Jun 24 16:20 version
+drwxr-xr-x 4 evryscope service accounts    65 Jun 26 15:57 workspace
+backup
+else: just app+path
+total 16
+drwxr-xr-x  4 evryscope service accounts   74 Jul  8 10:09 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x 46 evryscope service accounts 4096 Jul  8 10:09 builds
+-rw-r--r--  1 evryscope service accounts 3537 Jul  8 10:09 config.xml
+-rw-r--r--  1 evryscope service accounts    3 Jul  8 10:09 nextBuildNumber
+drwxr-xr-x  3 evryscope service accounts   19 Jul  8 10:09 workspace
+blackbalsam
+ls: cannot access /var/lib/jenkins/jobs/blackbalsam/jobs/blackbalsam/: No such file or directory
+
+cloudtop
+else: just app+path
+total 24
+drwxr-xr-x  5 evryscope service accounts   113 Jul  1 14:20 .
+drwxr-xr-x 24 evryscope service accounts  4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts    47 Jul  6 15:09 builds
+-rw-r--r--  1 evryscope service accounts 11824 Jul  1 14:16 config.xml
+-rw-r--r--  1 evryscope service accounts   651 Jun 30 13:55 github-polling.log
+-rw-r--r--  1 evryscope service accounts     2 Jul  1 14:20 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts    33 Jul  1 14:19 version
+drwxr-xr-x  7 evryscope service accounts    98 Jul  1 14:20 workspace
+cloudtop-imagej
+else: just app+path
+total 24
+drwxr-xr-x  5 evryscope service accounts   113 Jul  1 14:46 .
+drwxr-xr-x 24 evryscope service accounts  4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts    47 Jul  1 14:35 builds
+-rw-r--r--  1 evryscope service accounts 10651 Jul  1 14:46 config.xml
+-rw-r--r--  1 evryscope service accounts   657 Jun 30 13:57 github-polling.log
+-rw-r--r--  1 evryscope service accounts     2 Jul  1 14:34 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts    33 Jul  1 14:31 version
+drwxr-xr-x  5 evryscope service accounts    90 Jul  1 14:34 workspace
+cloudtop-napari
+else: just app+path
+total 24
+drwxr-xr-x  5 evryscope service accounts   113 Jul  1 14:46 .
+drwxr-xr-x 24 evryscope service accounts  4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts    48 Jul  1 14:43 builds
+-rw-r--r--  1 evryscope service accounts 10909 Jul  1 14:46 config.xml
+-rw-r--r--  1 evryscope service accounts   658 Jun 30 13:57 github-polling.log
+-rw-r--r--  1 evryscope service accounts     3 Jul  1 14:37 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts    33 Jul  1 14:32 version
+drwxr-xr-x  5 evryscope service accounts    90 Jul  1 14:37 workspace
+cloudtop-ohif
+else: just app+path
+total 20
+drwxr-xr-x  5 evryscope service accounts   88 Jul  1 14:49 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts   47 Jul  1 14:57 builds
+-rw-r--r--  1 evryscope service accounts 9859 Jul  1 14:49 config.xml
+-rw-r--r--  1 evryscope service accounts    3 Jul  1 14:49 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts   33 Jul  1 14:32 version
+drwxr-xr-x  5 evryscope service accounts   81 Jul  1 14:49 workspace
+dug
+else: just app+path
+total 32
+drwxr-xr-x  5 evryscope service accounts   113 Jul  7 15:39 .
+drwxr-xr-x 24 evryscope service accounts  4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts    48 Jul  7 14:09 builds
+-rw-r--r--  1 evryscope service accounts 13449 Jul  7 15:39 config.xml
+-rw-r--r--  1 evryscope service accounts  1463 Jul  7 15:13 github-polling.log
+-rw-r--r--  1 evryscope service accounts     3 Jul  2 14:01 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts    33 Jul  2 13:56 version
+drwxr-xr-x  8 evryscope service accounts  4096 Jul  2 14:01 workspace
+GO
+ls: cannot access /var/lib/jenkins/jobs/GO/jobs/GO/: No such file or directory
+
+greentranslator
+else: just app+path
+ls: cannot access /var/lib/jenkins/jobs/greentranslator/: No such file or directory
+
+hail
+else: just app+path
+total 20
+drwxr-xr-x  4 evryscope service accounts   99 Jul  1 16:49 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts   47 Jul  6 17:09 builds
+-rw-r--r--  1 evryscope service accounts 4754 Jul  1 16:48 config.xml
+-rw-r--r--  1 evryscope service accounts  636 Jul  1 16:49 github-polling.log
+-rw-r--r--  1 evryscope service accounts    2 Jul  1 16:49 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts   46 Jul  1 16:49 workspace
+ncats-translator
+ls: cannot access /var/lib/jenkins/jobs/ncats-translator/jobs/ncats-translator/: No such file or directory
+
+NCIt
+ls: cannot access /var/lib/jenkins/jobs/NCIt/jobs/NCIt/: No such file or directory
+
+Phenoscape
+ls: cannot access /var/lib/jenkins/jobs/Phenoscape/jobs/Phenoscape/: No such file or directory
+
+restartr
+else: just app+path
+total 20
+drwxr-xr-x  5 evryscope service accounts   88 Jul  1 18:16 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts   48 Jul  6 18:09 builds
+-rw-r--r--  1 evryscope service accounts 8910 Jul  1 18:16 config.xml
+-rw-r--r--  1 evryscope service accounts    3 Jul  1 18:16 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts   33 Jul  1 17:46 version
+drwxr-xr-x  8 evryscope service accounts  139 Jul  1 18:16 workspace
+stars
+total 12
+drwxr-xr-x 4 evryscope service accounts  112 Oct 19  2017 .
+drwxr-xr-x 3 evryscope service accounts   18 Oct  6  2017 ..
+drwxr-xr-x 4 evryscope service accounts 4096 Jul  1 05:40 builds
+-rw-r--r-- 1 evryscope service accounts 1617 Oct  6  2017 config.xml
+lrwxrwxrwx 1 evryscope service accounts   22 Oct 19  2017 lastStable -> builds/lastStableBuild
+lrwxrwxrwx 1 evryscope service accounts   26 Oct 19  2017 lastSuccessful -> builds/lastSuccessfulBuild
+-rw-r--r-- 1 evryscope service accounts    2 Oct 19  2017 nextBuildNumber
+drwxr-xr-x 4 evryscope service accounts   65 Oct  6  2017 workspace
+tranql-docker
+else: just app+path
+total 24
+drwxr-xr-x  4 evryscope service accounts  112 Jul  7 12:29 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  4 evryscope service accounts 4096 Jul  7 12:40 builds
+-rw-r--r--  1 evryscope service accounts 6243 Jul  2 11:34 config.xml
+lrwxrwxrwx  1 evryscope service accounts   22 Jul 27  2019 lastStable -> builds/lastStableBuild
+lrwxrwxrwx  1 evryscope service accounts   26 Jul 27  2019 lastSuccessful -> builds/lastSuccessfulBuild
+-rw-r--r--  1 evryscope service accounts    3 Jul  7 12:29 nextBuildNumber
+drwxr-xr-x  9 evryscope service accounts 4096 Jun  3 14:08 workspace
+tranql-server
+else: just app+path
+total 28
+drwxr-xr-x  4 evryscope service accounts  137 Jul  7 12:22 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x 20 evryscope service accounts 4096 Jul  7 12:29 builds
+-rw-r--r--  1 evryscope service accounts 5596 Jul  2 11:30 config.xml
+-rw-r--r--  1 evryscope service accounts  657 Jul  7 11:51 github-polling.log
+lrwxrwxrwx  1 evryscope service accounts   22 May 15  2019 lastStable -> builds/lastStableBuild
+lrwxrwxrwx  1 evryscope service accounts   26 May 15  2019 lastSuccessful -> builds/lastSuccessfulBuild
+-rw-r--r--  1 evryscope service accounts    3 Jul  7 12:22 nextBuildNumber
+drwxr-xr-x 10 evryscope service accounts 4096 Jul  7 12:29 workspace
+tranql-varnish
+else: just app+path
+total 28
+drwxr-xr-x  4 evryscope service accounts   99 Jul  7 11:51 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts   47 Jul  7 11:57 builds
+-rw-r--r--  1 evryscope service accounts 9756 Jun 25 14:37 config.xml
+-rw-r--r--  1 evryscope service accounts  636 Jul  7 11:51 github-polling.log
+-rw-r--r--  1 evryscope service accounts    2 Jul  7 11:51 nextBuildNumber
+drwxr-xr-x  9 evryscope service accounts 4096 Jul  7 11:51 workspace
+translator-automated-tests
+ls: cannot access /var/lib/jenkins/jobs/translator-automated-tests/jobs/translator-automated-tests/: No such file or directory
+
+translator-testing-framework
+else: just app+path
+total 16
+drwxr-xr-x  4 evryscope service accounts  112 Aug 20  2019 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  4 evryscope service accounts 4096 Apr 13 13:35 builds
+-rw-r--r--  1 evryscope service accounts 1287 Jul 27  2019 config.xml
+lrwxrwxrwx  1 evryscope service accounts   22 Aug 20  2019 lastStable -> builds/lastStableBuild
+lrwxrwxrwx  1 evryscope service accounts   26 Aug 20  2019 lastSuccessful -> builds/lastSuccessfulBuild
+-rw-r--r--  1 evryscope service accounts    3 Aug 20  2019 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts   81 Aug 20  2019 workspace
+tycho
+else: just app+path
+total 32
+drwxr-xr-x  5 evryscope service accounts   113 Jul  1 17:20 .
+drwxr-xr-x 24 evryscope service accounts  4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts    48 Jul  6 14:09 builds
+-rw-r--r--  1 evryscope service accounts 12446 Jul  1 17:20 config.xml
+-rw-r--r--  1 evryscope service accounts   648 Jul  2 11:57 github-polling.log
+-rw-r--r--  1 evryscope service accounts     3 Jul  1 13:28 nextBuildNumber
+drwxr-xr-x  5 evryscope service accounts    48 Jul  1 12:59 version
+drwxr-xr-x  9 evryscope service accounts  4096 Jul  1 13:28 workspace
+First breakpoint
+second
+[master 5ffdd05] Automated Jenkins backup '07-08-2020'
+ 1 file changed, 435 insertions(+)
+ create mode 100644 cicd/jenkins/backup-07-08-2020/config.xml
+Finished: SUCCESS

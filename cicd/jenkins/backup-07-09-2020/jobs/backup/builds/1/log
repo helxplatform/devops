@@ -1,0 +1,34 @@
+Started by user [8mha:////4AKlbaGiTjK4/6tx36g/NqgzS+rEHIIQCdUcI1vy2PjnAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgZu/dLi1CL9YqDmDADPSPjkwAAAAA==[0mMani Singh
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/backup/workspace
+[EnvInject] - Mask passwords that will be passed as build parameters.
+[workspace] $ /bin/bash -xe /tmp/jenkins6750159465552918649.sh
++ set +x
+Build number: 1
+Build ID: 1
+Job name: backup
+Build tag: jenkins-backup-1
+Node name: master
+Node labels: master
+Workspace: /var/lib/jenkins/jobs/backup/workspace
+Jenkins URL: https://stars-app.renci.org/jenkins/
+Jenkins Home: /var/lib/jenkins
+Jenkins passwor: [*******]
+Cloning into 'devops'...
+appstore
+dug
+my dire  appstore
+dug
+Current Dir- /var/lib/jenkins/jobs/backup/workspace/devops/cicd/jenkins/backup-07-07-2020
+total 28
+drwxr-xr-x 5 evryscope service accounts   135 Jun 26 15:57 .
+drwxr-xr-x 4 evryscope service accounts    47 Apr 22 19:59 ..
+drwxr-xr-x 3 evryscope service accounts    50 Jul  1 16:09 builds
+-rw-r--r-- 1 evryscope service accounts 13420 Jun 24 16:37 config.xml
+-rw-r--r-- 1 evryscope service accounts   635 Jun 26 15:56 github-polling.log
+-rw-r--r-- 1 evryscope service accounts     5 Jun 26 15:57 nextBuildNumber
+-rw-r--r-- 1 evryscope service accounts   516 May 21 17:38 scm-polling.log
+drwxr-xr-x 4 evryscope service accounts    35 Jun 24 16:20 version
+drwxr-xr-x 4 evryscope service accounts    65 Jun 26 15:57 workspace
+Finished: SUCCESS

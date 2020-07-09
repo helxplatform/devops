@@ -1,0 +1,780 @@
+Started by user [8mha:////4AKlbaGiTjK4/6tx36g/NqgzS+rEHIIQCdUcI1vy2PjnAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgZu/dLi1CL9YqDmDADPSPjkwAAAAA==[0mMani Singh
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/backup/workspace
+[EnvInject] - Mask passwords that will be passed as build parameters.
+[workspace] $ /bin/bash -xe /tmp/jenkins6226629676024909699.sh
++ set +x
+Build number: 76
+Build ID: 76
+Job name: backup
+Build tag: jenkins-backup-76
+Node name: master
+Node labels: master
+Workspace: /var/lib/jenkins/jobs/backup/workspace
+Jenkins URL: https://stars-app.renci.org/jenkins/
+Jenkins Home: /var/lib/jenkins
+Removing existing devops directory for git clone.
+Cloning into 'devops'...
+the first ls
+appstore
+backup-07-08-2020
+dug
+removing the backup dir
+after removing the dir
+my dire  appstore
+dug
+Current Dir- /var/lib/jenkins/jobs/backup/workspace/devops/cicd/jenkins/backup-07-08-2020/jobs
+appstore
+if : just app_path/jobs
+Current Dir- /var/lib/jenkins/jobs/appstore
+another if : app_path/jobs/app
+Before calling the function
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+Inside the if condition of the function
+function test successful
+The current dir : /var/lib/jenkins/jobs/appstore/jobs/appstore/
+total 28
+drwxr-xr-x 5 evryscope service accounts   135 Jun 26 15:57 .
+drwxr-xr-x 4 evryscope service accounts    47 Apr 22 19:59 ..
+drwxr-xr-x 3 evryscope service accounts    50 Jul  1 16:09 builds
+-rw-r--r-- 1 evryscope service accounts 13420 Jun 24 16:37 config.xml
+-rw-r--r-- 1 evryscope service accounts   655 Jul  8 10:46 github-polling.log
+-rw-r--r-- 1 evryscope service accounts     5 Jun 26 15:57 nextBuildNumber
+-rw-r--r-- 1 evryscope service accounts   516 May 21 17:38 scm-polling.log
+drwxr-xr-x 4 evryscope service accounts    35 Jun 24 16:20 version
+drwxr-xr-x 4 evryscope service accounts    65 Jun 26 15:57 workspace
+backup
+else, the current dir: /var/lib/jenkins/jobs/backup/
+total 20
+drwxr-xr-x  4 evryscope service accounts   74 Jul  8 16:24 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x 73 evryscope service accounts 4096 Jul  8 16:24 builds
+-rw-r--r--  1 evryscope service accounts 4240 Jul  8 16:24 config.xml
+-rw-r--r--  1 evryscope service accounts    3 Jul  8 16:24 nextBuildNumber
+drwxr-xr-x  3 evryscope service accounts   19 Jul  8 16:24 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+blackbalsam
+if : just app_path/jobs
+Current Dir- /var/lib/jenkins/jobs/blackbalsam
+The current dir: /var/lib/jenkins/jobs/blackbalsam/jobs/
+total 0
+drwxr-xr-x 4 evryscope service accounts 41 Jun 17 15:49 .
+drwxr-xr-x 3 evryscope service accounts 34 Jun 17 15:49 ..
+drwxr-xr-x 4 evryscope service accounts 74 Apr 22 13:42 jupyter-spark
+drwxr-xr-x 4 evryscope service accounts 74 Apr 21 19:30 spark-py
+Inside the function
+cloudtop
+else, the current dir: /var/lib/jenkins/jobs/cloudtop/
+total 24
+drwxr-xr-x  5 evryscope service accounts   113 Jul  1 14:20 .
+drwxr-xr-x 24 evryscope service accounts  4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts    47 Jul  6 15:09 builds
+-rw-r--r--  1 evryscope service accounts 11824 Jul  1 14:16 config.xml
+-rw-r--r--  1 evryscope service accounts   651 Jun 30 13:55 github-polling.log
+-rw-r--r--  1 evryscope service accounts     2 Jul  1 14:20 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts    33 Jul  1 14:19 version
+drwxr-xr-x  7 evryscope service accounts    98 Jul  1 14:20 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+Inside the if condition of the function
+cloudtop-imagej
+else, the current dir: /var/lib/jenkins/jobs/cloudtop-imagej/
+total 24
+drwxr-xr-x  5 evryscope service accounts   113 Jul  1 14:46 .
+drwxr-xr-x 24 evryscope service accounts  4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts    47 Jul  1 14:35 builds
+-rw-r--r--  1 evryscope service accounts 10651 Jul  1 14:46 config.xml
+-rw-r--r--  1 evryscope service accounts   657 Jun 30 13:57 github-polling.log
+-rw-r--r--  1 evryscope service accounts     2 Jul  1 14:34 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts    33 Jul  1 14:31 version
+drwxr-xr-x  5 evryscope service accounts    90 Jul  1 14:34 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+Inside the if condition of the function
+cloudtop-napari
+else, the current dir: /var/lib/jenkins/jobs/cloudtop-napari/
+total 24
+drwxr-xr-x  5 evryscope service accounts   113 Jul  1 14:46 .
+drwxr-xr-x 24 evryscope service accounts  4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts    48 Jul  1 14:43 builds
+-rw-r--r--  1 evryscope service accounts 10909 Jul  1 14:46 config.xml
+-rw-r--r--  1 evryscope service accounts   658 Jun 30 13:57 github-polling.log
+-rw-r--r--  1 evryscope service accounts     3 Jul  1 14:37 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts    33 Jul  1 14:32 version
+drwxr-xr-x  5 evryscope service accounts    90 Jul  1 14:37 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+Inside the if condition of the function
+cloudtop-ohif
+else, the current dir: /var/lib/jenkins/jobs/cloudtop-ohif/
+total 20
+drwxr-xr-x  5 evryscope service accounts   88 Jul  1 14:49 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts   47 Jul  1 14:57 builds
+-rw-r--r--  1 evryscope service accounts 9859 Jul  1 14:49 config.xml
+-rw-r--r--  1 evryscope service accounts    3 Jul  1 14:49 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts   33 Jul  1 14:32 version
+drwxr-xr-x  5 evryscope service accounts   81 Jul  1 14:49 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+Inside the if condition of the function
+dug
+else, the current dir: /var/lib/jenkins/jobs/dug/
+total 32
+drwxr-xr-x  5 evryscope service accounts   113 Jul  8 11:58 .
+drwxr-xr-x 24 evryscope service accounts  4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts    48 Jul  8 12:05 builds
+-rw-r--r--  1 evryscope service accounts 13129 Jul  8 11:57 config.xml
+-rw-r--r--  1 evryscope service accounts  1463 Jul  7 15:13 github-polling.log
+-rw-r--r--  1 evryscope service accounts     3 Jul  8 11:58 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts    33 Jul  2 13:56 version
+drwxr-xr-x  8 evryscope service accounts  4096 Jul  8 11:58 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+Inside the if condition of the function
+GO
+if : just app_path/jobs
+Current Dir- /var/lib/jenkins/jobs/GO
+The current dir: /var/lib/jenkins/jobs/GO/jobs/
+total 4
+drwxr-xr-x 18 evryscope service accounts 4096 Feb  4 16:33 .
+drwxr-xr-x  3 evryscope service accounts   34 Jul  8  2019 ..
+drwxr-xr-x  3 evryscope service accounts  118 Jul  7 01:50 build-go-base
+drwxr-xr-x  3 evryscope service accounts  118 Jul  8 02:45 build-mp-base
+drwxr-xr-x  3 evryscope service accounts   96 Jul  8 00:02 ontology-ci
+drwxr-xr-x  3 evryscope service accounts   96 May 28 01:52 ontology-ci-dev
+drwxr-xr-x  3 evryscope service accounts   96 Jul  7 23:41 update-chebi-import
+drwxr-xr-x  3 evryscope service accounts   96 Jul  5 22:52 update-cl-import
+drwxr-xr-x  3 evryscope service accounts   96 Jul  2 15:20 update-ddanat-import
+drwxr-xr-x  3 evryscope service accounts   96 Jul  5 14:59 update-fao-import
+drwxr-xr-x  3 evryscope service accounts   96 Jul  7 23:45 update-ncbitaxon-import
+drwxr-xr-x  3 evryscope service accounts   96 Jul  3 03:35 update-oba-import
+drwxr-xr-x  3 evryscope service accounts   96 Jul  6 07:11 update-opl-import
+drwxr-xr-x  3 evryscope service accounts   96 Jul  4 16:22 update-pato-import
+drwxr-xr-x  3 evryscope service accounts   96 Jul  3 08:02 update-ro-import
+drwxr-xr-x  3 evryscope service accounts   96 Jul  5 16:04 update-so-import
+drwxr-xr-x  3 evryscope service accounts   96 Jul  8 15:50 update-taxon-constraints
+drwxr-xr-x  3 evryscope service accounts   96 Jul  3 08:46 update-uberon-import
+Inside the function
+greentranslator
+else, the current dir: /var/lib/jenkins/jobs/greentranslator/
+ls: cannot access /var/lib/jenkins/jobs/greentranslator/: No such file or directory
+
+Inside the function
+hail
+else, the current dir: /var/lib/jenkins/jobs/hail/
+total 20
+drwxr-xr-x  4 evryscope service accounts   99 Jul  1 16:49 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts   47 Jul  6 17:09 builds
+-rw-r--r--  1 evryscope service accounts 4754 Jul  1 16:48 config.xml
+-rw-r--r--  1 evryscope service accounts  636 Jul  1 16:49 github-polling.log
+-rw-r--r--  1 evryscope service accounts    2 Jul  1 16:49 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts   46 Jul  1 16:49 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+ncats-translator
+if : just app_path/jobs
+Current Dir- /var/lib/jenkins/jobs/ncats-translator
+The current dir: /var/lib/jenkins/jobs/ncats-translator/jobs/
+total 0
+drwxr-xr-x 6 evryscope service accounts  93 Sep  3  2019 .
+drwxr-xr-x 3 evryscope service accounts  34 Aug 12  2019 ..
+drwxr-xr-x 4 evryscope service accounts 134 Jan  7  2019 bicluster_smartBag
+drwxr-xr-x 4 evryscope service accounts 133 Feb 24 14:06 CTD_smartBag
+drwxr-xr-x 3 evryscope service accounts  96 Jul  7 18:40 ubergraph
+drwxr-xr-x 4 evryscope service accounts 112 Jul  8 16:10 zeppelin-auto-commit
+Inside the function
+NCIt
+if : just app_path/jobs
+Current Dir- /var/lib/jenkins/jobs/NCIt
+The current dir: /var/lib/jenkins/jobs/NCIt/jobs/
+total 0
+drwxr-xr-x 3 evryscope service accounts  30 Jul 24  2017 .
+drwxr-xr-x 3 evryscope service accounts  34 Jul 24  2017 ..
+drwxr-xr-x 3 evryscope service accounts 118 Jun  3 13:38 build-obo-edition
+Inside the function
+Phenoscape
+if : just app_path/jobs
+Current Dir- /var/lib/jenkins/jobs/Phenoscape
+The current dir: /var/lib/jenkins/jobs/Phenoscape/jobs/
+total 0
+drwxr-xr-x 5 evryscope service accounts  94 Mar 26 14:55 .
+drwxr-xr-x 3 evryscope service accounts  34 Mar 26 14:55 ..
+drwxr-xr-x 3 evryscope service accounts 118 May 11 21:03 build-phenoscape-ext-simple
+drwxr-xr-x 3 evryscope service accounts  96 Jul  7 18:30 phenoscape-ontologies
+drwxr-xr-x 4 evryscope service accounts  69 Jun 12 13:44 phenoscape-pipeline
+Inside the function
+restartr
+else, the current dir: /var/lib/jenkins/jobs/restartr/
+total 20
+drwxr-xr-x  5 evryscope service accounts   88 Jul  1 18:16 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts   48 Jul  6 18:09 builds
+-rw-r--r--  1 evryscope service accounts 8910 Jul  1 18:16 config.xml
+-rw-r--r--  1 evryscope service accounts    3 Jul  1 18:16 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts   33 Jul  1 17:46 version
+drwxr-xr-x  8 evryscope service accounts  139 Jul  1 18:16 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+Inside the if condition of the function
+stars
+if : just app_path/jobs
+Current Dir- /var/lib/jenkins/jobs/stars
+another if : app_path/jobs/app
+Before calling the function
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+function test successful
+The current dir : /var/lib/jenkins/jobs/stars/jobs/stars/
+total 12
+drwxr-xr-x 4 evryscope service accounts  112 Oct 19  2017 .
+drwxr-xr-x 3 evryscope service accounts   18 Oct  6  2017 ..
+drwxr-xr-x 4 evryscope service accounts 4096 Jul  1 05:40 builds
+-rw-r--r-- 1 evryscope service accounts 1617 Oct  6  2017 config.xml
+lrwxrwxrwx 1 evryscope service accounts   22 Oct 19  2017 lastStable -> builds/lastStableBuild
+lrwxrwxrwx 1 evryscope service accounts   26 Oct 19  2017 lastSuccessful -> builds/lastSuccessfulBuild
+-rw-r--r-- 1 evryscope service accounts    2 Oct 19  2017 nextBuildNumber
+drwxr-xr-x 4 evryscope service accounts   65 Oct  6  2017 workspace
+tranql-docker
+else, the current dir: /var/lib/jenkins/jobs/tranql-docker/
+total 24
+drwxr-xr-x  4 evryscope service accounts  112 Jul  7 12:29 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  4 evryscope service accounts 4096 Jul  7 12:40 builds
+-rw-r--r--  1 evryscope service accounts 6243 Jul  2 11:34 config.xml
+lrwxrwxrwx  1 evryscope service accounts   22 Jul 27  2019 lastStable -> builds/lastStableBuild
+lrwxrwxrwx  1 evryscope service accounts   26 Jul 27  2019 lastSuccessful -> builds/lastSuccessfulBuild
+-rw-r--r--  1 evryscope service accounts    3 Jul  7 12:29 nextBuildNumber
+drwxr-xr-x  9 evryscope service accounts 4096 Jun  3 14:08 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+tranql-server
+else, the current dir: /var/lib/jenkins/jobs/tranql-server/
+total 28
+drwxr-xr-x  4 evryscope service accounts  137 Jul  7 12:22 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x 20 evryscope service accounts 4096 Jul  7 12:29 builds
+-rw-r--r--  1 evryscope service accounts 5596 Jul  2 11:30 config.xml
+-rw-r--r--  1 evryscope service accounts  657 Jul  7 11:51 github-polling.log
+lrwxrwxrwx  1 evryscope service accounts   22 May 15  2019 lastStable -> builds/lastStableBuild
+lrwxrwxrwx  1 evryscope service accounts   26 May 15  2019 lastSuccessful -> builds/lastSuccessfulBuild
+-rw-r--r--  1 evryscope service accounts    3 Jul  7 12:22 nextBuildNumber
+drwxr-xr-x 10 evryscope service accounts 4096 Jul  7 12:29 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+tranql-varnish
+else, the current dir: /var/lib/jenkins/jobs/tranql-varnish/
+total 28
+drwxr-xr-x  4 evryscope service accounts   99 Jul  7 11:51 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts   47 Jul  7 11:57 builds
+-rw-r--r--  1 evryscope service accounts 9756 Jun 25 14:37 config.xml
+-rw-r--r--  1 evryscope service accounts  636 Jul  7 11:51 github-polling.log
+-rw-r--r--  1 evryscope service accounts    2 Jul  7 11:51 nextBuildNumber
+drwxr-xr-x  9 evryscope service accounts 4096 Jul  7 11:51 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+translator-automated-tests
+if : just app_path/jobs
+Current Dir- /var/lib/jenkins/jobs/translator-automated-tests
+The current dir: /var/lib/jenkins/jobs/translator-automated-tests/jobs/
+total 0
+drwxr-xr-x 5 evryscope service accounts 42 Aug 22  2019 .
+drwxr-xr-x 3 evryscope service accounts 34 Apr 15 22:37 ..
+drwxr-xr-x 3 evryscope service accounts 34 Aug 22  2019 ICEES
+drwxr-xr-x 3 evryscope service accounts 34 Aug 22  2019 ROBOKOP
+drwxr-xr-x 3 evryscope service accounts 34 Aug 22  2019 RTX
+Inside the function
+translator-testing-framework
+else, the current dir: /var/lib/jenkins/jobs/translator-testing-framework/
+total 16
+drwxr-xr-x  4 evryscope service accounts  112 Aug 20  2019 .
+drwxr-xr-x 24 evryscope service accounts 4096 Jul  7 15:13 ..
+drwxr-xr-x  4 evryscope service accounts 4096 Apr 13 13:35 builds
+-rw-r--r--  1 evryscope service accounts 1287 Jul 27  2019 config.xml
+lrwxrwxrwx  1 evryscope service accounts   22 Aug 20  2019 lastStable -> builds/lastStableBuild
+lrwxrwxrwx  1 evryscope service accounts   26 Aug 20  2019 lastSuccessful -> builds/lastSuccessfulBuild
+-rw-r--r--  1 evryscope service accounts    3 Aug 20  2019 nextBuildNumber
+drwxr-xr-x  4 evryscope service accounts   81 Aug 20  2019 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+tycho
+else, the current dir: /var/lib/jenkins/jobs/tycho/
+total 32
+drwxr-xr-x  5 evryscope service accounts   113 Jul  1 17:20 .
+drwxr-xr-x 24 evryscope service accounts  4096 Jul  7 15:13 ..
+drwxr-xr-x  3 evryscope service accounts    48 Jul  6 14:09 builds
+-rw-r--r--  1 evryscope service accounts 12446 Jul  1 17:20 config.xml
+-rw-r--r--  1 evryscope service accounts   648 Jul  2 11:57 github-polling.log
+-rw-r--r--  1 evryscope service accounts     3 Jul  1 13:28 nextBuildNumber
+drwxr-xr-x  5 evryscope service accounts    48 Jul  1 12:59 version
+drwxr-xr-x  9 evryscope service accounts  4096 Jul  1 13:28 workspace
+Inside the function
+Inside the if condition of the function
+Inside the if condition of the function
+Inside the if condition of the function
+First breakpoint
+second
+[master b703f28] Automated Jenkins backup '07-08-2020'
+ 439 files changed, 39005 insertions(+)
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/appstore/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/1/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/1/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/1/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/1/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/10/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/10/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/10/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/10/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/11/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/11/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/11/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/11/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/12/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/12/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/12/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/12/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/13/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/13/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/13/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/13/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/14/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/14/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/14/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/14/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/15/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/15/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/15/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/15/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/16/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/16/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/16/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/16/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/17/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/17/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/17/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/17/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/18/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/18/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/18/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/18/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/19/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/19/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/19/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/19/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/2/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/2/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/2/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/2/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/20/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/20/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/20/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/20/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/21/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/21/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/21/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/21/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/22/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/22/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/22/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/22/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/23/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/23/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/23/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/23/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/24/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/24/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/24/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/24/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/25/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/25/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/25/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/25/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/26/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/26/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/26/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/26/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/27/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/27/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/27/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/27/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/28/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/28/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/28/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/28/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/29/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/29/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/29/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/29/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/3/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/3/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/3/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/3/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/30/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/30/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/30/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/30/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/31/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/31/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/31/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/31/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/32/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/32/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/32/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/32/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/33/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/33/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/33/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/33/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/34/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/34/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/34/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/34/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/35/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/35/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/35/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/35/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/36/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/36/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/36/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/36/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/37/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/37/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/37/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/37/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/38/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/38/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/38/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/38/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/39/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/39/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/39/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/39/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/4/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/4/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/4/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/4/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/40/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/40/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/40/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/40/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/41/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/41/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/41/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/41/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/42/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/42/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/42/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/42/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/43/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/43/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/43/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/43/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/44/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/44/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/44/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/44/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/45/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/45/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/45/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/45/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/5/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/5/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/5/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/5/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/51/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/51/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/51/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/51/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/52/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/52/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/52/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/52/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/53/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/53/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/53/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/53/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/54/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/54/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/54/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/54/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/55/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/55/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/55/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/55/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/56/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/56/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/56/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/56/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/57/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/57/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/57/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/57/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/58/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/58/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/58/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/58/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/59/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/59/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/59/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/59/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/6/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/6/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/6/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/6/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/60/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/60/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/60/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/60/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/61/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/61/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/61/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/61/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/62/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/62/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/62/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/62/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/63/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/63/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/63/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/63/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/64/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/64/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/64/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/64/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/65/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/65/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/65/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/65/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/66/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/66/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/66/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/66/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/67/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/67/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/67/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/67/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/68/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/68/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/68/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/68/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/69/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/69/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/69/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/69/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/7/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/7/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/7/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/7/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/70/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/70/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/70/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/70/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/71/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/71/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/71/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/71/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/72/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/72/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/72/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/72/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/73/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/73/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/73/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/73/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/74/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/74/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/74/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/74/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/75/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/75/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/75/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/75/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/76/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/76/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/8/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/8/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/8/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/8/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/9/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/9/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/9/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/9/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/legacyIds
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/builds/permalinks
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/backup/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/cloudtop-imagej/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/cloudtop-napari/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/cloudtop-ohif/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/cloudtop/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/dug/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/hail/builds/3/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/hail/builds/3/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/hail/builds/3/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/hail/builds/3/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/hail/builds/3/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/hail/builds/legacyIds
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/hail/builds/permalinks
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/hail/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/restartr/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/1/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/1/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/1/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/2/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/2/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/2/log
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/lastFailedBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/lastStableBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/lastSuccessfulBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/lastUnstableBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/lastUnsuccessfulBuild
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/legacyIds
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/stars/builds/permalinks
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/stars/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/25/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/25/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/25/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/25/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/26/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/26/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/26/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/26/log
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/lastFailedBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/lastStableBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/lastSuccessfulBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/lastUnstableBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/lastUnsuccessfulBuild
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/legacyIds
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/builds/permalinks
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-docker/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/1/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/1/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/1/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/10/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/10/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/10/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/10/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/10/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/11/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/11/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/11/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/11/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/11/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/12/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/12/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/12/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/12/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/12/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/13/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/13/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/13/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/13/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/13/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/14/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/14/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/14/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/14/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/14/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/15/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/15/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/15/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/15/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/15/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/16/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/16/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/16/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/16/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/17/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/17/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/17/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/17/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/17/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/18/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/18/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/18/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/18/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/2/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/2/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/2/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/3/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/3/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/3/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/4/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/4/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/4/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/5/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/5/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/5/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/5/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/5/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/6/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/6/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/6/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/6/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/6/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/7/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/7/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/7/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/7/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/7/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/8/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/8/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/8/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/8/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/9/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/9/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/9/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/9/log
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/lastFailedBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/lastStableBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/lastSuccessfulBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/lastUnstableBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/lastUnsuccessfulBuild
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/legacyIds
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/builds/permalinks
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-server/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-varnish/builds/7/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-varnish/builds/7/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-varnish/builds/7/injectedEnvVars.txt
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-varnish/builds/7/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-varnish/builds/7/polling.log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-varnish/builds/legacyIds
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-varnish/builds/permalinks
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tranql-varnish/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/8/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/8/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/8/log
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/9/build.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/9/changelog.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/9/log
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/lastFailedBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/lastStableBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/lastSuccessfulBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/lastUnstableBuild
+ create mode 120000 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/lastUnsuccessfulBuild
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/legacyIds
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/builds/permalinks
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/translator-testing-framework/config.xml
+ create mode 100644 cicd/jenkins/backup-07-08-2020/jobs/tycho/config.xml
+To https://aniroo:[*******]@github.com/aniroo/devops.git
+   51b3faf..b703f28  master -> master
+Process leaked file descriptors. See https://jenkins.io/redirect/troubleshooting/process-leaked-file-descriptors for more information
+Finished: SUCCESS

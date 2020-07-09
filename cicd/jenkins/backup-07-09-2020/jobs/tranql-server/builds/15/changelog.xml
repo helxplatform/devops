@@ -1,0 +1,31 @@
+commit 6b301c75656cd847d532e0d194f40cf1c9c4b2c5
+tree 3208f4fdc2f19442286304cab4f4f1228d2a5bb2
+parent a67b0f8cc39947e07b83ee7ebd67ca1764ac7b35
+author YaphetKG <kebedey@renci.org> 2020-06-30 09:10:37 -0400
+committer YaphetKG <kebedey@renci.org> 2020-06-30 09:10:37 -0400
+
+    Score defaulting to zero for none scored sets. And preserves the score coming from kg if all the nodes and edges from a partial answer are included in a merged answer set.
+
+
+:100644 100644 9fed3f7bbf9c6292d29e9073d2c6e216b01461c5 0827cab78b9855c562993a034801d0e2d6900f4b M	tranql/utils/merge_utils.py
+commit a67b0f8cc39947e07b83ee7ebd67ca1764ac7b35
+tree aec770901ca5a563c1981866a297707b44b05ab7
+parent 5bf7000aa25164ffb560ad2d42c711fd7dc18793
+author YaphetKG <kebedey@renci.org> 2020-06-30 09:09:17 -0400
+committer YaphetKG <kebedey@renci.org> 2020-06-30 09:09:17 -0400
+
+    Score defaulting to zero for none scored sets. And preserves the score coming from kg if all the nodes and edges from a partial answer are included in a merged answer set.
+
+
+:100644 100644 876d8ef2d6dc92db62c672c07ee008900a09e550 e0bf7e0f83b4196a57a36167ebdbad4dcfee22aa M	tranql/tests/test_tranql.py
+commit 5bf7000aa25164ffb560ad2d42c711fd7dc18793
+tree bb8b0ae34475c8ef6ef7d3b3bbf05f2382df884f
+parent 66b40e4e345d68a3d37c8318a5ba0cf666242d55
+author YaphetKG <kebedey@renci.org> 2020-06-29 12:07:54 -0400
+committer YaphetKG <kebedey@renci.org> 2020-06-29 12:07:54 -0400
+
+    Fix to properly update edge ids after merging two logically identical edges.
+
+
+:100644 100644 5d9eed930e0bd61424defbf4e61e48643524d695 876d8ef2d6dc92db62c672c07ee008900a09e550 M	tranql/tests/test_tranql.py
+:100644 100644 29f3893089ca3d0d554a3318fc1277014f061da7 221cab9d56c1a4521e5eaf49b5094bc45bbc81f4 M	tranql/tranql_ast.py

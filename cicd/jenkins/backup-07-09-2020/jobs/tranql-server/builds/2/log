@@ -1,0 +1,309 @@
+Started by user [8mha:////4D7tMwQ0RNCiCiyjPL2yRHzJuXKvoY3dBIvnFiW8CCLjAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgYu/dLi1CL94uT8CgBg0uehvwAAAA==[0mSteven Cox
+Building on master in workspace /var/lib/jenkins/jobs/tranql-server/workspace
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/NCATS-Tangerine/tranql.git/ # timeout=10
+Fetching upstream changes from https://github.com/NCATS-Tangerine/tranql.git/
+ > git --version # timeout=10
+Setting http proxy: gateway.ad.renci.org:8080
+ > git fetch --tags --progress https://github.com/NCATS-Tangerine/tranql.git/ +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 916ed7bde024d8549e9d280a7e4b41f83fbe5e16 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 916ed7bde024d8549e9d280a7e4b41f83fbe5e16
+Commit message: "compose."
+ > git rev-list --no-walk 916ed7bde024d8549e9d280a7e4b41f83fbe5e16 # timeout=10
+[workspace] $ /bin/sh -xe /tmp/jenkins3515914650888988844.sh
++ python3.6 -m venv tranql
++ source tranql/bin/activate
+++ deactivate nondestructive
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ '[' -n /bin/sh -o -n '' ']'
+++ hash -r
+++ '[' -n '' ']'
+++ unset VIRTUAL_ENV
+++ '[' '!' nondestructive = nondestructive ']'
+++ VIRTUAL_ENV=/var/lib/jenkins/jobs/tranql-server/workspace/tranql
+++ export VIRTUAL_ENV
+++ _OLD_VIRTUAL_PATH=/sbin:/usr/sbin:/bin:/usr/bin
+++ PATH=/var/lib/jenkins/jobs/tranql-server/workspace/tranql/bin:/sbin:/usr/sbin:/bin:/usr/bin
+++ export PATH
+++ '[' -n '' ']'
+++ '[' -z '' ']'
+++ _OLD_VIRTUAL_PS1=
+++ '[' 'x(tranql) ' '!=' x ']'
+++ PS1='(tranql) '
+++ export PS1
+++ '[' -n /bin/sh -o -n '' ']'
+++ hash -r
++ pip install -r tranql/requirements.txt
+Collecting aniso8601==4.1.0 (from -r tranql/requirements.txt (line 1))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/8c/1d/6fdba7c6e28a53fea0cb13171829fb1812c400eb0d4d9d1de25ec5d81f0f/aniso8601-4.1.0-py2.py3-none-any.whl (40kB)
+Collecting appnope==0.1.0 (from -r tranql/requirements.txt (line 2))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/87/a9/7985e6a53402f294c8f0e8eff3151a83f1fb901fa92909bb3ff29b4d22af/appnope-0.1.0-py2.py3-none-any.whl
+Collecting atomicwrites==1.3.0 (from -r tranql/requirements.txt (line 3))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/52/90/6155aa926f43f2b2a22b01be7241be3bfd1ceaf7d0b3267213e8127d41f4/atomicwrites-1.3.0-py2.py3-none-any.whl
+Collecting attrs==18.2.0 (from -r tranql/requirements.txt (line 4))
+  Using cached https://files.pythonhosted.org/packages/3a/e1/5f9023cc983f1a628a8c2fd051ad19e76ff7b142a0faf329336f9a62a514/attrs-18.2.0-py2.py3-none-any.whl
+Collecting backcall==0.1.0 (from -r tranql/requirements.txt (line 5))
+  Cache entry deserialization failed, entry ignored
+Collecting bleach==3.1.0 (from -r tranql/requirements.txt (line 6))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/ab/05/27e1466475e816d3001efb6e0a85a819be17411420494a1e602c36f8299d/bleach-3.1.0-py2.py3-none-any.whl (157kB)
+Collecting certifi==2018.11.29 (from -r tranql/requirements.txt (line 7))
+  Using cached https://files.pythonhosted.org/packages/9f/e0/accfc1b56b57e9750eba272e24c4dddeac86852c2bebd1236674d7887e8a/certifi-2018.11.29-py2.py3-none-any.whl
+Collecting chardet==3.0.4 (from -r tranql/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/bc/a9/01ffebfb562e4274b6487b4bb1ddec7ca55ec7510b22e4c51f14098443b8/chardet-3.0.4-py2.py3-none-any.whl
+Collecting Click==7.0 (from -r tranql/requirements.txt (line 9))
+  Using cached https://files.pythonhosted.org/packages/fa/37/45185cb5abbc30d7257104c434fe0b07e5a195a6847506c074527aa599ec/Click-7.0-py2.py3-none-any.whl
+Collecting decorator==4.3.2 (from -r tranql/requirements.txt (line 10))
+  Using cached https://files.pythonhosted.org/packages/f1/cd/7c8240007e9716b14679bc217a1baefa4432aa30394f7e2ec40a52b1a708/decorator-4.3.2-py2.py3-none-any.whl
+Collecting deepdiff==3.3.0 (from -r tranql/requirements.txt (line 11))
+  Downloading https://files.pythonhosted.org/packages/50/0b/87df7f45ce7dc02aa576458ffdf146f0b350d541fce373a91e8a81751deb/deepdiff-3.3.0-py3-none-any.whl
+Collecting defusedxml==0.5.0 (from -r tranql/requirements.txt (line 12))
+  Downloading https://files.pythonhosted.org/packages/87/1c/17f3e3935a913dfe2a5ca85fa5ccbef366bfd82eb318b1f75dadbf0affca/defusedxml-0.5.0-py2.py3-none-any.whl
+Collecting docutils==0.14 (from -r tranql/requirements.txt (line 13))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/36/fa/08e9e6e0e3cbd1d362c3bbee8d01d0aedb2155c4ac112b19ef3cae8eed8d/docutils-0.14-py3-none-any.whl
+Collecting entrypoints==0.3 (from -r tranql/requirements.txt (line 14))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/ac/c6/44694103f8c221443ee6b0041f69e2740d89a25641e62fb4f2ee568f2f9c/entrypoints-0.3-py2.py3-none-any.whl
+Collecting enum34==1.1.6 (from -r tranql/requirements.txt (line 15))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/af/42/cb9355df32c69b553e72a2e28daee25d1611d2c0d9c272aa1d34204205b2/enum34-1.1.6-py3-none-any.whl
+Collecting flasgger==0.9.2 (from -r tranql/requirements.txt (line 16))
+  Using cached https://files.pythonhosted.org/packages/a2/0e/c5f1d52e36c2afaf1fc23fce125df6ac39430e84c96a8205f3603b166a5b/flasgger-0.9.2-py2.py3-none-any.whl
+Collecting Flask==1.0.2 (from -r tranql/requirements.txt (line 17))
+  Using cached https://files.pythonhosted.org/packages/7f/e7/08578774ed4536d3242b14dacb4696386634607af824ea997202cd0edb4b/Flask-1.0.2-py2.py3-none-any.whl
+Collecting Flask-Cors==3.0.7 (from -r tranql/requirements.txt (line 18))
+  Using cached https://files.pythonhosted.org/packages/65/cb/683f71ff8daa3aea0a5cbb276074de39f9ab66d3fbb8ad5efb5bb83e90d2/Flask_Cors-3.0.7-py2.py3-none-any.whl
+Collecting Flask-RESTful==0.3.7 (from -r tranql/requirements.txt (line 19))
+  Using cached https://files.pythonhosted.org/packages/17/44/6e490150ee443ca81d5f88b61bb4bbb133d44d75b0b716ebe92489508da4/Flask_RESTful-0.3.7-py2.py3-none-any.whl
+Collecting idna==2.8 (from -r tranql/requirements.txt (line 20))
+  Using cached https://files.pythonhosted.org/packages/14/2c/cd551d81dbe15200be1cf41cd03869a46fe7226e7450af7a6545bfc474c9/idna-2.8-py2.py3-none-any.whl
+Collecting ijson==2.3 (from -r tranql/requirements.txt (line 21))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/7f/e9/8508c5f4987ba238a2b169e582c1f70a47272b22a2f1fb06b9318201bb9e/ijson-2.3-py2.py3-none-any.whl
+Collecting ipykernel==5.1.0 (from -r tranql/requirements.txt (line 22))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/d8/b0/f0be5c5ab335196f5cce96e5b889a4fcf5bfe462eb0acc05cd7e2caf65eb/ipykernel-5.1.0-py3-none-any.whl (113kB)
+Collecting ipython==7.3.0 (from -r tranql/requirements.txt (line 23))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/14/3b/3fcf422a99a04ee493e6a4fc3014e3c8ff484a7feed238fef68bdc285085/ipython-7.3.0-py3-none-any.whl (768kB)
+Collecting ipython-genutils==0.2.0 (from -r tranql/requirements.txt (line 24))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/fa/bc/9bd3b5c2b4774d5f33b2d544f1460be9df7df2fe42f352135381c347c69a/ipython_genutils-0.2.0-py2.py3-none-any.whl
+Collecting ipywidgets==7.4.2 (from -r tranql/requirements.txt (line 25))
+  Downloading https://files.pythonhosted.org/packages/30/9a/a008c7b1183fac9e52066d80a379b3c64eab535bd9d86cdc29a0b766fd82/ipywidgets-7.4.2-py2.py3-none-any.whl (111kB)
+Collecting itsdangerous==1.1.0 (from -r tranql/requirements.txt (line 26))
+  Using cached https://files.pythonhosted.org/packages/76/ae/44b03b253d6fade317f32c24d100b3b35c2239807046a4c953c7b89fa49e/itsdangerous-1.1.0-py2.py3-none-any.whl
+Collecting jedi==0.13.3 (from -r tranql/requirements.txt (line 27))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/25/2b/1f188901be099d52d7b06f4d3b7cb9f8f09692c50697b139eaf6fa2928d8/jedi-0.13.3-py2.py3-none-any.whl (178kB)
+Collecting Jinja2==2.10 (from -r tranql/requirements.txt (line 28))
+  Using cached https://files.pythonhosted.org/packages/7f/ff/ae64bacdfc95f27a016a7bed8e8686763ba4d277a78ca76f32659220a731/Jinja2-2.10-py2.py3-none-any.whl
+Collecting jsonpath-rw==1.4.0 (from -r tranql/requirements.txt (line 29))
+  Cache entry deserialization failed, entry ignored
+Collecting jsonpickle==1.1 (from -r tranql/requirements.txt (line 30))
+  Downloading https://files.pythonhosted.org/packages/dc/12/8c44eabb501e2bc0aec0dd152b328074d98a50968d3a02be28f6037f0c6a/jsonpickle-1.1-py2.py3-none-any.whl
+Collecting jsonschema==2.6.0 (from -r tranql/requirements.txt (line 31))
+  Using cached https://files.pythonhosted.org/packages/77/de/47e35a97b2b05c2fadbec67d44cfcdcd09b8086951b331d82de90d2912da/jsonschema-2.6.0-py2.py3-none-any.whl
+Collecting jupyter==1.0.0 (from -r tranql/requirements.txt (line 32))
+  Using cached https://files.pythonhosted.org/packages/83/df/0f5dd132200728a86190397e1ea87cd76244e42d39ec5e88efd25b2abd7e/jupyter-1.0.0-py2.py3-none-any.whl
+Collecting jupyter-client==5.2.4 (from -r tranql/requirements.txt (line 33))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/3b/c3/3043fe9ffd140d03c9d091a056794ccdc427c56ec19b8eea74f9ea0a498f/jupyter_client-5.2.4-py2.py3-none-any.whl (89kB)
+Collecting jupyter-console==6.0.0 (from -r tranql/requirements.txt (line 34))
+  Downloading https://files.pythonhosted.org/packages/cb/ee/6374ae8c21b7d0847f9c3722dcdfac986b8e54fa9ad9ea66e1eb6320d2b8/jupyter_console-6.0.0-py2.py3-none-any.whl
+Collecting jupyter-core==4.4.0 (from -r tranql/requirements.txt (line 35))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/1d/44/065d2d7bae7bebc06f1dd70d23c36da8c50c0f08b4236716743d706762a8/jupyter_core-4.4.0-py2.py3-none-any.whl
+Collecting MarkupSafe==1.1.0 (from -r tranql/requirements.txt (line 36))
+  Using cached https://files.pythonhosted.org/packages/08/04/f2191b50fb7f0712f03f064b71d8b4605190f2178ba02e975a87f7b89a0d/MarkupSafe-1.1.0-cp36-cp36m-manylinux1_x86_64.whl
+Collecting mistune==0.8.4 (from -r tranql/requirements.txt (line 37))
+  Using cached https://files.pythonhosted.org/packages/09/ec/4b43dae793655b7d8a25f76119624350b4d65eb663459eb9603d7f1f0345/mistune-0.8.4-py2.py3-none-any.whl
+Collecting more-itertools==6.0.0 (from -r tranql/requirements.txt (line 38))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/ae/d4/d6bad4844831943dd667510947712750004525c5807711982f4ec390da2b/more_itertools-6.0.0-py3-none-any.whl (52kB)
+Collecting nbconvert==5.4.1 (from -r tranql/requirements.txt (line 39))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/b8/39/1e67fea74dc9577cc49f9863fe3ec824e525d1304ab6027d95a94cd586f5/nbconvert-5.4.1-py2.py3-none-any.whl (407kB)
+Collecting nbformat==4.4.0 (from -r tranql/requirements.txt (line 40))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/da/27/9a654d2b6cc1eaa517d1c5a4405166c7f6d72f04f6e7eea41855fe808a46/nbformat-4.4.0-py2.py3-none-any.whl
+Collecting ndex2==2.0.1 (from -r tranql/requirements.txt (line 41))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/dc/0d/d67d819bacdedc79b79f40a07c3191c821f1c7d6ce2ff2c9e7af58c6a0aa/ndex2-2.0.1-py2.py3-none-any.whl
+Collecting networkx==2.2 (from -r tranql/requirements.txt (line 42))
+Collecting notebook==5.7.4 (from -r tranql/requirements.txt (line 43))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/f8/a6/dbdf0954d073ab2cf5421cad20334d1e4c780da37205c04522c045298f67/notebook-5.7.4-py2.py3-none-any.whl (9.0MB)
+Collecting numpy==1.16.1 (from -r tranql/requirements.txt (line 44))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/f5/bf/4981bcbee43934f0adb8f764a1e70ab0ee5a448f6505bd04a87a2fda2a8b/numpy-1.16.1-cp36-cp36m-manylinux1_x86_64.whl (17.3MB)
+Collecting pandas==0.24.1 (from -r tranql/requirements.txt (line 45))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/e6/de/a0d3defd8f338eaf53ef716e40ef6d6c277c35d50e09b586e170169cdf0d/pandas-0.24.1-cp36-cp36m-manylinux1_x86_64.whl (10.1MB)
+Collecting pandocfilters==1.4.2 (from -r tranql/requirements.txt (line 46))
+  Cache entry deserialization failed, entry ignored
+Collecting parso==0.3.4 (from -r tranql/requirements.txt (line 47))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/19/b1/522b2671cc6d134c9d3f5dfc0d02fee07cab848e908d03d2bffea78cca8f/parso-0.3.4-py2.py3-none-any.whl (93kB)
+Collecting pexpect==4.6.0 (from -r tranql/requirements.txt (line 48))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/89/e6/b5a1de8b0cc4e07ca1b305a4fcc3f9806025c1b651ea302646341222f88b/pexpect-4.6.0-py2.py3-none-any.whl (57kB)
+Collecting pickleshare==0.7.5 (from -r tranql/requirements.txt (line 49))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/9a/41/220f49aaea88bc6fa6cba8d05ecf24676326156c23b991e80b3f2fc24c77/pickleshare-0.7.5-py2.py3-none-any.whl
+Collecting pkginfo==1.5.0.1 (from -r tranql/requirements.txt (line 50))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/e6/d5/451b913307b478c49eb29084916639dc53a88489b993530fed0a66bab8b9/pkginfo-1.5.0.1-py2.py3-none-any.whl
+Collecting pluggy==0.8.1 (from -r tranql/requirements.txt (line 51))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/2d/60/f58d9e8197f911f9405bf7e02227b43a2acc2c2f1a8cbb1be5ecf6bfd0b8/pluggy-0.8.1-py2.py3-none-any.whl
+Collecting ply==3.11 (from -r tranql/requirements.txt (line 52))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl
+Collecting prometheus-client==0.6.0 (from -r tranql/requirements.txt (line 53))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/4c/bd/b42db3ec90ffc6be805aad09c1cea4bb13a620d0cd4b21aaa44d13541d71/prometheus_client-0.6.0.tar.gz
+Collecting prompt-toolkit==2.0.9 (from -r tranql/requirements.txt (line 54))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/f7/a7/9b1dd14ef45345f186ef69d175bdd2491c40ab1dfa4b2b3e4352df719ed7/prompt_toolkit-2.0.9-py3-none-any.whl (337kB)
+Collecting PTable==0.9.2 (from -r tranql/requirements.txt (line 55))
+  Downloading https://files.pythonhosted.org/packages/ab/b3/b54301811173ca94119eb474634f120a49cd370f257d1aae5a4abaf12729/PTable-0.9.2.tar.gz
+Collecting ptyprocess==0.6.0 (from -r tranql/requirements.txt (line 56))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/d1/29/605c2cc68a9992d18dada28206eeada56ea4bd07a239669da41674648b6f/ptyprocess-0.6.0-py2.py3-none-any.whl
+Collecting py==1.7.0 (from -r tranql/requirements.txt (line 57))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/3e/c7/3da685ef117d42ac8d71af525208759742dd235f8094221fdaafcd3dba8f/py-1.7.0-py2.py3-none-any.whl
+Collecting Pygments==2.3.1 (from -r tranql/requirements.txt (line 58))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/13/e5/6d710c9cf96c31ac82657bcfb441df328b22df8564d58d0c4cd62612674c/Pygments-2.3.1-py2.py3-none-any.whl (849kB)
+Collecting pyparsing==2.3.1 (from -r tranql/requirements.txt (line 59))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/de/0a/001be530836743d8be6c2d85069f46fecf84ac6c18c7f5fb8125ee11d854/pyparsing-2.3.1-py2.py3-none-any.whl (61kB)
+Collecting pysolr==3.8.1 (from -r tranql/requirements.txt (line 60))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/04/26/051cc17798937bd74358ce40e03b125ce21ae9aa018d89e718cb07a0e9e4/pysolr-3.8.1-py2.py3-none-any.whl
+Collecting pytest==4.2.1 (from -r tranql/requirements.txt (line 61))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/11/e9/dc9a7269a7e1fed46de7d5864da6a86370256c791bf263dd0c7d7e8f1ff1/pytest-4.2.1-py2.py3-none-any.whl (218kB)
+Collecting python-dateutil==2.8.0 (from -r tranql/requirements.txt (line 62))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/41/17/c62faccbfbd163c7f57f3844689e3a78bae1f403648a6afb1d0866d87fbb/python_dateutil-2.8.0-py2.py3-none-any.whl (226kB)
+Collecting pytz==2018.9 (from -r tranql/requirements.txt (line 63))
+  Using cached https://files.pythonhosted.org/packages/61/28/1d3920e4d1d50b19bc5d24398a7cd85cc7b9a75a490570d5a30c57622d34/pytz-2018.9-py2.py3-none-any.whl
+Collecting PyYAML==4.2b1 (from -r tranql/requirements.txt (line 64))
+  Downloading https://files.pythonhosted.org/packages/bd/da/0a49c1a31c60634b93fd1376b3b7966c4f81f2da8263f389cad5b6bbd6e8/PyYAML-4.2b1.tar.gz (263kB)
+Collecting pyzmq==18.0.0 (from -r tranql/requirements.txt (line 65))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/27/5a/8ce70c20efaf78fac2524b2f8d98b7360c997bc11a748dd233f3add7507e/pyzmq-18.0.0-cp36-cp36m-manylinux1_x86_64.whl (1.1MB)
+Collecting qtconsole==4.4.3 (from -r tranql/requirements.txt (line 66))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/e0/7a/8aefbc0ed078dec7951ac9a06dcd1869243ecd7bcbce26fa47bf5e469a8f/qtconsole-4.4.3-py2.py3-none-any.whl (113kB)
+Collecting readme-renderer==24.0 (from -r tranql/requirements.txt (line 67))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/c3/7e/d1aae793900f36b097cbfcc5e70eef82b5b56423a6c52a36dce51fedd8f0/readme_renderer-24.0-py2.py3-none-any.whl
+Collecting redis==3.2.0 (from -r tranql/requirements.txt (line 68))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/d0/8b/c43ef27d02382853b22c49bc41a8389e47d60811dd1d72b9a45bc905a5f8/redis-3.2.0-py2.py3-none-any.whl (65kB)
+Collecting redisgraph==1.7 (from -r tranql/requirements.txt (line 69))
+  Downloading https://files.pythonhosted.org/packages/41/52/d7e334d5c510459ca57f85aaf1b4cb67cc33de0bd3b90be08c393680181e/redisgraph-1.7.tar.gz
+Collecting requests==2.21.0 (from -r tranql/requirements.txt (line 70))
+  Using cached https://files.pythonhosted.org/packages/7d/e3/20f3d364d6c8e5d2353c72a67778eb189176f08e873c9900e10c0287b84b/requests-2.21.0-py2.py3-none-any.whl
+Collecting requests-cache==0.4.13 (from -r tranql/requirements.txt (line 71))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/00/62/9e45a38988cb48c474805a1626439f4d9a486a042bd077af888fa8b17a64/requests_cache-0.4.13-py2.py3-none-any.whl
+Collecting requests-mock==1.5.2 (from -r tranql/requirements.txt (line 72))
+  Downloading https://files.pythonhosted.org/packages/f3/5b/7fc2615e6ae2d229214fd4d7617dd28475d728124c5f3d0653663113ac85/requests_mock-1.5.2-py2.py3-none-any.whl
+Collecting requests-toolbelt==0.9.1 (from -r tranql/requirements.txt (line 73))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/60/ef/7681134338fc097acef8d9b2f8abe0458e4d87559c689a8c306d0957ece5/requests_toolbelt-0.9.1-py2.py3-none-any.whl (54kB)
+Collecting Send2Trash==1.5.0 (from -r tranql/requirements.txt (line 74))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/49/46/c3dc27481d1cc57b9385aff41c474ceb7714f7935b1247194adae45db714/Send2Trash-1.5.0-py3-none-any.whl
+Collecting six==1.12.0 (from -r tranql/requirements.txt (line 75))
+  Using cached https://files.pythonhosted.org/packages/73/fb/00a976f728d0d1fecfe898238ce23f502a721c0ac0ecfedb80e0d88c64e9/six-1.12.0-py2.py3-none-any.whl
+Collecting terminado==0.8.1 (from -r tranql/requirements.txt (line 76))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/2e/20/a26211a24425923d46e1213b376a6ee60dc30bcdf1b0c345e2c3769deb1c/terminado-0.8.1-py2.py3-none-any.whl
+Collecting testpath==0.4.2 (from -r tranql/requirements.txt (line 77))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/be/a4/162f9ebb6489421fe46dcca2ae420369edfee4b563c668d93cb4605d12ba/testpath-0.4.2-py2.py3-none-any.whl (163kB)
+Collecting tornado==5.1.1 (from -r tranql/requirements.txt (line 78))
+  Cache entry deserialization failed, entry ignored
+Collecting tqdm==4.31.1 (from -r tranql/requirements.txt (line 79))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/6c/4b/c38b5144cf167c4f52288517436ccafefe9dc01b8d1c190e18a6b154cd4a/tqdm-4.31.1-py2.py3-none-any.whl (48kB)
+Collecting traitlets==4.3.2 (from -r tranql/requirements.txt (line 80))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/93/d6/abcb22de61d78e2fc3959c964628a5771e47e7cc60d53e9342e21ed6cc9a/traitlets-4.3.2-py2.py3-none-any.whl
+Collecting twine==1.13.0 (from -r tranql/requirements.txt (line 81))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/28/90/59eec88c0b2ac9e47fe135959007acb93a3cc9f7146366e11fecf718dd15/twine-1.13.0-py2.py3-none-any.whl
+Collecting urllib3==1.24.1 (from -r tranql/requirements.txt (line 82))
+  Using cached https://files.pythonhosted.org/packages/62/00/ee1d7de624db8ba7090d1226aebefab96a2c71cd5cfa7629d6ad3f61b79e/urllib3-1.24.1-py2.py3-none-any.whl
+Collecting wcwidth==0.1.7 (from -r tranql/requirements.txt (line 83))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/7e/9f/526a6947247599b084ee5232e4f9190a38f398d7300d866af3ab571a5bfe/wcwidth-0.1.7-py2.py3-none-any.whl
+Collecting webencodings==0.5.1 (from -r tranql/requirements.txt (line 84))
+  Cache entry deserialization failed, entry ignored
+  Using cached https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
+Collecting Werkzeug==0.14.1 (from -r tranql/requirements.txt (line 85))
+  Using cached https://files.pythonhosted.org/packages/20/c4/12e3e56473e52375aa29c4764e70d1b8f3efa6682bef8d0aae04fe335243/Werkzeug-0.14.1-py2.py3-none-any.whl
+Collecting widgetsnbextension==3.4.2 (from -r tranql/requirements.txt (line 86))
+  Cache entry deserialization failed, entry ignored
+  Downloading https://files.pythonhosted.org/packages/8a/81/35789a3952afb48238289171728072d26d6e76649ddc8b3588657a2d78c1/widgetsnbextension-3.4.2-py2.py3-none-any.whl (2.2MB)
+Requirement already satisfied: setuptools>=18.5 in ./tranql/lib/python3.6/site-packages (from ipython==7.3.0->-r tranql/requirements.txt (line 23))
+Installing collected packages: aniso8601, appnope, atomicwrites, attrs, backcall, six, webencodings, bleach, certifi, chardet, Click, decorator, jsonpickle, deepdiff, defusedxml, docutils, entrypoints, enum34, PyYAML, mistune, MarkupSafe, Jinja2, itsdangerous, Werkzeug, Flask, jsonschema, flasgger, Flask-Cors, pytz, Flask-RESTful, idna, ijson, ipython-genutils, traitlets, pickleshare, wcwidth, prompt-toolkit, Pygments, ptyprocess, pexpect, parso, jedi, ipython, pyzmq, tornado, jupyter-core, python-dateutil, jupyter-client, ipykernel, nbformat, prometheus-client, pandocfilters, testpath, nbconvert, terminado, Send2Trash, notebook, widgetsnbextension, ipywidgets, ply, jsonpath-rw, qtconsole, jupyter-console, jupyter, more-itertools, urllib3, requests, requests-toolbelt, numpy, pandas, pysolr, networkx, ndex2, pkginfo, pluggy, PTable, py, pyparsing, pytest, readme-renderer, redis, redisgraph, requests-cache, requests-mock, tqdm, twine
+  Running setup.py install for PyYAML: started
+    Running setup.py install for PyYAML: finished with status 'done'
+  Running setup.py install for prometheus-client: started
+    Running setup.py install for prometheus-client: finished with status 'done'
+  Running setup.py install for PTable: started
+    Running setup.py install for PTable: finished with status 'done'
+  Running setup.py install for redisgraph: started
+    Running setup.py install for redisgraph: finished with status 'done'
+Successfully installed Click-7.0 Flask-1.0.2 Flask-Cors-3.0.7 Flask-RESTful-0.3.7 Jinja2-2.10 MarkupSafe-1.1.0 PTable-0.9.2 PyYAML-4.2b1 Pygments-2.3.1 Send2Trash-1.5.0 Werkzeug-0.14.1 aniso8601-4.1.0 appnope-0.1.0 atomicwrites-1.3.0 attrs-18.2.0 backcall-0.1.0 bleach-3.1.0 certifi-2018.11.29 chardet-3.0.4 decorator-4.3.2 deepdiff-3.3.0 defusedxml-0.5.0 docutils-0.14 entrypoints-0.3 enum34-1.1.6 flasgger-0.9.2 idna-2.8 ijson-2.3 ipykernel-5.1.0 ipython-7.3.0 ipython-genutils-0.2.0 ipywidgets-7.4.2 itsdangerous-1.1.0 jedi-0.13.3 jsonpath-rw-1.4.0 jsonpickle-1.1 jsonschema-2.6.0 jupyter-1.0.0 jupyter-client-5.2.4 jupyter-console-6.0.0 jupyter-core-4.4.0 mistune-0.8.4 more-itertools-6.0.0 nbconvert-5.4.1 nbformat-4.4.0 ndex2-2.0.1 networkx-2.2 notebook-5.7.4 numpy-1.16.1 pandas-0.24.1 pandocfilters-1.4.2 parso-0.3.4 pexpect-4.6.0 pickleshare-0.7.5 pkginfo-1.5.0.1 pluggy-0.8.1 ply-3.11 prometheus-client-0.6.0 prompt-toolkit-2.0.9 ptyprocess-0.6.0 py-1.7.0 pyparsing-2.3.1 pysolr-3.8.1 pytest-4.2.1 python-dateutil-2.8.0 pytz-2018.9 pyzmq-18.0.0 qtconsole-4.4.3 readme-renderer-24.0 redis-3.2.0 redisgraph-1.7 requests-2.21.0 requests-cache-0.4.13 requests-mock-1.5.2 requests-toolbelt-0.9.1 six-1.12.0 terminado-0.8.1 testpath-0.4.2 tornado-5.1.1 tqdm-4.31.1 traitlets-4.3.2 twine-1.13.0 urllib3-1.24.1 wcwidth-0.1.7 webencodings-0.5.1 widgetsnbextension-3.4.2
+You are using pip version 9.0.1, however version 19.0.3 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
++ bin/test
+============================= test session starts ==============================
+platform linux -- Python 3.6.4, pytest-4.2.1, py-1.7.0, pluggy-0.8.1
+rootdir: /var/lib/jenkins/jobs/tranql-server/workspace, inifile:
+plugins: requests-mock-1.5.2
+collected 12 items
+
+tranql/tests/test_tranql.py test_parse_predicate()
+.test_parse_set()
+.test_parse_set_with_comment()
+.test_parse_select_simple()
+.test_parse_select_complex()
+.test_parse_query_with_repeated_concept
+.test_ast_set_variable ()
+.test_ast_set_graph ()
+.test_ast_set_generate_questions ()
+.test_ast_bidirectional_query ()
+.test_interpreter_set ()
+.test_program ()
+.
+
+=============================== warnings summary ===============================
+tranql/main.py:235
+  /var/lib/jenkins/jobs/tranql-server/workspace/tranql/main.py:235: DeprecationWarning: invalid escape sequence \ 
+    v0.1"""
+
+tranql/config.py:43
+  /var/lib/jenkins/jobs/tranql-server/workspace/tranql/config.py:43: DeprecationWarning: invalid escape sequence \W
+    key_var = re.sub('[\W]', '', key)
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+==================== 12 passed, 2 warnings in 3.42 seconds =====================
+Finished: SUCCESS

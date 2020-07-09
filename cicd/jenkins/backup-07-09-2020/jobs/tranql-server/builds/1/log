@@ -1,0 +1,50 @@
+Started by user [8mha:////4D7tMwQ0RNCiCiyjPL2yRHzJuXKvoY3dBIvnFiW8CCLjAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgYu/dLi1CL94uT8CgBg0uehvwAAAA==[0mSteven Cox
+Building on master in workspace /var/lib/jenkins/jobs/tranql-server/workspace
+Cloning the remote Git repository
+Cloning repository https://github.com/NCATS-Tangerine/tranql.git/
+ > git init /var/lib/jenkins/jobs/tranql-server/workspace # timeout=10
+Fetching upstream changes from https://github.com/NCATS-Tangerine/tranql.git/
+ > git --version # timeout=10
+Setting http proxy: gateway.ad.renci.org:8080
+ > git fetch --tags --progress https://github.com/NCATS-Tangerine/tranql.git/ +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url https://github.com/NCATS-Tangerine/tranql.git/ # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/NCATS-Tangerine/tranql.git/ # timeout=10
+Fetching upstream changes from https://github.com/NCATS-Tangerine/tranql.git/
+Setting http proxy: gateway.ad.renci.org:8080
+ > git fetch --tags --progress https://github.com/NCATS-Tangerine/tranql.git/ +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 916ed7bde024d8549e9d280a7e4b41f83fbe5e16 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 916ed7bde024d8549e9d280a7e4b41f83fbe5e16
+Commit message: "compose."
+First time build. Skipping changelog.
+[workspace] $ /bin/sh -xe /tmp/jenkins5051613384343417915.sh
++ python3.6 -m venv tranql
++ source tranql/bin/activate
+++ deactivate nondestructive
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ '[' -n /bin/sh -o -n '' ']'
+++ hash -r
+++ '[' -n '' ']'
+++ unset VIRTUAL_ENV
+++ '[' '!' nondestructive = nondestructive ']'
+++ VIRTUAL_ENV=/var/lib/jenkins/jobs/tranql-server/workspace/tranql
+++ export VIRTUAL_ENV
+++ _OLD_VIRTUAL_PATH=/sbin:/usr/sbin:/bin:/usr/bin
+++ PATH=/var/lib/jenkins/jobs/tranql-server/workspace/tranql/bin:/sbin:/usr/sbin:/bin:/usr/bin
+++ export PATH
+++ '[' -n '' ']'
+++ '[' -z '' ']'
+++ _OLD_VIRTUAL_PS1=
+++ '[' 'x(tranql) ' '!=' x ']'
+++ PS1='(tranql) '
+++ export PS1
+++ '[' -n /bin/sh -o -n '' ']'
+++ hash -r
++ bin/test
+bin/test: line 3: pytest: command not found
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

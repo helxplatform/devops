@@ -1,0 +1,74 @@
+Started by user [8mha:////4AKlbaGiTjK4/6tx36g/NqgzS+rEHIIQCdUcI1vy2PjnAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgZu/dLi1CL9YqDmDADPSPjkwAAAAA==[0mMani Singh
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/backup/workspace
+[EnvInject] - Mask passwords that will be passed as build parameters.
+[workspace] $ /bin/bash -xe /tmp/jenkins4578368849590600821.sh
++ set +x
+Build number: 32
+Build ID: 32
+Job name: backup
+Build tag: jenkins-backup-32
+Node name: master
+Node labels: master
+Workspace: /var/lib/jenkins/jobs/backup/workspace
+Jenkins URL: https://stars-app.renci.org/jenkins/
+Jenkins Home: /var/lib/jenkins
+Jenkins passwor: [*******]
+Removing existing devops directory for git clone.
+Cloning into 'devops'...
+appstore
+dug
+my dire  appstore
+dug
+Current Dir- /var/lib/jenkins/jobs/backup/workspace/devops/cicd/jenkins/backup-07-07-2020/jobs
+appstore
+/tmp/jenkins4578368849590600821.sh: line 59: [: missing `]'
+backup
+else: just app+path
+blackbalsam
+/tmp/jenkins4578368849590600821.sh: line 59: [: missing `]'
+cloudtop
+else: just app+path
+cloudtop-imagej
+else: just app+path
+cloudtop-napari
+else: just app+path
+cloudtop-ohif
+else: just app+path
+dug
+else: just app+path
+GO
+/tmp/jenkins4578368849590600821.sh: line 59: [: missing `]'
+greentranslator
+else: just app+path
+hail
+else: just app+path
+ncats-translator
+/tmp/jenkins4578368849590600821.sh: line 59: [: missing `]'
+NCIt
+/tmp/jenkins4578368849590600821.sh: line 59: [: missing `]'
+Phenoscape
+/tmp/jenkins4578368849590600821.sh: line 59: [: missing `]'
+restartr
+else: just app+path
+stars
+/tmp/jenkins4578368849590600821.sh: line 59: [: missing `]'
+tranql-docker
+else: just app+path
+tranql-server
+else: just app+path
+tranql-varnish
+else: just app+path
+translator-automated-tests
+/tmp/jenkins4578368849590600821.sh: line 59: [: missing `]'
+translator-testing-framework
+else: just app+path
+tycho
+else: just app+path
+
+before
+After
+config.xml
+jobs
+Finished: SUCCESS

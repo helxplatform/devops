@@ -1,0 +1,11 @@
+Started on Jun 3, 2020 2:01:18 PM
+Started by event from 140.82.115.250 ⇒ https://stars-app.renci.org:8083/jenkins/github-webhook/ on Wed Jun 03 14:01:18 EDT 2020
+Using strategy: Default
+[poll] Last Built Revision: Revision 8ade9255611d1c5b7df60a21b8b467235c69a970 (refs/remotes/origin/master)
+No credentials specified
+ > git --version # timeout=10
+ > git ls-remote -h https://github.com/NCATS-Tangerine/tranql.git # timeout=10
+Found 9 remote heads on https://github.com/NCATS-Tangerine/tranql.git
+[poll] Latest remote head revision on refs/heads/master is: 9a31336cacb8583afe2ce7645551095bb3d0cbab
+Done. Took 0.25 sec
+Changes found

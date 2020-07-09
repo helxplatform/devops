@@ -1,0 +1,47 @@
+Started by user [8mha:////4AKlbaGiTjK4/6tx36g/NqgzS+rEHIIQCdUcI1vy2PjnAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgZu/dLi1CL9YqDmDADPSPjkwAAAAA==[0mMani Singh
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/backup/workspace
+[EnvInject] - Mask passwords that will be passed as build parameters.
+[workspace] $ /bin/bash -xe /tmp/jenkins6012602536551095402.sh
++ set +x
+Build number: 5
+Build ID: 5
+Job name: backup
+Build tag: jenkins-backup-5
+Node name: master
+Node labels: master
+Workspace: /var/lib/jenkins/jobs/backup/workspace
+Jenkins URL: https://stars-app.renci.org/jenkins/
+Jenkins Home: /var/lib/jenkins
+Jenkins passwor: [*******]
+Removing existing devops directory for git clone.
+Cloning into 'devops'...
+appstore
+dug
+my dire  appstore
+dug
+Current Dir- /var/lib/jenkins/jobs/backup/workspace/devops/cicd/jenkins/backup-07-07-2020
+jobs /var/lib/jenkins/jobs/appstore
+jobs /var/lib/jenkins/jobs/backup
+jobs /var/lib/jenkins/jobs/blackbalsam
+jobs /var/lib/jenkins/jobs/cloudtop
+jobs /var/lib/jenkins/jobs/cloudtop-imagej
+jobs /var/lib/jenkins/jobs/cloudtop-napari
+jobs /var/lib/jenkins/jobs/cloudtop-ohif
+jobs /var/lib/jenkins/jobs/dug
+jobs /var/lib/jenkins/jobs/GO
+jobs /var/lib/jenkins/jobs/greentranslator builds
+jobs /var/lib/jenkins/jobs/hail
+jobs /var/lib/jenkins/jobs/ncats-translator
+jobs /var/lib/jenkins/jobs/NCIt
+jobs /var/lib/jenkins/jobs/Phenoscape
+jobs /var/lib/jenkins/jobs/restartr
+jobs /var/lib/jenkins/jobs/stars
+jobs /var/lib/jenkins/jobs/tranql-docker
+jobs /var/lib/jenkins/jobs/tranql-server
+jobs /var/lib/jenkins/jobs/tranql-varnish
+jobs /var/lib/jenkins/jobs/translator-automated-tests
+jobs /var/lib/jenkins/jobs/translator-testing-framework
+jobs /var/lib/jenkins/jobs/tycho
+Finished: SUCCESS
