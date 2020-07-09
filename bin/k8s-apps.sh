@@ -780,6 +780,7 @@ function deployAppStore(){
    HELM_VALUES+=",django.saml2auth.ENTITY_ID=$APPSTORE_SAML2_ENTITY_ID"
   fi
   if [ ! -z "$APPSTORE_ALLOW_DJANGO_LOGIN" ]
+  then 
    HELM_VALUES+=",django.ALLOW_DJANGO_LOGIN=$APPSTORE_ALLOW_DJANGO_LOGIN"
   fi
   if [ ! -z "$APPSTORE_ALLOW_SAML_LOGIN" ]

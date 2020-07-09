@@ -54,6 +54,26 @@ spec:
             configMapKeyRef:
               key: DJANGO_SETTINGS_MODULE
               name: csappstore-env
+        - name: ALLOW_DJANGO_LOGIN 
+          valueFrom:
+            configMapKeyRef:
+              key: ALLOW_DJANGO_LOGIN 
+              name: csappstore-env
+        - name: ALLOW_SAML_LOGIN 
+          valueFrom:
+            configMapKeyRef:
+              key: ALLOW_SAML_LOGIN 
+              name: csappstore-env
+        - name: SAML2_AUTH_ASSERTION_URL 
+          valueFrom:
+            configMapKeyRef:
+              key: SAML2_AUTH_ASSERTION_URL 
+              name: csappstore-env
+        - name: SAML2_AUTH_ENTITY_ID
+          valueFrom:
+            configMapKeyRef:
+              key: SAML2_AUTH_ENTITY_ID 
+              name: csappstore-env
         - name: OAUTH_DB_DIR
           valueFrom:
             configMapKeyRef:
