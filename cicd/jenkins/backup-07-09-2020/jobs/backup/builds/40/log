@@ -1,0 +1,77 @@
+Started by user [8mha:////4AKlbaGiTjK4/6tx36g/NqgzS+rEHIIQCdUcI1vy2PjnAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgZu/dLi1CL9YqDmDADPSPjkwAAAAA==[0mMani Singh
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/backup/workspace
+[EnvInject] - Mask passwords that will be passed as build parameters.
+[workspace] $ /bin/bash -xe /tmp/jenkins3859373020848268445.sh
++ set +x
+Build number: 40
+Build ID: 40
+Job name: backup
+Build tag: jenkins-backup-40
+Node name: master
+Node labels: master
+Workspace: /var/lib/jenkins/jobs/backup/workspace
+Jenkins URL: https://stars-app.renci.org/jenkins/
+Jenkins Home: /var/lib/jenkins
+Jenkins passwor: [*******]
+Removing existing devops directory for git clone.
+Cloning into 'devops'...
+appstore
+backup-07-07-2020
+dug
+my dire  appstore
+dug
+Current Dir- /var/lib/jenkins/jobs/backup/workspace/devops/cicd/jenkins/backup-07-07-2020/jobs
+appstore
+Here
+backup
+else: just app+path
+blackbalsam
+cloudtop
+else: just app+path
+cloudtop-imagej
+else: just app+path
+cloudtop-napari
+else: just app+path
+cloudtop-ohif
+else: just app+path
+dug
+else: just app+path
+GO
+greentranslator
+else: just app+path
+hail
+else: just app+path
+ncats-translator
+NCIt
+Phenoscape
+restartr
+else: just app+path
+stars
+tranql-docker
+else: just app+path
+tranql-server
+else: just app+path
+tranql-varnish
+else: just app+path
+translator-automated-tests
+translator-testing-framework
+else: just app+path
+tycho
+else: just app+path
+First breakpoint
+second
+fatal: '../../../../../../../../../../../../../../../../../../../../../config.xml
+../../../../../../../../../../../../../../../../../../../../builds/1667/build.xml
+../../../../../../../../../../../../../../../../../../../../builds/1667/changelog.xml
+../../../../../../../../../../../../../../../../../../../../builds/1667/injectedEnvVars.txt
+../../../../../../../../../../../../../../../../../../../../builds/1667/log
+../../../../../../../../../../../../../../../../../../../../builds/1667/polling.log
+../../../../../../../../../../../../../../../../../../../../builds/legacyIds
+../../../../../../../../../../../../../../../../../../../../builds/permalinks
+../../../../../../../../../../../../../../../../../../../../config.xml
+../../../../../../../../../../../../../../../../../../../../version/develop/ver
+../../../../../../../../../../../../../../../../../../../../version/metadata/ver' is outside repository
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

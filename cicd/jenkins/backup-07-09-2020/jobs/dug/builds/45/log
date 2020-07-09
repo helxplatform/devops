@@ -1,0 +1,2678 @@
+Started by GitHub push by alexwaldrop
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/dug/workspace
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] Done
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/helxplatform/dug.git
+ > git init /var/lib/jenkins/jobs/dug/workspace # timeout=10
+Fetching upstream changes from https://github.com/helxplatform/dug.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/helxplatform/dug.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/helxplatform/dug.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/helxplatform/dug.git # timeout=10
+Fetching upstream changes from https://github.com/helxplatform/dug.git
+ > git fetch --tags --progress https://github.com/helxplatform/dug.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/develop^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/refs/heads/develop^{commit} # timeout=10
+Checking out Revision 8c970100449c1cf8083b3eb00336bca62b0d8072 (refs/remotes/origin/develop)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 8c970100449c1cf8083b3eb00336bca62b0d8072 # timeout=10
+Commit message: "Merge pull request #24 from andrew-rti/feature-kgx-fix"
+ > git rev-list --no-walk c73a581c57f3f463e478408c6c61325626829362 # timeout=10
+No emails were triggered.
+[workspace] $ /bin/bash -xe /tmp/jenkins4747128702125157694.sh
++ set -ex
++ BUILD_BRANCH=develop
++ echo 'Build branch for build is: develop.'
+Build branch for build is: develop.
++ WS=/var/lib/jenkins/jobs/dug/workspace
++ GITDIR=dug
++ DUGDIR=dug
++ CLONE_HOME=/var/lib/jenkins/jobs/dug/workspace/dug
++ DUG_HOME=/var/lib/jenkins/jobs/dug/workspace/dug
++ COMP_HOME=/var/lib/jenkins/jobs/dug/workspace/dug/docker/dug
++ DUG_URL=https://github.com/helxplatform/dug.git
++ JD_DIR=/var/lib/jenkins/jobs/dug
++ VERSION_FILE=/var/lib/jenkins/jobs/dug/version/develop/ver
++ sudo rm -rf /var/lib/jenkins/jobs/dug/workspace_ws-cleanup_1594322647404
++ ls -ld /var/lib/jenkins/jobs/dug/workspace/dug
+drwxr-xr-x 5 evryscope service accounts 132 Jul  9 15:24 /var/lib/jenkins/jobs/dug/workspace/dug
++ '[' 0 -eq 0 ']'
++ echo 'Removing existing dug directory for git clone.'
+Removing existing dug directory for git clone.
++ rm -rf /var/lib/jenkins/jobs/dug/workspace/dug
++ git clone https://github.com/helxplatform/dug.git
+Cloning into 'dug'...
++ sleep 5
++ cd dug
++ git checkout develop
+Switched to a new branch 'develop'
+Branch develop set up to track remote branch develop from origin.
+++ get_ver
+++ '[' '!' -f /var/lib/jenkins/jobs/dug/version/develop/ver ']'
+++ ver=v0.0.3
+++ echo v0.0.3
+++ return 0
++ ov=v0.0.3
++ echo 'OLD VERSION: v0.0.3'
+OLD VERSION: v0.0.3
++ incr_ver
++ SUBMINOR_OVERFLOW=99
++ MINOR_OVERFLOW=9
+++ get_ver
+++ '[' '!' -f /var/lib/jenkins/jobs/dug/version/develop/ver ']'
+++ ver=v0.0.3
+++ echo v0.0.3
+++ return 0
++ oldver=v0.0.3
++ rc=0
++ case $rc in
++ echo 'Old version: [v0.0.3].'
+Old version: [v0.0.3].
++ read -r major minor subminor
+++ echo v0.0.3
+++ awk -F. '{print $1, $2, $3}'
++ newsubminor=
++ '[' -n 3 ']'
++ '[' 3 -lt 99 ']'
++ newsubminor=4
++ newminor=0
++ '[' -n 0 ']'
++ '[' -z 3 ']'
++ '[' -n 3 ']'
++ '[' 4 -eq 0 ']'
++ newmajor=v0
++ '[' -z 0 ']'
++ '[' 0 -eq 0 -a '!' 0 -eq 0 ']'
++ newver=v0
++ '[' -n 0 ']'
++ newver=v0.0
++ '[' -n 3 ']'
++ newver=v0.0.4
++ echo 'New version: [v0.0.4].'
+New version: [v0.0.4].
++ echo v0.0.4
+v0.0.4
++ echo v0.0.4
++ return 0
+++ get_ver
+++ '[' '!' -f /var/lib/jenkins/jobs/dug/version/develop/ver ']'
+++ ver=v0.0.4
+++ echo v0.0.4
+++ return 0
++ ver=v0.0.4
++ echo 'NEW VERSION: v0.0.4'
+NEW VERSION: v0.0.4
++ cd /var/lib/jenkins/jobs/dug/workspace/dug/docker/dug
++ docker build --no-cache -t heliumdatastage/dug:develop-v0.0.4 -t heliumdatastage/dug:develop-latest .
+Sending build context to Docker daemon  4.096kB
+Step 1/14 : FROM python:3.7.6-slim
+ ---> 84de2ffd919d
+Step 2/14 : ENV USER dug
+ ---> Running in c74031a62383
+Removing intermediate container c74031a62383
+ ---> c20cef5259aa
+Step 3/14 : ENV HOME /home/$USER
+ ---> Running in 31374eb1b2ef
+Removing intermediate container 31374eb1b2ef
+ ---> 72e6a179af5f
+Step 4/14 : WORKDIR $HOME
+ ---> Running in 034b4ec8b4f5
+Removing intermediate container 034b4ec8b4f5
+ ---> 74a342247b47
+Step 5/14 : ENV UID 1000
+ ---> Running in 65269f83d69b
+Removing intermediate container 65269f83d69b
+ ---> 6d4a13e4d6d0
+Step 6/14 : RUN adduser --disabled-login --home $HOME --shell /bin/bash --uid $UID $USER &&         chown -R $UID:$UID $HOME
+ ---> Running in 507b7f06f7e9
+Warning: The home dir /home/dug you specified already exists.
+Adding user `dug' ...
+Adding new group `dug' (1000) ...
+Adding new user `dug' (1000) with group `dug' ...
+[91madduser: Warning: The home directory `/home/dug' does not belong to the user you are currently creating.
+[0mThe home directory `/home/dug' already exists.  Not copying from `/etc/skel'.
+Changing the user information for dug
+Enter the new value, or press ENTER for the default
+	Full Name []: 	Room Number []: 	Work Phone []: 	Home Phone []: 	Other []: [91mUse of uninitialized value $answer in chop at /usr/sbin/adduser line 582.
+Use of uninitialized value $answer in pattern match (m//) at /usr/sbin/adduser line 583.
+[0mIs the information correct? [Y/n] Removing intermediate container 507b7f06f7e9
+ ---> 017ddd5d0ab8
+Step 7/14 : RUN         apt update &&         apt-get install -y curl gettext git gcc &&         git clone https://github.com/helxplatform/dug.git &&         cd dug &&         pip install --upgrade pip &&         pip install --no-cache-dir -r requirements.txt &&         git clone https://github.com/NCATS-Tangerine/kgx.git &&         cd kgx && python setup.py install && cd .. &&         find . -type f -exec chmod 664 {} \; &&         find . -type f -iname *.py -exec chmod 775 {} \; &&         find bin -type f -exec chmod 775 {} \; &&         find . -type d -exec chmod 775 {} \; &&         chown -R $UID:$UID $HOME &&         rm -rf /var/cache/apk/*
+ ---> Running in ff0488fc7e83
+[91m
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+[0mGet:1 http://deb.debian.org/debian buster InRelease [121 kB]
+Get:2 http://security.debian.org/debian-security buster/updates InRelease [65.4 kB]
+Get:3 http://deb.debian.org/debian buster-updates InRelease [51.9 kB]
+Get:4 http://security.debian.org/debian-security buster/updates/main amd64 Packages [208 kB]
+Get:5 http://deb.debian.org/debian buster/main amd64 Packages [7905 kB]
+Get:6 http://deb.debian.org/debian buster-updates/main amd64 Packages [7868 B]
+Fetched 8360 kB in 2s (4664 kB/s)
+Reading package lists...
+Building dependency tree...
+Reading state information...
+10 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  binutils binutils-common binutils-x86-64-linux-gnu cpp cpp-8 gcc-8
+  gettext-base git-man krb5-locales less libasan5 libatomic1 libbinutils
+  libbsd0 libc-dev-bin libc6-dev libcc1-0 libcroco3 libcurl3-gnutls libcurl4
+  libedit2 liberror-perl libgcc-8-dev libgdbm-compat4 libglib2.0-0
+  libglib2.0-data libgomp1 libgpm2 libgssapi-krb5-2 libicu63 libisl19 libitm1
+  libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 libldap-2.4-2
+  libldap-common liblsan0 libmpc3 libmpfr6 libmpx2 libncurses6 libnghttp2-14
+  libpcre2-8-0 libperl5.28 libpsl5 libquadmath0 librtmp1 libsasl2-2
+  libsasl2-modules libsasl2-modules-db libssh2-1 libtsan0 libubsan1 libx11-6
+  libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxml2 libxmuu1
+  linux-libc-dev manpages manpages-dev openssh-client patch perl
+  perl-modules-5.28 publicsuffix shared-mime-info xauth xdg-user-dirs
+Suggested packages:
+  binutils-doc cpp-doc gcc-8-locales gcc-multilib make autoconf automake
+  libtool flex bison gdb gcc-doc gcc-8-multilib gcc-8-doc libgcc1-dbg
+  libgomp1-dbg libitm1-dbg libatomic1-dbg libasan5-dbg liblsan0-dbg
+  libtsan0-dbg libubsan1-dbg libmpx2-dbg libquadmath0-dbg gettext-doc
+  autopoint libasprintf-dev libgettextpo-dev git-daemon-run
+  | git-daemon-sysvinit git-doc git-el git-email git-gui gitk gitweb git-cvs
+  git-mediawiki git-svn glibc-doc gpm krb5-doc krb5-user sensible-utils
+  libsasl2-modules-gssapi-mit | libsasl2-modules-gssapi-heimdal
+  libsasl2-modules-ldap libsasl2-modules-otp libsasl2-modules-sql man-browser
+  keychain libpam-ssh monkeysphere ssh-askpass ed diffutils-doc perl-doc
+  libterm-readline-gnu-perl | libterm-readline-perl-perl libb-debug-perl
+  liblocale-codes-perl
+The following NEW packages will be installed:
+  binutils binutils-common binutils-x86-64-linux-gnu cpp cpp-8 curl gcc gcc-8
+  gettext gettext-base git git-man krb5-locales less libasan5 libatomic1
+  libbinutils libbsd0 libc-dev-bin libc6-dev libcc1-0 libcroco3
+  libcurl3-gnutls libcurl4 libedit2 liberror-perl libgcc-8-dev libgdbm-compat4
+  libglib2.0-0 libglib2.0-data libgomp1 libgpm2 libgssapi-krb5-2 libicu63
+  libisl19 libitm1 libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0
+  libldap-2.4-2 libldap-common liblsan0 libmpc3 libmpfr6 libmpx2 libncurses6
+  libnghttp2-14 libpcre2-8-0 libperl5.28 libpsl5 libquadmath0 librtmp1
+  libsasl2-2 libsasl2-modules libsasl2-modules-db libssh2-1 libtsan0 libubsan1
+  libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxml2 libxmuu1
+  linux-libc-dev manpages manpages-dev openssh-client patch perl
+  perl-modules-5.28 publicsuffix shared-mime-info xauth xdg-user-dirs
+0 upgraded, 78 newly installed, 0 to remove and 10 not upgraded.
+Need to get 69.3 MB of archives.
+After this operation, 296 MB of additional disk space will be used.
+Get:1 http://security.debian.org/debian-security buster/updates/main amd64 linux-libc-dev amd64 4.19.118-2+deb10u1 [1354 kB]
+Get:2 http://deb.debian.org/debian buster/main amd64 perl-modules-5.28 all 5.28.1-6 [2873 kB]
+Get:3 http://deb.debian.org/debian buster/main amd64 libgdbm-compat4 amd64 1.18.1-4 [44.1 kB]
+Get:4 http://deb.debian.org/debian buster/main amd64 libperl5.28 amd64 5.28.1-6 [3883 kB]
+Get:5 http://deb.debian.org/debian buster/main amd64 perl amd64 5.28.1-6 [204 kB]
+Get:6 http://deb.debian.org/debian buster/main amd64 less amd64 487-0.1+b1 [129 kB]
+Get:7 http://deb.debian.org/debian buster/main amd64 gettext-base amd64 0.19.8.1-9 [123 kB]
+Get:8 http://deb.debian.org/debian buster/main amd64 krb5-locales all 1.17-3 [95.4 kB]
+Get:9 http://deb.debian.org/debian buster/main amd64 manpages all 4.16-2 [1295 kB]
+Get:10 http://deb.debian.org/debian buster/main amd64 libbsd0 amd64 0.9.1-2 [99.5 kB]
+Get:11 http://deb.debian.org/debian buster/main amd64 libedit2 amd64 3.1-20181209-1 [94.0 kB]
+Get:12 http://deb.debian.org/debian buster/main amd64 libkeyutils1 amd64 1.6-6 [15.0 kB]
+Get:13 http://deb.debian.org/debian buster/main amd64 libkrb5support0 amd64 1.17-3 [65.6 kB]
+Get:14 http://deb.debian.org/debian buster/main amd64 libk5crypto3 amd64 1.17-3 [121 kB]
+Get:15 http://deb.debian.org/debian buster/main amd64 libkrb5-3 amd64 1.17-3 [370 kB]
+Get:16 http://deb.debian.org/debian buster/main amd64 libgssapi-krb5-2 amd64 1.17-3 [158 kB]
+Get:17 http://deb.debian.org/debian buster/main amd64 openssh-client amd64 1:7.9p1-10+deb10u2 [782 kB]
+Get:18 http://deb.debian.org/debian buster/main amd64 binutils-common amd64 2.31.1-16 [2073 kB]
+Get:19 http://deb.debian.org/debian buster/main amd64 libbinutils amd64 2.31.1-16 [478 kB]
+Get:20 http://deb.debian.org/debian buster/main amd64 binutils-x86-64-linux-gnu amd64 2.31.1-16 [1823 kB]
+Get:21 http://deb.debian.org/debian buster/main amd64 binutils amd64 2.31.1-16 [56.8 kB]
+Get:22 http://deb.debian.org/debian buster/main amd64 libisl19 amd64 0.20-2 [587 kB]
+Get:23 http://deb.debian.org/debian buster/main amd64 libmpfr6 amd64 4.0.2-1 [775 kB]
+Get:24 http://deb.debian.org/debian buster/main amd64 libmpc3 amd64 1.1.0-1 [41.3 kB]
+Get:25 http://deb.debian.org/debian buster/main amd64 cpp-8 amd64 8.3.0-6 [8914 kB]
+Get:26 http://deb.debian.org/debian buster/main amd64 cpp amd64 4:8.3.0-1 [19.4 kB]
+Get:27 http://deb.debian.org/debian buster/main amd64 libsasl2-modules-db amd64 2.1.27+dfsg-1+deb10u1 [69.1 kB]
+Get:28 http://deb.debian.org/debian buster/main amd64 libsasl2-2 amd64 2.1.27+dfsg-1+deb10u1 [106 kB]
+Get:29 http://deb.debian.org/debian buster/main amd64 libldap-common all 2.4.47+dfsg-3+deb10u2 [89.7 kB]
+Get:30 http://deb.debian.org/debian buster/main amd64 libldap-2.4-2 amd64 2.4.47+dfsg-3+deb10u2 [224 kB]
+Get:31 http://deb.debian.org/debian buster/main amd64 libnghttp2-14 amd64 1.36.0-2+deb10u1 [85.0 kB]
+Get:32 http://deb.debian.org/debian buster/main amd64 libpsl5 amd64 0.20.2-2 [53.7 kB]
+Get:33 http://deb.debian.org/debian buster/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2 [60.5 kB]
+Get:34 http://deb.debian.org/debian buster/main amd64 libssh2-1 amd64 1.8.0-2.1 [140 kB]
+Get:35 http://deb.debian.org/debian buster/main amd64 libcurl4 amd64 7.64.0-4+deb10u1 [331 kB]
+Get:36 http://deb.debian.org/debian buster/main amd64 curl amd64 7.64.0-4+deb10u1 [264 kB]
+Get:37 http://deb.debian.org/debian buster/main amd64 libcc1-0 amd64 8.3.0-6 [46.6 kB]
+Get:38 http://deb.debian.org/debian buster/main amd64 libgomp1 amd64 8.3.0-6 [75.8 kB]
+Get:39 http://deb.debian.org/debian buster/main amd64 libitm1 amd64 8.3.0-6 [27.7 kB]
+Get:40 http://deb.debian.org/debian buster/main amd64 libatomic1 amd64 8.3.0-6 [9032 B]
+Get:41 http://deb.debian.org/debian buster/main amd64 libasan5 amd64 8.3.0-6 [362 kB]
+Get:42 http://deb.debian.org/debian buster/main amd64 liblsan0 amd64 8.3.0-6 [131 kB]
+Get:43 http://deb.debian.org/debian buster/main amd64 libtsan0 amd64 8.3.0-6 [283 kB]
+Get:44 http://deb.debian.org/debian buster/main amd64 libubsan1 amd64 8.3.0-6 [120 kB]
+Get:45 http://deb.debian.org/debian buster/main amd64 libmpx2 amd64 8.3.0-6 [11.4 kB]
+Get:46 http://deb.debian.org/debian buster/main amd64 libquadmath0 amd64 8.3.0-6 [133 kB]
+Get:47 http://deb.debian.org/debian buster/main amd64 libgcc-8-dev amd64 8.3.0-6 [2298 kB]
+Get:48 http://deb.debian.org/debian buster/main amd64 gcc-8 amd64 8.3.0-6 [9452 kB]
+Get:49 http://deb.debian.org/debian buster/main amd64 gcc amd64 4:8.3.0-1 [5196 B]
+Get:50 http://deb.debian.org/debian buster/main amd64 libglib2.0-0 amd64 2.58.3-2+deb10u2 [1258 kB]
+Get:51 http://deb.debian.org/debian buster/main amd64 libicu63 amd64 63.1-6+deb10u1 [8300 kB]
+Get:52 http://deb.debian.org/debian buster/main amd64 libxml2 amd64 2.9.4+dfsg1-7+b3 [687 kB]
+Get:53 http://deb.debian.org/debian buster/main amd64 libcroco3 amd64 0.6.12-3 [145 kB]
+Get:54 http://deb.debian.org/debian buster/main amd64 libncurses6 amd64 6.1+20181013-2+deb10u2 [102 kB]
+Get:55 http://deb.debian.org/debian buster/main amd64 gettext amd64 0.19.8.1-9 [1303 kB]
+Get:56 http://deb.debian.org/debian buster/main amd64 libcurl3-gnutls amd64 7.64.0-4+deb10u1 [330 kB]
+Get:57 http://deb.debian.org/debian buster/main amd64 libpcre2-8-0 amd64 10.32-5 [213 kB]
+Get:58 http://deb.debian.org/debian buster/main amd64 liberror-perl all 0.17027-2 [30.9 kB]
+Get:59 http://deb.debian.org/debian buster/main amd64 git-man all 1:2.20.1-2+deb10u3 [1620 kB]
+Get:60 http://deb.debian.org/debian buster/main amd64 git amd64 1:2.20.1-2+deb10u3 [5633 kB]
+Get:61 http://deb.debian.org/debian buster/main amd64 libc-dev-bin amd64 2.28-10 [275 kB]
+Get:62 http://deb.debian.org/debian buster/main amd64 libc6-dev amd64 2.28-10 [2691 kB]
+Get:63 http://deb.debian.org/debian buster/main amd64 libglib2.0-data all 2.58.3-2+deb10u2 [1110 kB]
+Get:64 http://deb.debian.org/debian buster/main amd64 libgpm2 amd64 1.20.7-5 [35.1 kB]
+Get:65 http://deb.debian.org/debian buster/main amd64 libsasl2-modules amd64 2.1.27+dfsg-1+deb10u1 [104 kB]
+Get:66 http://deb.debian.org/debian buster/main amd64 libxau6 amd64 1:1.0.8-1+b2 [19.9 kB]
+Get:67 http://deb.debian.org/debian buster/main amd64 libxdmcp6 amd64 1:1.1.2-3 [26.3 kB]
+Get:68 http://deb.debian.org/debian buster/main amd64 libxcb1 amd64 1.13.1-2 [137 kB]
+Get:69 http://deb.debian.org/debian buster/main amd64 libx11-data all 2:1.6.7-1 [298 kB]
+Get:70 http://deb.debian.org/debian buster/main amd64 libx11-6 amd64 2:1.6.7-1 [754 kB]
+Get:71 http://deb.debian.org/debian buster/main amd64 libxext6 amd64 2:1.3.3-1+b2 [52.5 kB]
+Get:72 http://deb.debian.org/debian buster/main amd64 libxmuu1 amd64 2:1.1.2-2+b3 [23.9 kB]
+Get:73 http://deb.debian.org/debian buster/main amd64 manpages-dev all 4.16-2 [2232 kB]
+Get:74 http://deb.debian.org/debian buster/main amd64 patch amd64 2.7.6-3+deb10u1 [126 kB]
+Get:75 http://deb.debian.org/debian buster/main amd64 publicsuffix all 20190415.1030-1 [116 kB]
+Get:76 http://deb.debian.org/debian buster/main amd64 shared-mime-info amd64 1.10-1 [766 kB]
+Get:77 http://deb.debian.org/debian buster/main amd64 xauth amd64 1:1.0.10-1 [40.3 kB]
+Get:78 http://deb.debian.org/debian buster/main amd64 xdg-user-dirs amd64 0.17-2 [53.8 kB]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 69.3 MB in 1s (66.5 MB/s)
+Selecting previously unselected package perl-modules-5.28.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6828 files and directories currently installed.)
+Preparing to unpack .../00-perl-modules-5.28_5.28.1-6_all.deb ...
+Unpacking perl-modules-5.28 (5.28.1-6) ...
+Selecting previously unselected package libgdbm-compat4:amd64.
+Preparing to unpack .../01-libgdbm-compat4_1.18.1-4_amd64.deb ...
+Unpacking libgdbm-compat4:amd64 (1.18.1-4) ...
+Selecting previously unselected package libperl5.28:amd64.
+Preparing to unpack .../02-libperl5.28_5.28.1-6_amd64.deb ...
+Unpacking libperl5.28:amd64 (5.28.1-6) ...
+Selecting previously unselected package perl.
+Preparing to unpack .../03-perl_5.28.1-6_amd64.deb ...
+Unpacking perl (5.28.1-6) ...
+Selecting previously unselected package less.
+Preparing to unpack .../04-less_487-0.1+b1_amd64.deb ...
+Unpacking less (487-0.1+b1) ...
+Selecting previously unselected package gettext-base.
+Preparing to unpack .../05-gettext-base_0.19.8.1-9_amd64.deb ...
+Unpacking gettext-base (0.19.8.1-9) ...
+Selecting previously unselected package krb5-locales.
+Preparing to unpack .../06-krb5-locales_1.17-3_all.deb ...
+Unpacking krb5-locales (1.17-3) ...
+Selecting previously unselected package manpages.
+Preparing to unpack .../07-manpages_4.16-2_all.deb ...
+Unpacking manpages (4.16-2) ...
+Selecting previously unselected package libbsd0:amd64.
+Preparing to unpack .../08-libbsd0_0.9.1-2_amd64.deb ...
+Unpacking libbsd0:amd64 (0.9.1-2) ...
+Selecting previously unselected package libedit2:amd64.
+Preparing to unpack .../09-libedit2_3.1-20181209-1_amd64.deb ...
+Unpacking libedit2:amd64 (3.1-20181209-1) ...
+Selecting previously unselected package libkeyutils1:amd64.
+Preparing to unpack .../10-libkeyutils1_1.6-6_amd64.deb ...
+Unpacking libkeyutils1:amd64 (1.6-6) ...
+Selecting previously unselected package libkrb5support0:amd64.
+Preparing to unpack .../11-libkrb5support0_1.17-3_amd64.deb ...
+Unpacking libkrb5support0:amd64 (1.17-3) ...
+Selecting previously unselected package libk5crypto3:amd64.
+Preparing to unpack .../12-libk5crypto3_1.17-3_amd64.deb ...
+Unpacking libk5crypto3:amd64 (1.17-3) ...
+Selecting previously unselected package libkrb5-3:amd64.
+Preparing to unpack .../13-libkrb5-3_1.17-3_amd64.deb ...
+Unpacking libkrb5-3:amd64 (1.17-3) ...
+Selecting previously unselected package libgssapi-krb5-2:amd64.
+Preparing to unpack .../14-libgssapi-krb5-2_1.17-3_amd64.deb ...
+Unpacking libgssapi-krb5-2:amd64 (1.17-3) ...
+Selecting previously unselected package openssh-client.
+Preparing to unpack .../15-openssh-client_1%3a7.9p1-10+deb10u2_amd64.deb ...
+Unpacking openssh-client (1:7.9p1-10+deb10u2) ...
+Selecting previously unselected package binutils-common:amd64.
+Preparing to unpack .../16-binutils-common_2.31.1-16_amd64.deb ...
+Unpacking binutils-common:amd64 (2.31.1-16) ...
+Selecting previously unselected package libbinutils:amd64.
+Preparing to unpack .../17-libbinutils_2.31.1-16_amd64.deb ...
+Unpacking libbinutils:amd64 (2.31.1-16) ...
+Selecting previously unselected package binutils-x86-64-linux-gnu.
+Preparing to unpack .../18-binutils-x86-64-linux-gnu_2.31.1-16_amd64.deb ...
+Unpacking binutils-x86-64-linux-gnu (2.31.1-16) ...
+Selecting previously unselected package binutils.
+Preparing to unpack .../19-binutils_2.31.1-16_amd64.deb ...
+Unpacking binutils (2.31.1-16) ...
+Selecting previously unselected package libisl19:amd64.
+Preparing to unpack .../20-libisl19_0.20-2_amd64.deb ...
+Unpacking libisl19:amd64 (0.20-2) ...
+Selecting previously unselected package libmpfr6:amd64.
+Preparing to unpack .../21-libmpfr6_4.0.2-1_amd64.deb ...
+Unpacking libmpfr6:amd64 (4.0.2-1) ...
+Selecting previously unselected package libmpc3:amd64.
+Preparing to unpack .../22-libmpc3_1.1.0-1_amd64.deb ...
+Unpacking libmpc3:amd64 (1.1.0-1) ...
+Selecting previously unselected package cpp-8.
+Preparing to unpack .../23-cpp-8_8.3.0-6_amd64.deb ...
+Unpacking cpp-8 (8.3.0-6) ...
+Selecting previously unselected package cpp.
+Preparing to unpack .../24-cpp_4%3a8.3.0-1_amd64.deb ...
+Unpacking cpp (4:8.3.0-1) ...
+Selecting previously unselected package libsasl2-modules-db:amd64.
+Preparing to unpack .../25-libsasl2-modules-db_2.1.27+dfsg-1+deb10u1_amd64.deb ...
+Unpacking libsasl2-modules-db:amd64 (2.1.27+dfsg-1+deb10u1) ...
+Selecting previously unselected package libsasl2-2:amd64.
+Preparing to unpack .../26-libsasl2-2_2.1.27+dfsg-1+deb10u1_amd64.deb ...
+Unpacking libsasl2-2:amd64 (2.1.27+dfsg-1+deb10u1) ...
+Selecting previously unselected package libldap-common.
+Preparing to unpack .../27-libldap-common_2.4.47+dfsg-3+deb10u2_all.deb ...
+Unpacking libldap-common (2.4.47+dfsg-3+deb10u2) ...
+Selecting previously unselected package libldap-2.4-2:amd64.
+Preparing to unpack .../28-libldap-2.4-2_2.4.47+dfsg-3+deb10u2_amd64.deb ...
+Unpacking libldap-2.4-2:amd64 (2.4.47+dfsg-3+deb10u2) ...
+Selecting previously unselected package libnghttp2-14:amd64.
+Preparing to unpack .../29-libnghttp2-14_1.36.0-2+deb10u1_amd64.deb ...
+Unpacking libnghttp2-14:amd64 (1.36.0-2+deb10u1) ...
+Selecting previously unselected package libpsl5:amd64.
+Preparing to unpack .../30-libpsl5_0.20.2-2_amd64.deb ...
+Unpacking libpsl5:amd64 (0.20.2-2) ...
+Selecting previously unselected package librtmp1:amd64.
+Preparing to unpack .../31-librtmp1_2.4+20151223.gitfa8646d.1-2_amd64.deb ...
+Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2) ...
+Selecting previously unselected package libssh2-1:amd64.
+Preparing to unpack .../32-libssh2-1_1.8.0-2.1_amd64.deb ...
+Unpacking libssh2-1:amd64 (1.8.0-2.1) ...
+Selecting previously unselected package libcurl4:amd64.
+Preparing to unpack .../33-libcurl4_7.64.0-4+deb10u1_amd64.deb ...
+Unpacking libcurl4:amd64 (7.64.0-4+deb10u1) ...
+Selecting previously unselected package curl.
+Preparing to unpack .../34-curl_7.64.0-4+deb10u1_amd64.deb ...
+Unpacking curl (7.64.0-4+deb10u1) ...
+Selecting previously unselected package libcc1-0:amd64.
+Preparing to unpack .../35-libcc1-0_8.3.0-6_amd64.deb ...
+Unpacking libcc1-0:amd64 (8.3.0-6) ...
+Selecting previously unselected package libgomp1:amd64.
+Preparing to unpack .../36-libgomp1_8.3.0-6_amd64.deb ...
+Unpacking libgomp1:amd64 (8.3.0-6) ...
+Selecting previously unselected package libitm1:amd64.
+Preparing to unpack .../37-libitm1_8.3.0-6_amd64.deb ...
+Unpacking libitm1:amd64 (8.3.0-6) ...
+Selecting previously unselected package libatomic1:amd64.
+Preparing to unpack .../38-libatomic1_8.3.0-6_amd64.deb ...
+Unpacking libatomic1:amd64 (8.3.0-6) ...
+Selecting previously unselected package libasan5:amd64.
+Preparing to unpack .../39-libasan5_8.3.0-6_amd64.deb ...
+Unpacking libasan5:amd64 (8.3.0-6) ...
+Selecting previously unselected package liblsan0:amd64.
+Preparing to unpack .../40-liblsan0_8.3.0-6_amd64.deb ...
+Unpacking liblsan0:amd64 (8.3.0-6) ...
+Selecting previously unselected package libtsan0:amd64.
+Preparing to unpack .../41-libtsan0_8.3.0-6_amd64.deb ...
+Unpacking libtsan0:amd64 (8.3.0-6) ...
+Selecting previously unselected package libubsan1:amd64.
+Preparing to unpack .../42-libubsan1_8.3.0-6_amd64.deb ...
+Unpacking libubsan1:amd64 (8.3.0-6) ...
+Selecting previously unselected package libmpx2:amd64.
+Preparing to unpack .../43-libmpx2_8.3.0-6_amd64.deb ...
+Unpacking libmpx2:amd64 (8.3.0-6) ...
+Selecting previously unselected package libquadmath0:amd64.
+Preparing to unpack .../44-libquadmath0_8.3.0-6_amd64.deb ...
+Unpacking libquadmath0:amd64 (8.3.0-6) ...
+Selecting previously unselected package libgcc-8-dev:amd64.
+Preparing to unpack .../45-libgcc-8-dev_8.3.0-6_amd64.deb ...
+Unpacking libgcc-8-dev:amd64 (8.3.0-6) ...
+Selecting previously unselected package gcc-8.
+Preparing to unpack .../46-gcc-8_8.3.0-6_amd64.deb ...
+Unpacking gcc-8 (8.3.0-6) ...
+Selecting previously unselected package gcc.
+Preparing to unpack .../47-gcc_4%3a8.3.0-1_amd64.deb ...
+Unpacking gcc (4:8.3.0-1) ...
+Selecting previously unselected package libglib2.0-0:amd64.
+Preparing to unpack .../48-libglib2.0-0_2.58.3-2+deb10u2_amd64.deb ...
+Unpacking libglib2.0-0:amd64 (2.58.3-2+deb10u2) ...
+Selecting previously unselected package libicu63:amd64.
+Preparing to unpack .../49-libicu63_63.1-6+deb10u1_amd64.deb ...
+Unpacking libicu63:amd64 (63.1-6+deb10u1) ...
+Selecting previously unselected package libxml2:amd64.
+Preparing to unpack .../50-libxml2_2.9.4+dfsg1-7+b3_amd64.deb ...
+Unpacking libxml2:amd64 (2.9.4+dfsg1-7+b3) ...
+Selecting previously unselected package libcroco3:amd64.
+Preparing to unpack .../51-libcroco3_0.6.12-3_amd64.deb ...
+Unpacking libcroco3:amd64 (0.6.12-3) ...
+Selecting previously unselected package libncurses6:amd64.
+Preparing to unpack .../52-libncurses6_6.1+20181013-2+deb10u2_amd64.deb ...
+Unpacking libncurses6:amd64 (6.1+20181013-2+deb10u2) ...
+Selecting previously unselected package gettext.
+Preparing to unpack .../53-gettext_0.19.8.1-9_amd64.deb ...
+Unpacking gettext (0.19.8.1-9) ...
+Selecting previously unselected package libcurl3-gnutls:amd64.
+Preparing to unpack .../54-libcurl3-gnutls_7.64.0-4+deb10u1_amd64.deb ...
+Unpacking libcurl3-gnutls:amd64 (7.64.0-4+deb10u1) ...
+Selecting previously unselected package libpcre2-8-0:amd64.
+Preparing to unpack .../55-libpcre2-8-0_10.32-5_amd64.deb ...
+Unpacking libpcre2-8-0:amd64 (10.32-5) ...
+Selecting previously unselected package liberror-perl.
+Preparing to unpack .../56-liberror-perl_0.17027-2_all.deb ...
+Unpacking liberror-perl (0.17027-2) ...
+Selecting previously unselected package git-man.
+Preparing to unpack .../57-git-man_1%3a2.20.1-2+deb10u3_all.deb ...
+Unpacking git-man (1:2.20.1-2+deb10u3) ...
+Selecting previously unselected package git.
+Preparing to unpack .../58-git_1%3a2.20.1-2+deb10u3_amd64.deb ...
+Unpacking git (1:2.20.1-2+deb10u3) ...
+Selecting previously unselected package libc-dev-bin.
+Preparing to unpack .../59-libc-dev-bin_2.28-10_amd64.deb ...
+Unpacking libc-dev-bin (2.28-10) ...
+Selecting previously unselected package linux-libc-dev:amd64.
+Preparing to unpack .../60-linux-libc-dev_4.19.118-2+deb10u1_amd64.deb ...
+Unpacking linux-libc-dev:amd64 (4.19.118-2+deb10u1) ...
+Selecting previously unselected package libc6-dev:amd64.
+Preparing to unpack .../61-libc6-dev_2.28-10_amd64.deb ...
+Unpacking libc6-dev:amd64 (2.28-10) ...
+Selecting previously unselected package libglib2.0-data.
+Preparing to unpack .../62-libglib2.0-data_2.58.3-2+deb10u2_all.deb ...
+Unpacking libglib2.0-data (2.58.3-2+deb10u2) ...
+Selecting previously unselected package libgpm2:amd64.
+Preparing to unpack .../63-libgpm2_1.20.7-5_amd64.deb ...
+Unpacking libgpm2:amd64 (1.20.7-5) ...
+Selecting previously unselected package libsasl2-modules:amd64.
+Preparing to unpack .../64-libsasl2-modules_2.1.27+dfsg-1+deb10u1_amd64.deb ...
+Unpacking libsasl2-modules:amd64 (2.1.27+dfsg-1+deb10u1) ...
+Selecting previously unselected package libxau6:amd64.
+Preparing to unpack .../65-libxau6_1%3a1.0.8-1+b2_amd64.deb ...
+Unpacking libxau6:amd64 (1:1.0.8-1+b2) ...
+Selecting previously unselected package libxdmcp6:amd64.
+Preparing to unpack .../66-libxdmcp6_1%3a1.1.2-3_amd64.deb ...
+Unpacking libxdmcp6:amd64 (1:1.1.2-3) ...
+Selecting previously unselected package libxcb1:amd64.
+Preparing to unpack .../67-libxcb1_1.13.1-2_amd64.deb ...
+Unpacking libxcb1:amd64 (1.13.1-2) ...
+Selecting previously unselected package libx11-data.
+Preparing to unpack .../68-libx11-data_2%3a1.6.7-1_all.deb ...
+Unpacking libx11-data (2:1.6.7-1) ...
+Selecting previously unselected package libx11-6:amd64.
+Preparing to unpack .../69-libx11-6_2%3a1.6.7-1_amd64.deb ...
+Unpacking libx11-6:amd64 (2:1.6.7-1) ...
+Selecting previously unselected package libxext6:amd64.
+Preparing to unpack .../70-libxext6_2%3a1.3.3-1+b2_amd64.deb ...
+Unpacking libxext6:amd64 (2:1.3.3-1+b2) ...
+Selecting previously unselected package libxmuu1:amd64.
+Preparing to unpack .../71-libxmuu1_2%3a1.1.2-2+b3_amd64.deb ...
+Unpacking libxmuu1:amd64 (2:1.1.2-2+b3) ...
+Selecting previously unselected package manpages-dev.
+Preparing to unpack .../72-manpages-dev_4.16-2_all.deb ...
+Unpacking manpages-dev (4.16-2) ...
+Selecting previously unselected package patch.
+Preparing to unpack .../73-patch_2.7.6-3+deb10u1_amd64.deb ...
+Unpacking patch (2.7.6-3+deb10u1) ...
+Selecting previously unselected package publicsuffix.
+Preparing to unpack .../74-publicsuffix_20190415.1030-1_all.deb ...
+Unpacking publicsuffix (20190415.1030-1) ...
+Selecting previously unselected package shared-mime-info.
+Preparing to unpack .../75-shared-mime-info_1.10-1_amd64.deb ...
+Unpacking shared-mime-info (1.10-1) ...
+Selecting previously unselected package xauth.
+Preparing to unpack .../76-xauth_1%3a1.0.10-1_amd64.deb ...
+Unpacking xauth (1:1.0.10-1) ...
+Selecting previously unselected package xdg-user-dirs.
+Preparing to unpack .../77-xdg-user-dirs_0.17-2_amd64.deb ...
+Unpacking xdg-user-dirs (0.17-2) ...
+Setting up perl-modules-5.28 (5.28.1-6) ...
+Setting up libxau6:amd64 (1:1.0.8-1+b2) ...
+Setting up libkeyutils1:amd64 (1.6-6) ...
+Setting up libpsl5:amd64 (0.20.2-2) ...
+Setting up libgpm2:amd64 (1.20.7-5) ...
+Setting up xdg-user-dirs (0.17-2) ...
+Setting up libglib2.0-0:amd64 (2.58.3-2+deb10u2) ...
+No schema files found: doing nothing.
+Setting up manpages (4.16-2) ...
+Setting up libsasl2-modules:amd64 (2.1.27+dfsg-1+deb10u1) ...
+Setting up binutils-common:amd64 (2.31.1-16) ...
+Setting up libnghttp2-14:amd64 (1.36.0-2+deb10u1) ...
+Setting up less (487-0.1+b1) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (TERM is not set, so the dialog frontend is not usable.)
+debconf: falling back to frontend: Readline
+Setting up linux-libc-dev:amd64 (4.19.118-2+deb10u1) ...
+Setting up gettext-base (0.19.8.1-9) ...
+Setting up krb5-locales (1.17-3) ...
+Setting up libgomp1:amd64 (8.3.0-6) ...
+Setting up libldap-common (2.4.47+dfsg-3+deb10u2) ...
+Setting up libicu63:amd64 (63.1-6+deb10u1) ...
+Setting up libkrb5support0:amd64 (1.17-3) ...
+Setting up libsasl2-modules-db:amd64 (2.1.27+dfsg-1+deb10u1) ...
+Setting up libasan5:amd64 (8.3.0-6) ...
+Setting up libglib2.0-data (2.58.3-2+deb10u2) ...
+Setting up libx11-data (2:1.6.7-1) ...
+Setting up libmpfr6:amd64 (4.0.2-1) ...
+Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2) ...
+Setting up libncurses6:amd64 (6.1+20181013-2+deb10u2) ...
+Setting up libquadmath0:amd64 (8.3.0-6) ...
+Setting up libmpc3:amd64 (1.1.0-1) ...
+Setting up libatomic1:amd64 (8.3.0-6) ...
+Setting up patch (2.7.6-3+deb10u1) ...
+Setting up libgdbm-compat4:amd64 (1.18.1-4) ...
+Setting up libpcre2-8-0:amd64 (10.32-5) ...
+Setting up libk5crypto3:amd64 (1.17-3) ...
+Setting up libsasl2-2:amd64 (2.1.27+dfsg-1+deb10u1) ...
+Setting up libperl5.28:amd64 (5.28.1-6) ...
+Setting up libmpx2:amd64 (8.3.0-6) ...
+Setting up libubsan1:amd64 (8.3.0-6) ...
+Setting up libisl19:amd64 (0.20-2) ...
+Setting up git-man (1:2.20.1-2+deb10u3) ...
+Setting up libssh2-1:amd64 (1.8.0-2.1) ...
+Setting up libkrb5-3:amd64 (1.17-3) ...
+Setting up libbinutils:amd64 (2.31.1-16) ...
+Setting up cpp-8 (8.3.0-6) ...
+Setting up libc-dev-bin (2.28-10) ...
+Setting up libbsd0:amd64 (0.9.1-2) ...
+Setting up publicsuffix (20190415.1030-1) ...
+Setting up libxml2:amd64 (2.9.4+dfsg1-7+b3) ...
+Setting up libcc1-0:amd64 (8.3.0-6) ...
+Setting up liblsan0:amd64 (8.3.0-6) ...
+Setting up libitm1:amd64 (8.3.0-6) ...
+Setting up binutils-x86-64-linux-gnu (2.31.1-16) ...
+Setting up libtsan0:amd64 (8.3.0-6) ...
+Setting up manpages-dev (4.16-2) ...
+Setting up libxdmcp6:amd64 (1:1.1.2-3) ...
+Setting up libxcb1:amd64 (1.13.1-2) ...
+Setting up libedit2:amd64 (3.1-20181209-1) ...
+Setting up libldap-2.4-2:amd64 (2.4.47+dfsg-3+deb10u2) ...
+Setting up binutils (2.31.1-16) ...
+Setting up perl (5.28.1-6) ...
+Setting up shared-mime-info (1.10-1) ...
+Setting up libgssapi-krb5-2:amd64 (1.17-3) ...
+Setting up libcroco3:amd64 (0.6.12-3) ...
+Setting up libgcc-8-dev:amd64 (8.3.0-6) ...
+Setting up cpp (4:8.3.0-1) ...
+Setting up libcurl4:amd64 (7.64.0-4+deb10u1) ...
+Setting up libc6-dev:amd64 (2.28-10) ...
+Setting up libx11-6:amd64 (2:1.6.7-1) ...
+Setting up curl (7.64.0-4+deb10u1) ...
+Setting up libxmuu1:amd64 (2:1.1.2-2+b3) ...
+Setting up gettext (0.19.8.1-9) ...
+Setting up gcc-8 (8.3.0-6) ...
+Setting up openssh-client (1:7.9p1-10+deb10u2) ...
+Setting up libxext6:amd64 (2:1.3.3-1+b2) ...
+Setting up libcurl3-gnutls:amd64 (7.64.0-4+deb10u1) ...
+Setting up gcc (4:8.3.0-1) ...
+Setting up liberror-perl (0.17027-2) ...
+Setting up git (1:2.20.1-2+deb10u3) ...
+Setting up xauth (1:1.0.10-1) ...
+Processing triggers for libc-bin (2.28-10) ...
+[91mCloning into 'dug'...
+[0m[91mWARNING: The directory '/home/dug/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+[0mCollecting pip
+  Downloading pip-20.1.1-py2.py3-none-any.whl (1.5 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 20.0.2
+    Uninstalling pip-20.0.2:
+      Successfully uninstalled pip-20.0.2
+Successfully installed pip-20.1.1
+Collecting alabaster==0.7.12
+  Downloading alabaster-0.7.12-py2.py3-none-any.whl (14 kB)
+Collecting aniso8601==8.0.0
+  Downloading aniso8601-8.0.0-py2.py3-none-any.whl (43 kB)
+Collecting antlr4-python3-runtime==4.8
+  Downloading antlr4-python3-runtime-4.8.tar.gz (112 kB)
+Collecting appnope==0.1.0
+  Downloading appnope-0.1.0-py2.py3-none-any.whl (4.0 kB)
+Collecting attrs==19.3.0
+  Downloading attrs-19.3.0-py2.py3-none-any.whl (39 kB)
+Collecting Babel==2.8.0
+  Downloading Babel-2.8.0-py2.py3-none-any.whl (8.6 MB)
+Collecting backcall==0.1.0
+  Downloading backcall-0.1.0.tar.gz (9.7 kB)
+Collecting biolinkml==1.4.9
+  Downloading biolinkml-1.4.9-py3-none-any.whl (92 kB)
+Collecting bleach==3.1.1
+  Downloading bleach-3.1.1-py2.py3-none-any.whl (150 kB)
+Collecting bmt==0.1.1
+  Downloading bmt-0.1.1-py3-none-any.whl (3.9 kB)
+Collecting cachetools==4.0.0
+  Downloading cachetools-4.0.0-py3-none-any.whl (10 kB)
+Collecting certifi==2019.11.28
+  Downloading certifi-2019.11.28-py2.py3-none-any.whl (156 kB)
+Collecting CFGraph==0.2.1
+  Downloading CFGraph-0.2.1.tar.gz (2.6 kB)
+Collecting chardet==3.0.4
+  Downloading chardet-3.0.4-py2.py3-none-any.whl (133 kB)
+Collecting click==7.1.1
+  Downloading click-7.1.1-py2.py3-none-any.whl (82 kB)
+Collecting decorator==4.4.2
+  Downloading decorator-4.4.2-py2.py3-none-any.whl (9.2 kB)
+Collecting defusedxml==0.6.0
+  Downloading defusedxml-0.6.0-py2.py3-none-any.whl (23 kB)
+Collecting docutils==0.16
+  Downloading docutils-0.16-py2.py3-none-any.whl (548 kB)
+Collecting elasticsearch==7.5.1
+  Downloading elasticsearch-7.5.1-py2.py3-none-any.whl (86 kB)
+Collecting elasticsearch-dsl==7.1.0
+  Downloading elasticsearch_dsl-7.1.0-py2.py3-none-any.whl (53 kB)
+Collecting entrypoints==0.3
+  Downloading entrypoints-0.3-py2.py3-none-any.whl (11 kB)
+Collecting flasgger==0.9.4
+  Downloading flasgger-0.9.4-py2.py3-none-any.whl (3.8 MB)
+Collecting Flask==1.1.1
+  Downloading Flask-1.1.1-py2.py3-none-any.whl (94 kB)
+Collecting Flask-Cors==3.0.8
+  Downloading Flask_Cors-3.0.8-py2.py3-none-any.whl (14 kB)
+Collecting Flask-RESTful==0.3.8
+  Downloading Flask_RESTful-0.3.8-py2.py3-none-any.whl (25 kB)
+Collecting graphviz==0.13.2
+  Downloading graphviz-0.13.2-py2.py3-none-any.whl (17 kB)
+Collecting gunicorn==20.0.4
+  Downloading gunicorn-20.0.4-py2.py3-none-any.whl (77 kB)
+Collecting idna==2.8
+  Downloading idna-2.8-py2.py3-none-any.whl (58 kB)
+Collecting imagesize==1.2.0
+  Downloading imagesize-1.2.0-py2.py3-none-any.whl (4.8 kB)
+Collecting importlib-metadata==1.5.0
+  Downloading importlib_metadata-1.5.0-py2.py3-none-any.whl (30 kB)
+Collecting incremental==17.5.0
+  Downloading incremental-17.5.0-py2.py3-none-any.whl (16 kB)
+Collecting ipykernel==5.1.4
+  Downloading ipykernel-5.1.4-py3-none-any.whl (116 kB)
+Collecting ipython==7.13.0
+  Downloading ipython-7.13.0-py3-none-any.whl (780 kB)
+Collecting ipython-genutils==0.2.0
+  Downloading ipython_genutils-0.2.0-py2.py3-none-any.whl (26 kB)
+Collecting ipywidgets==7.5.1
+  Downloading ipywidgets-7.5.1-py2.py3-none-any.whl (121 kB)
+Collecting isodate==0.6.0
+  Downloading isodate-0.6.0-py2.py3-none-any.whl (45 kB)
+Collecting itsdangerous==1.1.0
+  Downloading itsdangerous-1.1.0-py2.py3-none-any.whl (16 kB)
+Collecting jedi==0.16.0
+  Downloading jedi-0.16.0-py2.py3-none-any.whl (1.1 MB)
+Collecting Jinja2==2.11.1
+  Downloading Jinja2-2.11.1-py2.py3-none-any.whl (126 kB)
+Collecting jsonasobj==1.2.1
+  Downloading jsonasobj-1.2.1.tar.gz (4.6 kB)
+Collecting jsonschema==3.2.0
+  Downloading jsonschema-3.2.0-py2.py3-none-any.whl (56 kB)
+Collecting jupyter==1.0.0
+  Downloading jupyter-1.0.0-py2.py3-none-any.whl (2.7 kB)
+Collecting jupyter-client==6.0.0
+  Downloading jupyter_client-6.0.0-py3-none-any.whl (104 kB)
+Collecting jupyter-console==6.1.0
+  Downloading jupyter_console-6.1.0-py2.py3-none-any.whl (21 kB)
+Collecting jupyter-core==4.6.3
+  Downloading jupyter_core-4.6.3-py2.py3-none-any.whl (83 kB)
+Collecting MarkupSafe==1.1.1
+  Downloading MarkupSafe-1.1.1-cp37-cp37m-manylinux1_x86_64.whl (27 kB)
+Collecting mistune==0.8.4
+  Downloading mistune-0.8.4-py2.py3-none-any.whl (16 kB)
+Collecting more-itertools==8.2.0
+  Downloading more_itertools-8.2.0-py3-none-any.whl (43 kB)
+Collecting mypy==0.770
+  Downloading mypy-0.770-cp37-cp37m-manylinux1_x86_64.whl (21.7 MB)
+Collecting mypy-extensions==0.4.3
+  Downloading mypy_extensions-0.4.3-py2.py3-none-any.whl (4.5 kB)
+Collecting nbconvert==5.6.1
+  Downloading nbconvert-5.6.1-py2.py3-none-any.whl (455 kB)
+Collecting nbformat==5.0.4
+  Downloading nbformat-5.0.4-py3-none-any.whl (169 kB)
+Collecting neo4j==1.7.6
+  Downloading neo4j-1.7.6.tar.gz (23 kB)
+Collecting neo4jrestclient==2.1.1
+  Downloading neo4jrestclient-2.1.1.tar.gz (73 kB)
+Collecting neobolt==1.7.16
+  Downloading neobolt-1.7.16.tar.gz (183 kB)
+Collecting neotime==1.7.4
+  Downloading neotime-1.7.4.tar.gz (17 kB)
+Collecting networkx==2.4
+  Downloading networkx-2.4-py3-none-any.whl (1.6 MB)
+Collecting notebook==6.0.3
+  Downloading notebook-6.0.3-py3-none-any.whl (9.7 MB)
+Collecting numpy==1.18.1
+  Downloading numpy-1.18.1-cp37-cp37m-manylinux1_x86_64.whl (20.1 MB)
+Collecting packaging==20.3
+  Downloading packaging-20.3-py2.py3-none-any.whl (37 kB)
+Collecting pandas==1.0.1
+  Downloading pandas-1.0.1-cp37-cp37m-manylinux1_x86_64.whl (10.1 MB)
+Collecting pandocfilters==1.4.2
+  Downloading pandocfilters-1.4.2.tar.gz (14 kB)
+Collecting parso==0.6.2
+  Downloading parso-0.6.2-py2.py3-none-any.whl (97 kB)
+Collecting pbr==5.4.4
+  Downloading pbr-5.4.4-py2.py3-none-any.whl (110 kB)
+Collecting pexpect==4.8.0
+  Downloading pexpect-4.8.0-py2.py3-none-any.whl (59 kB)
+Collecting pickleshare==0.7.5
+  Downloading pickleshare-0.7.5-py2.py3-none-any.whl (6.9 kB)
+Collecting pip-check-reqs==2.0.3
+  Downloading pip_check_reqs-2.0.3.tar.gz (8.2 kB)
+Collecting pluggy==0.13.1
+  Downloading pluggy-0.13.1-py2.py3-none-any.whl (18 kB)
+Collecting prefixcommons==0.1.9
+  Downloading prefixcommons-0.1.9-py3-none-any.whl (5.8 kB)
+Collecting prologterms==0.0.6
+  Downloading prologterms-0.0.6-py3-none-any.whl (4.0 kB)
+Collecting prometheus-client==0.7.1
+  Downloading prometheus_client-0.7.1.tar.gz (38 kB)
+Collecting prompt-toolkit==3.0.4
+  Downloading prompt_toolkit-3.0.4-py3-none-any.whl (351 kB)
+Collecting ptyprocess==0.6.0
+  Downloading ptyprocess-0.6.0-py2.py3-none-any.whl (39 kB)
+Collecting py==1.8.1
+  Downloading py-1.8.1-py2.py3-none-any.whl (83 kB)
+Collecting Pygments==2.6.1
+  Downloading Pygments-2.6.1-py3-none-any.whl (914 kB)
+Collecting PyJSG==0.9.1
+  Downloading PyJSG-0.9.1-py3-none-any.whl (65 kB)
+Collecting pyparsing==2.4.6
+  Downloading pyparsing-2.4.6-py2.py3-none-any.whl (67 kB)
+Collecting pyrsistent==0.15.7
+  Downloading pyrsistent-0.15.7.tar.gz (107 kB)
+Collecting PyShEx==0.7.14
+  Downloading PyShEx-0.7.14-py3-none-any.whl (50 kB)
+Collecting PyShExC==0.7.0
+  Downloading PyShExC-0.7.0-py2.py3-none-any.whl (52 kB)
+Collecting pystache==0.5.4
+  Downloading pystache-0.5.4.tar.gz (75 kB)
+Collecting pytest==5.4.0
+  Downloading pytest-5.4.0-py3-none-any.whl (247 kB)
+Collecting python-dateutil==2.8.1
+  Downloading python_dateutil-2.8.1-py2.py3-none-any.whl (227 kB)
+Collecting python-Levenshtein==0.12.0
+  Downloading python-Levenshtein-0.12.0.tar.gz (48 kB)
+Collecting pytz==2019.3
+  Downloading pytz-2019.3-py2.py3-none-any.whl (509 kB)
+Collecting PyYAML==5.3
+  Downloading PyYAML-5.3.tar.gz (268 kB)
+Collecting pyzmq==19.0.0
+  Downloading pyzmq-19.0.0-cp37-cp37m-manylinux1_x86_64.whl (1.1 MB)
+Collecting qtconsole==4.7.1
+  Downloading qtconsole-4.7.1-py2.py3-none-any.whl (117 kB)
+Collecting QtPy==1.9.0
+  Downloading QtPy-1.9.0-py2.py3-none-any.whl (54 kB)
+Collecting rdflib==4.2.2
+  Downloading rdflib-4.2.2-py3-none-any.whl (344 kB)
+Collecting rdflib-jsonld==0.4.0
+  Downloading rdflib-jsonld-0.4.0.tar.gz (53 kB)
+Collecting redis==3.4.1
+  Downloading redis-3.4.1-py2.py3-none-any.whl (71 kB)
+Collecting requests==2.22.0
+  Downloading requests-2.22.0-py2.py3-none-any.whl (57 kB)
+Collecting requests-cache==0.5.2
+  Downloading requests_cache-0.5.2-py2.py3-none-any.whl (22 kB)
+Collecting Send2Trash==1.5.0
+  Downloading Send2Trash-1.5.0-py3-none-any.whl (12 kB)
+Collecting ShExJSG==0.6.8
+  Downloading ShExJSG-0.6.8-py2.py3-none-any.whl (11 kB)
+Collecting six==1.14.0
+  Downloading six-1.14.0-py2.py3-none-any.whl (10 kB)
+Collecting snowballstemmer==2.0.0
+  Downloading snowballstemmer-2.0.0-py2.py3-none-any.whl (97 kB)
+Collecting sparql-slurper==0.3.3
+  Downloading sparql_slurper-0.3.3-py3-none-any.whl (5.4 kB)
+Collecting SPARQLWrapper==1.8.5
+  Downloading SPARQLWrapper-1.8.5-py3-none-any.whl (26 kB)
+Collecting Sphinx==2.4.4
+  Downloading Sphinx-2.4.4-py3-none-any.whl (2.7 MB)
+Collecting sphinx-click==2.3.1
+  Downloading sphinx_click-2.3.1-py2.py3-none-any.whl (7.7 kB)
+Collecting sphinx-rtd-theme==0.4.3
+  Downloading sphinx_rtd_theme-0.4.3-py2.py3-none-any.whl (6.4 MB)
+Collecting sphinxcontrib-applehelp==1.0.2
+  Downloading sphinxcontrib_applehelp-1.0.2-py2.py3-none-any.whl (121 kB)
+Collecting sphinxcontrib-devhelp==1.0.2
+  Downloading sphinxcontrib_devhelp-1.0.2-py2.py3-none-any.whl (84 kB)
+Collecting sphinxcontrib-htmlhelp==1.0.3
+  Downloading sphinxcontrib_htmlhelp-1.0.3-py2.py3-none-any.whl (96 kB)
+Collecting sphinxcontrib-jsmath==1.0.1
+  Downloading sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.whl (5.1 kB)
+Collecting sphinxcontrib-qthelp==1.0.3
+  Downloading sphinxcontrib_qthelp-1.0.3-py2.py3-none-any.whl (90 kB)
+Collecting sphinxcontrib-serializinghtml==1.1.4
+  Downloading sphinxcontrib_serializinghtml-1.1.4-py2.py3-none-any.whl (89 kB)
+Collecting stringcase==1.2.0
+  Downloading stringcase-1.2.0.tar.gz (3.0 kB)
+Collecting terminado==0.8.3
+  Downloading terminado-0.8.3-py2.py3-none-any.whl (33 kB)
+Collecting terminaltables==3.1.0
+  Downloading terminaltables-3.1.0.tar.gz (12 kB)
+Collecting testpath==0.4.4
+  Downloading testpath-0.4.4-py2.py3-none-any.whl (163 kB)
+Collecting tornado==6.0.4
+  Downloading tornado-6.0.4.tar.gz (496 kB)
+Collecting traitlets==4.3.3
+  Downloading traitlets-4.3.3-py2.py3-none-any.whl (75 kB)
+Collecting typed-ast==1.4.1
+  Downloading typed_ast-1.4.1-cp37-cp37m-manylinux1_x86_64.whl (737 kB)
+Collecting typing-extensions==3.7.4.1
+  Downloading typing_extensions-3.7.4.1-py3-none-any.whl (20 kB)
+Collecting urllib3==1.25.7
+  Downloading urllib3-1.25.7-py2.py3-none-any.whl (125 kB)
+Collecting validators==0.14.2
+  Downloading validators-0.14.2.tar.gz (25 kB)
+Collecting wcwidth==0.1.8
+  Downloading wcwidth-0.1.8-py2.py3-none-any.whl (17 kB)
+Collecting webencodings==0.5.1
+  Downloading webencodings-0.5.1-py2.py3-none-any.whl (11 kB)
+Collecting Werkzeug==1.0.0
+  Downloading Werkzeug-1.0.0-py2.py3-none-any.whl (298 kB)
+Collecting widgetsnbextension==3.5.1
+  Downloading widgetsnbextension-3.5.1-py2.py3-none-any.whl (2.2 MB)
+Collecting zipp==3.1.0
+  Downloading zipp-3.1.0-py3-none-any.whl (4.9 kB)
+Collecting argparse>=1.4.0
+  Downloading argparse-1.4.0-py2.py3-none-any.whl (23 kB)
+Requirement already satisfied: setuptools>=3.0 in /usr/local/lib/python3.7/site-packages (from gunicorn==20.0.4->-r requirements.txt (line 27)) (45.2.0)
+Requirement already satisfied: pip>=10.0.1 in /usr/local/lib/python3.7/site-packages (from pip-check-reqs==2.0.3->-r requirements.txt (line 67)) (20.1.1)
+Building wheels for collected packages: antlr4-python3-runtime, backcall, CFGraph, jsonasobj, neo4j, neo4jrestclient, neobolt, neotime, pandocfilters, pip-check-reqs, prometheus-client, pyrsistent, pystache, python-Levenshtein, PyYAML, rdflib-jsonld, stringcase, terminaltables, tornado, validators
+  Building wheel for antlr4-python3-runtime (setup.py): started
+  Building wheel for antlr4-python3-runtime (setup.py): finished with status 'done'
+  Created wheel for antlr4-python3-runtime: filename=antlr4_python3_runtime-4.8-py3-none-any.whl size=141230 sha256=48d8e48761ca781139344a1cac567370ed592fcdbe57c26aa47aec6d07ff0fd9
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/ca/33/b7/336836125fc9bb4ceaa4376d8abca10ca8bc84ddc824baea6c
+  Building wheel for backcall (setup.py): started
+  Building wheel for backcall (setup.py): finished with status 'done'
+  Created wheel for backcall: filename=backcall-0.1.0-py3-none-any.whl size=10413 sha256=15232a76a224823abb469ae10e0dcaa20a69678a16f966d8915215e56818ec68
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/9e/56/4f/da13e448a8a5b8671b2954600d5355cf36e557c7aa5020139b
+  Building wheel for CFGraph (setup.py): started
+  Building wheel for CFGraph (setup.py): finished with status 'done'
+  Created wheel for CFGraph: filename=CFGraph-0.2.1-py3-none-any.whl size=2234 sha256=7007c1f6199ae88d455777137cfc40cc57f79f059b09c98f87b818cd2bec3b44
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/0a/72/53/b99a09df307fe10189b014245f38060ca20cede2a783bd377c
+  Building wheel for jsonasobj (setup.py): started
+  Building wheel for jsonasobj (setup.py): finished with status 'done'
+  Created wheel for jsonasobj: filename=jsonasobj-1.2.1-py3-none-any.whl size=4189 sha256=d96501d8c360907d502d549a0da965db1c9349d4d334f607901a5157add6709f
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/4d/d1/78/d1d67dede3ecad612552b0c28e580540c85ac298eb81494f65
+  Building wheel for neo4j (setup.py): started
+  Building wheel for neo4j (setup.py): finished with status 'done'
+  Created wheel for neo4j: filename=neo4j-1.7.6-py3-none-any.whl size=32570 sha256=b730dadd24f1b2093e127802cf668ef20e1cc5de1c662d3d4ad26a054fbc2886
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/ba/6c/49/81d9af6d37e77f02a3c41bee2f2f56f502f0d3c08be5434bb8
+  Building wheel for neo4jrestclient (setup.py): started
+  Building wheel for neo4jrestclient (setup.py): finished with status 'done'
+  Created wheel for neo4jrestclient: filename=neo4jrestclient-2.1.1-py2.py3-none-any.whl size=78539 sha256=2e2890b097aa8e5efa8bb9f5f3379463e21046f0780fb68b755574294c22e943
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/4d/39/cd/03fa156cb423361fa55a1f69d711d152eb6f3ce902a324059e
+  Building wheel for neobolt (setup.py): started
+  Building wheel for neobolt (setup.py): finished with status 'done'
+  Created wheel for neobolt: filename=neobolt-1.7.16-cp37-cp37m-linux_x86_64.whl size=603144 sha256=d2574c6a40b5ee1585d7ae06397c3e3e8a97fe71b78bc82d4dd58f57df8ab97e
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/94/2d/97/1a33c64f00554209ec7973018b200c1e6ad5d7255cfa91f38e
+  Building wheel for neotime (setup.py): started
+  Building wheel for neotime (setup.py): finished with status 'done'
+  Created wheel for neotime: filename=neotime-1.7.4-py3-none-any.whl size=20541 sha256=8c8ddb9c0c9ada7603b8597179644c1f36f62043d1240184f185cdcf983d686c
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/1b/53/64/de72baae858a94a3ed2c6b1117edf988b2b8d57b798097e5b3
+  Building wheel for pandocfilters (setup.py): started
+  Building wheel for pandocfilters (setup.py): finished with status 'done'
+  Created wheel for pandocfilters: filename=pandocfilters-1.4.2-py3-none-any.whl size=7856 sha256=7a7b74e9fd8ee8f3f4b1940b5b6ba637d5c4641d880d190f7f0469e0b14557f9
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/63/99/01/9fe785b86d1e091a6b2a61e06ddb3d8eb1bc9acae5933d4740
+  Building wheel for pip-check-reqs (setup.py): started
+  Building wheel for pip-check-reqs (setup.py): finished with status 'done'
+  Created wheel for pip-check-reqs: filename=pip_check_reqs-2.0.3-py2.py3-none-any.whl size=9945 sha256=a07218c68a7acd99a668d952b61ee242b784b68581a24533f70c7decd3ca9ebd
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/11/0e/95/da0f079cce9feed913301f2d62d98ea69e24c9bbc18b1a649e
+  Building wheel for prometheus-client (setup.py): started
+  Building wheel for prometheus-client (setup.py): finished with status 'done'
+  Created wheel for prometheus-client: filename=prometheus_client-0.7.1-py3-none-any.whl size=41404 sha256=51985b1559e11d6118f47f69403e8bb7ddcc933c27663ce0514b69e4d37bd9c3
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/30/0c/26/59ba285bf65dc79d195e9b25e2ddde4c61070422729b0cd914
+  Building wheel for pyrsistent (setup.py): started
+  Building wheel for pyrsistent (setup.py): finished with status 'done'
+  Created wheel for pyrsistent: filename=pyrsistent-0.15.7-cp37-cp37m-linux_x86_64.whl size=124300 sha256=0b113fa7915d75007d067fd21fe9895e933daa73dcf2b66f1cd6b8cd2f10bc5a
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/57/74/e3/61db397ec89f304e49711ec9f68490f15814b80c1c0ee9b8c0
+  Building wheel for pystache (setup.py): started
+  Building wheel for pystache (setup.py): finished with status 'done'
+  Created wheel for pystache: filename=pystache-0.5.4-py3-none-any.whl size=82928 sha256=65c519e10ca135aac3907d459411efc51ebc137515dc981b652e631de0f8884b
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/7e/fc/21/ac5286aa035303d281ff1a1c2fe6ce3682d2ee2bdcf7f6d89a
+  Building wheel for python-Levenshtein (setup.py): started
+  Building wheel for python-Levenshtein (setup.py): finished with status 'done'
+  Created wheel for python-Levenshtein: filename=python_Levenshtein-0.12.0-cp37-cp37m-linux_x86_64.whl size=178387 sha256=2d61719e99f70cba3028fdc822872ee89ec68653562086c4c4a9868dcdc49b2b
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/f0/9b/13/49c281164c37be18343230d3cd0fca29efb23a493351db0009
+  Building wheel for PyYAML (setup.py): started
+  Building wheel for PyYAML (setup.py): finished with status 'done'
+  Created wheel for PyYAML: filename=PyYAML-5.3-cp37-cp37m-linux_x86_64.whl size=44228 sha256=8b99878370d47056d2f64dcd691508bdf5efc1c29c9f8512c40f6846398cd19f
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/8a/55/a4/c0a81d27c33462cfdcb904db018f5550197e88b2b6b85beed2
+  Building wheel for rdflib-jsonld (setup.py): started
+  Building wheel for rdflib-jsonld (setup.py): finished with status 'done'
+  Created wheel for rdflib-jsonld: filename=rdflib_jsonld-0.4.0-py3-none-any.whl size=14073 sha256=4e5fa0463073531aa4edc5f512541f0b2c343384a733af446b7476dd005203c8
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/de/7f/a1/dd3065f4e60807e06c291c51a9038a0430504b52691f07c891
+  Building wheel for stringcase (setup.py): started
+  Building wheel for stringcase (setup.py): finished with status 'done'
+  Created wheel for stringcase: filename=stringcase-1.2.0-py3-none-any.whl size=3576 sha256=d2cddfee6b469b4681c0fdce0eb029cec2ef2e5ec1992070c30712ac8d2092eb
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/86/ab/a3/a8fa7e0a07e80f547e03468c03827f8257f7339327986faed1
+  Building wheel for terminaltables (setup.py): started
+  Building wheel for terminaltables (setup.py): finished with status 'done'
+  Created wheel for terminaltables: filename=terminaltables-3.1.0-py3-none-any.whl size=15354 sha256=a6421f3001f575bda1680cd33f08a3dadcbc180f957898c0073d430b114270f0
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/ba/ad/c8/2d98360791161cd3db6daf6b5e730f34021fc9367d5879f497
+  Building wheel for tornado (setup.py): started
+  Building wheel for tornado (setup.py): finished with status 'done'
+  Created wheel for tornado: filename=tornado-6.0.4-cp37-cp37m-linux_x86_64.whl size=428923 sha256=89df3589c4c957aaa7a40bfb1d44e53220854a69621a2e9061c95078b559b693
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/7d/14/fa/d88fb5da77d813ea0ffca38a2ab2a052874e9e1142bad0b348
+  Building wheel for validators (setup.py): started
+  Building wheel for validators (setup.py): finished with status 'done'
+  Created wheel for validators: filename=validators-0.14.2-py3-none-any.whl size=17247 sha256=c323c41761bc8573770adf50fc86c32a016ff111d0dbcd841bd78191e134c8bf
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ah4hz4fo/wheels/30/4a/3f/ad9d09a4300d04182b4dfc8b125dacef510ab79d955fd78a6b
+Successfully built antlr4-python3-runtime backcall CFGraph jsonasobj neo4j neo4jrestclient neobolt neotime pandocfilters pip-check-reqs prometheus-client pyrsistent pystache python-Levenshtein PyYAML rdflib-jsonld stringcase terminaltables tornado validators
+Installing collected packages: alabaster, aniso8601, antlr4-python3-runtime, appnope, attrs, pytz, Babel, backcall, jsonasobj, pyparsing, six, isodate, rdflib, SPARQLWrapper, pbr, sparql-slurper, chardet, urllib3, certifi, idna, requests, PyJSG, rdflib-jsonld, PyShExC, ShExJSG, CFGraph, PyShEx, argparse, pyrsistent, zipp, importlib-metadata, jsonschema, prologterms, PyYAML, prefixcommons, click, graphviz, biolinkml, webencodings, bleach, bmt, cachetools, decorator, defusedxml, docutils, elasticsearch, python-dateutil, elasticsearch-dsl, entrypoints, mistune, itsdangerous, MarkupSafe, Jinja2, Werkzeug, Flask, flasgger, Flask-Cors, Flask-RESTful, gunicorn, imagesize, incremental, ipython-genutils, traitlets, jupyter-core, pyzmq, tornado, jupyter-client, parso, jedi, wcwidth, prompt-toolkit, ptyprocess, pexpect, pickleshare, Pygments, ipython, ipykernel, nbformat, Send2Trash, prometheus-client, terminado, pandocfilters, testpath, nbconvert, notebook, widgetsnbextension, ipywidgets, jupyter-console, QtPy, qtconsole, jupyter, more-itertools, mypy-extensions, typed-ast, typing-extensions, mypy, neobolt, neotime, neo4j, neo4jrestclient, networkx, numpy, packaging, pandas, pip-check-reqs, pluggy, py, pystache, pytest, python-Levenshtein, redis, requests-cache, snowballstemmer, sphinxcontrib-jsmath, sphinxcontrib-htmlhelp, sphinxcontrib-serializinghtml, sphinxcontrib-qthelp, sphinxcontrib-devhelp, sphinxcontrib-applehelp, Sphinx, sphinx-click, sphinx-rtd-theme, stringcase, terminaltables, validators
+Successfully installed Babel-2.8.0 CFGraph-0.2.1 Flask-1.1.1 Flask-Cors-3.0.8 Flask-RESTful-0.3.8 Jinja2-2.11.1 MarkupSafe-1.1.1 PyJSG-0.9.1 PyShEx-0.7.14 PyShExC-0.7.0 PyYAML-5.3 Pygments-2.6.1 QtPy-1.9.0 SPARQLWrapper-1.8.5 Send2Trash-1.5.0 ShExJSG-0.6.8 Sphinx-2.4.4 Werkzeug-1.0.0 alabaster-0.7.12 aniso8601-8.0.0 antlr4-python3-runtime-4.8 appnope-0.1.0 argparse-1.4.0 attrs-19.3.0 backcall-0.1.0 biolinkml-1.4.9 bleach-3.1.1 bmt-0.1.1 cachetools-4.0.0 certifi-2019.11.28 chardet-3.0.4 click-7.1.1 decorator-4.4.2 defusedxml-0.6.0 docutils-0.16 elasticsearch-7.5.1 elasticsearch-dsl-7.1.0 entrypoints-0.3 flasgger-0.9.4 graphviz-0.13.2 gunicorn-20.0.4 idna-2.8 imagesize-1.2.0 importlib-metadata-1.5.0 incremental-17.5.0 ipykernel-5.1.4 ipython-7.13.0 ipython-genutils-0.2.0 ipywidgets-7.5.1 isodate-0.6.0 itsdangerous-1.1.0 jedi-0.16.0 jsonasobj-1.2.1 jsonschema-3.2.0 jupyter-1.0.0 jupyter-client-6.0.0 jupyter-console-6.1.0 jupyter-core-4.6.3 mistune-0.8.4 more-itertools-8.2.0 mypy-0.770 mypy-extensions-0.4.3 nbconvert-5.6.1 nbformat-5.0.4 neo4j-1.7.6 neo4jrestclient-2.1.1 neobolt-1.7.16 neotime-1.7.4 networkx-2.4 notebook-6.0.3 numpy-1.18.1 packaging-20.3 pandas-1.0.1 pandocfilters-1.4.2 parso-0.6.2 pbr-5.4.4 pexpect-4.8.0 pickleshare-0.7.5 pip-check-reqs-2.0.3 pluggy-0.13.1 prefixcommons-0.1.9 prologterms-0.0.6 prometheus-client-0.7.1 prompt-toolkit-3.0.4 ptyprocess-0.6.0 py-1.8.1 pyparsing-2.4.6 pyrsistent-0.15.7 pystache-0.5.4 pytest-5.4.0 python-Levenshtein-0.12.0 python-dateutil-2.8.1 pytz-2019.3 pyzmq-19.0.0 qtconsole-4.7.1 rdflib-4.2.2 rdflib-jsonld-0.4.0 redis-3.4.1 requests-2.22.0 requests-cache-0.5.2 six-1.14.0 snowballstemmer-2.0.0 sparql-slurper-0.3.3 sphinx-click-2.3.1 sphinx-rtd-theme-0.4.3 sphinxcontrib-applehelp-1.0.2 sphinxcontrib-devhelp-1.0.2 sphinxcontrib-htmlhelp-1.0.3 sphinxcontrib-jsmath-1.0.1 sphinxcontrib-qthelp-1.0.3 sphinxcontrib-serializinghtml-1.1.4 stringcase-1.2.0 terminado-0.8.3 terminaltables-3.1.0 testpath-0.4.4 tornado-6.0.4 traitlets-4.3.3 typed-ast-1.4.1 typing-extensions-3.7.4.1 urllib3-1.25.7 validators-0.14.2 wcwidth-0.1.8 webencodings-0.5.1 widgetsnbextension-3.5.1 zipp-3.1.0
+[91mCloning into 'kgx'...
+[0mrunning install
+running bdist_egg
+running egg_info
+creating Knowledge_Graph_Exchange.egg-info
+writing Knowledge_Graph_Exchange.egg-info/PKG-INFO
+writing dependency_links to Knowledge_Graph_Exchange.egg-info/dependency_links.txt
+writing entry points to Knowledge_Graph_Exchange.egg-info/entry_points.txt
+writing requirements to Knowledge_Graph_Exchange.egg-info/requires.txt
+writing top-level names to Knowledge_Graph_Exchange.egg-info/top_level.txt
+writing manifest file 'Knowledge_Graph_Exchange.egg-info/SOURCES.txt'
+reading manifest file 'Knowledge_Graph_Exchange.egg-info/SOURCES.txt'
+writing manifest file 'Knowledge_Graph_Exchange.egg-info/SOURCES.txt'
+installing library code to build/bdist.linux-x86_64/egg
+running install_lib
+running build_py
+creating build
+creating build/lib
+creating build/lib/kgx
+copying kgx/__init__.py -> build/lib/kgx
+copying kgx/config.py -> build/lib/kgx
+copying kgx/curie_lookup_service.py -> build/lib/kgx
+copying kgx/filter.py -> build/lib/kgx
+copying kgx/prefix_manager.py -> build/lib/kgx
+copying kgx/validator.py -> build/lib/kgx
+creating build/lib/tests
+copying tests/__init__.py -> build/lib/tests
+copying tests/test_clique_merge_operation.py -> build/lib/tests
+copying tests/test_csv.py -> build/lib/tests
+copying tests/test_graph_merge.py -> build/lib/tests
+copying tests/test_json.py -> build/lib/tests
+copying tests/test_logicterms.py -> build/lib/tests
+copying tests/test_neo_loader.py -> build/lib/tests
+copying tests/test_prefix.py -> build/lib/tests
+copying tests/test_rdf.py -> build/lib/tests
+copying tests/test_rsa_format_json.py -> build/lib/tests
+copying tests/test_sparql.py -> build/lib/tests
+copying tests/test_validator.py -> build/lib/tests
+creating build/lib/kgx/cli
+copying kgx/cli/__init__.py -> build/lib/kgx/cli
+copying kgx/cli/decorators.py -> build/lib/kgx/cli
+copying kgx/cli/error_logging.py -> build/lib/kgx/cli
+copying kgx/cli/utils.py -> build/lib/kgx/cli
+creating build/lib/kgx/operations
+copying kgx/operations/__init__.py -> build/lib/kgx/operations
+copying kgx/operations/clique_merge.py -> build/lib/kgx/operations
+copying kgx/operations/graph_merge.py -> build/lib/kgx/operations
+copying kgx/operations/summarize_graph.py -> build/lib/kgx/operations
+creating build/lib/kgx/transformers
+copying kgx/transformers/__init__.py -> build/lib/kgx/transformers
+copying kgx/transformers/json_transformer.py -> build/lib/kgx/transformers
+copying kgx/transformers/logicterm_transformer.py -> build/lib/kgx/transformers
+copying kgx/transformers/neo_transformer.py -> build/lib/kgx/transformers
+copying kgx/transformers/nt_transformer.py -> build/lib/kgx/transformers
+copying kgx/transformers/nx_transformer.py -> build/lib/kgx/transformers
+copying kgx/transformers/pandas_transformer.py -> build/lib/kgx/transformers
+copying kgx/transformers/rdf_graph_mixin.py -> build/lib/kgx/transformers
+copying kgx/transformers/rdf_transformer.py -> build/lib/kgx/transformers
+copying kgx/transformers/rsa_transformer.py -> build/lib/kgx/transformers
+copying kgx/transformers/sparql_transformer.py -> build/lib/kgx/transformers
+copying kgx/transformers/transformer.py -> build/lib/kgx/transformers
+creating build/lib/kgx/utils
+copying kgx/utils/__init__.py -> build/lib/kgx/utils
+copying kgx/utils/graph_utils.py -> build/lib/kgx/utils
+copying kgx/utils/kgx_utils.py -> build/lib/kgx/utils
+copying kgx/utils/rdf_utils.py -> build/lib/kgx/utils
+creating build/lib/tests/unit
+copying tests/unit/__init__.py -> build/lib/tests/unit
+copying tests/unit/test_curie_lookup_service.py -> build/lib/tests/unit
+copying tests/unit/test_graph_merge.py -> build/lib/tests/unit
+copying tests/unit/test_graph_utils.py -> build/lib/tests/unit
+copying tests/unit/test_json_transformer.py -> build/lib/tests/unit
+copying tests/unit/test_kgx_utils.py -> build/lib/tests/unit
+copying tests/unit/test_neo_transformer.py -> build/lib/tests/unit
+copying tests/unit/test_oban_rdf_transformer.py -> build/lib/tests/unit
+copying tests/unit/test_obgraph_json_transformer.py -> build/lib/tests/unit
+copying tests/unit/test_pandas_transformer.py -> build/lib/tests/unit
+copying tests/unit/test_prefix_manager.py -> build/lib/tests/unit
+copying tests/unit/test_rdf_owl_transformer.py -> build/lib/tests/unit
+copying tests/unit/test_rdf_transformer.py -> build/lib/tests/unit
+copying tests/unit/test_rdf_utils.py -> build/lib/tests/unit
+copying tests/unit/test_remap.py -> build/lib/tests/unit
+copying tests/unit/test_rsa_transformer.py -> build/lib/tests/unit
+copying tests/unit/test_sparql_transformer.py -> build/lib/tests/unit
+copying tests/unit/test_summarize_graph.py -> build/lib/tests/unit
+copying tests/unit/test_transformer.py -> build/lib/tests/unit
+copying tests/unit/test_validator.py -> build/lib/tests/unit
+copying kgx/config.yml -> build/lib/kgx
+creating build/bdist.linux-x86_64
+creating build/bdist.linux-x86_64/egg
+creating build/bdist.linux-x86_64/egg/kgx
+copying build/lib/kgx/__init__.py -> build/bdist.linux-x86_64/egg/kgx
+copying build/lib/kgx/config.py -> build/bdist.linux-x86_64/egg/kgx
+copying build/lib/kgx/curie_lookup_service.py -> build/bdist.linux-x86_64/egg/kgx
+copying build/lib/kgx/filter.py -> build/bdist.linux-x86_64/egg/kgx
+copying build/lib/kgx/prefix_manager.py -> build/bdist.linux-x86_64/egg/kgx
+copying build/lib/kgx/validator.py -> build/bdist.linux-x86_64/egg/kgx
+creating build/bdist.linux-x86_64/egg/kgx/cli
+copying build/lib/kgx/cli/__init__.py -> build/bdist.linux-x86_64/egg/kgx/cli
+copying build/lib/kgx/cli/decorators.py -> build/bdist.linux-x86_64/egg/kgx/cli
+copying build/lib/kgx/cli/error_logging.py -> build/bdist.linux-x86_64/egg/kgx/cli
+copying build/lib/kgx/cli/utils.py -> build/bdist.linux-x86_64/egg/kgx/cli
+creating build/bdist.linux-x86_64/egg/kgx/operations
+copying build/lib/kgx/operations/__init__.py -> build/bdist.linux-x86_64/egg/kgx/operations
+copying build/lib/kgx/operations/clique_merge.py -> build/bdist.linux-x86_64/egg/kgx/operations
+copying build/lib/kgx/operations/graph_merge.py -> build/bdist.linux-x86_64/egg/kgx/operations
+copying build/lib/kgx/operations/summarize_graph.py -> build/bdist.linux-x86_64/egg/kgx/operations
+creating build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/__init__.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/json_transformer.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/logicterm_transformer.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/neo_transformer.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/nt_transformer.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/nx_transformer.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/pandas_transformer.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/rdf_graph_mixin.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/rdf_transformer.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/rsa_transformer.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/sparql_transformer.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+copying build/lib/kgx/transformers/transformer.py -> build/bdist.linux-x86_64/egg/kgx/transformers
+creating build/bdist.linux-x86_64/egg/kgx/utils
+copying build/lib/kgx/utils/__init__.py -> build/bdist.linux-x86_64/egg/kgx/utils
+copying build/lib/kgx/utils/graph_utils.py -> build/bdist.linux-x86_64/egg/kgx/utils
+copying build/lib/kgx/utils/kgx_utils.py -> build/bdist.linux-x86_64/egg/kgx/utils
+copying build/lib/kgx/utils/rdf_utils.py -> build/bdist.linux-x86_64/egg/kgx/utils
+copying build/lib/kgx/config.yml -> build/bdist.linux-x86_64/egg/kgx
+creating build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/__init__.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_clique_merge_operation.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_csv.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_graph_merge.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_json.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_logicterms.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_neo_loader.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_prefix.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_rdf.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_rsa_format_json.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_sparql.py -> build/bdist.linux-x86_64/egg/tests
+copying build/lib/tests/test_validator.py -> build/bdist.linux-x86_64/egg/tests
+creating build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/__init__.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_curie_lookup_service.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_graph_merge.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_graph_utils.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_json_transformer.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_kgx_utils.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_neo_transformer.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_oban_rdf_transformer.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_obgraph_json_transformer.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_pandas_transformer.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_prefix_manager.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_rdf_owl_transformer.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_rdf_transformer.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_rdf_utils.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_remap.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_rsa_transformer.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_sparql_transformer.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_summarize_graph.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_transformer.py -> build/bdist.linux-x86_64/egg/tests/unit
+copying build/lib/tests/unit/test_validator.py -> build/bdist.linux-x86_64/egg/tests/unit
+byte-compiling build/bdist.linux-x86_64/egg/kgx/__init__.py to __init__.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/config.py to config.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/curie_lookup_service.py to curie_lookup_service.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/filter.py to filter.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/prefix_manager.py to prefix_manager.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/validator.py to validator.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/cli/__init__.py to __init__.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/cli/decorators.py to decorators.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/cli/error_logging.py to error_logging.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/cli/utils.py to utils.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/operations/__init__.py to __init__.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/operations/clique_merge.py to clique_merge.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/operations/graph_merge.py to graph_merge.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/operations/summarize_graph.py to summarize_graph.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/__init__.py to __init__.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/json_transformer.py to json_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/logicterm_transformer.py to logicterm_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/neo_transformer.py to neo_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/nt_transformer.py to nt_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/nx_transformer.py to nx_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/pandas_transformer.py to pandas_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/rdf_graph_mixin.py to rdf_graph_mixin.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/rdf_transformer.py to rdf_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/rsa_transformer.py to rsa_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/sparql_transformer.py to sparql_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/transformers/transformer.py to transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/utils/__init__.py to __init__.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/utils/graph_utils.py to graph_utils.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/utils/kgx_utils.py to kgx_utils.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/kgx/utils/rdf_utils.py to rdf_utils.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/__init__.py to __init__.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_clique_merge_operation.py to test_clique_merge_operation.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_csv.py to test_csv.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_graph_merge.py to test_graph_merge.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_json.py to test_json.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_logicterms.py to test_logicterms.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_neo_loader.py to test_neo_loader.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_prefix.py to test_prefix.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_rdf.py to test_rdf.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_rsa_format_json.py to test_rsa_format_json.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_sparql.py to test_sparql.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/test_validator.py to test_validator.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/__init__.py to __init__.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_curie_lookup_service.py to test_curie_lookup_service.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_graph_merge.py to test_graph_merge.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_graph_utils.py to test_graph_utils.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_json_transformer.py to test_json_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_kgx_utils.py to test_kgx_utils.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_neo_transformer.py to test_neo_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_oban_rdf_transformer.py to test_oban_rdf_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_obgraph_json_transformer.py to test_obgraph_json_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_pandas_transformer.py to test_pandas_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_prefix_manager.py to test_prefix_manager.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_rdf_owl_transformer.py to test_rdf_owl_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_rdf_transformer.py to test_rdf_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_rdf_utils.py to test_rdf_utils.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_remap.py to test_remap.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_rsa_transformer.py to test_rsa_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_sparql_transformer.py to test_sparql_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_summarize_graph.py to test_summarize_graph.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_transformer.py to test_transformer.cpython-37.pyc
+byte-compiling build/bdist.linux-x86_64/egg/tests/unit/test_validator.py to test_validator.cpython-37.pyc
+creating build/bdist.linux-x86_64/egg/EGG-INFO
+installing scripts to build/bdist.linux-x86_64/egg/EGG-INFO/scripts
+running install_scripts
+running build_scripts
+creating build/scripts-3.7
+copying bin/translator_kgx.py -> build/scripts-3.7
+changing mode of build/scripts-3.7/translator_kgx.py from 644 to 755
+creating build/bdist.linux-x86_64/egg/EGG-INFO/scripts
+copying build/scripts-3.7/translator_kgx.py -> build/bdist.linux-x86_64/egg/EGG-INFO/scripts
+changing mode of build/bdist.linux-x86_64/egg/EGG-INFO/scripts/translator_kgx.py to 755
+copying Knowledge_Graph_Exchange.egg-info/PKG-INFO -> build/bdist.linux-x86_64/egg/EGG-INFO
+copying Knowledge_Graph_Exchange.egg-info/SOURCES.txt -> build/bdist.linux-x86_64/egg/EGG-INFO
+copying Knowledge_Graph_Exchange.egg-info/dependency_links.txt -> build/bdist.linux-x86_64/egg/EGG-INFO
+copying Knowledge_Graph_Exchange.egg-info/entry_points.txt -> build/bdist.linux-x86_64/egg/EGG-INFO
+copying Knowledge_Graph_Exchange.egg-info/requires.txt -> build/bdist.linux-x86_64/egg/EGG-INFO
+copying Knowledge_Graph_Exchange.egg-info/top_level.txt -> build/bdist.linux-x86_64/egg/EGG-INFO
+[91mzip_safe flag not set; analyzing archive contents...
+kgx.__pycache__.config.cpython-37: module references __file__
+[0m[91mtests.__pycache__.test_clique_merge_operation.cpython-37: module references __file__
+tests.__pycache__.test_csv.cpython-37: module references __file__
+tests.__pycache__.test_graph_merge.cpython-37: module references __file__
+tests.__pycache__.test_json.cpython-37: module references __file__
+tests.__pycache__.test_neo_loader.cpython-37: module references __file__
+tests.__pycache__.test_rdf.cpython-37: module references __file__
+tests.__pycache__.test_rsa_format_json.cpython-37: module references __file__
+tests.__pycache__.test_validator.cpython-37: module references __file__
+tests.unit.__pycache__.test_json_transformer.cpython-37: module references __file__
+tests.unit.__pycache__.test_oban_rdf_transformer.cpython-37: module references __file__
+tests.unit.__pycache__.test_obgraph_json_transformer.cpython-37: module references __file__
+tests.unit.__pycache__.test_pandas_transformer.cpython-37: module references __file__
+[0m[91mtests.unit.__pycache__.test_rdf_owl_transformer.cpython-37: module references __file__
+tests.unit.__pycache__.test_rdf_transformer.cpython-37: module references __file__
+tests.unit.__pycache__.test_rdf_utils.cpython-37: module references __file__
+tests.unit.__pycache__.test_rsa_transformer.cpython-37: module references __file__
+tests.unit.__pycache__.test_summarize_graph.cpython-37: module references __file__
+tests.unit.__pycache__.test_transformer.cpython-37: module references __file__
+[0mcreating dist
+creating 'dist/Knowledge_Graph_Exchange-0.0.1-py3.7.egg' and adding 'build/bdist.linux-x86_64/egg' to it
+removing 'build/bdist.linux-x86_64/egg' (and everything under it)
+Processing Knowledge_Graph_Exchange-0.0.1-py3.7.egg
+creating /usr/local/lib/python3.7/site-packages/Knowledge_Graph_Exchange-0.0.1-py3.7.egg
+Extracting Knowledge_Graph_Exchange-0.0.1-py3.7.egg to /usr/local/lib/python3.7/site-packages
+Adding Knowledge-Graph-Exchange 0.0.1 to easy-install.pth file
+Installing translator_kgx.py script to /usr/local/bin
+Installing kgx script to /usr/local/bin
+
+Installed /usr/local/lib/python3.7/site-packages/Knowledge_Graph_Exchange-0.0.1-py3.7.egg
+Processing dependencies for Knowledge-Graph-Exchange==0.0.1
+Searching for ordered-set>=4.0.2
+Reading https://pypi.org/simple/ordered-set/
+Downloading https://files.pythonhosted.org/packages/f5/ab/8252360bfe965bba31ec05112b3067bd129ce4800d89e0b85613bc6044f6/ordered-set-4.0.2.tar.gz#sha256=ba93b2df055bca202116ec44b9bead3df33ea63a7d5827ff8e16738b97f33a95
+Best match: ordered-set 4.0.2
+Processing ordered-set-4.0.2.tar.gz
+Writing /tmp/easy_install-rkesmyt2/ordered-set-4.0.2/setup.cfg
+Running ordered-set-4.0.2/setup.py -q bdist_egg --dist-dir /tmp/easy_install-rkesmyt2/ordered-set-4.0.2/egg-dist-tmp-cynn929f
+[91mzip_safe flag not set; analyzing archive contents...
+[0mMoving ordered_set-4.0.2-py3.7.egg to /usr/local/lib/python3.7/site-packages
+Adding ordered-set 4.0.2 to easy-install.pth file
+
+Installed /usr/local/lib/python3.7/site-packages/ordered_set-4.0.2-py3.7.egg
+Searching for cachetools==4.0.0
+Best match: cachetools 4.0.0
+Adding cachetools 4.0.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for validators==0.14.2
+Best match: validators 0.14.2
+Adding validators 0.14.2 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for stringcase==1.2.0
+Best match: stringcase 1.2.0
+Adding stringcase 1.2.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for terminaltables==3.1.0
+Best match: terminaltables 3.1.0
+Adding terminaltables 3.1.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for ShExJSG==0.6.8
+Best match: ShExJSG 0.6.8
+Adding ShExJSG 0.6.8 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for prologterms==0.0.6
+Best match: prologterms 0.0.6
+Adding prologterms 0.0.6 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for bmt==0.1.1
+Best match: bmt 0.1.1
+Adding bmt 0.1.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for biolinkml==1.4.9
+Best match: biolinkml 1.4.9
+Adding biolinkml 1.4.9 to easy-install.pth file
+Installing comparefiles script to /usr/local/bin
+Installing gen-csv script to /usr/local/bin
+Installing gen-golr-views script to /usr/local/bin
+Installing gen-graphql script to /usr/local/bin
+Installing gen-graphviz script to /usr/local/bin
+Installing gen-json-schema script to /usr/local/bin
+Installing gen-jsonld script to /usr/local/bin
+Installing gen-jsonld-context script to /usr/local/bin
+Installing gen-markdown script to /usr/local/bin
+Installing gen-owl script to /usr/local/bin
+Installing gen-proto script to /usr/local/bin
+Installing gen-py-classes script to /usr/local/bin
+Installing gen-python script to /usr/local/bin
+Installing gen-rdf script to /usr/local/bin
+Installing gen-shex script to /usr/local/bin
+Installing gen-yuml script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for PyYAML==5.3
+Best match: PyYAML 5.3
+Adding PyYAML 5.3 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for neo4jrestclient==2.1.1
+Best match: neo4jrestclient 2.1.1
+Adding neo4jrestclient 2.1.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for neo4j==1.7.6
+Best match: neo4j 1.7.6
+Adding neo4j 1.7.6 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for click==7.1.1
+Best match: click 7.1.1
+Adding click 7.1.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for rdflib==4.2.2
+Best match: rdflib 4.2.2
+Adding rdflib 4.2.2 to easy-install.pth file
+Installing csv2rdf script to /usr/local/bin
+Installing rdf2dot script to /usr/local/bin
+Installing rdfgraphisomorphism script to /usr/local/bin
+Installing rdfpipe script to /usr/local/bin
+Installing rdfs2dot script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for pystache==0.5.4
+Best match: pystache 0.5.4
+Adding pystache 0.5.4 to easy-install.pth file
+Installing pystache script to /usr/local/bin
+Installing pystache-test script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for mypy==0.770
+Best match: mypy 0.770
+Adding mypy 0.770 to easy-install.pth file
+Installing dmypy script to /usr/local/bin
+Installing mypy script to /usr/local/bin
+Installing stubgen script to /usr/local/bin
+Installing stubtest script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for pytest==5.4.0
+Best match: pytest 5.4.0
+Adding pytest 5.4.0 to easy-install.pth file
+Installing py.test script to /usr/local/bin
+Installing pytest script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for pandas==1.0.1
+Best match: pandas 1.0.1
+Adding pandas 1.0.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for SPARQLWrapper==1.8.5
+Best match: SPARQLWrapper 1.8.5
+Adding SPARQLWrapper 1.8.5 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for networkx==2.4
+Best match: networkx 2.4
+Adding networkx 2.4 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for pip==20.1.1
+Best match: pip 20.1.1
+Adding pip 20.1.1 to easy-install.pth file
+Installing pip script to /usr/local/bin
+Installing pip3 script to /usr/local/bin
+Installing pip3.8 script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for prefixcommons==0.1.9
+Best match: prefixcommons 0.1.9
+Adding prefixcommons 0.1.9 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for decorator==4.4.2
+Best match: decorator 4.4.2
+Adding decorator 4.4.2 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for six==1.14.0
+Best match: six 1.14.0
+Adding six 1.14.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for PyShExC==0.7.0
+Best match: PyShExC 0.7.0
+Adding PyShExC 0.7.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for PyJSG==0.9.1
+Best match: PyJSG 0.9.1
+Adding PyJSG 0.9.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for graphviz==0.13.2
+Best match: graphviz 0.13.2
+Adding graphviz 0.13.2 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for jsonasobj==1.2.1
+Best match: jsonasobj 1.2.1
+Adding jsonasobj 1.2.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for requests==2.22.0
+Best match: requests 2.22.0
+Adding requests 2.22.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for PyShEx==0.7.14
+Best match: PyShEx 0.7.14
+Adding PyShEx 0.7.14 to easy-install.pth file
+Installing shexeval script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for rdflib-jsonld==0.4.0
+Best match: rdflib-jsonld 0.4.0
+Adding rdflib-jsonld 0.4.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for jsonschema==3.2.0
+Best match: jsonschema 3.2.0
+Adding jsonschema 3.2.0 to easy-install.pth file
+Installing jsonschema script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for argparse==1.4.0
+Best match: argparse 1.4.0
+Adding argparse 1.4.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for neotime==1.7.4
+Best match: neotime 1.7.4
+Adding neotime 1.7.4 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for neobolt==1.7.16
+Best match: neobolt 1.7.16
+Adding neobolt 1.7.16 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for pyparsing==2.4.6
+Best match: pyparsing 2.4.6
+Adding pyparsing 2.4.6 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for isodate==0.6.0
+Best match: isodate 0.6.0
+Adding isodate 0.6.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for typing-extensions==3.7.4.1
+Best match: typing-extensions 3.7.4.1
+Adding typing-extensions 3.7.4.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for mypy-extensions==0.4.3
+Best match: mypy-extensions 0.4.3
+Adding mypy-extensions 0.4.3 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for typed-ast==1.4.1
+Best match: typed-ast 1.4.1
+Adding typed-ast 1.4.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for wcwidth==0.1.8
+Best match: wcwidth 0.1.8
+Adding wcwidth 0.1.8 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for attrs==19.3.0
+Best match: attrs 19.3.0
+Adding attrs 19.3.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for more-itertools==8.2.0
+Best match: more-itertools 8.2.0
+Adding more-itertools 8.2.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for pluggy==0.13.1
+Best match: pluggy 0.13.1
+Adding pluggy 0.13.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for py==1.8.1
+Best match: py 1.8.1
+Adding py 1.8.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for importlib-metadata==1.5.0
+Best match: importlib-metadata 1.5.0
+Adding importlib-metadata 1.5.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for packaging==20.3
+Best match: packaging 20.3
+Adding packaging 20.3 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for pytz==2019.3
+Best match: pytz 2019.3
+Adding pytz 2019.3 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for numpy==1.18.1
+Best match: numpy 1.18.1
+Adding numpy 1.18.1 to easy-install.pth file
+Installing f2py script to /usr/local/bin
+Installing f2py3 script to /usr/local/bin
+Installing f2py3.7 script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for python-dateutil==2.8.1
+Best match: python-dateutil 2.8.1
+Adding python-dateutil 2.8.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for antlr4-python3-runtime==4.8
+Best match: antlr4-python3-runtime 4.8
+Adding antlr4-python3-runtime 4.8 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for certifi==2019.11.28
+Best match: certifi 2019.11.28
+Adding certifi 2019.11.28 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for urllib3==1.25.7
+Best match: urllib3 1.25.7
+Adding urllib3 1.25.7 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for idna==2.8
+Best match: idna 2.8
+Adding idna 2.8 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for chardet==3.0.4
+Best match: chardet 3.0.4
+Adding chardet 3.0.4 to easy-install.pth file
+Installing chardetect script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for sparql-slurper==0.3.3
+Best match: sparql-slurper 0.3.3
+Adding sparql-slurper 0.3.3 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for CFGraph==0.2.1
+Best match: CFGraph 0.2.1
+Adding CFGraph 0.2.1 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for pyrsistent==0.15.7
+Best match: pyrsistent 0.15.7
+Adding pyrsistent 0.15.7 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for setuptools==45.2.0
+Best match: setuptools 45.2.0
+Adding setuptools 45.2.0 to easy-install.pth file
+Installing easy_install script to /usr/local/bin
+Installing easy_install-3.8 script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for zipp==3.1.0
+Best match: zipp 3.1.0
+Adding zipp 3.1.0 to easy-install.pth file
+
+Using /usr/local/lib/python3.7/site-packages
+Searching for pbr==5.4.4
+Best match: pbr 5.4.4
+Adding pbr 5.4.4 to easy-install.pth file
+Installing pbr script to /usr/local/bin
+
+Using /usr/local/lib/python3.7/site-packages
+Finished processing dependencies for Knowledge-Graph-Exchange==0.0.1
+Removing intermediate container ff0488fc7e83
+ ---> 61b7995faf3d
+Step 8/14 : USER $USER
+ ---> Running in f0c122b77c7e
+Removing intermediate container f0c122b77c7e
+ ---> 09b9c17394c9
+Step 9/14 : ENV PYTHONPATH $HOME/dug
+ ---> Running in 070e1f17c87d
+Removing intermediate container 070e1f17c87d
+ ---> 8c8f07716aa3
+Step 10/14 : ENV ELASTIC_API_HOST=
+ ---> Running in c7eaca5818e9
+Removing intermediate container c7eaca5818e9
+ ---> ebf4a1f898bf
+Step 11/14 : ENV ELASTIC_API_PORT=
+ ---> Running in 3e61c57925c8
+Removing intermediate container 3e61c57925c8
+ ---> 12321c0ec09c
+Step 12/14 : ENV COMMAND=crawl
+ ---> Running in 31e213b96208
+Removing intermediate container 31e213b96208
+ ---> 20290c0df5c0
+Step 13/14 : WORKDIR $HOME/dug
+ ---> Running in 57dd644b9ccc
+Removing intermediate container 57dd644b9ccc
+ ---> 9704633afb34
+Step 14/14 : ENTRYPOINT bin/dug $COMMAND --elastic-host=$ELASTIC_API_HOST --elastic-port=$ELASTIC_API_PORT
+ ---> Running in dea23fd3ca32
+Removing intermediate container dea23fd3ca32
+ ---> 16079732cecb
+Successfully built 16079732cecb
+Successfully tagged heliumdatastage/dug:develop-v0.0.4
+Successfully tagged heliumdatastage/dug:develop-latest
++ '[' 0 -ne 0 ']'
++ cd /var/lib/jenkins/jobs/dug/workspace/dug
++ /usr/bin/python3 -m venv venv
++ source venv/bin/activate
+++ deactivate nondestructive
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ '[' -n /bin/bash -o -n '' ']'
+++ hash -r
+++ '[' -n '' ']'
+++ unset VIRTUAL_ENV
+++ '[' '!' nondestructive = nondestructive ']'
+++ VIRTUAL_ENV=/var/lib/jenkins/jobs/dug/workspace/dug/venv
+++ export VIRTUAL_ENV
+++ _OLD_VIRTUAL_PATH=/sbin:/usr/sbin:/bin:/usr/bin
+++ PATH=/var/lib/jenkins/jobs/dug/workspace/dug/venv/bin:/sbin:/usr/sbin:/bin:/usr/bin
+++ export PATH
+++ '[' -n '' ']'
+++ '[' -z '' ']'
+++ _OLD_VIRTUAL_PS1=
+++ '[' 'x(venv) ' '!=' x ']'
+++ PS1='(venv) '
+++ export PS1
+++ '[' -n /bin/bash -o -n '' ']'
+++ hash -r
++ pip install -r requirements.txt --upgrade pip
+Collecting pip
+  Using cached https://files.pythonhosted.org/packages/43/84/23ed6a1796480a6f1a2d38f2802901d078266bda38388954d01d3f2e821d/pip-20.1.1-py2.py3-none-any.whl
+Collecting alabaster==0.7.12 (from -r requirements.txt (line 1))
+  Using cached https://files.pythonhosted.org/packages/10/ad/00b090d23a222943eb0eda509720a404f531a439e803f6538f35136cae9e/alabaster-0.7.12-py2.py3-none-any.whl
+Collecting aniso8601==8.0.0 (from -r requirements.txt (line 2))
+  Using cached https://files.pythonhosted.org/packages/eb/e4/787e104b58eadc1a710738d4e418d7e599e4e778e52cb8e5d5ef6ddd5833/aniso8601-8.0.0-py2.py3-none-any.whl
+Collecting antlr4-python3-runtime==4.8 (from -r requirements.txt (line 3))
+  Using cached https://files.pythonhosted.org/packages/56/02/789a0bddf9c9b31b14c3e79ec22b9656185a803dc31c15f006f9855ece0d/antlr4-python3-runtime-4.8.tar.gz
+Collecting appnope==0.1.0 (from -r requirements.txt (line 4))
+  Using cached https://files.pythonhosted.org/packages/87/a9/7985e6a53402f294c8f0e8eff3151a83f1fb901fa92909bb3ff29b4d22af/appnope-0.1.0-py2.py3-none-any.whl
+Collecting attrs==19.3.0 (from -r requirements.txt (line 5))
+  Using cached https://files.pythonhosted.org/packages/a2/db/4313ab3be961f7a763066401fb77f7748373b6094076ae2bda2806988af6/attrs-19.3.0-py2.py3-none-any.whl
+Collecting Babel==2.8.0 (from -r requirements.txt (line 6))
+  Using cached https://files.pythonhosted.org/packages/15/a1/522dccd23e5d2e47aed4b6a16795b8213e3272c7506e625f2425ad025a19/Babel-2.8.0-py2.py3-none-any.whl
+Collecting backcall==0.1.0 (from -r requirements.txt (line 7))
+  Using cached https://files.pythonhosted.org/packages/84/71/c8ca4f5bb1e08401b916c68003acf0a0655df935d74d93bf3f3364b310e0/backcall-0.1.0.tar.gz
+Collecting biolinkml==1.4.9 (from -r requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/77/09/99da43d8d35afa4df0f74bbf0bb75b8ee00713db3255ccd76f36d4e309c8/biolinkml-1.4.9-py3-none-any.whl
+Collecting bleach==3.1.1 (from -r requirements.txt (line 9))
+  Using cached https://files.pythonhosted.org/packages/6e/87/f88b0e33914420fe11fe8b820c10d045a342c2a015e79ad8309de4bba820/bleach-3.1.1-py2.py3-none-any.whl
+Collecting bmt==0.1.1 (from -r requirements.txt (line 10))
+  Using cached https://files.pythonhosted.org/packages/dd/d0/915b5604b4ddefc5832cc1ab0f42157842c21b9f18ba6060f5d9a4f8c829/bmt-0.1.1-py3-none-any.whl
+Collecting cachetools==4.0.0 (from -r requirements.txt (line 11))
+  Using cached https://files.pythonhosted.org/packages/08/6a/abf83cb951617793fd49c98cb9456860f5df66ff89883c8660aa0672d425/cachetools-4.0.0-py3-none-any.whl
+Collecting certifi==2019.11.28 (from -r requirements.txt (line 12))
+  Using cached https://files.pythonhosted.org/packages/b9/63/df50cac98ea0d5b006c55a399c3bf1db9da7b5a24de7890bc9cfd5dd9e99/certifi-2019.11.28-py2.py3-none-any.whl
+Collecting CFGraph==0.2.1 (from -r requirements.txt (line 13))
+  Using cached https://files.pythonhosted.org/packages/cb/51/3e7e021920cfe2f7d18b672642e13f7dc4f53545d530b52ee6533b6681ca/CFGraph-0.2.1.tar.gz
+Collecting chardet==3.0.4 (from -r requirements.txt (line 14))
+  Using cached https://files.pythonhosted.org/packages/bc/a9/01ffebfb562e4274b6487b4bb1ddec7ca55ec7510b22e4c51f14098443b8/chardet-3.0.4-py2.py3-none-any.whl
+Collecting click==7.1.1 (from -r requirements.txt (line 15))
+  Using cached https://files.pythonhosted.org/packages/dd/c0/4d8f43a9b16e289f36478422031b8a63b54b6ac3b1ba605d602f10dd54d6/click-7.1.1-py2.py3-none-any.whl
+Collecting decorator==4.4.2 (from -r requirements.txt (line 16))
+  Using cached https://files.pythonhosted.org/packages/ed/1b/72a1821152d07cf1d8b6fce298aeb06a7eb90f4d6d41acec9861e7cc6df0/decorator-4.4.2-py2.py3-none-any.whl
+Collecting defusedxml==0.6.0 (from -r requirements.txt (line 17))
+  Using cached https://files.pythonhosted.org/packages/06/74/9b387472866358ebc08732de3da6dc48e44b0aacd2ddaa5cb85ab7e986a2/defusedxml-0.6.0-py2.py3-none-any.whl
+Collecting docutils==0.16 (from -r requirements.txt (line 18))
+  Using cached https://files.pythonhosted.org/packages/81/44/8a15e45ffa96e6cf82956dd8d7af9e666357e16b0d93b253903475ee947f/docutils-0.16-py2.py3-none-any.whl
+Collecting elasticsearch==7.5.1 (from -r requirements.txt (line 19))
+  Using cached https://files.pythonhosted.org/packages/10/60/0c79dde3e81beffeed422599d9ac65419289095186d37a3201739d52a57d/elasticsearch-7.5.1-py2.py3-none-any.whl
+Collecting elasticsearch-dsl==7.1.0 (from -r requirements.txt (line 20))
+  Using cached https://files.pythonhosted.org/packages/07/46/b03326c44aa9693b7879d17fce42fa412470e43cf6035e8addfc5af634c6/elasticsearch_dsl-7.1.0-py2.py3-none-any.whl
+Collecting entrypoints==0.3 (from -r requirements.txt (line 21))
+  Using cached https://files.pythonhosted.org/packages/ac/c6/44694103f8c221443ee6b0041f69e2740d89a25641e62fb4f2ee568f2f9c/entrypoints-0.3-py2.py3-none-any.whl
+Collecting flasgger==0.9.4 (from -r requirements.txt (line 22))
+  Using cached https://files.pythonhosted.org/packages/41/d6/c06817828fc6ef724d6ac60f3f558e048300c5ffd038b60d289e6599c117/flasgger-0.9.4-py2.py3-none-any.whl
+Collecting Flask==1.1.1 (from -r requirements.txt (line 23))
+  Using cached https://files.pythonhosted.org/packages/9b/93/628509b8d5dc749656a9641f4caf13540e2cdec85276964ff8f43bbb1d3b/Flask-1.1.1-py2.py3-none-any.whl
+Collecting Flask-Cors==3.0.8 (from -r requirements.txt (line 24))
+  Using cached https://files.pythonhosted.org/packages/78/38/e68b11daa5d613e3a91e4bf3da76c94ac9ee0d9cd515af9c1ab80d36f709/Flask_Cors-3.0.8-py2.py3-none-any.whl
+Collecting Flask-RESTful==0.3.8 (from -r requirements.txt (line 25))
+  Using cached https://files.pythonhosted.org/packages/e9/83/d0d33c971de2d38e54b0037136c8b8d20b9c83d308bc6c220a25162755fd/Flask_RESTful-0.3.8-py2.py3-none-any.whl
+Collecting graphviz==0.13.2 (from -r requirements.txt (line 26))
+  Using cached https://files.pythonhosted.org/packages/f5/74/dbed754c0abd63768d3a7a7b472da35b08ac442cf87d73d5850a6f32391e/graphviz-0.13.2-py2.py3-none-any.whl
+Collecting gunicorn==20.0.4 (from -r requirements.txt (line 27))
+  Using cached https://files.pythonhosted.org/packages/69/ca/926f7cd3a2014b16870086b2d0fdc84a9e49473c68a8dff8b57f7c156f43/gunicorn-20.0.4-py2.py3-none-any.whl
+Collecting idna==2.8 (from -r requirements.txt (line 28))
+  Using cached https://files.pythonhosted.org/packages/14/2c/cd551d81dbe15200be1cf41cd03869a46fe7226e7450af7a6545bfc474c9/idna-2.8-py2.py3-none-any.whl
+Collecting imagesize==1.2.0 (from -r requirements.txt (line 29))
+  Using cached https://files.pythonhosted.org/packages/31/b2/b5522a0c8d11e4aff83f8342f3f0dea68c2fb25aa44403e420587f0ce204/imagesize-1.2.0-py2.py3-none-any.whl
+Collecting importlib-metadata==1.5.0 (from -r requirements.txt (line 30))
+  Using cached https://files.pythonhosted.org/packages/8b/03/a00d504808808912751e64ccf414be53c29cad620e3de2421135fcae3025/importlib_metadata-1.5.0-py2.py3-none-any.whl
+Collecting incremental==17.5.0 (from -r requirements.txt (line 31))
+  Using cached https://files.pythonhosted.org/packages/f5/1d/c98a587dc06e107115cf4a58b49de20b19222c83d75335a192052af4c4b7/incremental-17.5.0-py2.py3-none-any.whl
+Collecting ipykernel==5.1.4 (from -r requirements.txt (line 32))
+  Using cached https://files.pythonhosted.org/packages/d7/62/d1a5d654b7a21bd3eb99be1b59a608cc18a7a08ed88495457a87c40a0495/ipykernel-5.1.4-py3-none-any.whl
+Collecting ipython==7.13.0 (from -r requirements.txt (line 33))
+  Using cached https://files.pythonhosted.org/packages/61/6f/69f1eec859ce48a86660529b166b6ea466f0f4ab98e4fc0807b835aa22c6/ipython-7.13.0-py3-none-any.whl
+Collecting ipython-genutils==0.2.0 (from -r requirements.txt (line 34))
+  Using cached https://files.pythonhosted.org/packages/fa/bc/9bd3b5c2b4774d5f33b2d544f1460be9df7df2fe42f352135381c347c69a/ipython_genutils-0.2.0-py2.py3-none-any.whl
+Collecting ipywidgets==7.5.1 (from -r requirements.txt (line 35))
+  Using cached https://files.pythonhosted.org/packages/56/a0/dbcf5881bb2f51e8db678211907f16ea0a182b232c591a6d6f276985ca95/ipywidgets-7.5.1-py2.py3-none-any.whl
+Collecting isodate==0.6.0 (from -r requirements.txt (line 36))
+  Using cached https://files.pythonhosted.org/packages/9b/9f/b36f7774ff5ea8e428fdcfc4bb332c39ee5b9362ddd3d40d9516a55221b2/isodate-0.6.0-py2.py3-none-any.whl
+Collecting itsdangerous==1.1.0 (from -r requirements.txt (line 37))
+  Using cached https://files.pythonhosted.org/packages/76/ae/44b03b253d6fade317f32c24d100b3b35c2239807046a4c953c7b89fa49e/itsdangerous-1.1.0-py2.py3-none-any.whl
+Collecting jedi==0.16.0 (from -r requirements.txt (line 38))
+  Using cached https://files.pythonhosted.org/packages/01/67/333e2196b70840f411fd819407b4e98aa3150c2bd24c52154a451f912ef2/jedi-0.16.0-py2.py3-none-any.whl
+Collecting Jinja2==2.11.1 (from -r requirements.txt (line 39))
+  Using cached https://files.pythonhosted.org/packages/27/24/4f35961e5c669e96f6559760042a55b9bcfcdb82b9bdb3c8753dbe042e35/Jinja2-2.11.1-py2.py3-none-any.whl
+Collecting jsonasobj==1.2.1 (from -r requirements.txt (line 40))
+  Using cached https://files.pythonhosted.org/packages/0a/a0/f9951b7ce18718282a00b302f469d6638b25e650783ea416c946355daa3f/jsonasobj-1.2.1.tar.gz
+Collecting jsonschema==3.2.0 (from -r requirements.txt (line 41))
+  Using cached https://files.pythonhosted.org/packages/c5/8f/51e89ce52a085483359217bc72cdbf6e75ee595d5b1d4b5ade40c7e018b8/jsonschema-3.2.0-py2.py3-none-any.whl
+Collecting jupyter==1.0.0 (from -r requirements.txt (line 42))
+  Using cached https://files.pythonhosted.org/packages/83/df/0f5dd132200728a86190397e1ea87cd76244e42d39ec5e88efd25b2abd7e/jupyter-1.0.0-py2.py3-none-any.whl
+Collecting jupyter-client==6.0.0 (from -r requirements.txt (line 43))
+  Using cached https://files.pythonhosted.org/packages/40/75/4c4eb43749e59db3c1c7932b50eaf8c4b8219b1b5644fe379ea796f8dbe5/jupyter_client-6.0.0-py3-none-any.whl
+Collecting jupyter-console==6.1.0 (from -r requirements.txt (line 44))
+  Using cached https://files.pythonhosted.org/packages/0a/89/742fa5a80b552ffcb6a8922712697c6e6828aee7b91ee4ae2b79f00f8401/jupyter_console-6.1.0-py2.py3-none-any.whl
+Collecting jupyter-core==4.6.3 (from -r requirements.txt (line 45))
+  Using cached https://files.pythonhosted.org/packages/63/0d/df2d17cdf389cea83e2efa9a4d32f7d527ba78667e0153a8e676e957b2f7/jupyter_core-4.6.3-py2.py3-none-any.whl
+Collecting MarkupSafe==1.1.1 (from -r requirements.txt (line 46))
+  Using cached https://files.pythonhosted.org/packages/98/7b/ff284bd8c80654e471b769062a9b43cc5d03e7a615048d96f4619df8d420/MarkupSafe-1.1.1-cp37-cp37m-manylinux1_x86_64.whl
+Collecting mistune==0.8.4 (from -r requirements.txt (line 47))
+  Using cached https://files.pythonhosted.org/packages/09/ec/4b43dae793655b7d8a25f76119624350b4d65eb663459eb9603d7f1f0345/mistune-0.8.4-py2.py3-none-any.whl
+Collecting more-itertools==8.2.0 (from -r requirements.txt (line 48))
+  Using cached https://files.pythonhosted.org/packages/72/96/4297306cc270eef1e3461da034a3bebe7c84eff052326b130824e98fc3fb/more_itertools-8.2.0-py3-none-any.whl
+Collecting mypy==0.770 (from -r requirements.txt (line 49))
+  Using cached https://files.pythonhosted.org/packages/64/ac/554f8fc7b56156db7ca9525d5ce66f00cc71f9ae6a43e21a6596b7084d7a/mypy-0.770-cp37-cp37m-manylinux1_x86_64.whl
+Collecting mypy-extensions==0.4.3 (from -r requirements.txt (line 50))
+  Using cached https://files.pythonhosted.org/packages/5c/eb/975c7c080f3223a5cdaff09612f3a5221e4ba534f7039db34c35d95fa6a5/mypy_extensions-0.4.3-py2.py3-none-any.whl
+Collecting nbconvert==5.6.1 (from -r requirements.txt (line 51))
+  Using cached https://files.pythonhosted.org/packages/79/6c/05a569e9f703d18aacb89b7ad6075b404e8a4afde2c26b73ca77bb644b14/nbconvert-5.6.1-py2.py3-none-any.whl
+Collecting nbformat==5.0.4 (from -r requirements.txt (line 52))
+  Using cached https://files.pythonhosted.org/packages/ac/eb/de575b7a64e7ab8d8c95e4c180ccc36deda3f1379186c4ee7adf6c2f1586/nbformat-5.0.4-py3-none-any.whl
+Collecting neo4j==1.7.6 (from -r requirements.txt (line 53))
+  Using cached https://files.pythonhosted.org/packages/ff/94/01746058f78f3ed8909f4fdeb9614789bdf48e8dbe178a64266eb9dd7af2/neo4j-1.7.6.tar.gz
+Collecting neo4jrestclient==2.1.1 (from -r requirements.txt (line 54))
+  Using cached https://files.pythonhosted.org/packages/95/4c/df54ba57f5838fd1ae162462f81d589b8352c6aa17d5b2a7a42e8abba048/neo4jrestclient-2.1.1.tar.gz
+Collecting neobolt==1.7.16 (from -r requirements.txt (line 55))
+  Using cached https://files.pythonhosted.org/packages/0d/b2/eb7c33e1f02cd7bbaf4c237619dd8dc43fa6081f331c2d35b28deb78e259/neobolt-1.7.16.tar.gz
+Collecting neotime==1.7.4 (from -r requirements.txt (line 56))
+  Using cached https://files.pythonhosted.org/packages/0b/7e/ca368a8d8e288be1352d4e2df35da1e01f8aaffbf526695df71630bcb8a6/neotime-1.7.4.tar.gz
+Collecting networkx==2.4 (from -r requirements.txt (line 57))
+  Using cached https://files.pythonhosted.org/packages/41/8f/dd6a8e85946def36e4f2c69c84219af0fa5e832b018c970e92f2ad337e45/networkx-2.4-py3-none-any.whl
+Collecting notebook==6.0.3 (from -r requirements.txt (line 58))
+  Using cached https://files.pythonhosted.org/packages/b1/f1/0a67f09ef53a342403ffa66646ee39273e0ac79ffa5de5dbe2f3e28b5bdf/notebook-6.0.3-py3-none-any.whl
+Collecting numpy==1.18.1 (from -r requirements.txt (line 59))
+  Using cached https://files.pythonhosted.org/packages/63/0c/0261693cc3ad8e2b66e66dc2d2676a2cc17d3efb1c58a70db73754320e47/numpy-1.18.1-cp37-cp37m-manylinux1_x86_64.whl
+Collecting packaging==20.3 (from -r requirements.txt (line 60))
+  Using cached https://files.pythonhosted.org/packages/62/0a/34641d2bf5c917c96db0ded85ae4da25b6cd922d6b794648d4e7e07c88e5/packaging-20.3-py2.py3-none-any.whl
+Collecting pandas==1.0.1 (from -r requirements.txt (line 61))
+  Using cached https://files.pythonhosted.org/packages/61/af/ceb7523e86753d5643ed00e8c17a42bdcfe819782c3449d9bbbf5d01867a/pandas-1.0.1-cp37-cp37m-manylinux1_x86_64.whl
+Collecting pandocfilters==1.4.2 (from -r requirements.txt (line 62))
+  Using cached https://files.pythonhosted.org/packages/4c/ea/236e2584af67bb6df960832731a6e5325fd4441de001767da328c33368ce/pandocfilters-1.4.2.tar.gz
+Collecting parso==0.6.2 (from -r requirements.txt (line 63))
+  Using cached https://files.pythonhosted.org/packages/da/15/888f80e429a971d3838124adde705d7b07650aa3a59f4db07d61f653b8cd/parso-0.6.2-py2.py3-none-any.whl
+Collecting pbr==5.4.4 (from -r requirements.txt (line 64))
+  Using cached https://files.pythonhosted.org/packages/7a/db/a968fd7beb9fe06901c1841cb25c9ccb666ca1b9a19b114d1bbedf1126fc/pbr-5.4.4-py2.py3-none-any.whl
+Collecting pexpect==4.8.0 (from -r requirements.txt (line 65))
+  Using cached https://files.pythonhosted.org/packages/39/7b/88dbb785881c28a102619d46423cb853b46dbccc70d3ac362d99773a78ce/pexpect-4.8.0-py2.py3-none-any.whl
+Collecting pickleshare==0.7.5 (from -r requirements.txt (line 66))
+  Using cached https://files.pythonhosted.org/packages/9a/41/220f49aaea88bc6fa6cba8d05ecf24676326156c23b991e80b3f2fc24c77/pickleshare-0.7.5-py2.py3-none-any.whl
+Collecting pip-check-reqs==2.0.3 (from -r requirements.txt (line 67))
+  Using cached https://files.pythonhosted.org/packages/dd/5b/90581eb7fde676da9e12e42d6730d9ed4cfbd776d1c967c0ba23e02bafa0/pip_check_reqs-2.0.3.tar.gz
+Collecting pluggy==0.13.1 (from -r requirements.txt (line 68))
+  Using cached https://files.pythonhosted.org/packages/a0/28/85c7aa31b80d150b772fbe4a229487bc6644da9ccb7e427dd8cc60cb8a62/pluggy-0.13.1-py2.py3-none-any.whl
+Collecting prefixcommons==0.1.9 (from -r requirements.txt (line 69))
+  Using cached https://files.pythonhosted.org/packages/93/06/6151b38ed558e96a531bfb7736e4fa50f10c9a502d9d8b98f71f5699d443/prefixcommons-0.1.9-py3-none-any.whl
+Collecting prologterms==0.0.6 (from -r requirements.txt (line 70))
+  Using cached https://files.pythonhosted.org/packages/e7/66/cd1904c6268b0f9146e0e3c25ca4993ef52a5077e8d30f9a604c90610c4d/prologterms-0.0.6-py3-none-any.whl
+Collecting prometheus-client==0.7.1 (from -r requirements.txt (line 71))
+  Using cached https://files.pythonhosted.org/packages/b3/23/41a5a24b502d35a4ad50a5bb7202a5e1d9a0364d0c12f56db3dbf7aca76d/prometheus_client-0.7.1.tar.gz
+Collecting prompt-toolkit==3.0.4 (from -r requirements.txt (line 72))
+  Using cached https://files.pythonhosted.org/packages/ab/29/d744cee89937b7e52a5c20ca237a6c77298f757965eb3eb0c653df1bfb14/prompt_toolkit-3.0.4-py3-none-any.whl
+Collecting ptyprocess==0.6.0 (from -r requirements.txt (line 73))
+  Using cached https://files.pythonhosted.org/packages/d1/29/605c2cc68a9992d18dada28206eeada56ea4bd07a239669da41674648b6f/ptyprocess-0.6.0-py2.py3-none-any.whl
+Collecting py==1.8.1 (from -r requirements.txt (line 74))
+  Using cached https://files.pythonhosted.org/packages/99/8d/21e1767c009211a62a8e3067280bfce76e89c9f876180308515942304d2d/py-1.8.1-py2.py3-none-any.whl
+Collecting Pygments==2.6.1 (from -r requirements.txt (line 75))
+  Using cached https://files.pythonhosted.org/packages/2d/68/106af3ae51daf807e9cdcba6a90e518954eb8b70341cee52995540a53ead/Pygments-2.6.1-py3-none-any.whl
+Collecting PyJSG==0.9.1 (from -r requirements.txt (line 76))
+  Using cached https://files.pythonhosted.org/packages/6d/95/3e831de9f7108ad962a070b35d6e7b9017e15ea3fdcbe265d59a5a8e1140/PyJSG-0.9.1-py3-none-any.whl
+Collecting pyparsing==2.4.6 (from -r requirements.txt (line 77))
+  Using cached https://files.pythonhosted.org/packages/5d/bc/1e58593167fade7b544bfe9502a26dc860940a79ab306e651e7f13be68c2/pyparsing-2.4.6-py2.py3-none-any.whl
+Collecting pyrsistent==0.15.7 (from -r requirements.txt (line 78))
+  Using cached https://files.pythonhosted.org/packages/90/aa/cdcf7ef88cc0f831b6f14c8c57318824c9de9913fe8de38e46a98c069a35/pyrsistent-0.15.7.tar.gz
+Collecting PyShEx==0.7.14 (from -r requirements.txt (line 79))
+  Using cached https://files.pythonhosted.org/packages/6b/73/83c1dac6edb9c0093f20022c03d0310670a031d0edf1df22b2a41a30b667/PyShEx-0.7.14-py3-none-any.whl
+Collecting PyShExC==0.7.0 (from -r requirements.txt (line 80))
+  Using cached https://files.pythonhosted.org/packages/15/77/4d948f70b5a36d133603e779be03cce1ecb4be156e9b174d52e67d9f8212/PyShExC-0.7.0-py2.py3-none-any.whl
+Collecting pystache==0.5.4 (from -r requirements.txt (line 81))
+  Using cached https://files.pythonhosted.org/packages/d6/fd/eb8c212053addd941cc90baac307c00ac246ac3fce7166b86434c6eae963/pystache-0.5.4.tar.gz
+Collecting pytest==5.4.0 (from -r requirements.txt (line 82))
+  Using cached https://files.pythonhosted.org/packages/6a/83/7a83c0e85388b0774e06b81b16087da946c05b70604083641266be61793d/pytest-5.4.0-py3-none-any.whl
+Collecting python-dateutil==2.8.1 (from -r requirements.txt (line 83))
+  Using cached https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl
+Collecting python-Levenshtein==0.12.0 (from -r requirements.txt (line 84))
+  Using cached https://files.pythonhosted.org/packages/42/a9/d1785c85ebf9b7dfacd08938dd028209c34a0ea3b1bcdb895208bd40a67d/python-Levenshtein-0.12.0.tar.gz
+Collecting pytz==2019.3 (from -r requirements.txt (line 85))
+  Using cached https://files.pythonhosted.org/packages/e7/f9/f0b53f88060247251bf481fa6ea62cd0d25bf1b11a87888e53ce5b7c8ad2/pytz-2019.3-py2.py3-none-any.whl
+Collecting PyYAML==5.3 (from -r requirements.txt (line 86))
+  Using cached https://files.pythonhosted.org/packages/3d/d9/ea9816aea31beeadccd03f1f8b625ecf8f645bd66744484d162d84803ce5/PyYAML-5.3.tar.gz
+Collecting pyzmq==19.0.0 (from -r requirements.txt (line 87))
+  Using cached https://files.pythonhosted.org/packages/37/d3/46dd789cf7be91d7acd7d6fe0b683b6527ef6f276fb0700a035c37baae27/pyzmq-19.0.0-cp37-cp37m-manylinux1_x86_64.whl
+Collecting qtconsole==4.7.1 (from -r requirements.txt (line 88))
+  Using cached https://files.pythonhosted.org/packages/d6/de/2a0bda85367881e27370a206a561326a99fbb05ab9402f4c4ad59761eec4/qtconsole-4.7.1-py2.py3-none-any.whl
+Collecting QtPy==1.9.0 (from -r requirements.txt (line 89))
+  Using cached https://files.pythonhosted.org/packages/cd/fd/9972948f02e967b691cc0ca1f26124826a3b88cb38f412a8b7935b8c3c72/QtPy-1.9.0-py2.py3-none-any.whl
+Collecting rdflib==4.2.2 (from -r requirements.txt (line 90))
+  Using cached https://files.pythonhosted.org/packages/3c/fe/630bacb652680f6d481b9febbb3e2c3869194a1a5fc3401a4a41195a2f8f/rdflib-4.2.2-py3-none-any.whl
+Collecting rdflib-jsonld==0.4.0 (from -r requirements.txt (line 91))
+  Using cached https://files.pythonhosted.org/packages/ba/48/edaad22fc9de34500699f0c7fc9124385dd425fd18857244f126a6f7df66/rdflib-jsonld-0.4.0.tar.gz
+Collecting redis==3.4.1 (from -r requirements.txt (line 92))
+  Using cached https://files.pythonhosted.org/packages/f0/05/1fc7feedc19c123e7a95cfc9e7892eb6cdd2e5df4e9e8af6384349c1cc3d/redis-3.4.1-py2.py3-none-any.whl
+Collecting requests==2.22.0 (from -r requirements.txt (line 93))
+  Using cached https://files.pythonhosted.org/packages/51/bd/23c926cd341ea6b7dd0b2a00aba99ae0f828be89d72b2190f27c11d4b7fb/requests-2.22.0-py2.py3-none-any.whl
+Collecting requests-cache==0.5.2 (from -r requirements.txt (line 94))
+  Using cached https://files.pythonhosted.org/packages/7f/55/9b1c40eb83c16d8fc79c5f6c2ffade04208b080670fbfc35e0a5effb5a92/requests_cache-0.5.2-py2.py3-none-any.whl
+Collecting Send2Trash==1.5.0 (from -r requirements.txt (line 95))
+  Using cached https://files.pythonhosted.org/packages/49/46/c3dc27481d1cc57b9385aff41c474ceb7714f7935b1247194adae45db714/Send2Trash-1.5.0-py3-none-any.whl
+Collecting ShExJSG==0.6.8 (from -r requirements.txt (line 96))
+  Using cached https://files.pythonhosted.org/packages/9f/f1/91c395b99a613d360b07c94475b52b6ca6779ab53332e2a6df5bb79f8c08/ShExJSG-0.6.8-py2.py3-none-any.whl
+Collecting six==1.14.0 (from -r requirements.txt (line 97))
+  Using cached https://files.pythonhosted.org/packages/65/eb/1f97cb97bfc2390a276969c6fae16075da282f5058082d4cb10c6c5c1dba/six-1.14.0-py2.py3-none-any.whl
+Collecting snowballstemmer==2.0.0 (from -r requirements.txt (line 98))
+  Using cached https://files.pythonhosted.org/packages/7d/4b/cdf1113a0e88b641893b814e9c36f69a6fda28cd88b62c7f0d858cde3166/snowballstemmer-2.0.0-py2.py3-none-any.whl
+Collecting sparql-slurper==0.3.3 (from -r requirements.txt (line 99))
+  Using cached https://files.pythonhosted.org/packages/59/53/51dd6d6dac479775e4ee9b416c38ba5735f697d9f5da72fbde63efa266be/sparql_slurper-0.3.3-py3-none-any.whl
+Collecting SPARQLWrapper==1.8.5 (from -r requirements.txt (line 100))
+  Using cached https://files.pythonhosted.org/packages/00/9b/443fbe06996c080ee9c1f01b04e2f683b2b07e149905f33a2397ee3b80a2/SPARQLWrapper-1.8.5-py3-none-any.whl
+Collecting Sphinx==2.4.4 (from -r requirements.txt (line 101))
+  Using cached https://files.pythonhosted.org/packages/16/c1/1c8016475cb612a64ce613c6b61c16224fe6dcfd9527792016ce611c231c/Sphinx-2.4.4-py3-none-any.whl
+Collecting sphinx-click==2.3.1 (from -r requirements.txt (line 102))
+  Using cached https://files.pythonhosted.org/packages/57/cc/ac0247c13a3d9b8afa773d565ac9cf255a91ec3600f8d6624aede3113cb9/sphinx_click-2.3.1-py2.py3-none-any.whl
+Collecting sphinx-rtd-theme==0.4.3 (from -r requirements.txt (line 103))
+  Using cached https://files.pythonhosted.org/packages/60/b4/4df37087a1d36755e3a3bfd2a30263f358d2dea21938240fa02313d45f51/sphinx_rtd_theme-0.4.3-py2.py3-none-any.whl
+Collecting sphinxcontrib-applehelp==1.0.2 (from -r requirements.txt (line 104))
+  Using cached https://files.pythonhosted.org/packages/dc/47/86022665a9433d89a66f5911b558ddff69861766807ba685de2e324bd6ed/sphinxcontrib_applehelp-1.0.2-py2.py3-none-any.whl
+Collecting sphinxcontrib-devhelp==1.0.2 (from -r requirements.txt (line 105))
+  Using cached https://files.pythonhosted.org/packages/c5/09/5de5ed43a521387f18bdf5f5af31d099605c992fd25372b2b9b825ce48ee/sphinxcontrib_devhelp-1.0.2-py2.py3-none-any.whl
+Collecting sphinxcontrib-htmlhelp==1.0.3 (from -r requirements.txt (line 106))
+  Using cached https://files.pythonhosted.org/packages/36/62/8222554b29b3acde8420128d6d3999c5904d40922ef4b6ccb370e2be7421/sphinxcontrib_htmlhelp-1.0.3-py2.py3-none-any.whl
+Collecting sphinxcontrib-jsmath==1.0.1 (from -r requirements.txt (line 107))
+  Using cached https://files.pythonhosted.org/packages/c2/42/4c8646762ee83602e3fb3fbe774c2fac12f317deb0b5dbeeedd2d3ba4b77/sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.whl
+Collecting sphinxcontrib-qthelp==1.0.3 (from -r requirements.txt (line 108))
+  Using cached https://files.pythonhosted.org/packages/2b/14/05f9206cf4e9cfca1afb5fd224c7cd434dcc3a433d6d9e4e0264d29c6cdb/sphinxcontrib_qthelp-1.0.3-py2.py3-none-any.whl
+Collecting sphinxcontrib-serializinghtml==1.1.4 (from -r requirements.txt (line 109))
+  Using cached https://files.pythonhosted.org/packages/9a/ca/bfad79b79b3821d0c6361c431f0ef4aec16ee248338b2c2013008b34d345/sphinxcontrib_serializinghtml-1.1.4-py2.py3-none-any.whl
+Collecting stringcase==1.2.0 (from -r requirements.txt (line 110))
+  Using cached https://files.pythonhosted.org/packages/f3/1f/1241aa3d66e8dc1612427b17885f5fcd9c9ee3079fc0d28e9a3aeeb36fa3/stringcase-1.2.0.tar.gz
+Collecting terminado==0.8.3 (from -r requirements.txt (line 111))
+  Using cached https://files.pythonhosted.org/packages/ff/96/1d9a2c23990aea8f8e0b5c3b6627d03196a73771a17a2d9860bbe9823ab6/terminado-0.8.3-py2.py3-none-any.whl
+Collecting terminaltables==3.1.0 (from -r requirements.txt (line 112))
+  Using cached https://files.pythonhosted.org/packages/9b/c4/4a21174f32f8a7e1104798c445dacdc1d4df86f2f26722767034e4de4bff/terminaltables-3.1.0.tar.gz
+Collecting testpath==0.4.4 (from -r requirements.txt (line 113))
+  Using cached https://files.pythonhosted.org/packages/1b/9e/1a170feaa54f22aeb5a5d16c9015e82234275a3c8ab630b552493f9cb8a9/testpath-0.4.4-py2.py3-none-any.whl
+Collecting tornado==6.0.4 (from -r requirements.txt (line 114))
+  Using cached https://files.pythonhosted.org/packages/95/84/119a46d494f008969bf0c775cb2c6b3579d3c4cc1bb1b41a022aa93ee242/tornado-6.0.4.tar.gz
+Collecting traitlets==4.3.3 (from -r requirements.txt (line 115))
+  Using cached https://files.pythonhosted.org/packages/ca/ab/872a23e29cec3cf2594af7e857f18b687ad21039c1f9b922fac5b9b142d5/traitlets-4.3.3-py2.py3-none-any.whl
+Collecting typed-ast==1.4.1 (from -r requirements.txt (line 116))
+  Using cached https://files.pythonhosted.org/packages/5d/10/0c1e8aa723a2b0c4032e048d8e511df82c8a1262f0e1df5e4c54eb2613e9/typed_ast-1.4.1-cp37-cp37m-manylinux1_x86_64.whl
+Collecting typing-extensions==3.7.4.1 (from -r requirements.txt (line 117))
+  Using cached https://files.pythonhosted.org/packages/03/92/705fe8aca27678e01bbdd7738173b8e7df0088a2202c80352f664630d638/typing_extensions-3.7.4.1-py3-none-any.whl
+Collecting urllib3==1.25.7 (from -r requirements.txt (line 118))
+  Using cached https://files.pythonhosted.org/packages/b4/40/a9837291310ee1ccc242ceb6ebfd9eb21539649f193a7c8c86ba15b98539/urllib3-1.25.7-py2.py3-none-any.whl
+Collecting validators==0.14.2 (from -r requirements.txt (line 119))
+  Using cached https://files.pythonhosted.org/packages/4d/56/9b48c918ef118ea12b90f227c4498ed4703b418bdd8fb49479dfcbeae4ef/validators-0.14.2.tar.gz
+Collecting wcwidth==0.1.8 (from -r requirements.txt (line 120))
+  Using cached https://files.pythonhosted.org/packages/58/b4/4850a0ccc6f567cc0ebe7060d20ffd4258b8210efadc259da62dc6ed9c65/wcwidth-0.1.8-py2.py3-none-any.whl
+Collecting webencodings==0.5.1 (from -r requirements.txt (line 121))
+  Using cached https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
+Collecting Werkzeug==1.0.0 (from -r requirements.txt (line 122))
+  Using cached https://files.pythonhosted.org/packages/ba/a5/d6f8a6e71f15364d35678a4ec8a0186f980b3bd2545f40ad51dd26a87fb1/Werkzeug-1.0.0-py2.py3-none-any.whl
+Collecting widgetsnbextension==3.5.1 (from -r requirements.txt (line 123))
+  Using cached https://files.pythonhosted.org/packages/6c/7b/7ac231c20d2d33c445eaacf8a433f4e22c60677eb9776c7c5262d7ddee2d/widgetsnbextension-3.5.1-py2.py3-none-any.whl
+Collecting zipp==3.1.0 (from -r requirements.txt (line 124))
+  Using cached https://files.pythonhosted.org/packages/b2/34/bfcb43cc0ba81f527bc4f40ef41ba2ff4080e047acb0586b56b3d017ace4/zipp-3.1.0-py3-none-any.whl
+Collecting argparse>=1.4.0 (from biolinkml==1.4.9->-r requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/f2/94/3af39d34be01a24a6e65433d19e107099374224905f1e0cc6bbe1fd22a2f/argparse-1.4.0-py2.py3-none-any.whl
+Requirement already satisfied, skipping upgrade: setuptools>=3.0 in ./venv/lib/python3.7/site-packages (from gunicorn==20.0.4->-r requirements.txt (line 27)) (40.8.0)
+Installing collected packages: pip, alabaster, aniso8601, antlr4-python3-runtime, appnope, attrs, pytz, Babel, backcall, graphviz, click, six, pyrsistent, zipp, importlib-metadata, jsonschema, isodate, pyparsing, rdflib, CFGraph, pbr, SPARQLWrapper, sparql-slurper, urllib3, rdflib-jsonld, certifi, idna, chardet, requests, jsonasobj, PyJSG, PyShExC, ShExJSG, PyShEx, PyYAML, argparse, prologterms, prefixcommons, biolinkml, webencodings, bleach, bmt, cachetools, decorator, defusedxml, docutils, elasticsearch, python-dateutil, elasticsearch-dsl, entrypoints, mistune, Werkzeug, itsdangerous, MarkupSafe, Jinja2, Flask, flasgger, Flask-Cors, Flask-RESTful, gunicorn, imagesize, incremental, ipython-genutils, traitlets, tornado, pyzmq, jupyter-core, jupyter-client, wcwidth, prompt-toolkit, pickleshare, Pygments, ptyprocess, pexpect, parso, jedi, ipython, ipykernel, nbformat, pandocfilters, testpath, nbconvert, terminado, Send2Trash, prometheus-client, notebook, widgetsnbextension, ipywidgets, jupyter-console, QtPy, qtconsole, jupyter, more-itertools, typing-extensions, mypy-extensions, typed-ast, mypy, neobolt, neotime, neo4j, neo4jrestclient, networkx, numpy, packaging, pandas, pip-check-reqs, pluggy, py, pystache, pytest, python-Levenshtein, redis, requests-cache, snowballstemmer, sphinxcontrib-serializinghtml, sphinxcontrib-devhelp, sphinxcontrib-qthelp, sphinxcontrib-htmlhelp, sphinxcontrib-applehelp, sphinxcontrib-jsmath, Sphinx, sphinx-click, sphinx-rtd-theme, stringcase, terminaltables, validators
+  Found existing installation: pip 19.0.3
+    Uninstalling pip-19.0.3:
+      Successfully uninstalled pip-19.0.3
+  Running setup.py install for antlr4-python3-runtime: started
+    Running setup.py install for antlr4-python3-runtime: finished with status 'done'
+  Running setup.py install for backcall: started
+    Running setup.py install for backcall: finished with status 'done'
+  Running setup.py install for pyrsistent: started
+    Running setup.py install for pyrsistent: finished with status 'done'
+  Running setup.py install for CFGraph: started
+    Running setup.py install for CFGraph: finished with status 'done'
+  Running setup.py install for rdflib-jsonld: started
+    Running setup.py install for rdflib-jsonld: finished with status 'done'
+  Running setup.py install for jsonasobj: started
+    Running setup.py install for jsonasobj: finished with status 'done'
+  Running setup.py install for PyYAML: started
+    Running setup.py install for PyYAML: finished with status 'done'
+  Running setup.py install for tornado: started
+    Running setup.py install for tornado: finished with status 'done'
+  Running setup.py install for pandocfilters: started
+    Running setup.py install for pandocfilters: finished with status 'done'
+  Running setup.py install for prometheus-client: started
+    Running setup.py install for prometheus-client: finished with status 'done'
+  Running setup.py install for neobolt: started
+    Running setup.py install for neobolt: finished with status 'done'
+  Running setup.py install for neotime: started
+    Running setup.py install for neotime: finished with status 'done'
+  Running setup.py install for neo4j: started
+    Running setup.py install for neo4j: finished with status 'done'
+  Running setup.py install for neo4jrestclient: started
+    Running setup.py install for neo4jrestclient: finished with status 'done'
+  Running setup.py install for pip-check-reqs: started
+    Running setup.py install for pip-check-reqs: finished with status 'done'
+  Running setup.py install for pystache: started
+    Running setup.py install for pystache: finished with status 'done'
+  Running setup.py install for python-Levenshtein: started
+    Running setup.py install for python-Levenshtein: finished with status 'done'
+  Running setup.py install for stringcase: started
+    Running setup.py install for stringcase: finished with status 'done'
+  Running setup.py install for terminaltables: started
+    Running setup.py install for terminaltables: finished with status 'done'
+  Running setup.py install for validators: started
+    Running setup.py install for validators: finished with status 'done'
+Successfully installed Babel-2.8.0 CFGraph-0.2.1 Flask-1.1.1 Flask-Cors-3.0.8 Flask-RESTful-0.3.8 Jinja2-2.11.1 MarkupSafe-1.1.1 PyJSG-0.9.1 PyShEx-0.7.14 PyShExC-0.7.0 PyYAML-5.3 Pygments-2.6.1 QtPy-1.9.0 SPARQLWrapper-1.8.5 Send2Trash-1.5.0 ShExJSG-0.6.8 Sphinx-2.4.4 Werkzeug-1.0.0 alabaster-0.7.12 aniso8601-8.0.0 antlr4-python3-runtime-4.8 appnope-0.1.0 argparse-1.4.0 attrs-19.3.0 backcall-0.1.0 biolinkml-1.4.9 bleach-3.1.1 bmt-0.1.1 cachetools-4.0.0 certifi-2019.11.28 chardet-3.0.4 click-7.1.1 decorator-4.4.2 defusedxml-0.6.0 docutils-0.16 elasticsearch-7.5.1 elasticsearch-dsl-7.1.0 entrypoints-0.3 flasgger-0.9.4 graphviz-0.13.2 gunicorn-20.0.4 idna-2.8 imagesize-1.2.0 importlib-metadata-1.5.0 incremental-17.5.0 ipykernel-5.1.4 ipython-7.13.0 ipython-genutils-0.2.0 ipywidgets-7.5.1 isodate-0.6.0 itsdangerous-1.1.0 jedi-0.16.0 jsonasobj-1.2.1 jsonschema-3.2.0 jupyter-1.0.0 jupyter-client-6.0.0 jupyter-console-6.1.0 jupyter-core-4.6.3 mistune-0.8.4 more-itertools-8.2.0 mypy-0.770 mypy-extensions-0.4.3 nbconvert-5.6.1 nbformat-5.0.4 neo4j-1.7.6 neo4jrestclient-2.1.1 neobolt-1.7.16 neotime-1.7.4 networkx-2.4 notebook-6.0.3 numpy-1.18.1 packaging-20.3 pandas-1.0.1 pandocfilters-1.4.2 parso-0.6.2 pbr-5.4.4 pexpect-4.8.0 pickleshare-0.7.5 pip-20.1.1 pip-check-reqs-2.0.3 pluggy-0.13.1 prefixcommons-0.1.9 prologterms-0.0.6 prometheus-client-0.7.1 prompt-toolkit-3.0.4 ptyprocess-0.6.0 py-1.8.1 pyparsing-2.4.6 pyrsistent-0.15.7 pystache-0.5.4 pytest-5.4.0 python-Levenshtein-0.12.0 python-dateutil-2.8.1 pytz-2019.3 pyzmq-19.0.0 qtconsole-4.7.1 rdflib-4.2.2 rdflib-jsonld-0.4.0 redis-3.4.1 requests-2.22.0 requests-cache-0.5.2 six-1.14.0 snowballstemmer-2.0.0 sparql-slurper-0.3.3 sphinx-click-2.3.1 sphinx-rtd-theme-0.4.3 sphinxcontrib-applehelp-1.0.2 sphinxcontrib-devhelp-1.0.2 sphinxcontrib-htmlhelp-1.0.3 sphinxcontrib-jsmath-1.0.1 sphinxcontrib-qthelp-1.0.3 sphinxcontrib-serializinghtml-1.1.4 stringcase-1.2.0 terminado-0.8.3 terminaltables-3.1.0 testpath-0.4.4 tornado-6.0.4 traitlets-4.3.3 typed-ast-1.4.1 typing-extensions-3.7.4.1 urllib3-1.25.7 validators-0.14.2 wcwidth-0.1.8 webencodings-0.5.1 widgetsnbextension-3.5.1 zipp-3.1.0
++ pip install -r api-requirements.txt
+Requirement already satisfied: aniso8601==8.0.0 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 1)) (8.0.0)
+Requirement already satisfied: attrs==19.3.0 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 2)) (19.3.0)
+Requirement already satisfied: certifi==2019.11.28 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 3)) (2019.11.28)
+Requirement already satisfied: chardet==3.0.4 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 4)) (3.0.4)
+Requirement already satisfied: click==7.1.1 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 5)) (7.1.1)
+Requirement already satisfied: elasticsearch==7.5.1 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 6)) (7.5.1)
+Requirement already satisfied: flasgger==0.9.4 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 7)) (0.9.4)
+Requirement already satisfied: Flask==1.1.1 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 8)) (1.1.1)
+Requirement already satisfied: Flask-Cors==3.0.8 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 9)) (3.0.8)
+Requirement already satisfied: Flask-RESTful==0.3.8 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 10)) (0.3.8)
+Requirement already satisfied: gunicorn==20.0.4 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 11)) (20.0.4)
+Collecting idna==2.9
+  Using cached idna-2.9-py2.py3-none-any.whl (58 kB)
+Collecting importlib-metadata==1.6.0
+  Using cached importlib_metadata-1.6.0-py2.py3-none-any.whl (30 kB)
+Requirement already satisfied: itsdangerous==1.1.0 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 14)) (1.1.0)
+Requirement already satisfied: Jinja2==2.11.1 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 15)) (2.11.1)
+Requirement already satisfied: jsonschema==3.2.0 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 16)) (3.2.0)
+Requirement already satisfied: MarkupSafe==1.1.1 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 17)) (1.1.1)
+Requirement already satisfied: mistune==0.8.4 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 18)) (0.8.4)
+Collecting pyrsistent==0.16.0
+  Using cached pyrsistent-0.16.0.tar.gz (108 kB)
+Requirement already satisfied: pytz==2019.3 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 20)) (2019.3)
+Collecting PyYAML==5.3.1
+  Using cached PyYAML-5.3.1.tar.gz (269 kB)
+Collecting requests==2.23.0
+  Using cached requests-2.23.0-py2.py3-none-any.whl (58 kB)
+Requirement already satisfied: six==1.14.0 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 23)) (1.14.0)
+Collecting urllib3==1.25.8
+  Using cached urllib3-1.25.8-py2.py3-none-any.whl (125 kB)
+Collecting Werkzeug==1.0.1
+  Using cached Werkzeug-1.0.1-py2.py3-none-any.whl (298 kB)
+Requirement already satisfied: zipp==3.1.0 in ./venv/lib/python3.7/site-packages (from -r api-requirements.txt (line 26)) (3.1.0)
+Requirement already satisfied: setuptools>=3.0 in ./venv/lib/python3.7/site-packages (from gunicorn==20.0.4->-r api-requirements.txt (line 11)) (40.8.0)
+Using legacy setup.py install for pyrsistent, since package 'wheel' is not installed.
+Using legacy setup.py install for PyYAML, since package 'wheel' is not installed.
+Installing collected packages: idna, importlib-metadata, pyrsistent, PyYAML, urllib3, requests, Werkzeug
+  Attempting uninstall: idna
+    Found existing installation: idna 2.8
+    Uninstalling idna-2.8:
+      Successfully uninstalled idna-2.8
+  Attempting uninstall: importlib-metadata
+    Found existing installation: importlib-metadata 1.5.0
+    Uninstalling importlib-metadata-1.5.0:
+      Successfully uninstalled importlib-metadata-1.5.0
+  Attempting uninstall: pyrsistent
+    Found existing installation: pyrsistent 0.15.7
+    Uninstalling pyrsistent-0.15.7:
+      Successfully uninstalled pyrsistent-0.15.7
+    Running setup.py install for pyrsistent: started
+    Running setup.py install for pyrsistent: finished with status 'done'
+  Attempting uninstall: PyYAML
+    Found existing installation: PyYAML 5.3
+    Uninstalling PyYAML-5.3:
+      Successfully uninstalled PyYAML-5.3
+    Running setup.py install for PyYAML: started
+    Running setup.py install for PyYAML: finished with status 'done'
+  Attempting uninstall: urllib3
+    Found existing installation: urllib3 1.25.7
+    Uninstalling urllib3-1.25.7:
+      Successfully uninstalled urllib3-1.25.7
+  Attempting uninstall: requests
+    Found existing installation: requests 2.22.0
+    Uninstalling requests-2.22.0:
+      Successfully uninstalled requests-2.22.0
+  Attempting uninstall: Werkzeug
+    Found existing installation: Werkzeug 1.0.0
+    Uninstalling Werkzeug-1.0.0:
+      Successfully uninstalled Werkzeug-1.0.0
+Successfully installed PyYAML-5.3.1 Werkzeug-1.0.1 idna-2.9 importlib-metadata-1.6.0 pyrsistent-0.16.0 requests-2.23.0 urllib3-1.25.8
++ bin/dug dev init
+Cloning into '/var/lib/jenkins/jobs/dug/workspace/dug/kgx'...
+generate .env file...
+generate .env.dev file...
++ bin/functional_test
++ TEST_DIR=/var/lib/jenkins/jobs/dug/workspace/dug/test_dir
++ DUG_TEST_DIR=/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug
++ DUG_TEST_ENV_FILE=/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/docker/.env
++ execute_test
++ rm -rf /var/lib/jenkins/jobs/dug/workspace/dug/test_dir
++ mkdir -p /var/lib/jenkins/jobs/dug/workspace/dug/test_dir
++ cd /var/lib/jenkins/jobs/dug/workspace/dug/test_dir
++ git clone git@github.com:helxplatform/dug.git
+Cloning into 'dug'...
++ cd dug
++ mkdir -p -m777 db/elastic
++ mkdir -p -m777 db/redis
++ mkdir -p -m777 db/neo4j
++ python3 -m venv venv
++ source venv/bin/activate
+++ deactivate nondestructive
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ '[' -n /bin/bash -o -n '' ']'
+++ hash -r
+++ '[' -n '' ']'
+++ unset VIRTUAL_ENV
+++ '[' '!' nondestructive = nondestructive ']'
+++ VIRTUAL_ENV=/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/venv
+++ export VIRTUAL_ENV
+++ _OLD_VIRTUAL_PATH=/var/lib/jenkins/jobs/dug/workspace/dug/venv/bin:/sbin:/usr/sbin:/bin:/usr/bin
+++ PATH=/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/venv/bin:/var/lib/jenkins/jobs/dug/workspace/dug/venv/bin:/sbin:/usr/sbin:/bin:/usr/bin
+++ export PATH
+++ '[' -n '' ']'
+++ '[' -z '' ']'
+++ _OLD_VIRTUAL_PS1=
+++ '[' 'x(venv) ' '!=' x ']'
+++ PS1='(venv) '
+++ export PS1
+++ '[' -n /bin/bash -o -n '' ']'
+++ hash -r
++ pip install -r requirements.txt
+Collecting alabaster==0.7.12 (from -r requirements.txt (line 1))
+  Using cached https://files.pythonhosted.org/packages/10/ad/00b090d23a222943eb0eda509720a404f531a439e803f6538f35136cae9e/alabaster-0.7.12-py2.py3-none-any.whl
+Collecting aniso8601==8.0.0 (from -r requirements.txt (line 2))
+  Using cached https://files.pythonhosted.org/packages/eb/e4/787e104b58eadc1a710738d4e418d7e599e4e778e52cb8e5d5ef6ddd5833/aniso8601-8.0.0-py2.py3-none-any.whl
+Collecting antlr4-python3-runtime==4.8 (from -r requirements.txt (line 3))
+  Using cached https://files.pythonhosted.org/packages/56/02/789a0bddf9c9b31b14c3e79ec22b9656185a803dc31c15f006f9855ece0d/antlr4-python3-runtime-4.8.tar.gz
+Collecting appnope==0.1.0 (from -r requirements.txt (line 4))
+  Using cached https://files.pythonhosted.org/packages/87/a9/7985e6a53402f294c8f0e8eff3151a83f1fb901fa92909bb3ff29b4d22af/appnope-0.1.0-py2.py3-none-any.whl
+Collecting attrs==19.3.0 (from -r requirements.txt (line 5))
+  Using cached https://files.pythonhosted.org/packages/a2/db/4313ab3be961f7a763066401fb77f7748373b6094076ae2bda2806988af6/attrs-19.3.0-py2.py3-none-any.whl
+Collecting Babel==2.8.0 (from -r requirements.txt (line 6))
+  Using cached https://files.pythonhosted.org/packages/15/a1/522dccd23e5d2e47aed4b6a16795b8213e3272c7506e625f2425ad025a19/Babel-2.8.0-py2.py3-none-any.whl
+Collecting backcall==0.1.0 (from -r requirements.txt (line 7))
+  Using cached https://files.pythonhosted.org/packages/84/71/c8ca4f5bb1e08401b916c68003acf0a0655df935d74d93bf3f3364b310e0/backcall-0.1.0.tar.gz
+Collecting biolinkml==1.4.9 (from -r requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/77/09/99da43d8d35afa4df0f74bbf0bb75b8ee00713db3255ccd76f36d4e309c8/biolinkml-1.4.9-py3-none-any.whl
+Collecting bleach==3.1.1 (from -r requirements.txt (line 9))
+  Using cached https://files.pythonhosted.org/packages/6e/87/f88b0e33914420fe11fe8b820c10d045a342c2a015e79ad8309de4bba820/bleach-3.1.1-py2.py3-none-any.whl
+Collecting bmt==0.1.1 (from -r requirements.txt (line 10))
+  Using cached https://files.pythonhosted.org/packages/dd/d0/915b5604b4ddefc5832cc1ab0f42157842c21b9f18ba6060f5d9a4f8c829/bmt-0.1.1-py3-none-any.whl
+Collecting cachetools==4.0.0 (from -r requirements.txt (line 11))
+  Using cached https://files.pythonhosted.org/packages/08/6a/abf83cb951617793fd49c98cb9456860f5df66ff89883c8660aa0672d425/cachetools-4.0.0-py3-none-any.whl
+Collecting certifi==2019.11.28 (from -r requirements.txt (line 12))
+  Using cached https://files.pythonhosted.org/packages/b9/63/df50cac98ea0d5b006c55a399c3bf1db9da7b5a24de7890bc9cfd5dd9e99/certifi-2019.11.28-py2.py3-none-any.whl
+Collecting CFGraph==0.2.1 (from -r requirements.txt (line 13))
+  Using cached https://files.pythonhosted.org/packages/cb/51/3e7e021920cfe2f7d18b672642e13f7dc4f53545d530b52ee6533b6681ca/CFGraph-0.2.1.tar.gz
+Collecting chardet==3.0.4 (from -r requirements.txt (line 14))
+  Using cached https://files.pythonhosted.org/packages/bc/a9/01ffebfb562e4274b6487b4bb1ddec7ca55ec7510b22e4c51f14098443b8/chardet-3.0.4-py2.py3-none-any.whl
+Collecting click==7.1.1 (from -r requirements.txt (line 15))
+  Using cached https://files.pythonhosted.org/packages/dd/c0/4d8f43a9b16e289f36478422031b8a63b54b6ac3b1ba605d602f10dd54d6/click-7.1.1-py2.py3-none-any.whl
+Collecting decorator==4.4.2 (from -r requirements.txt (line 16))
+  Using cached https://files.pythonhosted.org/packages/ed/1b/72a1821152d07cf1d8b6fce298aeb06a7eb90f4d6d41acec9861e7cc6df0/decorator-4.4.2-py2.py3-none-any.whl
+Collecting defusedxml==0.6.0 (from -r requirements.txt (line 17))
+  Using cached https://files.pythonhosted.org/packages/06/74/9b387472866358ebc08732de3da6dc48e44b0aacd2ddaa5cb85ab7e986a2/defusedxml-0.6.0-py2.py3-none-any.whl
+Collecting docutils==0.16 (from -r requirements.txt (line 18))
+  Using cached https://files.pythonhosted.org/packages/81/44/8a15e45ffa96e6cf82956dd8d7af9e666357e16b0d93b253903475ee947f/docutils-0.16-py2.py3-none-any.whl
+Collecting elasticsearch==7.5.1 (from -r requirements.txt (line 19))
+  Using cached https://files.pythonhosted.org/packages/10/60/0c79dde3e81beffeed422599d9ac65419289095186d37a3201739d52a57d/elasticsearch-7.5.1-py2.py3-none-any.whl
+Collecting elasticsearch-dsl==7.1.0 (from -r requirements.txt (line 20))
+  Using cached https://files.pythonhosted.org/packages/07/46/b03326c44aa9693b7879d17fce42fa412470e43cf6035e8addfc5af634c6/elasticsearch_dsl-7.1.0-py2.py3-none-any.whl
+Collecting entrypoints==0.3 (from -r requirements.txt (line 21))
+  Using cached https://files.pythonhosted.org/packages/ac/c6/44694103f8c221443ee6b0041f69e2740d89a25641e62fb4f2ee568f2f9c/entrypoints-0.3-py2.py3-none-any.whl
+Collecting flasgger==0.9.4 (from -r requirements.txt (line 22))
+  Using cached https://files.pythonhosted.org/packages/41/d6/c06817828fc6ef724d6ac60f3f558e048300c5ffd038b60d289e6599c117/flasgger-0.9.4-py2.py3-none-any.whl
+Collecting Flask==1.1.1 (from -r requirements.txt (line 23))
+  Using cached https://files.pythonhosted.org/packages/9b/93/628509b8d5dc749656a9641f4caf13540e2cdec85276964ff8f43bbb1d3b/Flask-1.1.1-py2.py3-none-any.whl
+Collecting Flask-Cors==3.0.8 (from -r requirements.txt (line 24))
+  Using cached https://files.pythonhosted.org/packages/78/38/e68b11daa5d613e3a91e4bf3da76c94ac9ee0d9cd515af9c1ab80d36f709/Flask_Cors-3.0.8-py2.py3-none-any.whl
+Collecting Flask-RESTful==0.3.8 (from -r requirements.txt (line 25))
+  Using cached https://files.pythonhosted.org/packages/e9/83/d0d33c971de2d38e54b0037136c8b8d20b9c83d308bc6c220a25162755fd/Flask_RESTful-0.3.8-py2.py3-none-any.whl
+Collecting graphviz==0.13.2 (from -r requirements.txt (line 26))
+  Using cached https://files.pythonhosted.org/packages/f5/74/dbed754c0abd63768d3a7a7b472da35b08ac442cf87d73d5850a6f32391e/graphviz-0.13.2-py2.py3-none-any.whl
+Collecting gunicorn==20.0.4 (from -r requirements.txt (line 27))
+  Using cached https://files.pythonhosted.org/packages/69/ca/926f7cd3a2014b16870086b2d0fdc84a9e49473c68a8dff8b57f7c156f43/gunicorn-20.0.4-py2.py3-none-any.whl
+Collecting idna==2.8 (from -r requirements.txt (line 28))
+  Using cached https://files.pythonhosted.org/packages/14/2c/cd551d81dbe15200be1cf41cd03869a46fe7226e7450af7a6545bfc474c9/idna-2.8-py2.py3-none-any.whl
+Collecting imagesize==1.2.0 (from -r requirements.txt (line 29))
+  Using cached https://files.pythonhosted.org/packages/31/b2/b5522a0c8d11e4aff83f8342f3f0dea68c2fb25aa44403e420587f0ce204/imagesize-1.2.0-py2.py3-none-any.whl
+Collecting importlib-metadata==1.5.0 (from -r requirements.txt (line 30))
+  Using cached https://files.pythonhosted.org/packages/8b/03/a00d504808808912751e64ccf414be53c29cad620e3de2421135fcae3025/importlib_metadata-1.5.0-py2.py3-none-any.whl
+Collecting incremental==17.5.0 (from -r requirements.txt (line 31))
+  Using cached https://files.pythonhosted.org/packages/f5/1d/c98a587dc06e107115cf4a58b49de20b19222c83d75335a192052af4c4b7/incremental-17.5.0-py2.py3-none-any.whl
+Collecting ipykernel==5.1.4 (from -r requirements.txt (line 32))
+  Using cached https://files.pythonhosted.org/packages/d7/62/d1a5d654b7a21bd3eb99be1b59a608cc18a7a08ed88495457a87c40a0495/ipykernel-5.1.4-py3-none-any.whl
+Collecting ipython==7.13.0 (from -r requirements.txt (line 33))
+  Using cached https://files.pythonhosted.org/packages/61/6f/69f1eec859ce48a86660529b166b6ea466f0f4ab98e4fc0807b835aa22c6/ipython-7.13.0-py3-none-any.whl
+Collecting ipython-genutils==0.2.0 (from -r requirements.txt (line 34))
+  Using cached https://files.pythonhosted.org/packages/fa/bc/9bd3b5c2b4774d5f33b2d544f1460be9df7df2fe42f352135381c347c69a/ipython_genutils-0.2.0-py2.py3-none-any.whl
+Collecting ipywidgets==7.5.1 (from -r requirements.txt (line 35))
+  Using cached https://files.pythonhosted.org/packages/56/a0/dbcf5881bb2f51e8db678211907f16ea0a182b232c591a6d6f276985ca95/ipywidgets-7.5.1-py2.py3-none-any.whl
+Collecting isodate==0.6.0 (from -r requirements.txt (line 36))
+  Using cached https://files.pythonhosted.org/packages/9b/9f/b36f7774ff5ea8e428fdcfc4bb332c39ee5b9362ddd3d40d9516a55221b2/isodate-0.6.0-py2.py3-none-any.whl
+Collecting itsdangerous==1.1.0 (from -r requirements.txt (line 37))
+  Using cached https://files.pythonhosted.org/packages/76/ae/44b03b253d6fade317f32c24d100b3b35c2239807046a4c953c7b89fa49e/itsdangerous-1.1.0-py2.py3-none-any.whl
+Collecting jedi==0.16.0 (from -r requirements.txt (line 38))
+  Using cached https://files.pythonhosted.org/packages/01/67/333e2196b70840f411fd819407b4e98aa3150c2bd24c52154a451f912ef2/jedi-0.16.0-py2.py3-none-any.whl
+Collecting Jinja2==2.11.1 (from -r requirements.txt (line 39))
+  Using cached https://files.pythonhosted.org/packages/27/24/4f35961e5c669e96f6559760042a55b9bcfcdb82b9bdb3c8753dbe042e35/Jinja2-2.11.1-py2.py3-none-any.whl
+Collecting jsonasobj==1.2.1 (from -r requirements.txt (line 40))
+  Using cached https://files.pythonhosted.org/packages/0a/a0/f9951b7ce18718282a00b302f469d6638b25e650783ea416c946355daa3f/jsonasobj-1.2.1.tar.gz
+Collecting jsonschema==3.2.0 (from -r requirements.txt (line 41))
+  Using cached https://files.pythonhosted.org/packages/c5/8f/51e89ce52a085483359217bc72cdbf6e75ee595d5b1d4b5ade40c7e018b8/jsonschema-3.2.0-py2.py3-none-any.whl
+Collecting jupyter==1.0.0 (from -r requirements.txt (line 42))
+  Using cached https://files.pythonhosted.org/packages/83/df/0f5dd132200728a86190397e1ea87cd76244e42d39ec5e88efd25b2abd7e/jupyter-1.0.0-py2.py3-none-any.whl
+Collecting jupyter-client==6.0.0 (from -r requirements.txt (line 43))
+  Using cached https://files.pythonhosted.org/packages/40/75/4c4eb43749e59db3c1c7932b50eaf8c4b8219b1b5644fe379ea796f8dbe5/jupyter_client-6.0.0-py3-none-any.whl
+Collecting jupyter-console==6.1.0 (from -r requirements.txt (line 44))
+  Using cached https://files.pythonhosted.org/packages/0a/89/742fa5a80b552ffcb6a8922712697c6e6828aee7b91ee4ae2b79f00f8401/jupyter_console-6.1.0-py2.py3-none-any.whl
+Collecting jupyter-core==4.6.3 (from -r requirements.txt (line 45))
+  Using cached https://files.pythonhosted.org/packages/63/0d/df2d17cdf389cea83e2efa9a4d32f7d527ba78667e0153a8e676e957b2f7/jupyter_core-4.6.3-py2.py3-none-any.whl
+Collecting MarkupSafe==1.1.1 (from -r requirements.txt (line 46))
+  Using cached https://files.pythonhosted.org/packages/98/7b/ff284bd8c80654e471b769062a9b43cc5d03e7a615048d96f4619df8d420/MarkupSafe-1.1.1-cp37-cp37m-manylinux1_x86_64.whl
+Collecting mistune==0.8.4 (from -r requirements.txt (line 47))
+  Using cached https://files.pythonhosted.org/packages/09/ec/4b43dae793655b7d8a25f76119624350b4d65eb663459eb9603d7f1f0345/mistune-0.8.4-py2.py3-none-any.whl
+Collecting more-itertools==8.2.0 (from -r requirements.txt (line 48))
+  Using cached https://files.pythonhosted.org/packages/72/96/4297306cc270eef1e3461da034a3bebe7c84eff052326b130824e98fc3fb/more_itertools-8.2.0-py3-none-any.whl
+Collecting mypy==0.770 (from -r requirements.txt (line 49))
+  Using cached https://files.pythonhosted.org/packages/64/ac/554f8fc7b56156db7ca9525d5ce66f00cc71f9ae6a43e21a6596b7084d7a/mypy-0.770-cp37-cp37m-manylinux1_x86_64.whl
+Collecting mypy-extensions==0.4.3 (from -r requirements.txt (line 50))
+  Using cached https://files.pythonhosted.org/packages/5c/eb/975c7c080f3223a5cdaff09612f3a5221e4ba534f7039db34c35d95fa6a5/mypy_extensions-0.4.3-py2.py3-none-any.whl
+Collecting nbconvert==5.6.1 (from -r requirements.txt (line 51))
+  Using cached https://files.pythonhosted.org/packages/79/6c/05a569e9f703d18aacb89b7ad6075b404e8a4afde2c26b73ca77bb644b14/nbconvert-5.6.1-py2.py3-none-any.whl
+Collecting nbformat==5.0.4 (from -r requirements.txt (line 52))
+  Using cached https://files.pythonhosted.org/packages/ac/eb/de575b7a64e7ab8d8c95e4c180ccc36deda3f1379186c4ee7adf6c2f1586/nbformat-5.0.4-py3-none-any.whl
+Collecting neo4j==1.7.6 (from -r requirements.txt (line 53))
+  Using cached https://files.pythonhosted.org/packages/ff/94/01746058f78f3ed8909f4fdeb9614789bdf48e8dbe178a64266eb9dd7af2/neo4j-1.7.6.tar.gz
+Collecting neo4jrestclient==2.1.1 (from -r requirements.txt (line 54))
+  Using cached https://files.pythonhosted.org/packages/95/4c/df54ba57f5838fd1ae162462f81d589b8352c6aa17d5b2a7a42e8abba048/neo4jrestclient-2.1.1.tar.gz
+Collecting neobolt==1.7.16 (from -r requirements.txt (line 55))
+  Using cached https://files.pythonhosted.org/packages/0d/b2/eb7c33e1f02cd7bbaf4c237619dd8dc43fa6081f331c2d35b28deb78e259/neobolt-1.7.16.tar.gz
+Collecting neotime==1.7.4 (from -r requirements.txt (line 56))
+  Using cached https://files.pythonhosted.org/packages/0b/7e/ca368a8d8e288be1352d4e2df35da1e01f8aaffbf526695df71630bcb8a6/neotime-1.7.4.tar.gz
+Collecting networkx==2.4 (from -r requirements.txt (line 57))
+  Using cached https://files.pythonhosted.org/packages/41/8f/dd6a8e85946def36e4f2c69c84219af0fa5e832b018c970e92f2ad337e45/networkx-2.4-py3-none-any.whl
+Collecting notebook==6.0.3 (from -r requirements.txt (line 58))
+  Using cached https://files.pythonhosted.org/packages/b1/f1/0a67f09ef53a342403ffa66646ee39273e0ac79ffa5de5dbe2f3e28b5bdf/notebook-6.0.3-py3-none-any.whl
+Collecting numpy==1.18.1 (from -r requirements.txt (line 59))
+  Using cached https://files.pythonhosted.org/packages/63/0c/0261693cc3ad8e2b66e66dc2d2676a2cc17d3efb1c58a70db73754320e47/numpy-1.18.1-cp37-cp37m-manylinux1_x86_64.whl
+Collecting packaging==20.3 (from -r requirements.txt (line 60))
+  Using cached https://files.pythonhosted.org/packages/62/0a/34641d2bf5c917c96db0ded85ae4da25b6cd922d6b794648d4e7e07c88e5/packaging-20.3-py2.py3-none-any.whl
+Collecting pandas==1.0.1 (from -r requirements.txt (line 61))
+  Using cached https://files.pythonhosted.org/packages/61/af/ceb7523e86753d5643ed00e8c17a42bdcfe819782c3449d9bbbf5d01867a/pandas-1.0.1-cp37-cp37m-manylinux1_x86_64.whl
+Collecting pandocfilters==1.4.2 (from -r requirements.txt (line 62))
+  Using cached https://files.pythonhosted.org/packages/4c/ea/236e2584af67bb6df960832731a6e5325fd4441de001767da328c33368ce/pandocfilters-1.4.2.tar.gz
+Collecting parso==0.6.2 (from -r requirements.txt (line 63))
+  Using cached https://files.pythonhosted.org/packages/da/15/888f80e429a971d3838124adde705d7b07650aa3a59f4db07d61f653b8cd/parso-0.6.2-py2.py3-none-any.whl
+Collecting pbr==5.4.4 (from -r requirements.txt (line 64))
+  Using cached https://files.pythonhosted.org/packages/7a/db/a968fd7beb9fe06901c1841cb25c9ccb666ca1b9a19b114d1bbedf1126fc/pbr-5.4.4-py2.py3-none-any.whl
+Collecting pexpect==4.8.0 (from -r requirements.txt (line 65))
+  Using cached https://files.pythonhosted.org/packages/39/7b/88dbb785881c28a102619d46423cb853b46dbccc70d3ac362d99773a78ce/pexpect-4.8.0-py2.py3-none-any.whl
+Collecting pickleshare==0.7.5 (from -r requirements.txt (line 66))
+  Using cached https://files.pythonhosted.org/packages/9a/41/220f49aaea88bc6fa6cba8d05ecf24676326156c23b991e80b3f2fc24c77/pickleshare-0.7.5-py2.py3-none-any.whl
+Collecting pip-check-reqs==2.0.3 (from -r requirements.txt (line 67))
+  Using cached https://files.pythonhosted.org/packages/dd/5b/90581eb7fde676da9e12e42d6730d9ed4cfbd776d1c967c0ba23e02bafa0/pip_check_reqs-2.0.3.tar.gz
+Collecting pluggy==0.13.1 (from -r requirements.txt (line 68))
+  Using cached https://files.pythonhosted.org/packages/a0/28/85c7aa31b80d150b772fbe4a229487bc6644da9ccb7e427dd8cc60cb8a62/pluggy-0.13.1-py2.py3-none-any.whl
+Collecting prefixcommons==0.1.9 (from -r requirements.txt (line 69))
+  Using cached https://files.pythonhosted.org/packages/93/06/6151b38ed558e96a531bfb7736e4fa50f10c9a502d9d8b98f71f5699d443/prefixcommons-0.1.9-py3-none-any.whl
+Collecting prologterms==0.0.6 (from -r requirements.txt (line 70))
+  Using cached https://files.pythonhosted.org/packages/e7/66/cd1904c6268b0f9146e0e3c25ca4993ef52a5077e8d30f9a604c90610c4d/prologterms-0.0.6-py3-none-any.whl
+Collecting prometheus-client==0.7.1 (from -r requirements.txt (line 71))
+  Using cached https://files.pythonhosted.org/packages/b3/23/41a5a24b502d35a4ad50a5bb7202a5e1d9a0364d0c12f56db3dbf7aca76d/prometheus_client-0.7.1.tar.gz
+Collecting prompt-toolkit==3.0.4 (from -r requirements.txt (line 72))
+  Using cached https://files.pythonhosted.org/packages/ab/29/d744cee89937b7e52a5c20ca237a6c77298f757965eb3eb0c653df1bfb14/prompt_toolkit-3.0.4-py3-none-any.whl
+Collecting ptyprocess==0.6.0 (from -r requirements.txt (line 73))
+  Using cached https://files.pythonhosted.org/packages/d1/29/605c2cc68a9992d18dada28206eeada56ea4bd07a239669da41674648b6f/ptyprocess-0.6.0-py2.py3-none-any.whl
+Collecting py==1.8.1 (from -r requirements.txt (line 74))
+  Using cached https://files.pythonhosted.org/packages/99/8d/21e1767c009211a62a8e3067280bfce76e89c9f876180308515942304d2d/py-1.8.1-py2.py3-none-any.whl
+Collecting Pygments==2.6.1 (from -r requirements.txt (line 75))
+  Using cached https://files.pythonhosted.org/packages/2d/68/106af3ae51daf807e9cdcba6a90e518954eb8b70341cee52995540a53ead/Pygments-2.6.1-py3-none-any.whl
+Collecting PyJSG==0.9.1 (from -r requirements.txt (line 76))
+  Using cached https://files.pythonhosted.org/packages/6d/95/3e831de9f7108ad962a070b35d6e7b9017e15ea3fdcbe265d59a5a8e1140/PyJSG-0.9.1-py3-none-any.whl
+Collecting pyparsing==2.4.6 (from -r requirements.txt (line 77))
+  Using cached https://files.pythonhosted.org/packages/5d/bc/1e58593167fade7b544bfe9502a26dc860940a79ab306e651e7f13be68c2/pyparsing-2.4.6-py2.py3-none-any.whl
+Collecting pyrsistent==0.15.7 (from -r requirements.txt (line 78))
+  Using cached https://files.pythonhosted.org/packages/90/aa/cdcf7ef88cc0f831b6f14c8c57318824c9de9913fe8de38e46a98c069a35/pyrsistent-0.15.7.tar.gz
+Collecting PyShEx==0.7.14 (from -r requirements.txt (line 79))
+  Using cached https://files.pythonhosted.org/packages/6b/73/83c1dac6edb9c0093f20022c03d0310670a031d0edf1df22b2a41a30b667/PyShEx-0.7.14-py3-none-any.whl
+Collecting PyShExC==0.7.0 (from -r requirements.txt (line 80))
+  Using cached https://files.pythonhosted.org/packages/15/77/4d948f70b5a36d133603e779be03cce1ecb4be156e9b174d52e67d9f8212/PyShExC-0.7.0-py2.py3-none-any.whl
+Collecting pystache==0.5.4 (from -r requirements.txt (line 81))
+  Using cached https://files.pythonhosted.org/packages/d6/fd/eb8c212053addd941cc90baac307c00ac246ac3fce7166b86434c6eae963/pystache-0.5.4.tar.gz
+Collecting pytest==5.4.0 (from -r requirements.txt (line 82))
+  Using cached https://files.pythonhosted.org/packages/6a/83/7a83c0e85388b0774e06b81b16087da946c05b70604083641266be61793d/pytest-5.4.0-py3-none-any.whl
+Collecting python-dateutil==2.8.1 (from -r requirements.txt (line 83))
+  Using cached https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl
+Collecting python-Levenshtein==0.12.0 (from -r requirements.txt (line 84))
+  Using cached https://files.pythonhosted.org/packages/42/a9/d1785c85ebf9b7dfacd08938dd028209c34a0ea3b1bcdb895208bd40a67d/python-Levenshtein-0.12.0.tar.gz
+Collecting pytz==2019.3 (from -r requirements.txt (line 85))
+  Using cached https://files.pythonhosted.org/packages/e7/f9/f0b53f88060247251bf481fa6ea62cd0d25bf1b11a87888e53ce5b7c8ad2/pytz-2019.3-py2.py3-none-any.whl
+Collecting PyYAML==5.3 (from -r requirements.txt (line 86))
+  Using cached https://files.pythonhosted.org/packages/3d/d9/ea9816aea31beeadccd03f1f8b625ecf8f645bd66744484d162d84803ce5/PyYAML-5.3.tar.gz
+Collecting pyzmq==19.0.0 (from -r requirements.txt (line 87))
+  Using cached https://files.pythonhosted.org/packages/37/d3/46dd789cf7be91d7acd7d6fe0b683b6527ef6f276fb0700a035c37baae27/pyzmq-19.0.0-cp37-cp37m-manylinux1_x86_64.whl
+Collecting qtconsole==4.7.1 (from -r requirements.txt (line 88))
+  Using cached https://files.pythonhosted.org/packages/d6/de/2a0bda85367881e27370a206a561326a99fbb05ab9402f4c4ad59761eec4/qtconsole-4.7.1-py2.py3-none-any.whl
+Collecting QtPy==1.9.0 (from -r requirements.txt (line 89))
+  Using cached https://files.pythonhosted.org/packages/cd/fd/9972948f02e967b691cc0ca1f26124826a3b88cb38f412a8b7935b8c3c72/QtPy-1.9.0-py2.py3-none-any.whl
+Collecting rdflib==4.2.2 (from -r requirements.txt (line 90))
+  Using cached https://files.pythonhosted.org/packages/3c/fe/630bacb652680f6d481b9febbb3e2c3869194a1a5fc3401a4a41195a2f8f/rdflib-4.2.2-py3-none-any.whl
+Collecting rdflib-jsonld==0.4.0 (from -r requirements.txt (line 91))
+  Using cached https://files.pythonhosted.org/packages/ba/48/edaad22fc9de34500699f0c7fc9124385dd425fd18857244f126a6f7df66/rdflib-jsonld-0.4.0.tar.gz
+Collecting redis==3.4.1 (from -r requirements.txt (line 92))
+  Using cached https://files.pythonhosted.org/packages/f0/05/1fc7feedc19c123e7a95cfc9e7892eb6cdd2e5df4e9e8af6384349c1cc3d/redis-3.4.1-py2.py3-none-any.whl
+Collecting requests==2.22.0 (from -r requirements.txt (line 93))
+  Using cached https://files.pythonhosted.org/packages/51/bd/23c926cd341ea6b7dd0b2a00aba99ae0f828be89d72b2190f27c11d4b7fb/requests-2.22.0-py2.py3-none-any.whl
+Collecting requests-cache==0.5.2 (from -r requirements.txt (line 94))
+  Using cached https://files.pythonhosted.org/packages/7f/55/9b1c40eb83c16d8fc79c5f6c2ffade04208b080670fbfc35e0a5effb5a92/requests_cache-0.5.2-py2.py3-none-any.whl
+Collecting Send2Trash==1.5.0 (from -r requirements.txt (line 95))
+  Using cached https://files.pythonhosted.org/packages/49/46/c3dc27481d1cc57b9385aff41c474ceb7714f7935b1247194adae45db714/Send2Trash-1.5.0-py3-none-any.whl
+Collecting ShExJSG==0.6.8 (from -r requirements.txt (line 96))
+  Using cached https://files.pythonhosted.org/packages/9f/f1/91c395b99a613d360b07c94475b52b6ca6779ab53332e2a6df5bb79f8c08/ShExJSG-0.6.8-py2.py3-none-any.whl
+Collecting six==1.14.0 (from -r requirements.txt (line 97))
+  Using cached https://files.pythonhosted.org/packages/65/eb/1f97cb97bfc2390a276969c6fae16075da282f5058082d4cb10c6c5c1dba/six-1.14.0-py2.py3-none-any.whl
+Collecting snowballstemmer==2.0.0 (from -r requirements.txt (line 98))
+  Using cached https://files.pythonhosted.org/packages/7d/4b/cdf1113a0e88b641893b814e9c36f69a6fda28cd88b62c7f0d858cde3166/snowballstemmer-2.0.0-py2.py3-none-any.whl
+Collecting sparql-slurper==0.3.3 (from -r requirements.txt (line 99))
+  Using cached https://files.pythonhosted.org/packages/59/53/51dd6d6dac479775e4ee9b416c38ba5735f697d9f5da72fbde63efa266be/sparql_slurper-0.3.3-py3-none-any.whl
+Collecting SPARQLWrapper==1.8.5 (from -r requirements.txt (line 100))
+  Using cached https://files.pythonhosted.org/packages/00/9b/443fbe06996c080ee9c1f01b04e2f683b2b07e149905f33a2397ee3b80a2/SPARQLWrapper-1.8.5-py3-none-any.whl
+Collecting Sphinx==2.4.4 (from -r requirements.txt (line 101))
+  Using cached https://files.pythonhosted.org/packages/16/c1/1c8016475cb612a64ce613c6b61c16224fe6dcfd9527792016ce611c231c/Sphinx-2.4.4-py3-none-any.whl
+Collecting sphinx-click==2.3.1 (from -r requirements.txt (line 102))
+  Using cached https://files.pythonhosted.org/packages/57/cc/ac0247c13a3d9b8afa773d565ac9cf255a91ec3600f8d6624aede3113cb9/sphinx_click-2.3.1-py2.py3-none-any.whl
+Collecting sphinx-rtd-theme==0.4.3 (from -r requirements.txt (line 103))
+  Using cached https://files.pythonhosted.org/packages/60/b4/4df37087a1d36755e3a3bfd2a30263f358d2dea21938240fa02313d45f51/sphinx_rtd_theme-0.4.3-py2.py3-none-any.whl
+Collecting sphinxcontrib-applehelp==1.0.2 (from -r requirements.txt (line 104))
+  Using cached https://files.pythonhosted.org/packages/dc/47/86022665a9433d89a66f5911b558ddff69861766807ba685de2e324bd6ed/sphinxcontrib_applehelp-1.0.2-py2.py3-none-any.whl
+Collecting sphinxcontrib-devhelp==1.0.2 (from -r requirements.txt (line 105))
+  Using cached https://files.pythonhosted.org/packages/c5/09/5de5ed43a521387f18bdf5f5af31d099605c992fd25372b2b9b825ce48ee/sphinxcontrib_devhelp-1.0.2-py2.py3-none-any.whl
+Collecting sphinxcontrib-htmlhelp==1.0.3 (from -r requirements.txt (line 106))
+  Using cached https://files.pythonhosted.org/packages/36/62/8222554b29b3acde8420128d6d3999c5904d40922ef4b6ccb370e2be7421/sphinxcontrib_htmlhelp-1.0.3-py2.py3-none-any.whl
+Collecting sphinxcontrib-jsmath==1.0.1 (from -r requirements.txt (line 107))
+  Using cached https://files.pythonhosted.org/packages/c2/42/4c8646762ee83602e3fb3fbe774c2fac12f317deb0b5dbeeedd2d3ba4b77/sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.whl
+Collecting sphinxcontrib-qthelp==1.0.3 (from -r requirements.txt (line 108))
+  Using cached https://files.pythonhosted.org/packages/2b/14/05f9206cf4e9cfca1afb5fd224c7cd434dcc3a433d6d9e4e0264d29c6cdb/sphinxcontrib_qthelp-1.0.3-py2.py3-none-any.whl
+Collecting sphinxcontrib-serializinghtml==1.1.4 (from -r requirements.txt (line 109))
+  Using cached https://files.pythonhosted.org/packages/9a/ca/bfad79b79b3821d0c6361c431f0ef4aec16ee248338b2c2013008b34d345/sphinxcontrib_serializinghtml-1.1.4-py2.py3-none-any.whl
+Collecting stringcase==1.2.0 (from -r requirements.txt (line 110))
+  Using cached https://files.pythonhosted.org/packages/f3/1f/1241aa3d66e8dc1612427b17885f5fcd9c9ee3079fc0d28e9a3aeeb36fa3/stringcase-1.2.0.tar.gz
+Collecting terminado==0.8.3 (from -r requirements.txt (line 111))
+  Using cached https://files.pythonhosted.org/packages/ff/96/1d9a2c23990aea8f8e0b5c3b6627d03196a73771a17a2d9860bbe9823ab6/terminado-0.8.3-py2.py3-none-any.whl
+Collecting terminaltables==3.1.0 (from -r requirements.txt (line 112))
+  Using cached https://files.pythonhosted.org/packages/9b/c4/4a21174f32f8a7e1104798c445dacdc1d4df86f2f26722767034e4de4bff/terminaltables-3.1.0.tar.gz
+Collecting testpath==0.4.4 (from -r requirements.txt (line 113))
+  Using cached https://files.pythonhosted.org/packages/1b/9e/1a170feaa54f22aeb5a5d16c9015e82234275a3c8ab630b552493f9cb8a9/testpath-0.4.4-py2.py3-none-any.whl
+Collecting tornado==6.0.4 (from -r requirements.txt (line 114))
+  Using cached https://files.pythonhosted.org/packages/95/84/119a46d494f008969bf0c775cb2c6b3579d3c4cc1bb1b41a022aa93ee242/tornado-6.0.4.tar.gz
+Collecting traitlets==4.3.3 (from -r requirements.txt (line 115))
+  Using cached https://files.pythonhosted.org/packages/ca/ab/872a23e29cec3cf2594af7e857f18b687ad21039c1f9b922fac5b9b142d5/traitlets-4.3.3-py2.py3-none-any.whl
+Collecting typed-ast==1.4.1 (from -r requirements.txt (line 116))
+  Using cached https://files.pythonhosted.org/packages/5d/10/0c1e8aa723a2b0c4032e048d8e511df82c8a1262f0e1df5e4c54eb2613e9/typed_ast-1.4.1-cp37-cp37m-manylinux1_x86_64.whl
+Collecting typing-extensions==3.7.4.1 (from -r requirements.txt (line 117))
+  Using cached https://files.pythonhosted.org/packages/03/92/705fe8aca27678e01bbdd7738173b8e7df0088a2202c80352f664630d638/typing_extensions-3.7.4.1-py3-none-any.whl
+Collecting urllib3==1.25.7 (from -r requirements.txt (line 118))
+  Using cached https://files.pythonhosted.org/packages/b4/40/a9837291310ee1ccc242ceb6ebfd9eb21539649f193a7c8c86ba15b98539/urllib3-1.25.7-py2.py3-none-any.whl
+Collecting validators==0.14.2 (from -r requirements.txt (line 119))
+  Using cached https://files.pythonhosted.org/packages/4d/56/9b48c918ef118ea12b90f227c4498ed4703b418bdd8fb49479dfcbeae4ef/validators-0.14.2.tar.gz
+Collecting wcwidth==0.1.8 (from -r requirements.txt (line 120))
+  Using cached https://files.pythonhosted.org/packages/58/b4/4850a0ccc6f567cc0ebe7060d20ffd4258b8210efadc259da62dc6ed9c65/wcwidth-0.1.8-py2.py3-none-any.whl
+Collecting webencodings==0.5.1 (from -r requirements.txt (line 121))
+  Using cached https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
+Collecting Werkzeug==1.0.0 (from -r requirements.txt (line 122))
+  Using cached https://files.pythonhosted.org/packages/ba/a5/d6f8a6e71f15364d35678a4ec8a0186f980b3bd2545f40ad51dd26a87fb1/Werkzeug-1.0.0-py2.py3-none-any.whl
+Collecting widgetsnbextension==3.5.1 (from -r requirements.txt (line 123))
+  Using cached https://files.pythonhosted.org/packages/6c/7b/7ac231c20d2d33c445eaacf8a433f4e22c60677eb9776c7c5262d7ddee2d/widgetsnbextension-3.5.1-py2.py3-none-any.whl
+Collecting zipp==3.1.0 (from -r requirements.txt (line 124))
+  Using cached https://files.pythonhosted.org/packages/b2/34/bfcb43cc0ba81f527bc4f40ef41ba2ff4080e047acb0586b56b3d017ace4/zipp-3.1.0-py3-none-any.whl
+Collecting argparse>=1.4.0 (from biolinkml==1.4.9->-r requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/f2/94/3af39d34be01a24a6e65433d19e107099374224905f1e0cc6bbe1fd22a2f/argparse-1.4.0-py2.py3-none-any.whl
+Requirement already satisfied: setuptools>=3.0 in ./venv/lib/python3.7/site-packages (from gunicorn==20.0.4->-r requirements.txt (line 27)) (40.8.0)
+Requirement already satisfied: pip>=10.0.1 in ./venv/lib/python3.7/site-packages (from pip-check-reqs==2.0.3->-r requirements.txt (line 67)) (19.0.3)
+Installing collected packages: alabaster, aniso8601, antlr4-python3-runtime, appnope, attrs, pytz, Babel, backcall, urllib3, idna, certifi, chardet, requests, jsonasobj, PyJSG, six, isodate, pyparsing, rdflib, ShExJSG, rdflib-jsonld, PyShExC, argparse, zipp, importlib-metadata, pyrsistent, jsonschema, graphviz, PyYAML, prefixcommons, click, prologterms, CFGraph, SPARQLWrapper, pbr, sparql-slurper, PyShEx, biolinkml, webencodings, bleach, bmt, cachetools, decorator, defusedxml, docutils, elasticsearch, python-dateutil, elasticsearch-dsl, entrypoints, MarkupSafe, Jinja2, itsdangerous, Werkzeug, Flask, mistune, flasgger, Flask-Cors, Flask-RESTful, gunicorn, imagesize, incremental, tornado, pyzmq, ipython-genutils, traitlets, jupyter-core, jupyter-client, ptyprocess, pexpect, Pygments, wcwidth, prompt-toolkit, parso, jedi, pickleshare, ipython, ipykernel, nbformat, prometheus-client, Send2Trash, terminado, pandocfilters, testpath, nbconvert, notebook, widgetsnbextension, ipywidgets, jupyter-console, QtPy, qtconsole, jupyter, more-itertools, typed-ast, mypy-extensions, typing-extensions, mypy, neobolt, neotime, neo4j, neo4jrestclient, networkx, numpy, packaging, pandas, pip-check-reqs, pluggy, py, pystache, pytest, python-Levenshtein, redis, requests-cache, snowballstemmer, sphinxcontrib-devhelp, sphinxcontrib-htmlhelp, sphinxcontrib-jsmath, sphinxcontrib-serializinghtml, sphinxcontrib-qthelp, sphinxcontrib-applehelp, Sphinx, sphinx-click, sphinx-rtd-theme, stringcase, terminaltables, validators
+  Running setup.py install for antlr4-python3-runtime: started
+    Running setup.py install for antlr4-python3-runtime: finished with status 'done'
+  Running setup.py install for backcall: started
+    Running setup.py install for backcall: finished with status 'done'
+  Running setup.py install for jsonasobj: started
+    Running setup.py install for jsonasobj: finished with status 'done'
+  Running setup.py install for rdflib-jsonld: started
+    Running setup.py install for rdflib-jsonld: finished with status 'done'
+  Running setup.py install for pyrsistent: started
+    Running setup.py install for pyrsistent: finished with status 'done'
+  Running setup.py install for PyYAML: started
+    Running setup.py install for PyYAML: finished with status 'done'
+  Running setup.py install for CFGraph: started
+    Running setup.py install for CFGraph: finished with status 'done'
+  Running setup.py install for tornado: started
+    Running setup.py install for tornado: finished with status 'done'
+  Running setup.py install for prometheus-client: started
+    Running setup.py install for prometheus-client: finished with status 'done'
+  Running setup.py install for pandocfilters: started
+    Running setup.py install for pandocfilters: finished with status 'done'
+  Running setup.py install for neobolt: started
+    Running setup.py install for neobolt: finished with status 'done'
+  Running setup.py install for neotime: started
+    Running setup.py install for neotime: finished with status 'done'
+  Running setup.py install for neo4j: started
+    Running setup.py install for neo4j: finished with status 'done'
+  Running setup.py install for neo4jrestclient: started
+    Running setup.py install for neo4jrestclient: finished with status 'done'
+  Running setup.py install for pip-check-reqs: started
+    Running setup.py install for pip-check-reqs: finished with status 'done'
+  Running setup.py install for pystache: started
+    Running setup.py install for pystache: finished with status 'done'
+  Running setup.py install for python-Levenshtein: started
+    Running setup.py install for python-Levenshtein: finished with status 'done'
+  Running setup.py install for stringcase: started
+    Running setup.py install for stringcase: finished with status 'done'
+  Running setup.py install for terminaltables: started
+    Running setup.py install for terminaltables: finished with status 'done'
+  Running setup.py install for validators: started
+    Running setup.py install for validators: finished with status 'done'
+Successfully installed Babel-2.8.0 CFGraph-0.2.1 Flask-1.1.1 Flask-Cors-3.0.8 Flask-RESTful-0.3.8 Jinja2-2.11.1 MarkupSafe-1.1.1 PyJSG-0.9.1 PyShEx-0.7.14 PyShExC-0.7.0 PyYAML-5.3 Pygments-2.6.1 QtPy-1.9.0 SPARQLWrapper-1.8.5 Send2Trash-1.5.0 ShExJSG-0.6.8 Sphinx-2.4.4 Werkzeug-1.0.0 alabaster-0.7.12 aniso8601-8.0.0 antlr4-python3-runtime-4.8 appnope-0.1.0 argparse-1.4.0 attrs-19.3.0 backcall-0.1.0 biolinkml-1.4.9 bleach-3.1.1 bmt-0.1.1 cachetools-4.0.0 certifi-2019.11.28 chardet-3.0.4 click-7.1.1 decorator-4.4.2 defusedxml-0.6.0 docutils-0.16 elasticsearch-7.5.1 elasticsearch-dsl-7.1.0 entrypoints-0.3 flasgger-0.9.4 graphviz-0.13.2 gunicorn-20.0.4 idna-2.8 imagesize-1.2.0 importlib-metadata-1.5.0 incremental-17.5.0 ipykernel-5.1.4 ipython-7.13.0 ipython-genutils-0.2.0 ipywidgets-7.5.1 isodate-0.6.0 itsdangerous-1.1.0 jedi-0.16.0 jsonasobj-1.2.1 jsonschema-3.2.0 jupyter-1.0.0 jupyter-client-6.0.0 jupyter-console-6.1.0 jupyter-core-4.6.3 mistune-0.8.4 more-itertools-8.2.0 mypy-0.770 mypy-extensions-0.4.3 nbconvert-5.6.1 nbformat-5.0.4 neo4j-1.7.6 neo4jrestclient-2.1.1 neobolt-1.7.16 neotime-1.7.4 networkx-2.4 notebook-6.0.3 numpy-1.18.1 packaging-20.3 pandas-1.0.1 pandocfilters-1.4.2 parso-0.6.2 pbr-5.4.4 pexpect-4.8.0 pickleshare-0.7.5 pip-check-reqs-2.0.3 pluggy-0.13.1 prefixcommons-0.1.9 prologterms-0.0.6 prometheus-client-0.7.1 prompt-toolkit-3.0.4 ptyprocess-0.6.0 py-1.8.1 pyparsing-2.4.6 pyrsistent-0.15.7 pystache-0.5.4 pytest-5.4.0 python-Levenshtein-0.12.0 python-dateutil-2.8.1 pytz-2019.3 pyzmq-19.0.0 qtconsole-4.7.1 rdflib-4.2.2 rdflib-jsonld-0.4.0 redis-3.4.1 requests-2.22.0 requests-cache-0.5.2 six-1.14.0 snowballstemmer-2.0.0 sparql-slurper-0.3.3 sphinx-click-2.3.1 sphinx-rtd-theme-0.4.3 sphinxcontrib-applehelp-1.0.2 sphinxcontrib-devhelp-1.0.2 sphinxcontrib-htmlhelp-1.0.3 sphinxcontrib-jsmath-1.0.1 sphinxcontrib-qthelp-1.0.3 sphinxcontrib-serializinghtml-1.1.4 stringcase-1.2.0 terminado-0.8.3 terminaltables-3.1.0 testpath-0.4.4 tornado-6.0.4 traitlets-4.3.3 typed-ast-1.4.1 typing-extensions-3.7.4.1 urllib3-1.25.7 validators-0.14.2 wcwidth-0.1.8 webencodings-0.5.1 widgetsnbextension-3.5.1 zipp-3.1.0
+You are using pip version 19.0.3, however version 20.2b1 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
++ bin/dug stack up -d
+Cloning into '/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx'...
+generate .env file...
+generate .env.dev file...
+Creating network "dug_dug-network" with driver "bridge"
+Pulling api (heliumdatastage/dug:latest)...
+latest: Pulling from heliumdatastage/dug
+Digest: sha256:fbe07319bfe8fa04f04bb67d76c3e292da0a8e2f34e04bd2548d678e6e6c754d
+Status: Downloaded newer image for heliumdatastage/dug:latest
+Creating dug_redis_1 ... 
+Creating dug_api_1   ... 
+Creating dug_elasticsearch_1 ... 
+Creating dug_neo4j_1         ... 
+[4A[2KCreating dug_redis_1         ... [32mdone[0m[4B[3A[2KCreating dug_api_1           ... [32mdone[0m[3B[1A[2KCreating dug_neo4j_1         ... [32mdone[0m[1B[2A[2KCreating dug_elasticsearch_1 ... [32mdone[0m[2B+ wait_for_elastic localhost:9200
++ host=localhost:9200
++ source /var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/docker/.env
+++ NEO4J_PASSWORD=27904
+++ NEO4J_HOST=neo4j
+++ NEO4J_DATA=/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/db/neo4j
+++ NEO4J_CPU_LIMIT=2
+++ NEO4J_CPU_RESERVATION=1
+++ NEO4J_MEM_LIMIT=3G
+++ NEO4J_MEM_RESERVATION=2G
+++ ELASTIC_DATA=/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/db/elastic
+++ ELASTIC_PASSWORD=27904
+++ ELASTIC_API_HOST=elasticsearch
+++ ELASTIC_USERNAME=elastic
+++ REDIS_PASSWORD=27904
+++ REDIS_HOST=redis
+++ REDIS_PORT=6379
+++ REDIS_DATA=/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/db/redis
+++ API_WORKERS=4
+++ API_PORT=5551
+++ API_TIMEOUT=10
++ ELASTIC_AUTH=elastic:27904
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
++ printf .
+.+ sleep 1
+++ curl -u elastic:27904 --output /dev/null --silent --head --fail localhost:9200
+++ curl -u elastic:27904 --write-out '%{http_code}' --silent --output /dev/null localhost:9200
++ response=200
++ '[' 200 = 200 ']'
+++ curl -u elastic:27904 -fsSL 'localhost:9200/_cat/health?h=status'
++ health=green
++ echo 'health: green'
+health: green
++ [[ green == *green* ]]
++ echo 'Elastic Search is up'
+Elastic Search is up
++ bin/dug test
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   353  100   353    0     0  16074      0 --:--:-- --:--:-- --:--:-- 16809
+{"error":{"root_cause":[{"type":"index_not_found_exception","reason":"no such index [test]","resource.type":"index_or_alias","resource.id":"test","index_uuid":"_na_","index":"test"}],"type":"index_not_found_exception","reason":"no such index [test]","resource.type":"index_or_alias","resource.id":"test","index_uuid":"_na_","index":"test"},"status":404}Traceback (most recent call last):
+  File "/opt/python37/lib/python3.7/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/opt/python37/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/ingest.py", line 5, in <module>
+    from dug.core import Search
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/core.py", line 2, in <module>
+    from dug.annotate import TOPMedStudyAnnotator
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/annotate.py", line 9, in <module>
+    from kgx import NeoTransformer, JsonTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/__init__.py", line 8, in <module>
+    from kgx.transformers.pandas_transformer import PandasTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/transformers/pandas_transformer.py", line 9, in <module>
+    from ordered_set import OrderedSet
+ModuleNotFoundError: No module named 'ordered_set'
+Traceback (most recent call last):
+  File "/opt/python37/lib/python3.7/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/opt/python37/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/ingest.py", line 5, in <module>
+    from dug.core import Search
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/core.py", line 2, in <module>
+    from dug.annotate import TOPMedStudyAnnotator
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/annotate.py", line 9, in <module>
+    from kgx import NeoTransformer, JsonTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/__init__.py", line 8, in <module>
+    from kgx.transformers.pandas_transformer import PandasTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/transformers/pandas_transformer.py", line 9, in <module>
+    from ordered_set import OrderedSet
+ModuleNotFoundError: No module named 'ordered_set'
+Traceback (most recent call last):
+  File "/opt/python37/lib/python3.7/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/opt/python37/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/core.py", line 2, in <module>
+    from dug.annotate import TOPMedStudyAnnotator
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/annotate.py", line 9, in <module>
+    from kgx import NeoTransformer, JsonTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/__init__.py", line 8, in <module>
+    from kgx.transformers.pandas_transformer import PandasTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/transformers/pandas_transformer.py", line 9, in <module>
+    from ordered_set import OrderedSet
+ModuleNotFoundError: No module named 'ordered_set'
+Traceback (most recent call last):
+  File "/opt/python37/lib/python3.7/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/opt/python37/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/core.py", line 2, in <module>
+    from dug.annotate import TOPMedStudyAnnotator
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/annotate.py", line 9, in <module>
+    from kgx import NeoTransformer, JsonTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/__init__.py", line 8, in <module>
+    from kgx.transformers.pandas_transformer import PandasTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/transformers/pandas_transformer.py", line 9, in <module>
+    from ordered_set import OrderedSet
+ModuleNotFoundError: No module named 'ordered_set'
+Traceback (most recent call last):
+  File "/opt/python37/lib/python3.7/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/opt/python37/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/ingest.py", line 5, in <module>
+    from dug.core import Search
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/core.py", line 2, in <module>
+    from dug.annotate import TOPMedStudyAnnotator
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/annotate.py", line 9, in <module>
+    from kgx import NeoTransformer, JsonTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/__init__.py", line 8, in <module>
+    from kgx.transformers.pandas_transformer import PandasTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/transformers/pandas_transformer.py", line 9, in <module>
+    from ordered_set import OrderedSet
+ModuleNotFoundError: No module named 'ordered_set'
+Traceback (most recent call last):
+  File "/opt/python37/lib/python3.7/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/opt/python37/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/core.py", line 2, in <module>
+    from dug.annotate import TOPMedStudyAnnotator
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/dug/annotate.py", line 9, in <module>
+    from kgx import NeoTransformer, JsonTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/__init__.py", line 8, in <module>
+    from kgx.transformers.pandas_transformer import PandasTransformer
+  File "/var/lib/jenkins/jobs/dug/workspace/dug/test_dir/dug/kgx/kgx/transformers/pandas_transformer.py", line 9, in <module>
+    from ordered_set import OrderedSet
+ModuleNotFoundError: No module named 'ordered_set'
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   116  100    80  100    36    149     67 --:--:-- --:--:-- --:--:--   150
+{"status": "success", "result": {"total_items": 0}, "message": "Search result"}
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   116  100    80  100    36   2777   1249 --:--:-- --:--:-- --:--:--  2857
+{"status": "success", "result": {"total_items": 0}, "message": "Search result"}
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   117  100    80  100    37   2738   1266 --:--:-- --:--:-- --:--:--  2758
+{"status": "success", "result": {"total_items": 0}, "message": "Search result"}
++ bin/dug stack down
+Stopping dug_neo4j_1         ... 
+Stopping dug_elasticsearch_1 ... 
+Stopping dug_redis_1         ... 
+Stopping dug_api_1           ... 
+[2A[2KStopping dug_redis_1         ... [32mdone[0m[2B[1A[2KStopping dug_api_1           ... [32mdone[0m[1B[3A[2KStopping dug_elasticsearch_1 ... [32mdone[0m[3B[4A[2KStopping dug_neo4j_1         ... [32mdone[0m[4BRemoving dug_neo4j_1         ... 
+Removing dug_elasticsearch_1 ... 
+Removing dug_redis_1         ... 
+Removing dug_api_1           ... 
+[1A[2KRemoving dug_api_1           ... [32mdone[0m[1B[2A[2KRemoving dug_redis_1         ... [32mdone[0m[2B[4A[2KRemoving dug_neo4j_1         ... [32mdone[0m[4B[3A[2KRemoving dug_elasticsearch_1 ... [32mdone[0m[3BRemoving network dug_dug-network
++ exit 0
++ '[' 0 -ne 0 ']'
++ docker push heliumdatastage/dug:develop-v0.0.4
+The push refers to repository [docker.io/heliumdatastage/dug]
+932af856d705: Preparing
+55d20493aa54: Preparing
+42d788b45702: Preparing
+40602570d518: Preparing
+81e7e95003a5: Preparing
+8e8fe77dffa4: Preparing
+bdc3a0723efa: Preparing
+f2cb0ecef392: Preparing
+8e8fe77dffa4: Waiting
+bdc3a0723efa: Waiting
+f2cb0ecef392: Waiting
+40602570d518: Layer already exists
+81e7e95003a5: Layer already exists
+8e8fe77dffa4: Layer already exists
+bdc3a0723efa: Layer already exists
+f2cb0ecef392: Layer already exists
+55d20493aa54: Pushed
+42d788b45702: Pushed
+932af856d705: Pushed
+develop-v0.0.4: digest: sha256:7c10f998415a53e7ff8a227183a14b8fb8e6f2304d52494c60dc939343a03820 size: 1999
++ docker push heliumdatastage/dug:develop-latest
+The push refers to repository [docker.io/heliumdatastage/dug]
+932af856d705: Preparing
+55d20493aa54: Preparing
+42d788b45702: Preparing
+40602570d518: Preparing
+81e7e95003a5: Preparing
+8e8fe77dffa4: Preparing
+bdc3a0723efa: Preparing
+f2cb0ecef392: Preparing
+8e8fe77dffa4: Waiting
+bdc3a0723efa: Waiting
+f2cb0ecef392: Waiting
+81e7e95003a5: Layer already exists
+55d20493aa54: Layer already exists
+40602570d518: Layer already exists
+42d788b45702: Layer already exists
+932af856d705: Layer already exists
+bdc3a0723efa: Layer already exists
+f2cb0ecef392: Layer already exists
+8e8fe77dffa4: Layer already exists
+develop-latest: digest: sha256:7c10f998415a53e7ff8a227183a14b8fb8e6f2304d52494c60dc939343a03820 size: 1999
++ docker images -a
++ grep heliumdatastage/dug
++ xargs docker rmi -f
++ awk '{print $3}'
+Untagged: heliumdatastage/dug:develop-latest
+Untagged: heliumdatastage/dug:develop-v0.0.4
+Untagged: heliumdatastage/dug@sha256:7c10f998415a53e7ff8a227183a14b8fb8e6f2304d52494c60dc939343a03820
+Deleted: sha256:16079732cecb8d8be3ac336a1c5601abcd56e84efc3c89d82a8ec0a9e8d53561
+Deleted: sha256:9704633afb349e706cbb5476f31501020fb31f344c6b1b01595bc70f044e6c55
+Deleted: sha256:20290c0df5c0a2763f681440cbe08a0fb06c4118a83562841922d4b42e7e2e97
+Deleted: sha256:12321c0ec09cd2346fcc92f838338dc55ff3d05227b7e2e3a0fc191ea4c90c24
+Deleted: sha256:ebf4a1f898bfce3c5022f4e35091ace910cdbf575ce1faa604863572349694e0
+Deleted: sha256:8c8f07716aa3933cf2625fccea5917d715d2eca0d59b675f4994b9da327e3c00
+Deleted: sha256:09b9c17394c9df9602a8717fa6a386ea01cb26a7220d1a41d90adc8a4d858bc1
+Deleted: sha256:61b7995faf3dbf27f46eeb82776783ffd528a1987576d7b6ebaf3ff7726c1f45
+Deleted: sha256:3fb690796261434e4bd58bd08ce86c645d7ad33bb5221fa586fe906b4b041e3a
+Deleted: sha256:017ddd5d0ab8f63f41dadf6d51dcb4d885df7fd1a6dbb8432193aaceaac870f3
+Deleted: sha256:3d22b27bdf136c258f3f5dd0ec410446525c3df38650747efa20cc6dda370bab
+Deleted: sha256:6d4a13e4d6d07329b7a4e4a6fbc401c03935c745245fa028a042822c12fbf4b5
+Deleted: sha256:74a342247b4728c6bb70f72d5e27beab31cde2e6a7cd37a53bd93ad8a7028a5f
+Deleted: sha256:d1a5bdd90b32ef54c9dde8abe72d29e5770a6b9f4763a4f2609d6f711edd42c6
+Deleted: sha256:72e6a179af5f7cc01f275f97546c90482e1c71bf98bad5732c77bab5a1ee8010
+Deleted: sha256:c20cef5259aa281d2b0a7c471c9c3f56a9689aeb7f2ec8ed5e3329535e3f0695
+Untagged: heliumdatastage/dug:latest
+Untagged: heliumdatastage/dug@sha256:fbe07319bfe8fa04f04bb67d76c3e292da0a8e2f34e04bd2548d678e6e6c754d
+Deleted: sha256:234d3771e6f26a044cc0a5818834e23111cba772e8cc57901109a0529a0fb25c
+Deleted: sha256:305a4377962e33a177ff7ab53a23c6e5921f1c30513c7af2ffdc5158c300516f
+Deleted: sha256:98332804be70cabd936099a2d2044ba37473e2e74282fd898e73476b8c445e82
+Deleted: sha256:419c055eb9e8c36df78edadc11187bae4b512f18dbdf803070b7cb6bf2f581a8
+Error: No such image: 16079732cecb
+Email was triggered for: Success
+Sending email for trigger: Success
+Sending email to: acrerar.contractor@rti.org bennettc@renci.org
+Finished: SUCCESS

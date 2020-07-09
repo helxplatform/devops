@@ -1,0 +1,24 @@
+commit c73a581c57f3f463e478408c6c61325626829362
+tree 508de0ea7cbfe402cbc65261bf5b7f4b00ce3c15
+parent be8d5b9d358f6f0cd0c37a3ef1386780dceb4e2e
+author alexwaldrop <alex.waldrop.jr@gmail.com> 2020-07-09 13:43:57 -0400
+committer alexwaldrop <alex.waldrop.jr@gmail.com> 2020-07-09 13:43:57 -0400
+
+    Modifications to tagged_crawl
+    
+    Flattened the search terms added to elastic into a single list called 'search_targets'
+    Updated ES query to reflect new search structure
+    Added logic to skip certain identifiers for now because they return massive freaking graphs
+
+
+:100644 100644 43bdd4f3f82add34db31f9553ff787316ed4578d 59ccf4bd5bda9365c0c5f0aceabcd91ae13e7d04 M	dug/core.py
+commit be8d5b9d358f6f0cd0c37a3ef1386780dceb4e2e
+tree 13b9bf92cd0778dcfef6c30aa253c1ba91e087c5
+parent 6899518aa7bb47db2dd54d09e2fd3179e0664e35
+author alexwaldrop <alex.waldrop.jr@gmail.com> 2020-07-09 13:43:27 -0400
+committer alexwaldrop <alex.waldrop.jr@gmail.com> 2020-07-09 13:43:27 -0400
+
+    Added HP to curie map for diseases
+
+
+:100644 100644 ed9e9727a5893edc7a105b1a4531290eeee9f56e 5c8602632f664020c5da7177ae58b3514b6da7b2 M	dug/tranql.py

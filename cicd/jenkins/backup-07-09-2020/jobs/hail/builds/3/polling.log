@@ -1,0 +1,11 @@
+Started on Jul 1, 2020 4:49:41 PM
+Started by event from 140.82.115.244 ⇒ https://stars-app.renci.org:8083/jenkins/github-webhook/ on Wed Jul 01 16:49:41 EDT 2020
+Using strategy: Default
+[poll] Last Built Revision: Revision 11287ec6709e157b702b789ebcd5775517289bfe (refs/remotes/origin/develop)
+No credentials specified
+ > git --version # timeout=10
+ > git ls-remote -h https://github.com/helxplatform/helx-hail.git # timeout=10
+Found 3 remote heads on https://github.com/helxplatform/helx-hail.git
+[poll] Latest remote head revision on refs/heads/develop is: 4dc55721c03a57aad08a7a6fe4aa41b8f638439c
+Done. Took 0.25 sec
+Changes found

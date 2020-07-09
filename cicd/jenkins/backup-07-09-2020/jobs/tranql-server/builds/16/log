@@ -1,0 +1,871 @@
+Started by user [8mha:////4K9RYymFaggB3y3D+hH+VqHqTrglxLVLwFvh6ZMVAda9AAAAmh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAz+EgY+/dLi1CL9pNS8vNSSkmQANcXSfcMAAAA=[0mCharles Bennett
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/tranql-server/workspace
+No credentials specified
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/NCATS-Tangerine/tranql.git # timeout=10
+Fetching upstream changes from https://github.com/NCATS-Tangerine/tranql.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/NCATS-Tangerine/tranql.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/develop^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/develop^{commit} # timeout=10
+Checking out Revision b5068f0e88b34f4e0e148a32828e6e715c3b1f0b (refs/remotes/origin/develop)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f b5068f0e88b34f4e0e148a32828e6e715c3b1f0b # timeout=10
+Commit message: "Merge pull request #98 from NCATS-Tangerine/missing_edges_and_score"
+First time build. Skipping changelog.
+No emails were triggered.
+[workspace] $ /bin/bash -xe /tmp/jenkins9050434501585927307.sh
++ python3.6 -m venv tranql
++ source tranql/bin/activate
+++ deactivate nondestructive
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ '[' -n /bin/bash -o -n '' ']'
+++ hash -r
+++ '[' -n '' ']'
+++ unset VIRTUAL_ENV
+++ '[' '!' nondestructive = nondestructive ']'
+++ VIRTUAL_ENV=/var/lib/jenkins/jobs/tranql-server/workspace/tranql
+++ export VIRTUAL_ENV
+++ _OLD_VIRTUAL_PATH=/sbin:/usr/sbin:/bin:/usr/bin
+++ PATH=/var/lib/jenkins/jobs/tranql-server/workspace/tranql/bin:/sbin:/usr/sbin:/bin:/usr/bin
+++ export PATH
+++ '[' -n '' ']'
+++ '[' -z '' ']'
+++ _OLD_VIRTUAL_PS1=
+++ '[' 'x(tranql) ' '!=' x ']'
+++ PS1='(tranql) '
+++ export PS1
+++ '[' -n /bin/bash -o -n '' ']'
+++ hash -r
++ pip install -r tranql/requirements.txt
+Requirement already satisfied: aiohttp==3.5.4 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 1))
+Requirement already satisfied: aniso8601==4.1.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 2))
+Requirement already satisfied: appnope==0.1.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 3))
+Requirement already satisfied: async-timeout==3.0.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 4))
+Requirement already satisfied: atomicwrites==1.3.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 5))
+Requirement already satisfied: attrs==18.2.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 6))
+Requirement already satisfied: backcall==0.1.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 7))
+Requirement already satisfied: beautifulsoup4==4.8.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 8))
+Requirement already satisfied: bleach==3.1.4 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 9))
+Requirement already satisfied: certifi==2018.11.29 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 10))
+Requirement already satisfied: chardet==3.0.4 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 11))
+Requirement already satisfied: Click==7.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 12))
+Requirement already satisfied: colorama==0.4.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 13))
+Requirement already satisfied: coverage==4.5.3 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 14))
+Requirement already satisfied: decorator==4.3.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 15))
+Requirement already satisfied: deepdiff==3.3.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 16))
+Requirement already satisfied: defusedxml==0.5.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 17))
+Requirement already satisfied: docutils==0.14 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 19))
+Requirement already satisfied: entrypoints==0.3 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 20))
+Requirement already satisfied: enum34==1.1.6 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 21))
+Requirement already satisfied: flasgger==0.9.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 22))
+Requirement already satisfied: flask==1.0.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 23))
+Requirement already satisfied: flask-cors==3.0.7 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 24))
+Requirement already satisfied: flask-restful==0.3.7 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 25))
+Requirement already satisfied: gunicorn==19.9.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 26))
+Requirement already satisfied: inflection==0.3.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 29))
+Requirement already satisfied: itsdangerous==1.1.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 34))
+Requirement already satisfied: jedi==0.13.3 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 35))
+Requirement already satisfied: jinja2==2.10 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 36))
+Requirement already satisfied: jsonpath-rw==1.4.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 37))
+Requirement already satisfied: jsonpickle==1.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 38))
+Requirement already satisfied: jsonschema==2.6.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 39))
+Requirement already satisfied: markupsafe==1.1.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 44))
+Requirement already satisfied: mistune==0.8.4 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 45))
+Requirement already satisfied: more-itertools==6.0.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 46))
+Requirement already satisfied: multidict==4.5.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 47))
+Requirement already satisfied: networkx==2.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 52))
+Requirement already satisfied: openapi==1.1.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 55))
+Requirement already satisfied: pandocfilters==1.4.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 57))
+Requirement already satisfied: parso==0.3.4 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 58))
+Requirement already satisfied: pexpect==4.6.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 59))
+Requirement already satisfied: pickleshare==0.7.5 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 60))
+Requirement already satisfied: pkginfo==1.5.0.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 61))
+Requirement already satisfied: pluggy==0.8.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 62))
+Requirement already satisfied: ply==3.11 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 63))
+Requirement already satisfied: praw==6.2.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 64))
+Requirement already satisfied: prawcore==1.0.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 65))
+Requirement already satisfied: prompt-toolkit==2.0.9 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 67))
+Requirement already satisfied: ptable==0.9.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 68))
+Requirement already satisfied: ptyprocess==0.6.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 69))
+Requirement already satisfied: py==1.7.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 70))
+Requirement already satisfied: pygments==2.3.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 71))
+Requirement already satisfied: pyparsing==2.3.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 72))
+Requirement already satisfied: pyrsistent==0.15.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 73))
+Requirement already satisfied: pytest==4.2.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 75))
+Requirement already satisfied: pytest-cov==2.7.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 76))
+Requirement already satisfied: python-coveralls==2.9.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 78))
+Requirement already satisfied: python-dateutil==2.8.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 79))
+Requirement already satisfied: pytz==2018.9 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 80))
+Requirement already satisfied: pyyaml==4.2b1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 82))
+Requirement already satisfied: QtAwesome==0.6.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 84))
+Requirement already satisfied: qtconsole==4.4.3 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 85))
+Requirement already satisfied: QtPy==1.9.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 86))
+Requirement already satisfied: readme-renderer==24.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 87))
+Requirement already satisfied: redis==3.2.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 88))
+Requirement already satisfied: redisgraph==1.7 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 89))
+Requirement already satisfied: requests==2.21.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 90))
+Requirement already satisfied: requests-cache==0.4.13 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 91))
+Requirement already satisfied: requests-mock==1.5.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 92))
+Requirement already satisfied: requests-toolbelt==0.9.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 93))
+Requirement already satisfied: send2trash==1.5.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 94))
+Requirement already satisfied: six==1.12.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 95))
+Requirement already satisfied: soupsieve==1.9.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 96))
+Requirement already satisfied: sqlparse==0.3.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 97))
+Requirement already satisfied: terminado==0.8.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 98))
+Requirement already satisfied: testpath==0.4.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 99))
+Requirement already satisfied: tqdm==4.31.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 101))
+Requirement already satisfied: traitlets==4.3.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 102))
+Requirement already satisfied: twine==1.13.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 103))
+Requirement already satisfied: update-checker==0.16 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 104))
+Requirement already satisfied: urllib3==1.24.2 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 105))
+Requirement already satisfied: virtualenv==16.6.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 106))
+Requirement already satisfied: waitress==1.4.3 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 107))
+Requirement already satisfied: wcwidth==0.1.7 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 108))
+Requirement already satisfied: webencodings==0.5.1 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 109))
+Requirement already satisfied: werkzeug==0.15.3 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 111))
+Requirement already satisfied: yarl==1.3.0 in ./tranql/lib/python3.6/site-packages (from -r tranql/requirements.txt (line 113))
+Requirement already satisfied: typing-extensions>=3.6.5; python_version < "3.7" in ./tranql/lib/python3.6/site-packages (from aiohttp==3.5.4->-r tranql/requirements.txt (line 1))
+Requirement already satisfied: idna-ssl>=1.0; python_version < "3.7" in ./tranql/lib/python3.6/site-packages (from aiohttp==3.5.4->-r tranql/requirements.txt (line 1))
+Requirement already satisfied: websocket-client>=0.54.0 in ./tranql/lib/python3.6/site-packages (from praw==6.2.0->-r tranql/requirements.txt (line 64))
+Requirement already satisfied: setuptools in ./tranql/lib/python3.6/site-packages (from pytest==4.2.1->-r tranql/requirements.txt (line 75))
+Requirement already satisfied: ipykernel>=4.1 in ./tranql/lib/python3.6/site-packages (from qtconsole==4.4.3->-r tranql/requirements.txt (line 85))
+Requirement already satisfied: jupyter-core in ./tranql/lib/python3.6/site-packages (from qtconsole==4.4.3->-r tranql/requirements.txt (line 85))
+Requirement already satisfied: ipython-genutils in ./tranql/lib/python3.6/site-packages (from qtconsole==4.4.3->-r tranql/requirements.txt (line 85))
+Requirement already satisfied: jupyter-client>=4.1 in ./tranql/lib/python3.6/site-packages (from qtconsole==4.4.3->-r tranql/requirements.txt (line 85))
+Requirement already satisfied: idna<2.9,>=2.5 in ./tranql/lib/python3.6/site-packages (from requests==2.21.0->-r tranql/requirements.txt (line 90))
+Requirement already satisfied: tornado>=4 in ./tranql/lib/python3.6/site-packages (from terminado==0.8.1->-r tranql/requirements.txt (line 98))
+Requirement already satisfied: ipython>=5.0.0 in ./tranql/lib/python3.6/site-packages (from ipykernel>=4.1->qtconsole==4.4.3->-r tranql/requirements.txt (line 85))
+Requirement already satisfied: pyzmq>=13 in ./tranql/lib/python3.6/site-packages (from jupyter-client>=4.1->qtconsole==4.4.3->-r tranql/requirements.txt (line 85))
+You are using pip version 9.0.1, however version 20.1.1 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
++ bin/test
+============================= test session starts ==============================
+platform linux -- Python 3.6.4, pytest-4.2.1, py-1.7.0, pluggy-0.8.1
+rootdir: /var/lib/jenkins/jobs/tranql-server/workspace, inifile:
+plugins: requests-mock-1.5.2, cov-2.7.1
+collected 49 items
+
+tranql/tests/test_api.py .......                                         [ 14%]
+tranql/tests/test_backplane.py .                                         [ 16%]
+tranql/tests/test_tranql.py .........................................    [100%]
+
+----------- coverage: platform linux, python 3.6.4-final-0 -----------
+Name                                                                                                   Stmts   Miss  Cover
+--------------------------------------------------------------------------------------------------------------------------
+tranql/api.py                                                                                            236     68    71%
+tranql/backplane/iceesclient.py                                                                          151    106    30%
+tranql/backplane/server.py                                                                               416    282    32%
+tranql/concept.py                                                                                        157     29    82%
+tranql/config.py                                                                                          35      6    83%
+tranql/disease_vocab.py                                                                                    3      0   100%
+tranql/exception.py                                                                                       29      9    69%
+tranql/grammar.py                                                                                         39      0   100%
+tranql/lib/python3.6/site-packages/_pytest/_argcomplete.py                                                36     35     3%
+tranql/lib/python3.6/site-packages/_pytest/_code/code.py                                                 629    616     2%
+tranql/lib/python3.6/site-packages/_pytest/_code/source.py                                               214    207     3%
+tranql/lib/python3.6/site-packages/_pytest/assertion/__init__.py                                          68     61    10%
+tranql/lib/python3.6/site-packages/_pytest/assertion/rewrite.py                                          619    515    17%
+tranql/lib/python3.6/site-packages/_pytest/cacheprovider.py                                              212    177    17%
+tranql/lib/python3.6/site-packages/_pytest/capture.py                                                    442    372    16%
+tranql/lib/python3.6/site-packages/_pytest/compat.py                                                     199    162    19%
+tranql/lib/python3.6/site-packages/_pytest/config/__init__.py                                            601    497    17%
+tranql/lib/python3.6/site-packages/_pytest/config/argparsing.py                                          229    186    19%
+tranql/lib/python3.6/site-packages/_pytest/config/findpaths.py                                           100     98     2%
+tranql/lib/python3.6/site-packages/_pytest/debugging.py                                                  159    148     7%
+tranql/lib/python3.6/site-packages/_pytest/doctest.py                                                    276    267     3%
+tranql/lib/python3.6/site-packages/_pytest/fixtures.py                                                   719    405    44%
+tranql/lib/python3.6/site-packages/_pytest/helpconfig.py                                                 109    100     8%
+tranql/lib/python3.6/site-packages/_pytest/junitxml.py                                                   313    311     1%
+tranql/lib/python3.6/site-packages/_pytest/logging.py                                                    280    201    28%
+tranql/lib/python3.6/site-packages/_pytest/main.py                                                       443    276    38%
+tranql/lib/python3.6/site-packages/_pytest/mark/__init__.py                                               82     60    27%
+tranql/lib/python3.6/site-packages/_pytest/mark/evaluate.py                                               91     79    13%
+tranql/lib/python3.6/site-packages/_pytest/mark/structures.py                                            176    159    10%
+tranql/lib/python3.6/site-packages/_pytest/monkeypatch.py                                                151    139     8%
+tranql/lib/python3.6/site-packages/_pytest/nodes.py                                                      201    130    35%
+tranql/lib/python3.6/site-packages/_pytest/nose.py                                                        37     25    32%
+tranql/lib/python3.6/site-packages/_pytest/pastebin.py                                                    64     63     2%
+tranql/lib/python3.6/site-packages/_pytest/pathlib.py                                                    182    170     7%
+tranql/lib/python3.6/site-packages/_pytest/python.py                                                     819    640    22%
+tranql/lib/python3.6/site-packages/_pytest/reports.py                                                     79     60    24%
+tranql/lib/python3.6/site-packages/_pytest/resultlog.py                                                   70     68     3%
+tranql/lib/python3.6/site-packages/_pytest/runner.py                                                     274    156    43%
+tranql/lib/python3.6/site-packages/_pytest/setuponly.py                                                   50     43    14%
+tranql/lib/python3.6/site-packages/_pytest/setupplan.py                                                   15     13    13%
+tranql/lib/python3.6/site-packages/_pytest/skipping.py                                                   174    145    17%
+tranql/lib/python3.6/site-packages/_pytest/stepwise.py                                                    52     41    21%
+tranql/lib/python3.6/site-packages/_pytest/terminal.py                                                   614    455    26%
+tranql/lib/python3.6/site-packages/_pytest/tmpdir.py                                                      87     79     9%
+tranql/lib/python3.6/site-packages/_pytest/unittest.py                                                   189    181     4%
+tranql/lib/python3.6/site-packages/_pytest/warnings.py                                                    81     62    23%
+tranql/lib/python3.6/site-packages/aiohttp/__init__.py                                                    19      0   100%
+tranql/lib/python3.6/site-packages/aiohttp/abc.py                                                         87      8    91%
+tranql/lib/python3.6/site-packages/aiohttp/base_protocol.py                                               65     52    20%
+tranql/lib/python3.6/site-packages/aiohttp/client.py                                                     427    332    22%
+tranql/lib/python3.6/site-packages/aiohttp/client_exceptions.py                                          107     42    61%
+tranql/lib/python3.6/site-packages/aiohttp/client_proto.py                                               145    117    19%
+tranql/lib/python3.6/site-packages/aiohttp/client_reqrep.py                                              627    476    24%
+tranql/lib/python3.6/site-packages/aiohttp/client_ws.py                                                  208    168    19%
+tranql/lib/python3.6/site-packages/aiohttp/connector.py                                                  601    488    19%
+tranql/lib/python3.6/site-packages/aiohttp/cookiejar.py                                                  227    181    20%
+tranql/lib/python3.6/site-packages/aiohttp/formdata.py                                                    89     72    19%
+tranql/lib/python3.6/site-packages/aiohttp/frozenlist.py                                                  47     23    51%
+tranql/lib/python3.6/site-packages/aiohttp/hdrs.py                                                        90      0   100%
+tranql/lib/python3.6/site-packages/aiohttp/helpers.py                                                    399    252    37%
+tranql/lib/python3.6/site-packages/aiohttp/http.py                                                        11      0   100%
+tranql/lib/python3.6/site-packages/aiohttp/http_exceptions.py                                             42     15    64%
+tranql/lib/python3.6/site-packages/aiohttp/http_parser.py                                                436    362    17%
+tranql/lib/python3.6/site-packages/aiohttp/http_websocket.py                                             372    279    25%
+tranql/lib/python3.6/site-packages/aiohttp/http_writer.py                                                106     73    31%
+tranql/lib/python3.6/site-packages/aiohttp/locks.py                                                       28     18    36%
+tranql/lib/python3.6/site-packages/aiohttp/log.py                                                          7      0   100%
+tranql/lib/python3.6/site-packages/aiohttp/multipart.py                                                  564    459    19%
+tranql/lib/python3.6/site-packages/aiohttp/payload.py                                                    215    107    50%
+tranql/lib/python3.6/site-packages/aiohttp/payload_streamer.py                                            29     10    66%
+tranql/lib/python3.6/site-packages/aiohttp/resolver.py                                                    58     39    33%
+tranql/lib/python3.6/site-packages/aiohttp/signals.py                                                     14      7    50%
+tranql/lib/python3.6/site-packages/aiohttp/streams.py                                                    390    310    21%
+tranql/lib/python3.6/site-packages/aiohttp/tcp_helpers.py                                                 30     21    30%
+tranql/lib/python3.6/site-packages/aiohttp/tracing.py                                                    161     65    60%
+tranql/lib/python3.6/site-packages/aiohttp/typedefs.py                                                    23      1    96%
+tranql/lib/python3.6/site-packages/aiohttp/web.py                                                        112     80    29%
+tranql/lib/python3.6/site-packages/aiohttp/web_app.py                                                    271    183    32%
+tranql/lib/python3.6/site-packages/aiohttp/web_exceptions.py                                             150     22    85%
+tranql/lib/python3.6/site-packages/aiohttp/web_fileresponse.py                                           174    143    18%
+tranql/lib/python3.6/site-packages/aiohttp/web_log.py                                                     98     55    44%
+tranql/lib/python3.6/site-packages/aiohttp/web_middlewares.py                                             55     41    25%
+tranql/lib/python3.6/site-packages/aiohttp/web_protocol.py                                               301    250    17%
+tranql/lib/python3.6/site-packages/aiohttp/web_request.py                                                391    253    35%
+tranql/lib/python3.6/site-packages/aiohttp/web_response.py                                               442    334    24%
+tranql/lib/python3.6/site-packages/aiohttp/web_routedef.py                                               101     41    59%
+tranql/lib/python3.6/site-packages/aiohttp/web_runner.py                                                 193    118    39%
+tranql/lib/python3.6/site-packages/aiohttp/web_server.py                                                  33     15    55%
+tranql/lib/python3.6/site-packages/aiohttp/web_urldispatcher.py                                          675    432    36%
+tranql/lib/python3.6/site-packages/aiohttp/web_ws.py                                                     312    253    19%
+tranql/lib/python3.6/site-packages/aiohttp/worker.py                                                     122     88    28%
+tranql/lib/python3.6/site-packages/async_timeout/__init__.py                                              67     47    30%
+tranql/lib/python3.6/site-packages/attr/_compat.py                                                        62     61     2%
+tranql/lib/python3.6/site-packages/attr/_make.py                                                         672    375    44%
+tranql/lib/python3.6/site-packages/attr/converters.py                                                     27     25     7%
+tranql/lib/python3.6/site-packages/click/__init__.py                                                      13      0   100%
+tranql/lib/python3.6/site-packages/click/_compat.py                                                      433    347    20%
+tranql/lib/python3.6/site-packages/click/_unicodefun.py                                                   71     60    15%
+tranql/lib/python3.6/site-packages/click/core.py                                                         877    622    29%
+tranql/lib/python3.6/site-packages/click/decorators.py                                                   147     87    41%
+tranql/lib/python3.6/site-packages/click/exceptions.py                                                   115     82    29%
+tranql/lib/python3.6/site-packages/click/formatting.py                                                   134    112    16%
+tranql/lib/python3.6/site-packages/click/globals.py                                                       18     12    33%
+tranql/lib/python3.6/site-packages/click/parser.py                                                       236    203    14%
+tranql/lib/python3.6/site-packages/click/termui.py                                                       195    165    15%
+tranql/lib/python3.6/site-packages/click/testing.py                                                      207    172    17%
+tranql/lib/python3.6/site-packages/click/types.py                                                        318    196    38%
+tranql/lib/python3.6/site-packages/click/utils.py                                                        179    140    22%
+tranql/lib/python3.6/site-packages/coverage/collector.py                                                 197    191     3%
+tranql/lib/python3.6/site-packages/coverage/control.py                                                   534    532     1%
+tranql/lib/python3.6/site-packages/decorator.py                                                          270    119    56%
+tranql/lib/python3.6/site-packages/deepdiff/__init__.py                                                    7      1    86%
+tranql/lib/python3.6/site-packages/deepdiff/contenthash.py                                               152    118    22%
+tranql/lib/python3.6/site-packages/deepdiff/diff.py                                                      261    226    13%
+tranql/lib/python3.6/site-packages/deepdiff/helper.py                                                     31     12    61%
+tranql/lib/python3.6/site-packages/deepdiff/model.py                                                     233    173    26%
+tranql/lib/python3.6/site-packages/deepdiff/search.py                                                    133    108    19%
+tranql/lib/python3.6/site-packages/flasgger/__init__.py                                                    8      0   100%
+tranql/lib/python3.6/site-packages/flasgger/base.py                                                      330    222    33%
+tranql/lib/python3.6/site-packages/flasgger/constants.py                                                   1      0   100%
+tranql/lib/python3.6/site-packages/flasgger/marshmallow_apispec.py                                        76     45    41%
+tranql/lib/python3.6/site-packages/flasgger/utils.py                                                     435    372    14%
+tranql/lib/python3.6/site-packages/flask/__init__.py                                                      17      0   100%
+tranql/lib/python3.6/site-packages/flask/_compat.py                                                       54     32    41%
+tranql/lib/python3.6/site-packages/flask/app.py                                                          590    274    54%
+tranql/lib/python3.6/site-packages/flask/blueprints.py                                                   167     77    54%
+tranql/lib/python3.6/site-packages/flask/cli.py                                                          412    320    22%
+tranql/lib/python3.6/site-packages/flask/config.py                                                        90     62    31%
+tranql/lib/python3.6/site-packages/flask/ctx.py                                                          153     48    69%
+tranql/lib/python3.6/site-packages/flask/globals.py                                                       26      5    81%
+tranql/lib/python3.6/site-packages/flask/helpers.py                                                      334    215    36%
+tranql/lib/python3.6/site-packages/flask/json/__init__.py                                                117     74    37%
+tranql/lib/python3.6/site-packages/flask/json/tag.py                                                     125     42    66%
+tranql/lib/python3.6/site-packages/flask/logging.py                                                       27      4    85%
+tranql/lib/python3.6/site-packages/flask/sessions.py                                                     125     66    47%
+tranql/lib/python3.6/site-packages/flask/signals.py                                                       29      2    93%
+tranql/lib/python3.6/site-packages/flask/templating.py                                                    82     65    21%
+tranql/lib/python3.6/site-packages/flask/testing.py                                                       94     48    49%
+tranql/lib/python3.6/site-packages/flask/views.py                                                         43     10    77%
+tranql/lib/python3.6/site-packages/flask/wrappers.py                                                      65     22    66%
+tranql/lib/python3.6/site-packages/flask_cors/__init__.py                                                 11      0   100%
+tranql/lib/python3.6/site-packages/flask_cors/core.py                                                    163     52    68%
+tranql/lib/python3.6/site-packages/flask_cors/decorator.py                                                23     17    26%
+tranql/lib/python3.6/site-packages/flask_cors/extension.py                                                38      4    89%
+tranql/lib/python3.6/site-packages/flask_cors/version.py                                                   1      0   100%
+tranql/lib/python3.6/site-packages/flask_restful/__init__.py                                             279    158    43%
+tranql/lib/python3.6/site-packages/flask_restful/representations/__init__.py                               0      0   100%
+tranql/lib/python3.6/site-packages/flask_restful/representations/json.py                                  13      2    85%
+tranql/lib/python3.6/site-packages/flask_restful/reqparse.py                                             185    157    15%
+tranql/lib/python3.6/site-packages/flask_restful/utils/__init__.py                                        23      8    65%
+tranql/lib/python3.6/site-packages/gunicorn/__init__.py                                                    3      0   100%
+tranql/lib/python3.6/site-packages/gunicorn/_compat.py                                                   173    138    20%
+tranql/lib/python3.6/site-packages/gunicorn/config.py                                                   1016    259    75%
+tranql/lib/python3.6/site-packages/gunicorn/errors.py                                                      8      3    62%
+tranql/lib/python3.6/site-packages/gunicorn/http/__init__.py                                               3      0   100%
+tranql/lib/python3.6/site-packages/gunicorn/http/body.py                                                 209    185    11%
+tranql/lib/python3.6/site-packages/gunicorn/http/errors.py                                                70     30    57%
+tranql/lib/python3.6/site-packages/gunicorn/http/message.py                                              252    219    13%
+tranql/lib/python3.6/site-packages/gunicorn/http/parser.py                                                28     18    36%
+tranql/lib/python3.6/site-packages/gunicorn/http/unreader.py                                              56     43    23%
+tranql/lib/python3.6/site-packages/gunicorn/http/wsgi.py                                                 259    219    15%
+tranql/lib/python3.6/site-packages/gunicorn/reloader.py                                                   81     58    28%
+tranql/lib/python3.6/site-packages/gunicorn/six.py                                                       393    181    54%
+tranql/lib/python3.6/site-packages/gunicorn/util.py                                                      325    259    20%
+tranql/lib/python3.6/site-packages/gunicorn/workers/__init__.py                                            4      0   100%
+tranql/lib/python3.6/site-packages/gunicorn/workers/base.py                                              168    135    20%
+tranql/lib/python3.6/site-packages/gunicorn/workers/workertmp.py                                          36     24    33%
+tranql/lib/python3.6/site-packages/idna_ssl.py                                                            25     12    52%
+tranql/lib/python3.6/site-packages/itsdangerous/__init__.py                                               21      0   100%
+tranql/lib/python3.6/site-packages/itsdangerous/_compat.py                                                22     11    50%
+tranql/lib/python3.6/site-packages/itsdangerous/_json.py                                                  11      4    64%
+tranql/lib/python3.6/site-packages/itsdangerous/encoding.py                                               27     13    52%
+tranql/lib/python3.6/site-packages/itsdangerous/exc.py                                                    31     15    52%
+tranql/lib/python3.6/site-packages/itsdangerous/jws.py                                                   120     83    31%
+tranql/lib/python3.6/site-packages/itsdangerous/serializer.py                                             90     66    27%
+tranql/lib/python3.6/site-packages/itsdangerous/signer.py                                                 85     56    34%
+tranql/lib/python3.6/site-packages/itsdangerous/timed.py                                                  79     56    29%
+tranql/lib/python3.6/site-packages/itsdangerous/url_safe.py                                               37     24    35%
+tranql/lib/python3.6/site-packages/jinja2/__init__.py                                                     18      0   100%
+tranql/lib/python3.6/site-packages/jinja2/_compat.py                                                      63     31    51%
+tranql/lib/python3.6/site-packages/jinja2/_identifier.py                                                   1      0   100%
+tranql/lib/python3.6/site-packages/jinja2/asyncfilters.py                                                 79     42    47%
+tranql/lib/python3.6/site-packages/jinja2/asyncsupport.py                                                169    105    38%
+tranql/lib/python3.6/site-packages/jinja2/bccache.py                                                     161    118    27%
+tranql/lib/python3.6/site-packages/jinja2/compiler.py                                                   1142    991    13%
+tranql/lib/python3.6/site-packages/jinja2/defaults.py                                                     20      0   100%
+tranql/lib/python3.6/site-packages/jinja2/environment.py                                                 515    410    20%
+tranql/lib/python3.6/site-packages/jinja2/exceptions.py                                                   70     48    31%
+tranql/lib/python3.6/site-packages/jinja2/filters.py                                                     384    293    24%
+tranql/lib/python3.6/site-packages/jinja2/idtracking.py                                                  204    155    24%
+tranql/lib/python3.6/site-packages/jinja2/lexer.py                                                       351    230    34%
+tranql/lib/python3.6/site-packages/jinja2/loaders.py                                                     223    170    24%
+tranql/lib/python3.6/site-packages/jinja2/nodes.py                                                       453    241    47%
+tranql/lib/python3.6/site-packages/jinja2/optimizer.py                                                    17      8    53%
+tranql/lib/python3.6/site-packages/jinja2/parser.py                                                      644    585     9%
+tranql/lib/python3.6/site-packages/jinja2/runtime.py                                                     417    294    29%
+tranql/lib/python3.6/site-packages/jinja2/tests.py                                                        52     25    52%
+tranql/lib/python3.6/site-packages/jinja2/utils.py                                                       310    216    30%
+tranql/lib/python3.6/site-packages/jinja2/visitor.py                                                      40     31    22%
+tranql/lib/python3.6/site-packages/jsonpath_rw/__init__.py                                                 3      0   100%
+tranql/lib/python3.6/site-packages/jsonpath_rw/jsonpath.py                                               225    109    52%
+tranql/lib/python3.6/site-packages/jsonpath_rw/lexer.py                                                   97     44    55%
+tranql/lib/python3.6/site-packages/jsonpath_rw/parser.py                                                  98     32    67%
+tranql/lib/python3.6/site-packages/jsonpickle/__init__.py                                                 21      0   100%
+tranql/lib/python3.6/site-packages/jsonpickle/backend.py                                                 107     56    48%
+tranql/lib/python3.6/site-packages/jsonpickle/compat.py                                                   30     12    60%
+tranql/lib/python3.6/site-packages/jsonpickle/handlers.py                                                 99     47    53%
+tranql/lib/python3.6/site-packages/jsonpickle/pickler.py                                                 297    257    13%
+tranql/lib/python3.6/site-packages/jsonpickle/tags.py                                                     21      0   100%
+tranql/lib/python3.6/site-packages/jsonpickle/unpickler.py                                               386    330    15%
+tranql/lib/python3.6/site-packages/jsonpickle/util.py                                                    154     99    36%
+tranql/lib/python3.6/site-packages/jsonpickle/version.py                                                   1      0   100%
+tranql/lib/python3.6/site-packages/jsonschema/__init__.py                                                  4      0   100%
+tranql/lib/python3.6/site-packages/jsonschema/_format.py                                                 125     67    46%
+tranql/lib/python3.6/site-packages/jsonschema/_utils.py                                                   93     61    34%
+tranql/lib/python3.6/site-packages/jsonschema/_validators.py                                             226    192    15%
+tranql/lib/python3.6/site-packages/jsonschema/_version.py                                                  3      0   100%
+tranql/lib/python3.6/site-packages/jsonschema/compat.py                                                   37     18    51%
+tranql/lib/python3.6/site-packages/jsonschema/exceptions.py                                              133     82    38%
+tranql/lib/python3.6/site-packages/jsonschema/validators.py                                              185    129    30%
+tranql/lib/python3.6/site-packages/markupsafe/__init__.py                                                164     92    44%
+tranql/lib/python3.6/site-packages/markupsafe/_compat.py                                                  18      8    56%
+tranql/lib/python3.6/site-packages/mistune.py                                                            629    465    26%
+tranql/lib/python3.6/site-packages/more_itertools/more.py                                                582    572     2%
+tranql/lib/python3.6/site-packages/more_itertools/recipes.py                                             138    137     1%
+tranql/lib/python3.6/site-packages/multidict/__init__.py                                                   8      1    88%
+tranql/lib/python3.6/site-packages/multidict/_abc.py                                                      23      7    70%
+tranql/lib/python3.6/site-packages/multidict/_compat.py                                                    5      0   100%
+tranql/lib/python3.6/site-packages/multidict/_multidict_base.py                                          109     91    17%
+tranql/lib/python3.6/site-packages/networkx/__init__.py                                                   34      2    94%
+tranql/lib/python3.6/site-packages/networkx/algorithms/__init__.py                                       111      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/assortativity/__init__.py                           5      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/assortativity/connectivity.py                      42     36    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/assortativity/correlation.py                       62     49    21%
+tranql/lib/python3.6/site-packages/networkx/algorithms/assortativity/mixing.py                            66     53    20%
+tranql/lib/python3.6/site-packages/networkx/algorithms/assortativity/neighbor_degree.py                   21     16    24%
+tranql/lib/python3.6/site-packages/networkx/algorithms/assortativity/pairs.py                             45     38    16%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/__init__.py                              11      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/basic.py                                 69     59    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/centrality.py                            54     48    11%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/cluster.py                               57     43    25%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/covering.py                              13      5    62%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/edgelist.py                              71     61    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/generators.py                           230    208    10%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/matching.py                             131    118    10%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/matrix.py                                47     38    19%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/projection.py                           107     94    12%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/redundancy.py                            16      8    50%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bipartite/spectral.py                              32     26    19%
+tranql/lib/python3.6/site-packages/networkx/algorithms/boundary.py                                        19     13    32%
+tranql/lib/python3.6/site-packages/networkx/algorithms/bridges.py                                         41     27    34%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/__init__.py                             16      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/betweenness.py                         162    143    12%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/betweenness_subset.py                   83     71    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/closeness.py                            26     21    19%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/current_flow_betweenness.py            112     99    12%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/current_flow_betweenness_subset.py      73     62    15%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/current_flow_closeness.py               34     25    26%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/degree_alg.py                           22     15    32%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/dispersion.py                           38     34    11%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/eigenvector.py                          43     33    23%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/flow_matrix.py                          96     73    24%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/harmonic.py                             10      4    60%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/katz.py                                 73     63    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/load.py                                 84     74    12%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/percolation.py                          35     26    26%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/reaching.py                             46     38    17%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/second_order.py                         39     33    15%
+tranql/lib/python3.6/site-packages/networkx/algorithms/centrality/subgraph_alg.py                         76     61    20%
+tranql/lib/python3.6/site-packages/networkx/algorithms/chains.py                                          35     29    17%
+tranql/lib/python3.6/site-packages/networkx/algorithms/chordal.py                                        117    101    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/clique.py                                         150    127    15%
+tranql/lib/python3.6/site-packages/networkx/algorithms/cluster.py                                        136    111    18%
+tranql/lib/python3.6/site-packages/networkx/algorithms/coloring/__init__.py                                2      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/coloring/greedy_coloring.py                       110     90    18%
+tranql/lib/python3.6/site-packages/networkx/algorithms/coloring/greedy_coloring_with_interchange.py      109     94    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/communicability_alg.py                             50     40    20%
+tranql/lib/python3.6/site-packages/networkx/algorithms/community/__init__.py                               9      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/community/asyn_fluid.py                            69     58    16%
+tranql/lib/python3.6/site-packages/networkx/algorithms/community/centrality.py                            24     19    21%
+tranql/lib/python3.6/site-packages/networkx/algorithms/community/community_generators.py                 111     96    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/community/community_utils.py                        4      1    75%
+tranql/lib/python3.6/site-packages/networkx/algorithms/community/kclique.py                               29     23    21%
+tranql/lib/python3.6/site-packages/networkx/algorithms/community/kernighan_lin.py                         93     78    16%
+tranql/lib/python3.6/site-packages/networkx/algorithms/community/label_propagation.py                     59     45    24%
+tranql/lib/python3.6/site-packages/networkx/algorithms/community/modularity_max.py                       122    114     7%
+tranql/lib/python3.6/site-packages/networkx/algorithms/community/quality.py                               66     45    32%
+tranql/lib/python3.6/site-packages/networkx/algorithms/components/__init__.py                              6      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/components/attracting.py                           26     16    38%
+tranql/lib/python3.6/site-packages/networkx/algorithms/components/biconnected.py                          77     63    18%
+tranql/lib/python3.6/site-packages/networkx/algorithms/components/connected.py                            41     28    32%
+tranql/lib/python3.6/site-packages/networkx/algorithms/components/semiconnected.py                        12      7    42%
+tranql/lib/python3.6/site-packages/networkx/algorithms/components/strongly_connected.py                  121    106    12%
+tranql/lib/python3.6/site-packages/networkx/algorithms/components/weakly_connected.py                     40     29    28%
+tranql/lib/python3.6/site-packages/networkx/algorithms/connectivity/__init__.py                           10      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/connectivity/connectivity.py                      158    138    13%
+tranql/lib/python3.6/site-packages/networkx/algorithms/connectivity/cuts.py                              114    101    11%
+tranql/lib/python3.6/site-packages/networkx/algorithms/connectivity/disjoint_paths.py                     94     78    17%
+tranql/lib/python3.6/site-packages/networkx/algorithms/connectivity/edge_augmentation.py                 321    282    12%
+tranql/lib/python3.6/site-packages/networkx/algorithms/connectivity/edge_kcomponents.py                  143    123    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/connectivity/kcomponents.py                        93     77    17%
+tranql/lib/python3.6/site-packages/networkx/algorithms/connectivity/kcutsets.py                           90     77    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/connectivity/stoerwagner.py                        53     42    21%
+tranql/lib/python3.6/site-packages/networkx/algorithms/connectivity/utils.py                              32     26    19%
+tranql/lib/python3.6/site-packages/networkx/algorithms/core.py                                            59     47    20%
+tranql/lib/python3.6/site-packages/networkx/algorithms/covering.py                                        26     16    38%
+tranql/lib/python3.6/site-packages/networkx/algorithms/cuts.py                                            41     28    32%
+tranql/lib/python3.6/site-packages/networkx/algorithms/cycles.py                                         223    205     8%
+tranql/lib/python3.6/site-packages/networkx/algorithms/dag.py                                            213    178    16%
+tranql/lib/python3.6/site-packages/networkx/algorithms/distance_measures.py                              114    105     8%
+tranql/lib/python3.6/site-packages/networkx/algorithms/distance_regular.py                                40     30    25%
+tranql/lib/python3.6/site-packages/networkx/algorithms/dominance.py                                       40     33    18%
+tranql/lib/python3.6/site-packages/networkx/algorithms/dominating.py                                      26     18    31%
+tranql/lib/python3.6/site-packages/networkx/algorithms/efficiency.py                                      23     13    43%
+tranql/lib/python3.6/site-packages/networkx/algorithms/euler.py                                           81     71    12%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/__init__.py                                   11      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/boykovkolmogorov.py                          156    148     5%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/capacityscaling.py                           155    141     9%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/dinitz_alg.py                                 67     59    12%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/edmondskarp.py                                93     85     9%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/gomory_hu.py                                  33     24    27%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/maxflow.py                                    58     43    26%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/mincost.py                                    16      8    50%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/networksimplex.py                            285    268     6%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/preflowpush.py                               181    167     8%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/shortestaugmentingpath.py                    117    108     8%
+tranql/lib/python3.6/site-packages/networkx/algorithms/flow/utils.py                                      76     54    29%
+tranql/lib/python3.6/site-packages/networkx/algorithms/graphical.py                                      150    138     8%
+tranql/lib/python3.6/site-packages/networkx/algorithms/hierarchy.py                                        9      4    56%
+tranql/lib/python3.6/site-packages/networkx/algorithms/hybrid.py                                          75     69     8%
+tranql/lib/python3.6/site-packages/networkx/algorithms/isolate.py                                         10      3    70%
+tranql/lib/python3.6/site-packages/networkx/algorithms/isomorphism/__init__.py                             4      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/isomorphism/isomorph.py                            53     42    21%
+tranql/lib/python3.6/site-packages/networkx/algorithms/isomorphism/isomorphvf2.py                        359    332     8%
+tranql/lib/python3.6/site-packages/networkx/algorithms/isomorphism/matchhelpers.py                       138    100    28%
+tranql/lib/python3.6/site-packages/networkx/algorithms/isomorphism/temporalisomorphvf2.py                 96     73    24%
+tranql/lib/python3.6/site-packages/networkx/algorithms/isomorphism/vf2userfunc.py                         50     36    28%
+tranql/lib/python3.6/site-packages/networkx/algorithms/link_analysis/__init__.py                           2      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/link_analysis/hits_alg.py                         112    103     8%
+tranql/lib/python3.6/site-packages/networkx/algorithms/link_analysis/pagerank_alg.py                     107     97     9%
+tranql/lib/python3.6/site-packages/networkx/algorithms/link_prediction.py                                 78     50    36%
+tranql/lib/python3.6/site-packages/networkx/algorithms/lowest_common_ancestors.py                        150    135    10%
+tranql/lib/python3.6/site-packages/networkx/algorithms/matching.py                                       428    417     3%
+tranql/lib/python3.6/site-packages/networkx/algorithms/minors.py                                          76     59    22%
+tranql/lib/python3.6/site-packages/networkx/algorithms/mis.py                                             23     15    35%
+tranql/lib/python3.6/site-packages/networkx/algorithms/node_classification/__init__.py                     2      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/node_classification/hmn.py                         52     44    15%
+tranql/lib/python3.6/site-packages/networkx/algorithms/node_classification/lgc.py                         51     43    16%
+tranql/lib/python3.6/site-packages/networkx/algorithms/node_classification/utils.py                       27     23    15%
+tranql/lib/python3.6/site-packages/networkx/algorithms/operators/__init__.py                               4      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/operators/all.py                                   40     29    28%
+tranql/lib/python3.6/site-packages/networkx/algorithms/operators/binary.py                               116    106     9%
+tranql/lib/python3.6/site-packages/networkx/algorithms/operators/product.py                              146    126    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/operators/unary.py                                 13      7    46%
+tranql/lib/python3.6/site-packages/networkx/algorithms/planarity.py                                      482    437     9%
+tranql/lib/python3.6/site-packages/networkx/algorithms/reciprocity.py                                     31     23    26%
+tranql/lib/python3.6/site-packages/networkx/algorithms/richclub.py                                        36     26    28%
+tranql/lib/python3.6/site-packages/networkx/algorithms/shortest_paths/__init__.py                          5      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/shortest_paths/astar.py                            51     42    18%
+tranql/lib/python3.6/site-packages/networkx/algorithms/shortest_paths/dense.py                            54     46    15%
+tranql/lib/python3.6/site-packages/networkx/algorithms/shortest_paths/generic.py                         122    113     7%
+tranql/lib/python3.6/site-packages/networkx/algorithms/shortest_paths/unweighted.py                      154    140     9%
+tranql/lib/python3.6/site-packages/networkx/algorithms/shortest_paths/weighted.py                        352    317    10%
+tranql/lib/python3.6/site-packages/networkx/algorithms/similarity.py                                     222    208     6%
+tranql/lib/python3.6/site-packages/networkx/algorithms/simple_paths.py                                   292    270     8%
+tranql/lib/python3.6/site-packages/networkx/algorithms/smallworld.py                                     142    121    15%
+tranql/lib/python3.6/site-packages/networkx/algorithms/smetric.py                                          5      3    40%
+tranql/lib/python3.6/site-packages/networkx/algorithms/sparsifiers.py                                     95     82    14%
+tranql/lib/python3.6/site-packages/networkx/algorithms/structuralholes.py                                 53     44    17%
+tranql/lib/python3.6/site-packages/networkx/algorithms/swap.py                                           118    107     9%
+tranql/lib/python3.6/site-packages/networkx/algorithms/tournament.py                                      54     31    43%
+tranql/lib/python3.6/site-packages/networkx/algorithms/traversal/__init__.py                               5      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/traversal/beamsearch.py                            11      6    45%
+tranql/lib/python3.6/site-packages/networkx/algorithms/traversal/breadth_first_search.py                  46     37    20%
+tranql/lib/python3.6/site-packages/networkx/algorithms/traversal/depth_first_search.py                    75     64    15%
+tranql/lib/python3.6/site-packages/networkx/algorithms/traversal/edgebfs.py                               55     49    11%
+tranql/lib/python3.6/site-packages/networkx/algorithms/traversal/edgedfs.py                               57     52     9%
+tranql/lib/python3.6/site-packages/networkx/algorithms/tree/__init__.py                                    5      0   100%
+tranql/lib/python3.6/site-packages/networkx/algorithms/tree/branchings.py                                293    250    15%
+tranql/lib/python3.6/site-packages/networkx/algorithms/tree/coding.py                                     72     60    17%
+tranql/lib/python3.6/site-packages/networkx/algorithms/tree/mst.py                                       168    149    11%
+tranql/lib/python3.6/site-packages/networkx/algorithms/tree/operations.py                                 30     23    23%
+tranql/lib/python3.6/site-packages/networkx/algorithms/tree/recognition.py                                22     14    36%
+tranql/lib/python3.6/site-packages/networkx/algorithms/triads.py                                          30     20    33%
+tranql/lib/python3.6/site-packages/networkx/algorithms/vitality.py                                        12      7    42%
+tranql/lib/python3.6/site-packages/networkx/algorithms/voronoi.py                                         12      7    42%
+tranql/lib/python3.6/site-packages/networkx/algorithms/wiener.py                                          14      5    64%
+tranql/lib/python3.6/site-packages/networkx/classes/__init__.py                                           10      0   100%
+tranql/lib/python3.6/site-packages/networkx/classes/coreviews.py                                         216    140    35%
+tranql/lib/python3.6/site-packages/networkx/classes/digraph.py                                           180    124    31%
+tranql/lib/python3.6/site-packages/networkx/classes/filters.py                                            36     21    42%
+tranql/lib/python3.6/site-packages/networkx/classes/function.py                                          256    209    18%
+tranql/lib/python3.6/site-packages/networkx/classes/graph.py                                             292    223    24%
+tranql/lib/python3.6/site-packages/networkx/classes/graphviews.py                                         89     71    20%
+tranql/lib/python3.6/site-packages/networkx/classes/multidigraph.py                                       93     46    51%
+tranql/lib/python3.6/site-packages/networkx/classes/multigraph.py                                        155    126    19%
+tranql/lib/python3.6/site-packages/networkx/classes/ordered.py                                            29      0   100%
+tranql/lib/python3.6/site-packages/networkx/classes/reportviews.py                                       598    417    30%
+tranql/lib/python3.6/site-packages/networkx/convert.py                                                   145    134     8%
+tranql/lib/python3.6/site-packages/networkx/convert_matrix.py                                            238    215    10%
+tranql/lib/python3.6/site-packages/networkx/drawing/__init__.py                                            4      0   100%
+tranql/lib/python3.6/site-packages/networkx/drawing/layout.py                                            335    309     8%
+tranql/lib/python3.6/site-packages/networkx/drawing/nx_agraph.py                                         167    152     9%
+tranql/lib/python3.6/site-packages/networkx/drawing/nx_pydot.py                                          143    124    13%
+tranql/lib/python3.6/site-packages/networkx/drawing/nx_pylab.py                                          290    271     7%
+tranql/lib/python3.6/site-packages/networkx/exception.py                                                  21      4    81%
+tranql/lib/python3.6/site-packages/networkx/generators/__init__.py                                        23      0   100%
+tranql/lib/python3.6/site-packages/networkx/generators/atlas.py                                           33     20    39%
+tranql/lib/python3.6/site-packages/networkx/generators/classic.py                                        193    157    19%
+tranql/lib/python3.6/site-packages/networkx/generators/community.py                                      149    128    14%
+tranql/lib/python3.6/site-packages/networkx/generators/degree_seq.py                                     292    256    12%
+tranql/lib/python3.6/site-packages/networkx/generators/directed.py                                       126    105    17%
+tranql/lib/python3.6/site-packages/networkx/generators/duplication.py                                     45     36    20%
+tranql/lib/python3.6/site-packages/networkx/generators/ego.py                                             15     11    27%
+tranql/lib/python3.6/site-packages/networkx/generators/expanders.py                                       27     21    22%
+tranql/lib/python3.6/site-packages/networkx/generators/geometric.py                                      163    129    21%
+tranql/lib/python3.6/site-packages/networkx/generators/intersection.py                                    30     17    43%
+tranql/lib/python3.6/site-packages/networkx/generators/joint_degree_seq.py                                92     83    10%
+tranql/lib/python3.6/site-packages/networkx/generators/lattice.py                                        119     96    19%
+tranql/lib/python3.6/site-packages/networkx/generators/line.py                                           165    146    12%
+tranql/lib/python3.6/site-packages/networkx/generators/mycielski.py                                       24     16    33%
+tranql/lib/python3.6/site-packages/networkx/generators/nonisomorphic_trees.py                             96     86    10%
+tranql/lib/python3.6/site-packages/networkx/generators/random_clustered.py                                31     25    19%
+tranql/lib/python3.6/site-packages/networkx/generators/random_graphs.py                                  380    335    12%
+tranql/lib/python3.6/site-packages/networkx/generators/small.py                                          153    122    20%
+tranql/lib/python3.6/site-packages/networkx/generators/social.py                                          51     45    12%
+tranql/lib/python3.6/site-packages/networkx/generators/spectral_graph_forge.py                            64     55    14%
+tranql/lib/python3.6/site-packages/networkx/generators/stochastic.py                                      17      8    53%
+tranql/lib/python3.6/site-packages/networkx/generators/trees.py                                           35     25    29%
+tranql/lib/python3.6/site-packages/networkx/generators/triads.py                                          11      6    45%
+tranql/lib/python3.6/site-packages/networkx/linalg/__init__.py                                            11      0   100%
+tranql/lib/python3.6/site-packages/networkx/linalg/algebraicconnectivity.py                              231    183    21%
+tranql/lib/python3.6/site-packages/networkx/linalg/attrmatrix.py                                          96     89     7%
+tranql/lib/python3.6/site-packages/networkx/linalg/graphmatrix.py                                         43     36    16%
+tranql/lib/python3.6/site-packages/networkx/linalg/laplacianmatrix.py                                     72     60    17%
+tranql/lib/python3.6/site-packages/networkx/linalg/modularitymatrix.py                                    33     21    36%
+tranql/lib/python3.6/site-packages/networkx/linalg/spectrum.py                                            20     13    35%
+tranql/lib/python3.6/site-packages/networkx/readwrite/__init__.py                                         14      0   100%
+tranql/lib/python3.6/site-packages/networkx/readwrite/adjlist.py                                          62     50    19%
+tranql/lib/python3.6/site-packages/networkx/readwrite/edgelist.py                                         77     64    17%
+tranql/lib/python3.6/site-packages/networkx/readwrite/gexf.py                                            604    545    10%
+tranql/lib/python3.6/site-packages/networkx/readwrite/gml.py                                             386    340    12%
+tranql/lib/python3.6/site-packages/networkx/readwrite/gpickle.py                                          16      4    75%
+tranql/lib/python3.6/site-packages/networkx/readwrite/graph6.py                                           86     66    23%
+tranql/lib/python3.6/site-packages/networkx/readwrite/graphml.py                                         442    371    16%
+tranql/lib/python3.6/site-packages/networkx/readwrite/json_graph/__init__.py                               5      0   100%
+tranql/lib/python3.6/site-packages/networkx/readwrite/json_graph/adjacency.py                             58     51    12%
+tranql/lib/python3.6/site-packages/networkx/readwrite/json_graph/cytoscape.py                             72     67     7%
+tranql/lib/python3.6/site-packages/networkx/readwrite/json_graph/jit.py                                   30     22    27%
+tranql/lib/python3.6/site-packages/networkx/readwrite/json_graph/node_link.py                             54     47    13%
+tranql/lib/python3.6/site-packages/networkx/readwrite/json_graph/tree.py                                  49     41    16%
+tranql/lib/python3.6/site-packages/networkx/readwrite/leda.py                                             36     28    22%
+tranql/lib/python3.6/site-packages/networkx/readwrite/multiline_adjlist.py                               117    105    10%
+tranql/lib/python3.6/site-packages/networkx/readwrite/nx_shp.py                                          150    143     5%
+tranql/lib/python3.6/site-packages/networkx/readwrite/nx_yaml.py                                          26     18    31%
+tranql/lib/python3.6/site-packages/networkx/readwrite/pajek.py                                           123    110    11%
+tranql/lib/python3.6/site-packages/networkx/readwrite/sparse6.py                                         125    109    13%
+tranql/lib/python3.6/site-packages/networkx/relabel.py                                                    73     67     8%
+tranql/lib/python3.6/site-packages/networkx/release.py                                                    69     18    74%
+tranql/lib/python3.6/site-packages/networkx/tests/__init__.py                                              0      0   100%
+tranql/lib/python3.6/site-packages/networkx/tests/test.py                                                 19     15    21%
+tranql/lib/python3.6/site-packages/networkx/utils/__init__.py                                              7      0   100%
+tranql/lib/python3.6/site-packages/networkx/utils/contextmanagers.py                                      13      9    31%
+tranql/lib/python3.6/site-packages/networkx/utils/decorators.py                                          138    104    25%
+tranql/lib/python3.6/site-packages/networkx/utils/heaps.py                                               179    133    26%
+tranql/lib/python3.6/site-packages/networkx/utils/mapped_queue.py                                         92     79    14%
+tranql/lib/python3.6/site-packages/networkx/utils/misc.py                                                191    143    25%
+tranql/lib/python3.6/site-packages/networkx/utils/random_sequence.py                                      56     40    29%
+tranql/lib/python3.6/site-packages/networkx/utils/rcm.py                                                  38     28    26%
+tranql/lib/python3.6/site-packages/networkx/utils/union_find.py                                           36     28    22%
+tranql/lib/python3.6/site-packages/numpy/__config__.py                                                    28     14    50%
+tranql/lib/python3.6/site-packages/numpy/__init__.py                                                      64      9    86%
+tranql/lib/python3.6/site-packages/numpy/_distributor_init.py                                              0      0   100%
+tranql/lib/python3.6/site-packages/numpy/_globals.py                                                      20      2    90%
+tranql/lib/python3.6/site-packages/numpy/_pytesttester.py                                                 48     39    19%
+tranql/lib/python3.6/site-packages/numpy/compat/__init__.py                                                8      0   100%
+tranql/lib/python3.6/site-packages/numpy/compat/_inspect.py                                               68     17    75%
+tranql/lib/python3.6/site-packages/numpy/compat/py3k.py                                                  117     81    31%
+tranql/lib/python3.6/site-packages/numpy/core/__init__.py                                                 83     14    83%
+tranql/lib/python3.6/site-packages/numpy/core/_add_newdocs.py                                            300      0   100%
+tranql/lib/python3.6/site-packages/numpy/core/_dtype.py                                                  154    131    15%
+tranql/lib/python3.6/site-packages/numpy/core/_dtype_ctypes.py                                            53     34    36%
+tranql/lib/python3.6/site-packages/numpy/core/_internal.py                                               439    332    24%
+tranql/lib/python3.6/site-packages/numpy/core/_methods.py                                                 90     66    27%
+tranql/lib/python3.6/site-packages/numpy/core/_string_helpers.py                                          15      1    93%
+tranql/lib/python3.6/site-packages/numpy/core/_type_aliases.py                                           152     19    88%
+tranql/lib/python3.6/site-packages/numpy/core/arrayprint.py                                              550    427    22%
+tranql/lib/python3.6/site-packages/numpy/core/defchararray.py                                            422    250    41%
+tranql/lib/python3.6/site-packages/numpy/core/einsumfunc.py                                              408    386     5%
+tranql/lib/python3.6/site-packages/numpy/core/fromnumeric.py                                             352    214    39%
+tranql/lib/python3.6/site-packages/numpy/core/function_base.py                                           107     78    27%
+tranql/lib/python3.6/site-packages/numpy/core/getlimits.py                                               198     82    59%
+tranql/lib/python3.6/site-packages/numpy/core/info.py                                                      3      0   100%
+tranql/lib/python3.6/site-packages/numpy/core/machar.py                                                  189    178     6%
+tranql/lib/python3.6/site-packages/numpy/core/memmap.py                                                   91     73    20%
+tranql/lib/python3.6/site-packages/numpy/core/multiarray.py                                               98     30    69%
+tranql/lib/python3.6/site-packages/numpy/core/numeric.py                                                 588    392    33%
+tranql/lib/python3.6/site-packages/numpy/core/numerictypes.py                                            161     91    43%
+tranql/lib/python3.6/site-packages/numpy/core/overrides.py                                                49     20    59%
+tranql/lib/python3.6/site-packages/numpy/core/records.py                                                 367    322    12%
+tranql/lib/python3.6/site-packages/numpy/core/shape_base.py                                              185    148    20%
+tranql/lib/python3.6/site-packages/numpy/core/umath.py                                                     4      0   100%
+tranql/lib/python3.6/site-packages/numpy/ctypeslib.py                                                    213    175    18%
+tranql/lib/python3.6/site-packages/numpy/fft/__init__.py                                                   7      0   100%
+tranql/lib/python3.6/site-packages/numpy/fft/fftpack.py                                                  154    109    29%
+tranql/lib/python3.6/site-packages/numpy/fft/helper.py                                                    86     58    33%
+tranql/lib/python3.6/site-packages/numpy/fft/info.py                                                       2      0   100%
+tranql/lib/python3.6/site-packages/numpy/lib/__init__.py                                                  44      0   100%
+tranql/lib/python3.6/site-packages/numpy/lib/_datasource.py                                              221    177    20%
+tranql/lib/python3.6/site-packages/numpy/lib/_iotools.py                                                 388    335    14%
+tranql/lib/python3.6/site-packages/numpy/lib/_version.py                                                  77     61    21%
+tranql/lib/python3.6/site-packages/numpy/lib/arraypad.py                                                 346    315     9%
+tranql/lib/python3.6/site-packages/numpy/lib/arraysetops.py                                              185    154    17%
+tranql/lib/python3.6/site-packages/numpy/lib/arrayterator.py                                              73     60    18%
+tranql/lib/python3.6/site-packages/numpy/lib/financial.py                                                140    102    27%
+tranql/lib/python3.6/site-packages/numpy/lib/format.py                                                   254    225    11%
+tranql/lib/python3.6/site-packages/numpy/lib/function_base.py                                           1188   1047    12%
+tranql/lib/python3.6/site-packages/numpy/lib/histograms.py                                               277    244    12%
+tranql/lib/python3.6/site-packages/numpy/lib/index_tricks.py                                             256    183    29%
+tranql/lib/python3.6/site-packages/numpy/lib/info.py                                                       3      0   100%
+tranql/lib/python3.6/site-packages/numpy/lib/mixins.py                                                    63     13    79%
+tranql/lib/python3.6/site-packages/numpy/lib/nanfunctions.py                                             272    212    22%
+tranql/lib/python3.6/site-packages/numpy/lib/npyio.py                                                    875    809     8%
+tranql/lib/python3.6/site-packages/numpy/lib/polynomial.py                                               423    344    19%
+tranql/lib/python3.6/site-packages/numpy/lib/scimath.py                                                   62     38    39%
+tranql/lib/python3.6/site-packages/numpy/lib/shape_base.py                                               247    200    19%
+tranql/lib/python3.6/site-packages/numpy/lib/stride_tricks.py                                             68     53    22%
+tranql/lib/python3.6/site-packages/numpy/lib/twodim_base.py                                              152    106    30%
+tranql/lib/python3.6/site-packages/numpy/lib/type_check.py                                               125     85    32%
+tranql/lib/python3.6/site-packages/numpy/lib/ufunclike.py                                                 54     30    44%
+tranql/lib/python3.6/site-packages/numpy/lib/utils.py                                                    514    431    16%
+tranql/lib/python3.6/site-packages/numpy/linalg/__init__.py                                                6      0   100%
+tranql/lib/python3.6/site-packages/numpy/linalg/info.py                                                    2      0   100%
+tranql/lib/python3.6/site-packages/numpy/linalg/linalg.py                                                664    562    15%
+tranql/lib/python3.6/site-packages/numpy/ma/__init__.py                                                   11      0   100%
+tranql/lib/python3.6/site-packages/numpy/ma/core.py                                                     2416   1785    26%
+tranql/lib/python3.6/site-packages/numpy/ma/extras.py                                                    557    465    17%
+tranql/lib/python3.6/site-packages/numpy/matrixlib/__init__.py                                             6      0   100%
+tranql/lib/python3.6/site-packages/numpy/matrixlib/defmatrix.py                                          234    178    24%
+tranql/lib/python3.6/site-packages/numpy/polynomial/__init__.py                                           10      0   100%
+tranql/lib/python3.6/site-packages/numpy/polynomial/_polybase.py                                         352    267    24%
+tranql/lib/python3.6/site-packages/numpy/polynomial/chebyshev.py                                         484    418    14%
+tranql/lib/python3.6/site-packages/numpy/polynomial/hermite.py                                           422    366    13%
+tranql/lib/python3.6/site-packages/numpy/polynomial/hermite_e.py                                         419    363    13%
+tranql/lib/python3.6/site-packages/numpy/polynomial/laguerre.py                                          408    353    13%
+tranql/lib/python3.6/site-packages/numpy/polynomial/legendre.py                                          416    361    13%
+tranql/lib/python3.6/site-packages/numpy/polynomial/polynomial.py                                        353    300    15%
+tranql/lib/python3.6/site-packages/numpy/polynomial/polyutils.py                                          65     48    26%
+tranql/lib/python3.6/site-packages/numpy/random/__init__.py                                               13      1    92%
+tranql/lib/python3.6/site-packages/numpy/testing/__init__.py                                               9      0   100%
+tranql/lib/python3.6/site-packages/numpy/testing/_private/__init__.py                                      0      0   100%
+tranql/lib/python3.6/site-packages/numpy/testing/_private/decorators.py                                   72     58    19%
+tranql/lib/python3.6/site-packages/numpy/testing/_private/nosetester.py                                  184    165    10%
+tranql/lib/python3.6/site-packages/numpy/testing/_private/utils.py                                       800    707    12%
+tranql/lib/python3.6/site-packages/numpy/version.py                                                        7      1    86%
+tranql/lib/python3.6/site-packages/pkg_resources/__init__.py                                            1508   1506     1%
+tranql/lib/python3.6/site-packages/pkg_resources/_vendor/six.py                                          444    442     1%
+tranql/lib/python3.6/site-packages/pkg_resources/extern/__init__.py                                       35     32     9%
+tranql/lib/python3.6/site-packages/pluggy/_tracing.py                                                     59     49    17%
+tranql/lib/python3.6/site-packages/pluggy/callers.py                                                     122     86    30%
+tranql/lib/python3.6/site-packages/pluggy/hooks.py                                                       175    106    39%
+tranql/lib/python3.6/site-packages/pluggy/manager.py                                                     175    135    23%
+tranql/lib/python3.6/site-packages/ply/__init__.py                                                         2      0   100%
+tranql/lib/python3.6/site-packages/ply/lex.py                                                            692    334    52%
+tranql/lib/python3.6/site-packages/ply/yacc.py                                                          1929    928    52%
+tranql/lib/python3.6/site-packages/prettytable/__init__.py                                                 4      0   100%
+tranql/lib/python3.6/site-packages/prettytable/_compact.py                                                25     10    60%
+tranql/lib/python3.6/site-packages/prettytable/factory.py                                                 97     83    14%
+tranql/lib/python3.6/site-packages/prettytable/prettytable.py                                            891    755    15%
+tranql/lib/python3.6/site-packages/py/_builtin.py                                                        188    146    22%
+tranql/lib/python3.6/site-packages/py/_code/__init__.py                                                    0      0   100%
+tranql/lib/python3.6/site-packages/py/_code/code.py                                                      524    408    22%
+tranql/lib/python3.6/site-packages/py/_error.py                                                           52     49     6%
+tranql/lib/python3.6/site-packages/py/_io/__init__.py                                                      0      0   100%
+tranql/lib/python3.6/site-packages/py/_io/capture.py                                                     266    215    19%
+tranql/lib/python3.6/site-packages/py/_io/terminalwriter.py                                              266    169    36%
+tranql/lib/python3.6/site-packages/py/_path/common.py                                                    274    184    33%
+tranql/lib/python3.6/site-packages/py/_path/local.py                                                     675    546    19%
+tranql/lib/python3.6/site-packages/py/_vendored_packages/apipkg.py                                       148    129    13%
+tranql/lib/python3.6/site-packages/py/_xmlgen.py                                                         170    168     1%
+tranql/lib/python3.6/site-packages/pyparsing.py                                                         2749   1439    48%
+tranql/lib/python3.6/site-packages/pytest_cov/compat.py                                                   19     15    21%
+tranql/lib/python3.6/site-packages/pytest_cov/embed.py                                                    76     70     8%
+tranql/lib/python3.6/site-packages/pytest_cov/engine.py                                                  183    170     7%
+tranql/lib/python3.6/site-packages/pytest_cov/plugin.py                                                  169    153     9%
+tranql/lib/python3.6/site-packages/redis/__init__.py                                                      12      2    83%
+tranql/lib/python3.6/site-packages/redis/_compat.py                                                       93     68    27%
+tranql/lib/python3.6/site-packages/redis/client.py                                                      1575   1226    22%
+tranql/lib/python3.6/site-packages/redis/connection.py                                                   669    560    16%
+tranql/lib/python3.6/site-packages/redis/exceptions.py                                                    30      0   100%
+tranql/lib/python3.6/site-packages/redis/lock.py                                                         108     82    24%
+tranql/lib/python3.6/site-packages/redis/selector.py                                                      89     60    33%
+tranql/lib/python3.6/site-packages/redis/utils.py                                                         15      6    60%
+tranql/lib/python3.6/site-packages/redisgraph/__init__.py                                                  1      0   100%
+tranql/lib/python3.6/site-packages/redisgraph/client.py                                                   92     71    23%
+tranql/lib/python3.6/site-packages/redisgraph/query_result.py                                             47     26    45%
+tranql/lib/python3.6/site-packages/requests/_internal_utils.py                                            16      7    56%
+tranql/lib/python3.6/site-packages/requests/adapters.py                                                  222    145    35%
+tranql/lib/python3.6/site-packages/requests/api.py                                                        22     17    23%
+tranql/lib/python3.6/site-packages/requests/cookies.py                                                   238    202    15%
+tranql/lib/python3.6/site-packages/requests/exceptions.py                                                 35     30    14%
+tranql/lib/python3.6/site-packages/requests/hooks.py                                                      15     10    33%
+tranql/lib/python3.6/site-packages/requests/models.py                                                    446    273    39%
+tranql/lib/python3.6/site-packages/requests/sessions.py                                                  284    114    60%
+tranql/lib/python3.6/site-packages/requests/structures.py                                                 39     29    26%
+tranql/lib/python3.6/site-packages/requests/utils.py                                                     443    345    22%
+tranql/lib/python3.6/site-packages/requests_cache/__init__.py                                              4      0   100%
+tranql/lib/python3.6/site-packages/requests_cache/backends/__init__.py                                    34     18    47%
+tranql/lib/python3.6/site-packages/requests_cache/backends/base.py                                       157    123    22%
+tranql/lib/python3.6/site-packages/requests_cache/backends/mongo.py                                        8      5    38%
+tranql/lib/python3.6/site-packages/requests_cache/backends/redis.py                                        8      3    62%
+tranql/lib/python3.6/site-packages/requests_cache/backends/sqlite.py                                       8      3    62%
+tranql/lib/python3.6/site-packages/requests_cache/backends/storage/__init__.py                             0      0   100%
+tranql/lib/python3.6/site-packages/requests_cache/backends/storage/dbdict.py                              86     59    31%
+tranql/lib/python3.6/site-packages/requests_cache/backends/storage/mongodict.py                           45     35    22%
+tranql/lib/python3.6/site-packages/requests_cache/backends/storage/redisdict.py                           32     16    50%
+tranql/lib/python3.6/site-packages/requests_cache/compat.py                                               42      8    81%
+tranql/lib/python3.6/site-packages/requests_cache/core.py                                                111     81    27%
+tranql/lib/python3.6/site-packages/requests_mock/adapter.py                                              149     71    52%
+tranql/lib/python3.6/site-packages/requests_mock/compat.py                                                25     20    20%
+tranql/lib/python3.6/site-packages/requests_mock/contrib/_pytest_plugin.py                                36     31    14%
+tranql/lib/python3.6/site-packages/requests_mock/exceptions.py                                             7      5    29%
+tranql/lib/python3.6/site-packages/requests_mock/mocker.py                                               108     76    30%
+tranql/lib/python3.6/site-packages/requests_mock/request.py                                               80     58    28%
+tranql/lib/python3.6/site-packages/requests_mock/response.py                                              95     43    55%
+tranql/lib/python3.6/site-packages/six.py                                                                472    460     3%
+tranql/lib/python3.6/site-packages/urllib3/__init__.py                                                    33     32     3%
+tranql/lib/python3.6/site-packages/urllib3/_collections.py                                               181    138    24%
+tranql/lib/python3.6/site-packages/urllib3/connection.py                                                 165    110    33%
+tranql/lib/python3.6/site-packages/urllib3/connectionpool.py                                             314    164    48%
+tranql/lib/python3.6/site-packages/urllib3/exceptions.py                                                  96     89     7%
+tranql/lib/python3.6/site-packages/urllib3/packages/six.py                                               444    441     1%
+tranql/lib/python3.6/site-packages/urllib3/poolmanager.py                                                170    116    32%
+tranql/lib/python3.6/site-packages/urllib3/request.py                                                     39     38     3%
+tranql/lib/python3.6/site-packages/urllib3/response.py                                                   353    254    28%
+tranql/lib/python3.6/site-packages/urllib3/util/connection.py                                             66     34    48%
+tranql/lib/python3.6/site-packages/urllib3/util/queue.py                                                  14     10    29%
+tranql/lib/python3.6/site-packages/urllib3/util/request.py                                                45     42     7%
+tranql/lib/python3.6/site-packages/urllib3/util/response.py                                               35     19    46%
+tranql/lib/python3.6/site-packages/urllib3/util/retry.py                                                 150    105    30%
+tranql/lib/python3.6/site-packages/urllib3/util/ssl_.py                                                  147    108    27%
+tranql/lib/python3.6/site-packages/urllib3/util/timeout.py                                                59     42    29%
+tranql/lib/python3.6/site-packages/urllib3/util/url.py                                                   103     56    46%
+tranql/lib/python3.6/site-packages/werkzeug/__init__.py                                                   28      8    71%
+tranql/lib/python3.6/site-packages/werkzeug/_compat.py                                                   148     81    45%
+tranql/lib/python3.6/site-packages/werkzeug/_internal.py                                                 252    174    31%
+tranql/lib/python3.6/site-packages/werkzeug/datastructures.py                                           1364    805    41%
+tranql/lib/python3.6/site-packages/werkzeug/exceptions.py                                                216     51    76%
+tranql/lib/python3.6/site-packages/werkzeug/filesystem.py                                                 22     13    41%
+tranql/lib/python3.6/site-packages/werkzeug/formparser.py                                                256    184    28%
+tranql/lib/python3.6/site-packages/werkzeug/http.py                                                      494    383    22%
+tranql/lib/python3.6/site-packages/werkzeug/local.py                                                     216     65    70%
+tranql/lib/python3.6/site-packages/werkzeug/middleware/__init__.py                                         0      0   100%
+tranql/lib/python3.6/site-packages/werkzeug/middleware/dispatcher.py                                      18     15    17%
+tranql/lib/python3.6/site-packages/werkzeug/middleware/http_proxy.py                                      93     81    13%
+tranql/lib/python3.6/site-packages/werkzeug/middleware/shared_data.py                                    113     89    21%
+tranql/lib/python3.6/site-packages/werkzeug/routing.py                                                   725    311    57%
+tranql/lib/python3.6/site-packages/werkzeug/test.py                                                      545    227    58%
+tranql/lib/python3.6/site-packages/werkzeug/urls.py                                                      454    187    59%
+tranql/lib/python3.6/site-packages/werkzeug/utils.py                                                     298    202    32%
+tranql/lib/python3.6/site-packages/werkzeug/wrappers/__init__.py                                          16      0   100%
+tranql/lib/python3.6/site-packages/werkzeug/wrappers/accept.py                                            14      3    79%
+tranql/lib/python3.6/site-packages/werkzeug/wrappers/auth.py                                              16      9    44%
+tranql/lib/python3.6/site-packages/werkzeug/wrappers/base_request.py                                     181     62    66%
+tranql/lib/python3.6/site-packages/werkzeug/wrappers/base_response.py                                    231     84    64%
+tranql/lib/python3.6/site-packages/werkzeug/wrappers/common_descriptors.py                                94     34    64%
+tranql/lib/python3.6/site-packages/werkzeug/wrappers/etag.py                                             116     73    37%
+tranql/lib/python3.6/site-packages/werkzeug/wrappers/request.py                                           11      0   100%
+tranql/lib/python3.6/site-packages/werkzeug/wrappers/response.py                                          38     20    47%
+tranql/lib/python3.6/site-packages/werkzeug/wrappers/user_agent.py                                         5      2    60%
+tranql/lib/python3.6/site-packages/werkzeug/wsgi.py                                                      455    317    30%
+tranql/lib/python3.6/site-packages/yaml/__init__.py                                                      143     88    38%
+tranql/lib/python3.6/site-packages/yaml/composer.py                                                       92     17    82%
+tranql/lib/python3.6/site-packages/yaml/constructor.py                                                   444    254    43%
+tranql/lib/python3.6/site-packages/yaml/cyaml.py                                                          38     36     5%
+tranql/lib/python3.6/site-packages/yaml/dumper.py                                                         24     12    50%
+tranql/lib/python3.6/site-packages/yaml/emitter.py                                                       838    769     8%
+tranql/lib/python3.6/site-packages/yaml/error.py                                                          58     42    28%
+tranql/lib/python3.6/site-packages/yaml/events.py                                                         61      6    90%
+tranql/lib/python3.6/site-packages/yaml/loader.py                                                         32      6    81%
+tranql/lib/python3.6/site-packages/yaml/nodes.py                                                          29      7    76%
+tranql/lib/python3.6/site-packages/yaml/parser.py                                                        352    149    58%
+tranql/lib/python3.6/site-packages/yaml/reader.py                                                        122     33    73%
+tranql/lib/python3.6/site-packages/yaml/representer.py                                                   244    174    29%
+tranql/lib/python3.6/site-packages/yaml/resolver.py                                                      134     75    44%
+tranql/lib/python3.6/site-packages/yaml/scanner.py                                                       757    308    59%
+tranql/lib/python3.6/site-packages/yaml/serializer.py                                                     85     70    18%
+tranql/lib/python3.6/site-packages/yaml/tokens.py                                                         76     17    78%
+tranql/lib/python3.6/site-packages/yarl/__init__.py                                                      441    333    24%
+tranql/lib/python3.6/site-packages/yarl/quoting.py                                                       155    132    15%
+tranql/main.py                                                                                           166     85    49%
+tranql/redis_graph.py                                                                                     61     43    30%
+tranql/request_util.py                                                                                    78     66    15%
+tranql/tests/mocks.py                                                                                     28      1    96%
+tranql/tests/test_api.py                                                                                  50      0   100%
+tranql/tests/test_backplane.py                                                                            13      0   100%
+tranql/tests/test_tranql.py                                                                              502      7    99%
+tranql/tests/util.py                                                                                      23      0   100%
+tranql/tranql_ast.py                                                                                     689    128    81%
+tranql/tranql_schema.py                                                                                  228     58    75%
+tranql/util.py                                                                                           286    143    50%
+tranql/utils/merge_utils.py                                                                               98      0   100%
+--------------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                                                 117490  84749    28%
+
+
+========================= 49 passed in 413.58 seconds ==========================
+Email was triggered for: Success
+Sending email for trigger: Success
+Sending email to: bennettc@renci.og
+Triggering a new build of [8mha:////4HupKFO/ib+eQLaqH5fY6FYkoucgF5kkwVElcQWk928DAAAAnx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzeEgZh/az8JP2SosS8whzdlPzk7NQifQCGxiahyAAAAA==[0mtranql-docker
+Finished: SUCCESS

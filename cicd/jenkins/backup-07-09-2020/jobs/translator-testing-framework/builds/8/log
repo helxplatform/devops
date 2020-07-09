@@ -1,0 +1,279 @@
+Started by user [8mha:////4K9RYymFaggB3y3D+hH+VqHqTrglxLVLwFvh6ZMVAda9AAAAmh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAz+EgY+/dLi1CL9pNS8vNSSkmQANcXSfcMAAAA=[0mCharles Bennett
+Building on master in workspace /var/lib/jenkins/jobs/translator-testing-framework/workspace
+[workspace] $ /bin/sh -xe /tmp/jenkins6247593539319590262.sh
++ rm -rf translator-testing-framework
++ rm -rf venv-translator-testing-framework
++ git clone --recursive git@github.com:frostyfan109/translator-testing-framework.git
+Cloning into 'translator-testing-framework'...
+Submodule 'reasoner_diff' (https://github.com/NCATS-Tangerine/NCATS-ReasonerStdAPI-diff) registered for path 'reasoner_diff'
+Cloning into 'reasoner_diff'...
+Submodule path 'reasoner_diff': checked out 'e4d08f06daeff929e507fe0f1935819f9ae3e636'
++ python3.6 -m venv venv-translator-testing-framework
++ source venv-translator-testing-framework/bin/activate
+++ deactivate nondestructive
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ '[' -n /bin/sh -o -n '' ']'
+++ hash -r
+++ '[' -n '' ']'
+++ unset VIRTUAL_ENV
+++ '[' '!' nondestructive = nondestructive ']'
+++ VIRTUAL_ENV=/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework
+++ export VIRTUAL_ENV
+++ _OLD_VIRTUAL_PATH=/sbin:/usr/sbin:/bin:/usr/bin
+++ PATH=/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/bin:/sbin:/usr/sbin:/bin:/usr/bin
+++ export PATH
+++ '[' -n '' ']'
+++ '[' -z '' ']'
+++ _OLD_VIRTUAL_PS1=
+++ '[' 'x(venv-translator-testing-framework) ' '!=' x ']'
+++ PS1='(venv-translator-testing-framework) '
+++ export PS1
+++ '[' -n /bin/sh -o -n '' ']'
+++ hash -r
++ cd translator-testing-framework/
++ pip install -r requirements.txt
+Collecting behave==1.2.6 (from -r requirements.txt (line 1))
+  Using cached https://files.pythonhosted.org/packages/a8/6c/ec9169548b6c4cb877aaa6773408ca08ae2a282805b958dbc163cb19822d/behave-1.2.6-py2.py3-none-any.whl
+Collecting jsonpath-rw==1.4.0 (from -r requirements.txt (line 2))
+Collecting requests>=2.22.0 (from -r requirements.txt (line 3))
+  Using cached https://files.pythonhosted.org/packages/51/bd/23c926cd341ea6b7dd0b2a00aba99ae0f828be89d72b2190f27c11d4b7fb/requests-2.22.0-py2.py3-none-any.whl
+Collecting parse>=1.8.2 (from behave==1.2.6->-r requirements.txt (line 1))
+  Using cached https://files.pythonhosted.org/packages/c4/c0/324d280a3298cdad806c3fb64eef31aed5c4dbd15b72a309498fb71c6a17/parse-1.12.0.tar.gz
+Collecting parse-type>=0.4.2 (from behave==1.2.6->-r requirements.txt (line 1))
+  Using cached https://files.pythonhosted.org/packages/1b/81/2a168b41acb57f1ea8e1e09937f585a0b9105557b13562ff8655fea81c09/parse_type-0.5.2-py2.py3-none-any.whl
+Collecting six>=1.11 (from behave==1.2.6->-r requirements.txt (line 1))
+  Using cached https://files.pythonhosted.org/packages/73/fb/00a976f728d0d1fecfe898238ce23f502a721c0ac0ecfedb80e0d88c64e9/six-1.12.0-py2.py3-none-any.whl
+Collecting ply (from jsonpath-rw==1.4.0->-r requirements.txt (line 2))
+  Using cached https://files.pythonhosted.org/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl
+Collecting decorator (from jsonpath-rw==1.4.0->-r requirements.txt (line 2))
+  Using cached https://files.pythonhosted.org/packages/5f/88/0075e461560a1e750a0dcbf77f1d9de775028c37a19a346a6c565a257399/decorator-4.4.0-py2.py3-none-any.whl
+Collecting chardet<3.1.0,>=3.0.2 (from requests>=2.22.0->-r requirements.txt (line 3))
+  Using cached https://files.pythonhosted.org/packages/bc/a9/01ffebfb562e4274b6487b4bb1ddec7ca55ec7510b22e4c51f14098443b8/chardet-3.0.4-py2.py3-none-any.whl
+Collecting urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 (from requests>=2.22.0->-r requirements.txt (line 3))
+  Using cached https://files.pythonhosted.org/packages/e6/60/247f23a7121ae632d62811ba7f273d0e58972d75e58a94d329d51550a47d/urllib3-1.25.3-py2.py3-none-any.whl
+Collecting certifi>=2017.4.17 (from requests>=2.22.0->-r requirements.txt (line 3))
+  Using cached https://files.pythonhosted.org/packages/69/1b/b853c7a9d4f6a6d00749e94eb6f3a041e342a885b87340b79c1ef73e3a78/certifi-2019.6.16-py2.py3-none-any.whl
+Collecting idna<2.9,>=2.5 (from requests>=2.22.0->-r requirements.txt (line 3))
+  Using cached https://files.pythonhosted.org/packages/14/2c/cd551d81dbe15200be1cf41cd03869a46fe7226e7450af7a6545bfc474c9/idna-2.8-py2.py3-none-any.whl
+Installing collected packages: parse, six, parse-type, behave, ply, decorator, jsonpath-rw, chardet, urllib3, certifi, idna, requests
+  Running setup.py install for parse: started
+    Running setup.py install for parse: finished with status 'done'
+Successfully installed behave-1.2.6 certifi-2019.6.16 chardet-3.0.4 decorator-4.4.0 idna-2.8 jsonpath-rw-1.4.0 parse-1.12.0 parse-type-0.5.2 ply-3.11 requests-2.22.0 six-1.12.0 urllib3-1.25.3
+You are using pip version 9.0.1, however version 19.2.2 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
++ ENV=prod
++ behave
+ Environment: prod
+TranQL URL (prod): https://tranql.renci.org/tranql/query
+Feature: Check all reasoners # features/check-reasoners.feature:1
+
+  Scenario: Check for RTX reasoner                                                                       # features/check-reasoners.feature:3
+    Given a query graph "RTX"                                                                            # features/steps/steps.py:19
+    When we fire the query to "RTX" with URL "None" we expect a HTTP "200"                               # features/steps/steps.py:75
+    Then the response should contain "knowledge_graph"                                                   # features/steps/steps.py:124
+    Then the response should have some JSONPath "answers[*].node_bindings.n1" with "string" "HP:0002105" # features/steps/steps.py:133
+    Then the response should have some JSONPath "answers[*].node_bindings.n3" with "string" "HGNC:11365" # features/steps/steps.py:133
+
+  Scenario: Check for ROBOKOP reasoner                                                                             # features/check-reasoners.feature:10
+    Given a query graph "ROBOKOP"                                                                                  # features/steps/steps.py:19
+    When we fire the query to "ROBOKOP" with URL "None" we expect a HTTP "200"                                     # features/steps/steps.py:75
+    Then the response should contain "knowledge_graph"                                                             # features/steps/steps.py:124
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].id" with "string" "HP:0002105"           # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type" with "string" "phenotypic_feature" # features/steps/steps.py:133
+
+Feature: Compare answers between reasoners # features/compare-reasoners.feature:1
+
+  Scenario: Compare answers between RTX and ROBOKOP                                                                                   # features/compare-reasoners.feature:3
+    Given an answer graph from "RTX"                                                                                                  # features/steps/steps.py:38
+    Given an answer graph from "ROBOKOP"                                                                                              # features/steps/steps.py:38
+    When we compare the answer graphs                                                                                                 # features/steps/steps.py:99
+      Traceback (most recent call last):
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/urllib3/connection.py", line 160, in _new_conn
+          (self._dns_host, self.port), self.timeout, **extra_kw)
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/urllib3/util/connection.py", line 80, in create_connection
+          raise err
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/urllib3/util/connection.py", line 70, in create_connection
+          sock.connect(sa)
+      ConnectionRefusedError: [Errno 111] Connection refused
+      
+      During handling of the above exception, another exception occurred:
+      
+      Traceback (most recent call last):
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/urllib3/connectionpool.py", line 603, in urlopen
+          chunked=chunked)
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/urllib3/connectionpool.py", line 355, in _make_request
+          conn.request(method, url, **httplib_request_kw)
+        File "/usr/lib64/python3.6/http/client.py", line 1239, in request
+          self._send_request(method, url, body, headers, encode_chunked)
+        File "/usr/lib64/python3.6/http/client.py", line 1285, in _send_request
+          self.endheaders(body, encode_chunked=encode_chunked)
+        File "/usr/lib64/python3.6/http/client.py", line 1234, in endheaders
+          self._send_output(message_body, encode_chunked=encode_chunked)
+        File "/usr/lib64/python3.6/http/client.py", line 1026, in _send_output
+          self.send(msg)
+        File "/usr/lib64/python3.6/http/client.py", line 964, in send
+          self.connect()
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/urllib3/connection.py", line 183, in connect
+          conn = self._new_conn()
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/urllib3/connection.py", line 169, in _new_conn
+          self, "Failed to establish a new connection: %s" % e)
+      urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x7f6b2497e3c8>: Failed to establish a new connection: [Errno 111] Connection refused
+      
+      During handling of the above exception, another exception occurred:
+      
+      Traceback (most recent call last):
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/requests/adapters.py", line 449, in send
+          timeout=timeout
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/urllib3/connectionpool.py", line 641, in urlopen
+          _stacktrace=sys.exc_info()[2])
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/urllib3/util/retry.py", line 399, in increment
+          raise MaxRetryError(_pool, url, error or ResponseError(cause))
+      urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='127.0.0.1', port=9999): Max retries exceeded with url: /compare_answers (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6b2497e3c8>: Failed to establish a new connection: [Errno 111] Connection refused',))
+      
+      During handling of the above exception, another exception occurred:
+      
+      Traceback (most recent call last):
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/behave/model.py", line 1329, in run
+          match.run(runner.context)
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/behave/matchers.py", line 98, in run
+          self.func(context, *args, **kwargs)
+        File "features/steps/steps.py", line 113, in step_impl
+          'accept': 'application/json'
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/requests/api.py", line 116, in post
+          return request('post', url, data=data, json=json, **kwargs)
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/requests/api.py", line 60, in request
+          return session.request(method=method, url=url, **kwargs)
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/requests/sessions.py", line 533, in request
+          resp = self.send(prep, **send_kwargs)
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/requests/sessions.py", line 646, in send
+          r = adapter.send(request, **kwargs)
+        File "/var/lib/jenkins/jobs/translator-testing-framework/workspace/venv-translator-testing-framework/lib64/python3.6/site-packages/requests/adapters.py", line 516, in send
+          raise ConnectionError(e, request=request)
+      requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=9999): Max retries exceeded with url: /compare_answers (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6b2497e3c8>: Failed to establish a new connection: [Errno 111] Connection refused',))
+
+    Then the response should contain "graph_diff"                                                                                     # None
+    Then the response should have some JSONPath "graph_diff.intersection.edges[*].source_id" containing "string" "HP:0002105"         # None
+    Then the response should have some JSONPath "graph_diff.intersection.edges[*].relation" containing "string" "RO:0002200"          # None
+    Then the response should have some JSONPath "graph_diff.intersection.edges[*].relation_label" containing "string" "has phenotype" # None
+    Then the response should have some JSONPath "graph_diff.intersection.edges[*].target_id" containing "string" "MONDO:0018076"      # None
+
+Feature: Test TranQL's answer from a given TranQL query with an invalid transition # features/tranql-invalid-schema.feature:1
+
+  Scenario: Test the answer when using terms that are not in the concept model                                       # features/tranql-invalid-schema.feature:3
+    Given the TranQL query                                                                                           # features/steps/steps.py:12
+      """
+        SELECT foo->bar
+        FROM "/schema"
+      """
+    When we fire the query to TranQL we expect a HTTP "200"                                                          # features/steps/steps.py:61
+    Then the response should have some JSONPath "message" with "string" "Concept "foo" is not in the concept model." # features/steps/steps.py:133
+    Then the response should have some JSONPath "status" with "string" "Error"                                       # features/steps/steps.py:133
+
+  Scenario: Test the answer when using valid terms that have no supported transitions between each other.                                        # features/tranql-invalid-schema.feature:13
+    Given the TranQL query                                                                                                                       # features/steps/steps.py:12
+      """
+        SELECT genomic_entity->chemical_substance
+        FROM "/schema"
+      """
+    When we fire the query to TranQL we expect a HTTP "200"                                                                                      # features/steps/steps.py:61
+    Then the response should have some JSONPath "message" with "string" "Invalid transition between genomic_entity:[] and chemical_substance:[]" # features/steps/steps.py:133
+    Then the response should have some JSONPath "status" with "string" "Error"                                                                   # features/steps/steps.py:133
+
+Feature: Test TranQL's answer from a given TranQL query that uses specific reasoners # features/tranql-reasoners.feature:1
+
+  Scenario: Test TranQL's answer when querying only RTX                                                                # features/tranql-reasoners.feature:3
+    Given the TranQL query                                                                                             # features/steps/steps.py:12
+      """
+        set chemical = "CHEMBL:CHEMBL3"
+        SELECT chemical_substance->disease
+        FROM "/graph/rtx"
+        WHERE chemical_substance=$chemical
+      """
+    When we fire the query to TranQL we expect a HTTP "200"                                                            # features/steps/steps.py:61
+    Then the response should contain "knowledge_graph"                                                                 # features/steps/steps.py:124
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].id" with "string" "DOID:12918"               # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "chemical_substance"  # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "disease"             # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.edges[*].type[*]" with "string" "contraindicated_for" # features/steps/steps.py:133
+
+  Scenario: Test TranQL's answer when querying only Indigo                                                   # features/tranql-reasoners.feature:18
+    Given the TranQL query                                                                                   # features/steps/steps.py:12
+      """
+        set chemical = "CHEMBL:CHEMBL3"
+        SELECT chemical_substance->disease
+        FROM "/graph/indigo"
+        WHERE chemical_substance=$chemical
+      """
+    When we fire the query to TranQL we expect a HTTP "200"                                                  # features/steps/steps.py:61
+    Then the response should contain "knowledge_graph"                                                       # features/steps/steps.py:124
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].name" with "string" "(S)-nicotine" # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "Drug"      # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "Disease"   # features/steps/steps.py:133
+
+  Scenario: Test TranQL's answer when querying only Gamma                                                             # features/tranql-reasoners.feature:32
+    Given the TranQL query                                                                                            # features/steps/steps.py:12
+      """
+        set chemical = "CHEMBL:CHEMBL3"
+        SELECT chemical_substance->disease
+        FROM "/graph/gamma/quick"
+        WHERE chemical_substance=$chemical
+      """
+    When we fire the query to TranQL we expect a HTTP "200"                                                           # features/steps/steps.py:61
+    Then the response should contain "knowledge_graph"                                                                # features/steps/steps.py:124
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].name" with "string" "(S)-nicotine"          # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "chemical_substance" # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "disease"            # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "genetic_condition"  # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.edges[*].type[*]" with "string" "prevents"           # features/steps/steps.py:133
+
+  Scenario: Test TranQL's answer when querying only ICEES                                                                             # features/tranql-reasoners.feature:48
+    Given the TranQL query                                                                                                            # features/steps/steps.py:12
+      """
+        SELECT population_of_individual_organisms->chemical_substance
+          FROM "/clinical/cohort/disease_to_chemical_exposure"
+         WHERE icees.table = 'patient'
+           AND icees.year = 2010
+           AND icees.cohort_features.AgeStudyStart = '0-2'
+           AND icees.feature.EstResidentialDensity < 1
+           AND icees.maximum_p_value = 1
+           AND drug_exposure !=~ '^(SCTID.*|rxcui.*|CAS.*|SMILES.*|umlscui.*)$'
+      """
+    When we fire the query to TranQL we expect a HTTP "200"                                                                           # features/steps/steps.py:61
+    Then the response should contain "knowledge_graph"                                                                                # features/steps/steps.py:124
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].name" with "string" "cohort"                                # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "population_of_individual_organisms" # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "chemical_substance"                 # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "drug"                               # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.edges[*].type[*]" with "string" "association"                        # features/steps/steps.py:133
+
+  Scenario: Test TranQL's answer when querying all reasoners (including ICEES)                                                        # features/tranql-reasoners.feature:68
+    Given the TranQL query                                                                                                            # features/steps/steps.py:12
+      """
+        SELECT population_of_individual_organisms->chemical_substance->gene->biological_process_or_activity<-phenotypic_feature
+          FROM "/schema"
+         WHERE icees.table = 'patient'
+           AND icees.year = 2010
+           AND icees.cohort_features.AgeStudyStart = '0-2'
+           AND icees.feature.EstResidentialDensity < 1
+           AND icees.maximum_p_value = 1
+           AND drug_exposure !=~ '^(SCTID.*|rxcui.*|CAS.*|SMILES.*|umlscui.*)$'
+      """
+    When we fire the query to TranQL we expect a HTTP "200"                                                                           # features/steps/steps.py:61
+    Then the response should contain "knowledge_graph"                                                                                # features/steps/steps.py:124
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].name" with "string" "cohort"                                # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "population_of_individual_organisms" # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.nodes[*].type[*]" with "string" "disease"                            # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.edges[*].type[*]" with "string" "association"                        # features/steps/steps.py:133
+    Then the response should have some JSONPath "knowledge_graph.edges[*].type[*]" with "string" "interacts_with"                     # features/steps/steps.py:133
+
+
+Failing scenarios:
+  features/compare-reasoners.feature:3  Compare answers between RTX and ROBOKOP
+
+3 features passed, 1 failed, 0 skipped
+9 scenarios passed, 1 failed, 0 skipped
+57 steps passed, 1 failed, 5 skipped, 0 undefined
+Took 4m1.030s
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE
