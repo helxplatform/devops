@@ -704,27 +704,18 @@ function deployAppStore(){
   echo "# deploying AppStore"
   if [ "$GKE_DEPLOYMENT" == true ]
   then
-    createNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
-        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
-        "ReadWriteMany"
-    createNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
-        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
     createGCEDisk $APPSTORE_OAUTH_PD_NAME $APPSTORE_OAUTH_PV_STORAGE_SIZE
     createGKEPV $APPSTORE_OAUTH_PD_NAME $APPSTORE_OAUTH_PV_NAME \
         $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PVC
     createGKEPVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PV_STORAGE_SIZE
   elif [ "$USE_NFS_PVS" == true ]
   then
-    createNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_ACCESSMODE $CAT_PV_STORAGECLASS
     createNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
         $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
         $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
     createPVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PVC_STORAGE \
          $APPSTORE_OAUTH_PV_ACCESSMODE $APPSTORE_OAUTH_PV_STORAGECLASS
   else
-    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $APPSTORE_OAUTH_PV_ACCESSMODE $CAT_PV_STORAGECLASS
     createPVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PVC_STORAGE \
          $APPSTORE_OAUTH_PV_ACCESSMODE $APPSTORE_OAUTH_PV_STORAGECLASS
   fi
@@ -775,12 +766,12 @@ function deployAppStore(){
   then
    HELM_VALUES+=",django.saml2auth.ASSERTION_URL=$APPSTORE_SAML2_AUTH_ASSERTION_URL"
   fi
-  if [ ! -z "$APPSTORE_SAML2_ENTITY_ID" ]
+  if [ ! -z "$APPSTORE_SAML2_AUTH_ENTITY_ID" ]
   then
-   HELM_VALUES+=",django.saml2auth.ENTITY_ID=$APPSTORE_SAML2_ENTITY_ID"
+   HELM_VALUES+=",django.saml2auth.ENTITY_ID=$APPSTORE_SAML2_AUTH_ENTITY_ID"
   fi
   if [ ! -z "$APPSTORE_ALLOW_DJANGO_LOGIN" ]
-  then 
+  then
    HELM_VALUES+=",django.ALLOW_DJANGO_LOGIN=$APPSTORE_ALLOW_DJANGO_LOGIN"
   fi
   if [ ! -z "$APPSTORE_ALLOW_SAML_LOGIN" ]
@@ -830,11 +821,6 @@ function deleteAppStore(){
   echo "# deleting AppStore"
   $HELM -n $NAMESPACE delete $APPSTORE_HELM_RELEASE
   if [ "$GKE_DEPLOYMENT" == true ]; then
-    deleteNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
-        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
-    deleteNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
-        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
-        "ReadWriteMany"
     deleteGKEPVC $APPSTORE_OAUTH_PVC
     deleteGKEPV $APPSTORE_OAUTH_PV_NAME
     if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
@@ -846,9 +832,6 @@ function deleteAppStore(){
     fi
   elif [ "$USE_NFS_PVS" == true ]
   then
-    deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-    deleteNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
     deletePVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PVC_STORAGE \
         $APPSTORE_OAUTH_PV_STORAGECLASS $APPSTORE_OAUTH_PV_ACCESSMODE
     deleteNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
@@ -857,7 +840,6 @@ function deleteAppStore(){
   else
     if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
       echo "### Deleting AppStore Oauth PVC."
-      deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
       deletePVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PVC_STORAGE \
           $APPSTORE_OAUTH_PV_STORAGECLASS $APPSTORE_OAUTH_PV_ACCESSMODE
     else
@@ -865,6 +847,48 @@ function deleteAppStore(){
     fi
   fi
   echo "# end deleting AppStore"
+}
+
+
+function createStdNFS(){
+  echo "# creating stdnfs"
+  if [ "$GKE_DEPLOYMENT" == true ]
+  then
+    createNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
+        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
+        "ReadWriteMany"
+    createNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
+        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
+  elif [ "$USE_NFS_PVS" == true ]
+  then
+    createNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_ACCESSMODE $CAT_PV_STORAGECLASS
+  else
+    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $APPSTORE_OAUTH_PV_ACCESSMODE $CAT_PV_STORAGECLASS
+  fi
+  echo "# stdnfs deleted"
+}
+
+
+function deleteStdNFS(){
+  echo "# deleting stdnfs"
+  $HELM -n $NAMESPACE delete $APPSTORE_HELM_RELEASE
+  if [ "$GKE_DEPLOYMENT" == true ]; then
+    deleteNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
+        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
+    deleteNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
+        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
+        "ReadWriteMany"
+  elif [ "$USE_NFS_PVS" == true ]
+  then
+    deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+    deleteNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+  else
+    deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
+  fi
+  echo "# end deleting stdnfs"
 }
 
 
@@ -1154,6 +1178,7 @@ case $APPS_ACTION in
           deployNFSRODS
         fi
         # deployELK
+        createStdNFS
         deployCAT
         deployAmbassador
         deployNginxRevProxy
@@ -1195,6 +1220,9 @@ case $APPS_ACTION in
       restartr)
         restartr deploy
         ;;
+      stdnfs)
+        createStdNFS
+        ;;
       tycho)
         deployTycho
         ;;
@@ -1211,6 +1239,7 @@ case $APPS_ACTION in
         deleteNginxRevProxy
         deleteAmbassador
         deleteCAT
+        deleteStdNFS
         # deleteELK
         if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
           deleteNFSRODS
@@ -1256,6 +1285,9 @@ case $APPS_ACTION in
         ;;
       restartr)
         restartr delete
+        ;;
+      stdnfs)
+        deleteStdNFS
         ;;
       tycho)
         deleteTycho

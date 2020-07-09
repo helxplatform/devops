@@ -18,7 +18,7 @@ data:
   # Just adding these ports temporarily until they have a default value in the code.
   BRAINI_PORT: "1247"
   NRC_PORT: "1247"
-  ALLOW_DJANGO_LOGIN: {{ .Values.django.APPSTORE_ALLOW_DJANGO_LOGIN }} 
-  ALLOW_SAML_LOGIN: {{ .Values.django.APPSTORE_ALLOW_SAML_LOGIN }}
-  APPSTORE_SAML2_AUTH_ASSERTION_URL: {{ .Values.django.saml2auth.ASSERTION_URL }}
-  APPSTORE_SAML2_AUTH_ENTITY_ID: {{ .Values.django.saml2auth.ENTITY_ID }}
+  ALLOW_DJANGO_LOGIN: "{{ .Values.django.ALLOW_DJANGO_LOGIN }}"
+  ALLOW_SAML_LOGIN: "{{ .Values.django.ALLOW_SAML_LOGIN }}"
+  SAML2_AUTH_ASSERTION_URL: "{{ .Values.django.saml2auth.ASSERTION_URL }}"
+  SAML2_AUTH_ENTITY_ID: "{{ .Values.django.saml2auth.ENTITY_ID }}"
