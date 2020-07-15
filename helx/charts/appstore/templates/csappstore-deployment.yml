@@ -54,25 +54,25 @@ spec:
             configMapKeyRef:
               key: DJANGO_SETTINGS_MODULE
               name: csappstore-env
-        - name: ALLOW_DJANGO_LOGIN 
+        - name: ALLOW_DJANGO_LOGIN
           valueFrom:
             configMapKeyRef:
-              key: ALLOW_DJANGO_LOGIN 
+              key: ALLOW_DJANGO_LOGIN
               name: csappstore-env
-        - name: ALLOW_SAML_LOGIN 
+        - name: ALLOW_SAML_LOGIN
           valueFrom:
             configMapKeyRef:
-              key: ALLOW_SAML_LOGIN 
+              key: ALLOW_SAML_LOGIN
               name: csappstore-env
-        - name: SAML2_AUTH_ASSERTION_URL 
+        - name: SAML2_AUTH_ASSERTION_URL
           valueFrom:
             configMapKeyRef:
-              key: SAML2_AUTH_ASSERTION_URL 
+              key: SAML2_AUTH_ASSERTION_URL
               name: csappstore-env
         - name: SAML2_AUTH_ENTITY_ID
           valueFrom:
             configMapKeyRef:
-              key: SAML2_AUTH_ENTITY_ID 
+              key: SAML2_AUTH_ENTITY_ID
               name: csappstore-env
         - name: OAUTH_DB_DIR
           valueFrom:
@@ -215,21 +215,20 @@ spec:
         volumeMounts:
           - mountPath: /var/lib/sqlite3
             name: appstore-oauth-volume
-      {{- if .Values.appStorage.claimName }}
+          {{- if .Values.appStorage.claimName }}
           - name: app-mounts-claim
             mountPath: /usr/src/inst-mgmt
             subPath: inst-mgmt
-      {{- end}}
-      {{- end }}
+          {{- end }}
       {{- else if .Values.oauth.pvcname }}
         volumeMounts:
           - mountPath: /var/lib/sqlite3
             name: appstore-oauth-volume
-      {{- if .Values.appStorage.claimName }}
+          {{- if .Values.appStorage.claimName }}
           - name: app-mounts-claim
             mountPath: /usr/src/inst-mgmt/log
             subPath: log
-      {{- end}}
+          {{- end}}
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
