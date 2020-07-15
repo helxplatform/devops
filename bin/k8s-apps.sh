@@ -145,6 +145,7 @@ NGINX_VAR_STORAGE_CLAIMNAME=${NGINX_VAR_STORAGE_CLAIMNAME-""}
 NGINX_VAR_STORAGE_EXISTING_CLAIM=${NGINX_VAR_STORAGE_EXISTING_CLAIM-""}
 NGINX_VAR_STORAGE_SIZE=${NGINX_VAR_STORAGE_SIZE-""}
 NGINX_VAR_STORAGE_CLASS=${NGINX_VAR_STORAGE_CLASS-""}
+NGINX_RESTARTR_API=${NGINX_RESTARTR_API-false}
 
 HELM=${HELM-helm}
 COMMONSSHARE_HELM_RELEASE=${COMMONSSHARE_HELM_RELEASE-"commonsshare"}
@@ -269,6 +270,7 @@ NFSRODS_CONFIG_PV_ACCESSMODE=${NFSRODS_CONFIG_PV_ACCESSMODE-"ReadWriteMany"}
 
 USE_NFS_PVS=${USE_NFS_PVS-true}
 
+RESTARTR_DEPLOYMENT=${RESTARTR_DEPLOYMENT-false}
 RESTARTR_ROOT=${RESTARTR_ROOT-"$HELXPLATFORM_HOME/restartr"}
 RESTARTR_HELM_DIR=${RESTARTR_HELM_DIR-"$RESTARTR_ROOT/kubernetes/helm"}
 RESTARTR_IMAGE_TAG=${RESTARTR_IMAGE_TAG-""}
@@ -1032,6 +1034,10 @@ function deployNginxRevProxy(){
    then
     HELM_VALUES+=",varStorage.storageClass=$NGINX_VAR_STORAGE_CLASS"
    fi
+   if [ "$NGINX_RESTARTR_API" == true ]
+   then
+     HELM_VALUES+=",restartrApi=$NGINX_RESTARTR_API"
+   fi
    $HELM -n $NAMESPACE upgrade --install $NGINX_HELM_RELEASE $NGINX_HELM_DIR --debug \
        --logtostderr --set $HELM_VALUES
    echo "# end deploying Nginx"
@@ -1179,6 +1185,10 @@ case $APPS_ACTION in
         # deployELK
         createStdNFS
         deployCAT
+        if [ "$RESTARTR_DEPLOYMENT" == true ]
+        then
+          restartr deploy
+        fi
         deployAmbassador
         deployNginxRevProxy
         createNextflowStorage
@@ -1237,6 +1247,10 @@ case $APPS_ACTION in
         deleteNextflowStorage
         deleteNginxRevProxy
         deleteAmbassador
+        if [ "$RESTARTR_DEPLOYMENT" == true ]
+        then
+          restartr delete
+        fi
         deleteCAT
         deleteStdNFS
         # deleteELK
