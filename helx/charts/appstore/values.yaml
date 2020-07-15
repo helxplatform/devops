@@ -127,3 +127,9 @@ apps:
   NAPARI_USER_HOME: "/home/cloud-top"
   NAPARI_USER_NAME: "cloud-top"
   NAPARI_VNC_PW: ""
+
+appStorage:
+  existingClaim: false
+  claimName: 
+  storageSize: 2Gi
+  storageClass:
