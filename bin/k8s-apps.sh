@@ -789,7 +789,7 @@ function deployAppStore(){
 
   HELM_VALUES+=",django.APPSTORE_DJANGO_USERNAME=\"`encodeString "$APPSTORE_DJANGO_USERNAME"`\""
   HELM_VALUES+=",django.APPSTORE_DJANGO_PASSWORD=\"`encodeString "$APPSTORE_DJANGO_PASSWORD"`\""
-  HELM_VALUES+=",django.SECRET_KEY=\"`encodeString "$SECRET_KEY"`\""
+  HELM_VALUES+=",django.SECRET_KEY=\"`encodeString "$APPSTORE_SECRET_KEY"`\""
   HELM_VALUES+=",django.EMAIL_HOST_USER=\"`encodeString "$EMAIL_HOST_USER"`\""
   HELM_VALUES+=",django.EMAIL_HOST_PASSWORD=\"`encodeString "$EMAIL_HOST_PASSWORD"`\""
   HELM_VALUES+=",django.oauth.OAUTH_PROVIDERS=\"`encodeString "$OAUTH_PROVIDERS"`\""

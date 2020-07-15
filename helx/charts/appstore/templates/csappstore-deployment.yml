@@ -33,6 +33,7 @@ spec:
         args: ["bin/appstore updatedb {{ .Values.djangoSettings }} && bin/appstore createsuperuser && bin/appstore run {{ .Values.djangoSettings }}"]
         # For debugging when things go wrong.
         # args: ["while true; do date; sleep 5; done"]
+        # args: ["echo \"try this:\" && echo \"bin/appstore updatedb {{ .Values.djangoSettings }} && bin/appstore createsuperuser && bin/appstore run {{ .Values.djangoSettings }}\" && while true; do date; sleep 15; done"]
         env:
         # - name: DATABASE_USER
         #   valueFrom:
@@ -109,10 +110,10 @@ spec:
             configMapKeyRef:
               key: NRC_PORT
               name: csappstore-env
-        - name: CSAPPSTORE_SECRET_KEY
+        - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              key: SECRET_KEY
+              key: APPSTORE_SECRET_KEY
               name: csappstore-secret
         - name: APPSTORE_DJANGO_USERNAME
           valueFrom:
@@ -217,9 +218,9 @@ spec:
             name: appstore-oauth-volume
           {{- if .Values.appStorage.claimName }}
           - name: app-mounts-claim
-            mountPath: /usr/src/inst-mgmt
-            subPath: inst-mgmt
-          {{- end }}
+            mountPath: /usr/src/inst-mgmt/log
+            subPath: log
+          {{- end}}
       {{- else if .Values.oauth.pvcname }}
         volumeMounts:
           - mountPath: /var/lib/sqlite3
