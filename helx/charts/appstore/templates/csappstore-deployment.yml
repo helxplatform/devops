@@ -215,10 +215,21 @@ spec:
         volumeMounts:
           - mountPath: /var/lib/sqlite3
             name: appstore-oauth-volume
+      {{- if .Values.appStorage.claimName }}
+          - name: app-mounts-claim
+            mountPath: /usr/src/inst-mgmt
+            subPath: inst-mgmt
+      {{- end}}
+      {{- end }}
       {{- else if .Values.oauth.pvcname }}
         volumeMounts:
           - mountPath: /var/lib/sqlite3
             name: appstore-oauth-volume
+      {{- if .Values.appStorage.claimName }}
+          - name: app-mounts-claim
+            mountPath: /usr/src/inst-mgmt/log
+            subPath: log
+      {{- end}}
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -230,4 +241,9 @@ spec:
         - name: appstore-oauth-volume
           persistentVolumeClaim:
             claimName: {{ .Values.oauth.pvcname }}
+      {{- end }}
+      {{- if .Values.appStorage.claimName }}
+        - name: app-mounts-claim
+          persistentVolumeClaim:
+            claimName: {{ .Values.appStorage.claimName }}
       {{- end }}
