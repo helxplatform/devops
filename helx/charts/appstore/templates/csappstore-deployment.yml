@@ -217,8 +217,8 @@ spec:
             name: appstore-oauth-volume
       {{- if .Values.appStorage.claimName }}
           - name: app-mounts-claim
-            mountPath: /usr/src/inst-mgmt
-            subPath: inst-mgmt
+            mountPath: /usr/src/inst-mgmt/log
+            subPath: log
       {{- end}}
       {{- end }}
       {{- else if .Values.oauth.pvcname }}
