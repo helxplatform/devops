@@ -1156,7 +1156,7 @@ function restartr(){
     HELM_VALUES+=",mongo.request.memory=$RESTARTR_MONGO_REQUEST_MEMORY"
     HELM_VALUES+=",mongo.limit.cpu=$RESTARTR_MONGO_LIMIT_CPU"
     HELM_VALUES+=",mongo.limit.memory=$RESTARTR_MONGO_LIMIT_MEMORY"
-    if [ ! -z "$RESTARTR_IMAGE" ]
+    if [ ! -z "$RESTARTR_IMAGE_TAG" ]
     then
       HELM_VALUES+=",api.image_tag=$RESTARTR_IMAGE_TAG"
     fi
