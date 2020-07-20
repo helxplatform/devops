@@ -31,3 +31,6 @@ useRole: true
 
 # Set to true, when using blackbalsam.
 useSparkServiceAccount: true
+
+# Create Home directories
+createHomeDirs: "TRUE"

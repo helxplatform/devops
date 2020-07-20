@@ -23,6 +23,9 @@ spec:
         - --timeout=600
         - tycho.api:app
         image: {{ .Values.image }}
+        env:
+        - name: CREATE_HOME_DIRS
+          value: {{ .Value.createHomeDirs }}
         imagePullPolicy: "Always"
         name: {{ template "tycho-api.name" . }}
         ports:
