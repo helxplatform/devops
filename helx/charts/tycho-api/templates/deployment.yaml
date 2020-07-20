@@ -26,6 +26,8 @@ spec:
         env:
         - name: CREATE_HOME_DIRS
           value: {{ .Value.createHomeDirs }}
+        - name: STDNFS_PVC
+          value: {{ .Values.stdnfsPvc }}
         imagePullPolicy: "Always"
         name: {{ template "tycho-api.name" . }}
         ports:

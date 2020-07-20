@@ -32,5 +32,7 @@ useRole: true
 # Set to true, when using blackbalsam.
 useSparkServiceAccount: true
 
+# Specify a PV to use as HeLx's stdnfs.
+stdnfsPvc: nfsrods 
 # Create Home directories
 createHomeDirs: "TRUE"
