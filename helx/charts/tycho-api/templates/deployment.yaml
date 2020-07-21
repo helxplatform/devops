@@ -25,7 +25,11 @@ spec:
         image: {{ .Values.image }}
         env:
         - name: CREATE_HOME_DIRS
-          value: {{ .Value.createHomeDirs }}
+          {{- if .Values.createHomeDirs }}
+          value: "True"
+          {{- else }}
+          value: "False"
+          {{- end }}
         - name: STDNFS_PVC
           value: {{ .Values.stdnfsPvc }}
         imagePullPolicy: "Always"

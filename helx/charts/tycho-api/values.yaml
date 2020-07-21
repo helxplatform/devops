@@ -33,6 +33,6 @@ useRole: true
 useSparkServiceAccount: true
 
 # Specify a PV to use as HeLx's stdnfs.
-stdnfsPvc: nfsrods 
+stdnfsPvc: stdnfs  
 # Create Home directories
-createHomeDirs: "TRUE"
+createHomeDirs: true 
