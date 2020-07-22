@@ -206,6 +206,7 @@ TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
+DYNAMIC_NFSCP_DEPLOYMENT_EXISTS=${DYNAMIC_NFSCP_DEPLOYMENT_EXISTS-false}
 
 NFSSP_NAME=${NFSSP_NAME-"${PV_PREFIX}nfssp"}
 # NFSSP persistent storage does not work on NFS storage.
@@ -376,12 +377,14 @@ function deleteGKEPV(){
 
 function deployDynamicPVCP() {
   if [ "$DYNAMIC_NFSCP_DEPLOYMENT" == true ]; then
-    echo "Deploying NFS Client Provisioner for Dynamic PVCs"
-    $HELM -n $NAMESPACE upgrade --install \
-                 --set nfs.server=$NFSCP_SERVER \
-                 --set nfs.path=$NFSCP_PATH \
-                 --set storageClass.name=$NFSCP_STORAGECLASS \
-                 $NFSCP_NAME stable/nfs-client-provisioner
+    if [ "$DYNAMIC_NFSCP_DEPLOYMENT_EXISTS" == false ]; then
+      echo "Deploying NFS Client Provisioner for Dynamic PVCs"
+      $HELM -n $NAMESPACE upgrade --install \
+                   --set nfs.server=$NFSCP_SERVER \
+                   --set nfs.path=$NFSCP_PATH \
+                   --set storageClass.name=$NFSCP_STORAGECLASS \
+                   $NFSCP_NAME stable/nfs-client-provisioner
+    fi
   else
     if [ "$GKE_DEPLOYMENT" == true ]; then
       createGCEDisk $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_STORAGE
