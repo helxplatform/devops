@@ -1,0 +1,11 @@
+Started on Jul 22, 2020 9:31:12 AM
+Started by event from 140.82.115.155 ⇒ https://stars-app.renci.org:8083/jenkins/github-webhook/ on Wed Jul 22 09:31:12 EDT 2020
+Using strategy: Default
+[poll] Last Built Revision: Revision d9c5dca2e78e3aad4054bd3a52fb25273a02e3df (refs/remotes/origin/develop)
+No credentials specified
+ > git --version # timeout=10
+ > git ls-remote -h https://github.com/helxplatform/tycho.git # timeout=10
+Found 5 remote heads on https://github.com/helxplatform/tycho.git
+[poll] Latest remote head revision on refs/heads/develop is: 9bdc48b1c25439ba7b920fe78c9e44fc0bd4c37d
+Done. Took 0.31 sec
+Changes found

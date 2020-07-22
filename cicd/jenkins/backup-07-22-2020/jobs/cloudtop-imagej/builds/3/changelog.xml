@@ -1,0 +1,10 @@
+commit ca088180e6a0a36dceaa43cbee5cf4e757ac1fb5
+tree a8ef84c32eec0ae96b164dab508c81e003db0e02
+parent 58218d5ad70e70bfe519504429fd05b1b854a0b6
+author Howard <howard@renci.org> 2020-07-14 13:37:13 -0400
+committer Howard <howard@renci.org> 2020-07-14 13:37:13 -0400
+
+    Added and optional second argument to change the label of the base cloudtop image; default is develop-latest
+
+
+:100755 100755 d9662c0cd206af99b87acd4550ded7ac4d70d238 b248bd540bf83d5ae3ec1b44b87e219d1d538eca M	CloudTopBuilder.py

@@ -1,0 +1,10 @@
+commit a2f98a1fb748cd884816b1f952f23ce80a744b6a
+tree 2790cf8abc652c3ba7afaf87fbc85de386ca0655
+parent 8c970100449c1cf8083b3eb00336bca62b0d8072
+author Andrew Crerar <acrerar.contractor@rti.org> 2020-07-10 15:49:32 -0400
+committer Andrew Crerar <acrerar.contractor@rti.org> 2020-07-10 15:49:32 -0400
+
+    Updating Dockerfile to use local source code directory instead of repo clone
+
+
+:100644 100644 04dc46aa8158c8749ffefb45ce23242ae1393ab4 5b0039fb67a3273af2a52cef382fe67a320b63dc M	docker/dug/Dockerfile

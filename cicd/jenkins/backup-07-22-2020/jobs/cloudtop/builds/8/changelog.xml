@@ -1,0 +1,10 @@
+commit 06577ec8349603a8523a646c754b675ab938a922
+tree fa82d699cfd81ca519745a40c7368780d5f22d50
+parent ff293d978aad234edc43c444e059a7e53c673125
+author Howard Lander <howard@apples-mbp.lan> 2020-07-14 13:44:48 -0400
+committer Howard Lander <howard@apples-mbp.lan> 2020-07-14 13:44:48 -0400
+
+    Purged the light-locker screen saver. This is a temporary fix for https://github.com/helxplatform/development/issues/486.  The user will not be able to lock the screen, and at least in my testing the screen will not lock by itself (1.5 hours)
+
+
+:100644 100644 9ee3c0628a64818a5c45610b92d4a4389fb69783 c33895426d994000f877521858b86b67c63390ef M	Dockerfile
