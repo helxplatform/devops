@@ -37,6 +37,7 @@ DEV_PHASE:
 #   host: example.com
 #   # ToDo: Make this cleaner.
 #   class: traefik
+#   traefikRouterTls: ""
 
 varStorage:
   existingClaim: false
