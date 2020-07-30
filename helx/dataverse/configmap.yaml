@@ -12,9 +12,10 @@ metadata:
 data:
   ### GENERAL SETTINGS
   POSTGRES_DATABASE: dataverse-postgres
+  POSTGRESQL_SERVICE_HOST: dataverse-postgres-postgresql 
+  POSTGRESQL_SERVICE_PORT: "5432"
   dataverse_fqdn: data.example.org
   dataverse_siteUrl: https://\${dataverse.fqdn}
-  dataverse_auth_password__reset__timeout__in__minutes: 30
 
   ### CONTACT SETTINGS
   # Sender address of all mails sent by Dataverse
@@ -25,11 +26,11 @@ data:
   db_SystemEmail: "Example - Research Data Management <rdm@example.org>"
 
   ### DOI SETTINGS
-  doi_baseurlstring: https://mds.test.datacite.org
-  doi_username: EXAMPLEORG.TEST
+  doi_baseurlstring: https://doi.test.datacite.org/ 
+  doi_username: UNCCH.RENCI2 
   db_DoiProvider: DataCite
   db_Protocol: doi
-  db_Authority: "10.12345"
+  db_Authority: "10.80514"
   db_Shoulder: EXAMPLE/
 
   ### FILE STORAGE
@@ -41,6 +42,6 @@ data:
   dataverse_files_s3__path__style__access: "true"
 
   ### CUSTOMIZATION
-  db_StatusMessageHeader: "Example.org is not yet in production"
-  db_StatusMessageText: "<br />Please do not save any real data, only use for testing and sneak-peek."
+  db_StatusMessageHeader: "HeLx"
+  db_StatusMessageText: "HeLx DataVerse"
 
