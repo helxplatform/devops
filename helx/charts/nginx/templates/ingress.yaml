@@ -3,9 +3,14 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: nginx-revproxy
-  {{- if .Values.ingress.class }}
   annotations:
+  {{- if .Values.ingress.class }}
     kubernetes.io/ingress.class: {{ .Values.ingress.class }}
+    {{- if .Values.ingress.traefikRouterTls }}
+    traefik.ingress.kubernetes.io/router.tls: {{ .Values.ingress.traefikRouterTls }}
+    {{- end }}
+  {{- else }}
+    []
   {{- end }}
 spec:
   tls:
