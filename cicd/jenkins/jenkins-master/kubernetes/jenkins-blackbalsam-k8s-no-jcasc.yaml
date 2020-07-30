@@ -48,8 +48,8 @@ metadata:
     "app.kubernetes.io/component": "jenkins-master"
 type: Opaque
 data:
-  jenkins-admin-password: "WnpKOGQ3M1JuSllEV2hYcTdwUVI="
-  jenkins-admin-user: "YWRtaW4="
+  jenkins-admin-password: "$JENKINS_ADMIN_PASSWORD"
+  jenkins-admin-user: "$JENKINS_ADMIN_USER"
 ---
 # Source: jenkins/templates/config.yaml
 apiVersion: v1
