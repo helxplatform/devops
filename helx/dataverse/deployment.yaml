@@ -47,19 +47,19 @@ spec:
             - name: POSTGRES_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  key: POSTGRES_DATABASE 
-                  name: dataverse 
-                  optional: true
-            - name: POSTGRESQL_SERVICE_HOST
-              valueFrom: 
-                configMapKeyRef:
-                  key: POSTGRESQL_SERVICE_HOST
-                  name: dataverse 
-            - name: POSTGRESQL_SERVICE_PORT
-              valueFrom: 
-                configMapKeyRef:
-                  key: POSTGRESQL_SERVICE_PORT
+                  key: POSTGRES_DATABASE
                   name: dataverse
+                  optional: true
+            # - name: POSTGRESQL_SERVICE_HOST
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       key: POSTGRESQL_SERVICE_HOST
+            #       name: dataverse
+            # - name: POSTGRESQL_SERVICE_PORT
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       key: POSTGRESQL_SERVICE_PORT
+            #       name: dataverse
           volumeMounts:
             - name: files
               mountPath: /data
@@ -92,9 +92,12 @@ spec:
               mountPath: /uploads
         - name: check-db-ready
           image: postgres:9.6
+          envFrom:
+            - configMapRef:
+                name: dataverse
           command: ['sh', '-c',
-            'until pg_isready -h "${POSTGRESQL_SERVICE_HOST}" -p "${POSTGRESQL_SERVICE_PORT}";
-            do echo waiting for database; sleep 3; done;']
+            'set -x; env; until pg_isready -h "${POSTGRESQL_SERVICE_HOST}" -p "${POSTGRESQL_SERVICE_PORT}";
+            do env; echo waiting for database; sleep 3; done;']
         - name: check-solr-ready
           image: giantswarm/tiny-tools
           command: ['sh', '-c',
