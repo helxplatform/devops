@@ -1,0 +1,11 @@
+commit cd32d20ca447148ca27f7c601ef925b218cb07f5
+tree 21e21c33c336f92947ce322daedbce47c9604413
+parent ee6b8330cf68ad19cb5b22a315bfa4968680ff05
+author YaphetKG <45075777+YaphetKG@users.noreply.github.com> 2020-07-24 15:13:41 -0400
+committer GitHub <noreply@github.com> 2020-07-24 15:13:41 -0400
+
+    Adding exclusion list for normalizable concept's list. (#107)
+    
+
+
+:100644 100644 d24ed9eb7f00b210fdc9333c4c93e6f8a803e945 02d4b0a74ce70d6a682e945fe2786b72864897e0 M	tranql/backplane/server.py

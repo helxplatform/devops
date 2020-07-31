@@ -1,0 +1,11 @@
+commit 84c5a4ce86ae79a537d8d0b90d336277da920fc7
+tree 1ec473f0f4e8f73f01731fe63fa63f99449d7435
+parent 8c970100449c1cf8083b3eb00336bca62b0d8072
+author John B Cheadle <jcheadle.rti@gmail.com> 2020-07-23 15:46:59 -0400
+committer John B Cheadle <jcheadle.rti@gmail.com> 2020-07-23 15:46:59 -0400
+
+    Change curie map to accomodate HP & UBERON ontologies, add anatomical_entity queries
+
+
+:100644 100644 59ccf4bd5bda9365c0c5f0aceabcd91ae13e7d04 d1b9cea78c68ce52a217ff15750cf9f962dc55a8 M	dug/core.py
+:100644 100644 5c8602632f664020c5da7177ae58b3514b6da7b2 b58dfbcb4afa616af60d102a8bd29342debe791f M	dug/tranql.py
