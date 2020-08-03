@@ -44,6 +44,12 @@ spec:
                   name: dataverse-postgresql
                   key: username
                   optional: true
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dataverse-postgresql
+                  key: password 
+                  optional: true
             - name: POSTGRES_DATABASE
               valueFrom:
                 configMapKeyRef:
