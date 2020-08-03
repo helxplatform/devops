@@ -1,0 +1,11 @@
+Started on Jul 23, 2020 4:12:04 PM
+Started by event from 140.82.115.150 ⇒ https://stars-app.renci.org:8083/jenkins/github-webhook/ on Thu Jul 23 16:12:04 EDT 2020
+Using strategy: Default
+[poll] Last Built Revision: Revision 8afd33a979c85cc10eeed2e5fb303e1fdeb4e97f (refs/remotes/origin/develop)
+No credentials specified
+ > git --version # timeout=10
+ > git ls-remote -h https://github.com/helxplatform/dug.git # timeout=10
+Found 7 remote heads on https://github.com/helxplatform/dug.git
+[poll] Latest remote head revision on refs/heads/develop is: 17a9c1a7dc1b179cecf4c325763157cf8264b980
+Done. Took 0.28 sec
+Changes found

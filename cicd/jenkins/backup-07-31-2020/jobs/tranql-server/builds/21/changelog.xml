@@ -1,0 +1,20 @@
+commit 79bb33bd1a9a62a5fca4c53ef77e946b6f2298eb
+tree a15c77445d4031d832845f0f3011ae5f241be458
+parent c6953d54d3d17c5e39906673e2605111acb331e3
+author YaphetKG <kebedey@renci.org> 2020-07-23 19:04:33 -0400
+committer YaphetKG <kebedey@renci.org> 2020-07-23 19:04:33 -0400
+
+    test for icees update
+
+
+:100644 100644 50e09b5cd432e2676f6e1b1b727e5a9a800ad9de 7da98f8f8e894a958478ffdd9147f2f1d367b791 M	tranql/tests/test_backplane.py
+commit c6953d54d3d17c5e39906673e2605111acb331e3
+tree b3813d04c99fc69a8778bbf8bb1d390ff7cb741f
+parent dbf7168f6723a9b5535000417cb21b290b418c97
+author YaphetKG <kebedey@renci.org> 2020-07-23 18:46:34 -0400
+committer YaphetKG <kebedey@renci.org> 2020-07-23 18:46:34 -0400
+
+    icees sometimes returns subtypes like 'drug', method to make sure that these are also considered supported by NN
+
+
+:100644 100644 b68097cd858bf51ffed78743538facbb16dd2351 d24ed9eb7f00b210fdc9333c4c93e6f8a803e945 M	tranql/backplane/server.py
