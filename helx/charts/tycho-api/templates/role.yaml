@@ -34,7 +34,6 @@ rules:
   - "apps"
   resources:
     - deployments
-    - deployments/rollback
     - deployments/scale
     - replicasets
     - replicasets/scale
@@ -52,7 +51,6 @@ rules:
   attributeRestrictions: null
   resources:
     - deployments
-    - deployments/rollback
     - deployments/scale
     - ingresses
     - replicasets
