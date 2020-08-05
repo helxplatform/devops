@@ -14,6 +14,7 @@ data:
   POSTGRES_DATABASE: dataverse-postgres
   POSTGRESQL_SERVICE_HOST: dataverse-postgres-postgresql 
   POSTGRESQL_SERVICE_PORT: "5432"
+  POSTGRES_SERVER: dataverse-postgres-postgresql
   dataverse_fqdn: data.example.org
   dataverse_siteUrl: https://\${dataverse.fqdn}
 

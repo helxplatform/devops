@@ -56,16 +56,22 @@ spec:
                   key: POSTGRES_DATABASE
                   name: dataverse
                   optional: true
-            # - name: POSTGRESQL_SERVICE_HOST
-            #   valueFrom:
-            #     configMapKeyRef:
-            #       key: POSTGRESQL_SERVICE_HOST
-            #       name: dataverse
-            # - name: POSTGRESQL_SERVICE_PORT
-            #   valueFrom:
-            #     configMapKeyRef:
-            #       key: POSTGRESQL_SERVICE_PORT
-            #       name: dataverse
+            - name: POSTGRES_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_SERVER
+                  name: dataverse
+                  optional: true
+            - name: POSTGRESQL_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRESQL_SERVICE_HOST
+                  name: dataverse
+            - name: POSTGRESQL_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRESQL_SERVICE_PORT
+                  name: dataverse
           volumeMounts:
             - name: files
               mountPath: /data
