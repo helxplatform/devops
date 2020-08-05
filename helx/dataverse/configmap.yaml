@@ -15,8 +15,8 @@ data:
   POSTGRESQL_SERVICE_HOST: dataverse-postgres-postgresql 
   POSTGRESQL_SERVICE_PORT: "5432"
   POSTGRES_SERVER: dataverse-postgres-postgresql
-  dataverse_fqdn: data.example.org
-  dataverse_siteUrl: https://\${dataverse.fqdn}
+  dataverse_fqdn: dataverse-igilani.blackbalsam-cluster.edc.renci.org 
+  dataverse_siteUrl: https://\${dataverse_fqdn}
 
   ### CONTACT SETTINGS
   # Sender address of all mails sent by Dataverse
