@@ -831,6 +831,11 @@ function deployAppStore(){
 function deleteAppStore(){
   echo "# deleting AppStore"
   $HELM -n $NAMESPACE delete $APPSTORE_HELM_RELEASE
+  echo "# end deleting AppStore"
+}
+
+function deleteAppStoreData(){
+  echo "# deleting AppStore data"
   if [ "$GKE_DEPLOYMENT" == true ]; then
     deleteGKEPVC $APPSTORE_OAUTH_PVC
     deleteGKEPV $APPSTORE_OAUTH_PV_NAME
@@ -847,6 +852,7 @@ function deleteAppStore(){
     deleteNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
         $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
         $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
+        echo "-------------------------"
   else
     if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
       echo "### Deleting AppStore Oauth PVC."
@@ -855,7 +861,7 @@ function deleteAppStore(){
       echo "### Not deleting AppStore Oauth PVC."
     fi
   fi
-  echo "# end deleting AppStore"
+  echo "# end deleting AppStore Data"
 }
 
 
@@ -1139,20 +1145,6 @@ function deleteNextflowStorage(){
 }
 
 
-function blackbalsam(){
-  echo "Deploying blackbalsam"
-  # Blackbalsam deployable via HelX
-  # 1)     Create serviceaccount “spark” and assign the edit clusterrole using a rolebinding.
-  # 2)     Install minio,
-  #         a) Install helm3
-  #         b) helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-  #         c) helm install --set accessKey=minio --set secretKey=minio123 --set name=minio minio stable/minio -n <namespace>
-  # 3)     Clone blackbalsam repo to the /home/shared directory on stdnfs PVC.
-  # 4)     Provide a .blackbalsam.yaml config file in the /home/shared.
-
-}
-
-
 function restartr(){
   if [ "$1" == "deploy" ]
   then
@@ -1267,6 +1259,7 @@ case $APPS_ACTION in
           restartr delete
         fi
         deleteCAT
+        deleteAppStoreData
         deleteStdNFS
         # deleteELK
         if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
@@ -1277,6 +1270,19 @@ case $APPS_ACTION in
           deleteNFSServer
         fi
         deleteDynamicPVCP
+        ;;
+      apps)
+        deleteNginxRevProxy
+        deleteAmbassador
+        if [ "$RESTARTR_DEPLOYMENT" == true ]
+        then
+          restartr delete
+        fi
+        deleteCAT
+        # deleteELK
+        if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
+          deleteNFSRODS
+        fi
         ;;
       ambassador)
         deleteAmbassador
