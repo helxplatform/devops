@@ -23,6 +23,7 @@ service:
   serverName: _
   resolver: coredns.kube-system.svc
   # resolver: kube-dns.kube-system.svc
+  # nodePort: 31337
 
 # Set the DEV_PHASE.dev True, if Appstore/Tycho running locally. Else, set it to False
 DEV_PHASE:
