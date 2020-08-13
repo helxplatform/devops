@@ -24,6 +24,7 @@ data:
 
                 location /private/ {
                          # resolver {{ .Values.service.resolver }};
+                         client_max_body_size 2000M;
                          proxy_http_version 1.1;
                          proxy_read_timeout 3600;
                          {{- if .Values.DEV_PHASE.dev }}
@@ -43,6 +44,7 @@ data:
                 }
 
                 location = /auth {
+                         client_max_body_size 2000M;
                          proxy_http_version 1.1;
                          proxy_pass http://ambassador:80/auth/;
                          proxy_read_timeout 3600;
@@ -53,6 +55,7 @@ data:
                 }
 
                 location / {
+                         client_max_body_size 2000M;
                          proxy_set_header Host $http_host;
                          proxy_set_header X-Real-IP $remote_addr;
                          proxy_set_header X-Scheme $scheme;
