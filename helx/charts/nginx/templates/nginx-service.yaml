@@ -10,6 +10,9 @@ spec:
     port: {{ .Values.service.httpPort }}
     targetPort: {{ .Values.service.httpTargetPort }}
     protocol: TCP
+    {{- if .Values.service.nodePort }}
+    nodePort: {{ .Values.service.nodePort }}
+    {{- end }}
   {{- if .Values.SSL }}
   - name: https
     port: {{ .Values.service.httpsPort }}
