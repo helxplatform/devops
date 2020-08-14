@@ -17,6 +17,10 @@ usage: $0 <action> <app> <option>
 "
 }
 
+random-string() {
+  env LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w ${1:-32} | head -n 1
+}
+
 if [[ $# = 0 ]]; then
   print_apps_help
   exit 1
@@ -286,6 +290,14 @@ RESTARTR_MONGO_REQUEST_CPU=${RESTARTR_MONGO_REQUEST_CPU-"0.25"}
 RESTARTR_MONGO_REQUEST_MEMORY=${RESTARTR_MONGO_REQUEST_MEMORY-"200Mi"}
 RESTARTR_MONGO_LIMIT_CPU=${RESTARTR_MONGO_LIMIT_CPU-"0.4"}
 RESTARTR_MONGO_LIMIT_MEMORY=${RESTARTR_MONGO_LIMIT_MEMORY-"512Mi"}
+RESTARTR_MONGO_ADMIN_USERNAME=${RESTARTR_MONGO_ADMIN_USERNAME-"admin"}
+RESTARTR_MONGO_ADMIN_PASSWORD=${RESTARTR_MONGO_ADMIN_PASSWORD-""}
+if [ -z $RESTARTR_MONGO_ADMIN_PASSWORD ]
+then
+  RESTARTR_MONGO_ADMIN_PASSWORD=`random-string 20`
+  echo "RESTARTR_MONGO_ADMIN_PASSWORD set to random string."
+  echo "RESTARTR_MONGO_ADMIN_PASSWORD: $RESTARTR_MONGO_ADMIN_PASSWORD"
+fi
 
 EFK_NAMESPACE=${EFK_NAMESPACE-"logging"}
 EFK_HELM_RELEASE=${EFK_HELM_RELEASE-"efk"}
@@ -1107,11 +1119,17 @@ function deleteNFSRODS(){
       $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
       $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
   $HELM -n $NAMESPACE delete $NFSRODS_HELM_RELEASE
+  echo "NFSRODS deleted"
+}
+
+
+function deleteNFSRODSData(){
+  echo "deleting NFSRODS data"
   deletePVC $NFSRODS_PVC_CLAIMNAME
   deleteNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
       $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
       $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
-  echo "NFSRODS deleted"
+  echo "NFSRODS data deleted"
 }
 
 
@@ -1163,6 +1181,8 @@ function restartr(){
     HELM_VALUES+=",mongo.request.memory=$RESTARTR_MONGO_REQUEST_MEMORY"
     HELM_VALUES+=",mongo.limit.cpu=$RESTARTR_MONGO_LIMIT_CPU"
     HELM_VALUES+=",mongo.limit.memory=$RESTARTR_MONGO_LIMIT_MEMORY"
+    HELM_VALUES+=",mongo_username=$RESTARTR_MONGO_ADMIN_USERNAME"
+    HELM_VALUES+=",mongo_password=$RESTARTR_MONGO_ADMIN_PASSWORD"
     if [ ! -z "$RESTARTR_IMAGE_TAG" ]
     then
       HELM_VALUES+=",api.image_tag=$RESTARTR_IMAGE_TAG"
@@ -1269,6 +1289,7 @@ case $APPS_ACTION in
         # deleteELK
         if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
           deleteNFSRODS
+          deleteNFSRODSData
         fi
         if [ "$GKE_DEPLOYMENT" == true ];
         then
