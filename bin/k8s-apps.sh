@@ -1306,9 +1306,10 @@ case $APPS_ACTION in
         fi
         deleteCAT
         # deleteELK
-        if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
-          deleteNFSRODS
-        fi
+        # Not deleting NFSRODS b/c it has a PV.
+        # if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
+        #   deleteNFSRODS
+        # fi
         ;;
       ambassador)
         deleteAmbassador
