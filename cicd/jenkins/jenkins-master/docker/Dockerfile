@@ -13,7 +13,7 @@ RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debia
     apt-get update  -qq && \
     apt-cache madison docker-ce && \
     apt-get install docker-ce=5:19.03.12~3-0~debian-stretch docker-ce-cli=5:19.03.12~3-0~debian-stretch containerd.io -y && \
-    curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Darwin-x86_64" -o /usr/local/bin/docker-compose && \
+    curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Linux-x86_64" -o /usr/local/bin/docker-compose && \
     chmod +x /usr/local/bin/docker-compose && \
     ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose && \
     curl https://raw.githubusercontent.com/arminc/clair-scanner/releases/download/v12/clair-scanner_darwin_amd64 -o /usr/bin/clair-scanner && \
