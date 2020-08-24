@@ -9,5 +9,5 @@ spec:
       initContainers:
         - name: check-db-ready
           command: ['sh', '-c',
-            'until pg_isready -h "${DV_POSTGRESQL_SERVICE_HOST}" -p "${DV_POSTGRESQL_SERVICE_PORT}";
+            'until pg_isready -h dataverse-postgres-postgresql -p 5432;
             do echo waiting for database; sleep 3; done;']
