@@ -7,4 +7,5 @@ bases:
 
 images:
   - name: iqss/solr-k8s
+    newName: heliumdatastage/solr-iqss
     newTag: "4.19"
