@@ -1,0 +1,13 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: dataverse
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: check-db-ready
+          command: ['sh', '-c',
+            'until pg_isready -h "${DV_POSTGRESQL_SERVICE_HOST}" -p "${DV_POSTGRESQL_SERVICE_PORT}";
+            do echo waiting for database; sleep 3; done;']
