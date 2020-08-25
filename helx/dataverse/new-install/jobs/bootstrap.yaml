@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: bootstrap
-          image: iqss/dataverse-k8s
+          image: iqss/dataverse-k8s 
           command: ["scripts/bootstrap-job.sh"]
           envFrom:
             - configMapRef:
@@ -52,8 +52,8 @@ spec:
         - name: check-db-ready
           image: postgres:9.6
           command: ['sh', '-c',
-            'until pg_isready -h "${DV_POSTGRESQL_SERVICE_HOST}" -p "${DV_POSTGRESQL_SERVICE_PORT}";
-            do echo waiting for database; sleep 3; done;']
+            'until pg_isready -h "${DATAVERSE_POSTGRES_POSTGRESQL_SERVICE_HOST}" -p "${DATAVERSE_POSTGRES_POSTGRESQL_SERVICE_PORT}";
+            do env; echo waiting for database; sleep 3; done;']
         - name: check-solr-ready
           image: giantswarm/tiny-tools
           command: ['sh', '-c',

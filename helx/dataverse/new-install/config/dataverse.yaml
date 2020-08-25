@@ -12,7 +12,7 @@ metadata:
 data:
   ### GENERAL SETTINGS
   POSTGRES_DATABASE: dataverse-postgres
-  POSTGRES_SERVER: dataverse-postgresql
+  POSTGRES_SERVER: dataverse-postgres-postgresql
   dataverse_fqdn: dataverse-igilani.blackbalsam-cluster.edc.renci.org
   dataverse_siteUrl: https://\${dataverse_fqdn}
   dataverse_rserve_host: rserve
