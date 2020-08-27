@@ -11,6 +11,7 @@ spec:
   selector:
     matchLabels:
       service: {{ template "tycho-api.name" . }}
+      app: {{ template "tycho-api.name" . }}
   template:
     metadata:
       labels:
