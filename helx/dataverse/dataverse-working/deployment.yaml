@@ -48,7 +48,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: dataverse-postgresql
-                  key: password 
+                  key: password
                   optional: true
             - name: POSTGRES_DATABASE
               valueFrom:
