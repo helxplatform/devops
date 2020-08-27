@@ -16,6 +16,7 @@ spec:
     metadata:
       labels:
         service: {{ template "tycho-api.name" . }}
+        app: {{ template "tycho-api.name" . }}
     spec:
       containers:
       - command:
