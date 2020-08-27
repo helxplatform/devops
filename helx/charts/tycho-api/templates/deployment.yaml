@@ -11,10 +11,12 @@ spec:
   selector:
     matchLabels:
       service: {{ template "tycho-api.name" . }}
+      app: {{ template "tycho-api.name" . }}
   template:
     metadata:
       labels:
         service: {{ template "tycho-api.name" . }}
+        app: {{ template "tycho-api.name" . }}
     spec:
       containers:
       - command:
