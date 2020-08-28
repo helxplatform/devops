@@ -1,8 +1,7 @@
 ﻿version: "3"
 services:
   reccap-dashboard-webapp:
-    build: .
-    image: reccap-dashboard:latest
+    image: olegkap/reccap-dashboard
     ports:
       - "5000:80"
       - "5001:443"

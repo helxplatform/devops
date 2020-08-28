@@ -1,8 +1,0 @@
-<div class="breadcrumb">
-    <td-breadcrumbs>
-        <ng-container *ngFor="let route of routes">
-            <a td-breadcrumb *ngIf="current !== route" [routerLink]="route.url">{{route.title}}</a>
-            <td-breadcrumb *ngIf="current === route">{{route.title}}</td-breadcrumb>
-        </ng-container>
-    </td-breadcrumbs>
-</div>

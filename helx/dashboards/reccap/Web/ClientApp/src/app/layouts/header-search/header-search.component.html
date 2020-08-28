@@ -1,7 +1,0 @@
-<mat-form-field class="mat-search_field" [@slideInOut]="searchVisible" floatLabel="never">
-    <input #input matInput type="text" [(ngModel)]="searchValue" placeholder="Search ReCCAP Dashboard"
-        (keyup.enter)="search(input.value)" autocapitalize="none" />
-</mat-form-field>
-<button mat-icon-button aria-label="Toggle search button" matRipple>
-    <i class="fal fa-search" [ngClass]="{'fa-times':searchVisible}" (click)="toggle()"></i>
-</button>
