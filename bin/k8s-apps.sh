@@ -5,7 +5,7 @@
 #
 
 # expand variables and print commands
-set -x
+# set -x
 
 function print_apps_help() {
   echo "\
@@ -155,6 +155,8 @@ NGINX_VAR_STORAGE_CLASS=${NGINX_VAR_STORAGE_CLASS-""}
 NGINX_RESTARTR_API=${NGINX_RESTARTR_API-false}
 
 HELM=${HELM-helm}
+# HELM_DEBUG="--debug"
+HELM_DEBUG=${HELM_DEBUG-""}
 COMMONSSHARE_HELM_RELEASE=${COMMONSSHARE_HELM_RELEASE-"commonsshare"}
 COMMONSSHARE_DEPLOYMENT=${COMMONSSHARE_DEPLOYMENT-false}
 CAT_HELM_DIR=${CAT_HELM_DIR-"${K8S_DEVOPS_CORE_HOME}/helx"}
@@ -708,7 +710,7 @@ function deployTycho(){
     HELM_VALUES+=",image=$TYCHO_API_IMAGE"
   fi
   $HELM -n $NAMESPACE upgrade --install $TYCHO_HELM_RELEASE \
-     $CAT_HELM_DIR/charts/tycho-api --debug --logtostderr --set $HELM_VALUES
+     $CAT_HELM_DIR/charts/tycho-api $HELM_DEBUG --logtostderr --set $HELM_VALUES
    echo "# end deploying Tycho"
 }
 
@@ -836,7 +838,7 @@ function deployAppStore(){
   HELM_VALUES+=",apps.NAPARI_USER_NAME=\"`encodeString "$NAPARI_USER_NAME"`\""
   HELM_VALUES+=",apps.NAPARI_VNC_PW=\"`encodeString "$NAPARI_VNC_PW"`\""
   $HELM -n $NAMESPACE upgrade $APPSTORE_HELM_RELEASE \
-     $CAT_HELM_DIR/charts/appstore --install --debug --logtostderr --set $HELM_VALUES
+     $CAT_HELM_DIR/charts/appstore --install $HELM_DEBUG --logtostderr --set $HELM_VALUES
   echo "# end deploying AppStore"
 }
 
@@ -941,7 +943,7 @@ function deployCommonsShare(){
     ## Deploy CommonsShare
     HELM_VALUES="web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
     $HELM -n $NAMESPACE upgrade --install $COMMONSSHARE_HELM_RELEASE \
-      $CAT_HELM_DIR/charts/commonsshare --debug --logtostderr --set $HELM_VALUES
+      $CAT_HELM_DIR/charts/commonsshare $HELM_DEBUG --logtostderr --set $HELM_VALUES
   fi
   echo "# end deploying CommonsShare"
 }
@@ -982,7 +984,7 @@ function deployAmbassador(){
    else
      HELM_SET_ARG="--set $HELM_VALUES"
    fi
-   $HELM -n $NAMESPACE upgrade --install $AMBASSADOR_HELM_RELEASE $AMBASSADOR_HELM_DIR --debug \
+   $HELM -n $NAMESPACE upgrade --install $AMBASSADOR_HELM_RELEASE $AMBASSADOR_HELM_DIR $HELM_DEBUG \
        --logtostderr $HELM_SET_ARG
    echo "# end deploying Ambassador"
 }
@@ -1076,7 +1078,7 @@ function deployNginxRevProxy(){
    then
      HELM_VALUES+=",restartrApi=$NGINX_RESTARTR_API"
    fi
-   $HELM -n $NAMESPACE upgrade --install $NGINX_HELM_RELEASE $NGINX_HELM_DIR --debug \
+   $HELM -n $NAMESPACE upgrade --install $NGINX_HELM_RELEASE $NGINX_HELM_DIR $HELM_DEBUG \
        --logtostderr --set $HELM_VALUES
    echo "# end deploying Nginx"
 }
@@ -1101,7 +1103,7 @@ function deployNFSRODS(){
   HELM_VALUES="config.claimName=$NFSRODS_CONFIG_CLAIMNAME"
   HELM_VALUES+=",config.storageClass=$NFSRODS_CONFIG_PV_STORAGECLASS"
   HELM_VALUES+=",service.ip=$NFSRODS_PV_NFS_SERVER_IP"
-  $HELM -n $NAMESPACE upgrade --install $NFSRODS_HELM_RELEASE $NFSRODS_HELM_DIR --debug \
+  $HELM -n $NAMESPACE upgrade --install $NFSRODS_HELM_RELEASE $NFSRODS_HELM_DIR $HELM_DEBUG \
       --logtostderr --set $HELM_VALUES
   createNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
       $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
@@ -1187,7 +1189,7 @@ function restartr(){
     then
       HELM_VALUES+=",api.image_tag=$RESTARTR_IMAGE_TAG"
     fi
-    $HELM -n $NAMESPACE upgrade --install $RESTARTR_HELM_RELEASE $RESTARTR_HELM_DIR --debug \
+    $HELM -n $NAMESPACE upgrade --install $RESTARTR_HELM_RELEASE $RESTARTR_HELM_DIR $HELM_DEBUG \
         --logtostderr --set $HELM_VALUES
     echo "finished deploying restartr"
   elif [ "$1" == "delete" ]

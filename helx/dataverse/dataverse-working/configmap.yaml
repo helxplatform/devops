@@ -12,11 +12,10 @@ metadata:
 data:
   ### GENERAL SETTINGS
   POSTGRES_DATABASE: dataverse-postgres
-  POSTGRESQL_SERVICE_HOST: postgresql 
+  POSTGRESQL_SERVICE_HOST: postgresql
   POSTGRESQL_SERVICE_PORT: "5432"
   POSTGRES_SERVER: postgresql
   dataverse_fqdn: dataverse-igilani.blackbalsam-cluster.edc.renci.org 
-  # dataverse_fqdn: pjl-cluster.edc.renci.org 
   dataverse_siteUrl: https://\${dataverse_fqdn}
   dataverse_rserve_host: rserve
   dataverse_rserve_port: "6311"
@@ -32,8 +31,8 @@ data:
   db_SystemEmail: "Example - Research Data Management <rdm@example.org>"
 
   ### DOI SETTINGS
-  doi_baseurlstring: https://doi.test.datacite.org/ 
-  doi_username: UNCCH.RENCI2 
+  doi_baseurlstring: https://doi.test.datacite.org/
+  doi_username: UNCCH.RENCI2
   db_DoiProvider: DataCite
   db_Protocol: doi
   db_Authority: "10.80514"
@@ -50,4 +49,3 @@ data:
   ### CUSTOMIZATION
   db_StatusMessageHeader: "HeLx"
   db_StatusMessageText: "HeLx DataVerse"
-
