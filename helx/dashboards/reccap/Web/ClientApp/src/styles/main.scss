@@ -1,0 +1,70 @@
+@import '~perfect-scrollbar/css/perfect-scrollbar.css';
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+@import '~@covalent/core/theming/all-theme';
+
+// Plus imports for other components in your app.
+
+@import 'variables';
+
+@import 'breadcrumb';
+@import 'sidebar';
+@import 'menu';
+@import 'common';
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core($custom-typography);
+
+@include covalent-core();
+
+// Include pre-bundled material-icons
+// $mat-font-url: '../node_modules/@covalent/core/common/styles/font/';
+// @include covalent-material-icons();
+
+// Include covalent utility classes
+@include covalent-utilities();
+
+// Include flex layout classes
+@include covalent-layout();
+
+// Include covalent color classes
+@include covalent-colors();
+
+@import 'bootstrap';
+@import 'fontawesome';
+@import 'reset';
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($theme);
+@include covalent-theme($theme, $custom-typography);
+// Include theme styles for your custom components.
+@include breadcrumb-theme($theme);
+@include sidebar-theme($theme);
+@include menu-theme($theme);
+@include common-theme($theme);
+
+.dark-theme {
+  @include angular-material-theme($theme-dark);
+  @include covalent-theme($theme-dark, $custom-typography);
+  @include breadcrumb-theme($theme-dark);
+  @include sidebar-theme($theme-dark);
+  @include menu-theme($theme-dark);
+  @include common-theme($theme-dark);
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}

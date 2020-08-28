@@ -1,0 +1,14 @@
+:host {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  grid-template-areas:
+    'header'
+    'content';
+
+  background: url(../../../assets/images/background/login-register.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+}

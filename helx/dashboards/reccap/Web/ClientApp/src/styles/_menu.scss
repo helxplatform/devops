@@ -1,0 +1,9 @@
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin menu-theme($theme) {
+  $warn: map-get($theme, warn);
+
+  .mat-menu-item.mat-warn,
+  .mat-menu-item[color='warn'] {
+    color: mat-color($warn, text);
+  }
+}

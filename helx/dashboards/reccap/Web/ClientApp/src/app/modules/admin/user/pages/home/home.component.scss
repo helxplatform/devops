@@ -1,0 +1,31 @@
+:host {
+  display: grid;
+  grid-template-rows: auto 2fr auto;
+  //   grid-template-rows: auto 1fr;
+  height: 100%;
+  width: 100%;
+
+  .top {
+    background-color: chartreuse;
+  }
+
+  .content {
+    background-color: chocolate;
+    overflow-y: auto;
+    .mat-card {
+      padding: 0;
+    }
+    margin: 0.5rem 0.5rem 0 0.5rem;
+  }
+
+  .bottom {
+    background-color: darkcyan;
+    margin: 0 0.5rem 0.5rem 0.5rem;
+  }
+}
+
+.table-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}

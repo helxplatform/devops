@@ -1,0 +1,153 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+
+$fa-font-path: '~@fortawesome/fontawesome-pro/webfonts';
+
+$grid-breakpoints: (
+  xs: 0,
+  // handset portrait (small, medium, large) | handset landscape (small)
+    sm: 600px,
+  // handset landscape (medium, large) | tablet portrait(small, large)
+    md: 960px,
+  //  tablet landscape (small, large)
+    lg: 1280px,
+  // laptops and desktops
+    xl: 1600px // large desktops,,,,,,,,,,,
+);
+
+$container-max-widths: (
+  sm: 600px,
+  md: 960px,
+  lg: 1280px,
+  xl: 1600px,
+);
+
+// $link-color: #3f51b5;
+// $link-hover-color: currentColor;
+// $link-hover-decoration: none;
+// $label-margin-bottom: 0;
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$renci-reccap-dashboard-primary: mat-palette($mat-indigo);
+$renci-reccap-dashboard-accent: mat-palette($mat-teal, A200, A100, A400);
+$renci-reccap-dashboard-warn: mat-palette($mat-red);
+
+// Define a custom typography config that overrides the font-family // as well as the
+// `headlines ` and `body-1` levels.
+// $custom-typography: mat-typography-config(
+//   $font-family: 'Roboto, monospace',
+//   $headline: mat-typography-level(32px, 48px, 700),
+//   $body-1: mat-typography-level(16px, 24px, 500)
+// );
+
+// $custom-typography: mat-typography-config();
+
+$custom-typography: mat-typography-config(
+  $font-family: 'Muli, Roboto, "Helvetica Neue", sans-serif',
+  $display-4: mat-typography-level(112px, 112px, 300),
+  $display-3: mat-typography-level(56px, 56px, 400),
+  $display-2: mat-typography-level(45px, 48px, 400),
+  $display-1: mat-typography-level(34px, 40px, 400),
+  $headline: mat-typography-level(24px, 32px, 400),
+  $title: mat-typography-level(20px, 32px, 500),
+  $subheading-2: mat-typography-level(16px, 28px, 400),
+  $subheading-1: mat-typography-level(15px, 24px, 400),
+  $body-2: mat-typography-level(14px, 24px, 500),
+  $body-1: mat-typography-level(14px, 20px, 400),
+  $caption: mat-typography-level(12px, 20px, 400),
+  $button: mat-typography-level(14px, 14px, 500),
+  $input: mat-typography-level(16px, 1.25, 400),
+  // Line-height must be unit-less fraction of the font-size.
+);
+
+@mixin _mat-button-theme-property($theme, $property, $hue) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $success: map-get($theme, success);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  &.mat-primary {
+    #{$property}: mat-color($primary, $hue);
+  }
+  &.mat-accent {
+    #{$property}: mat-color($accent, $hue);
+  }
+  &.mat-warn {
+    #{$property}: mat-color($warn, $hue);
+  }
+  &.mat-success {
+    #{$property}: mat-color($success, $hue);
+    color: mat-contrast($success, $hue);
+    // $palette: if($property == 'color', $foreground, $background);
+    // #{$property}: mat-color($palette, foreground);
+  }
+
+  &.mat-primary,
+  &.mat-accent,
+  &.mat-warn,
+  &.mat-success,
+  &[disabled] {
+    &[disabled] {
+      $palette: if($property == 'color', $foreground, $background);
+      #{$property}: mat-color($palette, disabled-button);
+    }
+  }
+}
+
+@function app-light-theme($primary, $accent, $warn: mat-palette($mat-red), $success: mat-palette($mat-green)) {
+  @return map-merge(
+    mat-light-theme($primary, $accent, $warn),
+    (
+      success: $success,
+    )
+  );
+}
+
+@function app-dark-theme($primary, $accent, $warn: mat-palette($mat-red), $success: mat-palette($mat-green)) {
+  @return map-merge(
+    mat-dark-theme($primary, $accent, $warn),
+    (
+      success: $success,
+    )
+  );
+}
+
+// Create the theme object (a Sass map containing all of the palettes).
+$theme: app-light-theme($renci-reccap-dashboard-primary, $renci-reccap-dashboard-accent, $renci-reccap-dashboard-warn);
+$theme-dark: app-dark-theme($renci-reccap-dashboard-primary, $renci-reccap-dashboard-accent, $renci-reccap-dashboard-warn);
+
+// @function my-mat-light-theme-foreground($color) {
+//   @return (
+//     base: $color,
+//     divider: $white-12-opacity,
+//     dividers: $white-12-opacity,
+//     disabled: rgba($color, 0.38),
+//     disabled-button: rgba($color, 0.38),
+//     disabled-text: rgba($color, 0.38),
+//     hint-text: rgba($color, 0.38),
+//     secondary-text: rgba($color, 0.54),
+//     icon: rgba($color, 0.54),
+//     icons: rgba($color, 0.54),
+//     text: rgba($color, 0.87),
+//     slider-off: rgba($color, 0.26),
+//     slider-off-active: rgba($color, 0.38),
+//     slider-min: rgba($color, 0.38)
+//   );
+// }
+// $white-foreground: my-mat-light-theme-foreground(green);
+// $my-app-theme-custom: map-merge(
+//   $theme,
+//   (
+//     foreground: $white-foreground,
+//   )
+// );
+
+// // Create your Sass color vars (will be available in all the project)
+// $primary: mat-color($renci-reccap-dashboard-primary);
+// $accent: mat-color($renci-reccap-dashboard-accent);
+// $warn: mat-color($renci-reccap-dashboard-warn);

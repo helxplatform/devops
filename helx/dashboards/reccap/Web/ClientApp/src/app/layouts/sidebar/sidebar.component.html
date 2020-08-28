@@ -1,0 +1,67 @@
+<div class="sidebar">
+  <mat-nav-list>
+    <mat-list-item class="search d-block d-sm-none">
+      <input #input matInput type="text" class="p-2" placeholder="Search ReCCAP Dashboard" [(ngModel)]="searchValue"
+        (keyup.enter)="search(input.value)" autocapitalize="none" />
+    </mat-list-item>
+    <mat-list-item *ngFor="let menuItem of menuService.menuItems" (click)="scrollToTop()">
+
+      <a *ngIf="menuItem.type === 'link'" class="mat-body-2" [ngClass]="{'selected-item':menuItem.selected}"
+        (mouseover)="preloadBundle(menuItem.preloadId)" [routerLink]="[menuItem.url]">
+        <i class="fal fa-lg" [ngClass]="menuItem.icon"></i>
+        <span>{{ menuItem.name }}</span>
+        <span class="flex-grow-1"></span>
+        <span class="label label-{{ badge.type }}" *ngFor="let badge of menuItem.badge">{{ badge.value }}</span>
+      </a>
+
+      <a *ngIf="menuItem.type === 'extLink'" class="mat-body-2" href="{{menuItem.url}}">
+        <i class="fal fa-lg" [ngClass]="menuItem.icon"></i>
+        <span>{{ menuItem.name }}</span>
+        <span class="flex-grow-1"></span>
+        <span class="label label-{{ badge.type }}" *ngFor="let badge of menuItem.badge">{{ badge.value }}</span>
+      </a>
+      <a *ngIf="menuItem.type === 'extTabLink'" class="mat-body-2" href="{{menuItem.url}}" target="_blank">
+        <i class="fal fa-lg" [ngClass]="menuItem.icon"></i>
+        <span>{{ menuItem.name }}</span>
+        <span class="flex-grow-1"></span>
+        <span class="label label-{{ badge.type }}" *ngFor="let badge of menuItem.badge">{{ badge.value }}</span>
+      </a>
+
+      <a *ngIf="menuItem.children?.length" class="mat-body-2" [ngClass]="{'selected-parent':menuItem.expanded}"
+        (click)="menuItem.expanded = !menuItem.expanded">
+        <i class="fal fa-lg" [ngClass]="menuItem.icon"></i>
+        <span>{{ menuItem.name }}</span>
+        <span class="flex-grow-1"></span>
+        <span class="label label-{{ badge.type }}" *ngFor="let badge of menuItem.badge">{{ badge.value }}</span>
+        <i class="dd-icon fal fa-chevron-down"></i>
+      </a>
+
+      <mat-nav-list class="sub-item" *ngIf="menuItem.children?.length" [@slideInOut]="menuItem.expanded">
+        <mat-list-item appMenuItem *ngFor="let childItem of menuItem.children">
+
+          <a *ngIf="childItem.type === 'link'" class="mat-body-2" [ngClass]="{'selected-item':childItem.selected}"
+            (mouseover)="preloadBundle(childItem.preloadId)" [routerLink]="[childItem.url]">{{ childItem.name }}</a>
+
+          <a *ngIf="childItem.children?.length" class="mat-body-2" [ngClass]="{'selected-parent':childItem.expanded}"
+            (mouseover)="preloadBundle(childItem.preloadId)" (click)="childItem.expanded = !childItem.expanded">
+            <span>{{ childItem.name }}</span>
+            <span class="flex-grow-1"></span>
+            <i class="dd-icon fal fa-chevron-down"></i>
+          </a>
+
+          <mat-nav-list *ngIf="childItem.children?.length" class="sub-item" [@slideInOut]="childItem.expanded">
+            <mat-list-item *ngFor="let child of childItem.children">
+              <a class="mat-body-2" [ngClass]="{'selected-item':child.selected}"
+                [routerLink]="[child.url]">{{ child.name }}</a>
+            </mat-list-item>
+          </mat-nav-list>
+        </mat-list-item>
+
+      </mat-nav-list>
+
+      <div *ngIf="menuItem.type === 'separator'" class="separator mat-body-2">
+        <span>{{ menuItem.name }}</span>
+      </div>
+    </mat-list-item>
+  </mat-nav-list>
+</div>

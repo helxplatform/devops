@@ -1,0 +1,8 @@
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin common-theme($theme) {
+  $warn: map-get($theme, warn);
+
+  .text-warn {
+    color: mat-color($warn, text);
+  }
+}

@@ -1,0 +1,44 @@
+<mat-card class="top mat-elevation-z2 m-2">
+    <mat-card-content class="d-flex justify-content-between">
+        <form [formGroup]="searchForm" class="flex-grow-1 pr-3">
+            <mat-form-field dense class="w-100" appearance="standard">
+                <mat-label>Search</mat-label>
+                <input matInput formControlName="name" placeholder="Enter search">
+            </mat-form-field>
+        </form>
+    </mat-card-content>
+</mat-card>
+<div class="content mat-elevation-z2">
+    <div class="table-container">
+
+        <table mat-table [dataSource]="data" matSort [matSortActive]="searchForm.value.sort" matSortDisableClear
+            [matSortDirection]="searchForm.value.dir">
+
+            <ng-container matColumnDef="name" sticky>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                <td mat-cell *matCellDef="let element">
+                    <a [routerLink]="['.', element.nameSEO]">{{element.name}}</a>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description" class="w-100">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+                <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="modifiedDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Modified </th>
+                <td mat-cell *matCellDef="let element"> {{element.modifiedDate | date :'fullDate'}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+    </div>
+</div>
+<div class="bottom mat-elevation-z2">
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageIndex]="searchForm.value.page - 1"
+        [pageSize]="searchForm.value.pageSize">
+    </mat-paginator>
+</div>

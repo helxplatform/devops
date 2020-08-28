@@ -1,0 +1,36 @@
+:host {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100vh;
+  grid-template-areas:
+    'header'
+    'content'
+    'footer';
+}
+mat-sidenav {
+  overflow: auto;
+  max-width: 50vw;
+}
+
+@media (min-width: 1024px) {
+  mat-sidenav {
+    width: 20vw;
+    overflow: auto;
+  }
+}
+@media (min-width: 1440px) {
+  mat-sidenav {
+    width: 15vw;
+    overflow: auto;
+  }
+}
+
+mat-sidenav-content {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+}
+
+.content {
+  overflow-y: auto;
+}
