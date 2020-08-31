@@ -5,7 +5,7 @@
 #
 
 # expand variables and print commands
-set -x
+#set -x
 
 function print_apps_help() {
   echo "\
