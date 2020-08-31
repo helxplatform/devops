@@ -1,0 +1,22 @@
+commit 73ecc824ee5168bfb829fd816cb32db5ee3af4e7
+tree e0869651f83a10cd6a5551fc9beccc8a9446217c
+parent 5f7c5d445a550e67d1eca0c26ac3752b670c975d
+author YaphetKG <45075777+YaphetKG@users.noreply.github.com> 2020-07-10 09:04:31 -0400
+committer GitHub <noreply@github.com> 2020-07-10 09:04:31 -0400
+
+    Aiohttp timeout bump (#101)
+    
+    * Develop (#100)
+    
+    * Test for node id update in two responses sharing similar curies but different main ids.
+    
+    * when looking for main ids in equivalent ids using lists in inner loop takes quite the time, especially when grabbing everything
+    from services like automat. minor tweak to use dict based lookups instead of looping through lists for edges and nodes when merging
+    
+    * if score is zero for an entry in score table , we can continue, no need to loop.
+    
+    * fix for Node id not being updated in answer bindings due to type mis-match
+    
+    * Timeout bump for async requests for tranql frontend.
+
+:100644 100644 9e8a2e5b8bc626aa1bdfc6b7e0143f719d89366d 17256fc7c79d0ba8228a23a97f3a6afd7920bc72 M	tranql/request_util.py

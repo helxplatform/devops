@@ -14,6 +14,15 @@ spec:
     - --timeout=600
     - tycho.api:app
     image: {{ .Values.image }}
+    env:
+    - name: CREATE_HOME_DIRS
+      {{- if .Values.createHomeDirs }}
+      value: "True"
+      {{- else }}
+      value: "False"
+      {{- end }}
+    - name: STDNFS_PVC
+      value: {{ .Values.stdnfsPvc }}
     imagePullPolicy: "Always"
     name: {{ template "tycho-api.name" . }}
     ports:

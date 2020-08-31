@@ -1,0 +1,73 @@
+Started by user [8mha:////4AKlbaGiTjK4/6tx36g/NqgzS+rEHIIQCdUcI1vy2PjnAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgZu/dLi1CL9YqDmDADPSPjkwAAAAA==[0mMani Singh
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/backup/workspace
+[EnvInject] - Mask passwords that will be passed as build parameters.
+[workspace] $ /bin/bash -xe /tmp/jenkins3062264631768432816.sh
++ set +x
+Build number: 3
+Build ID: 3
+Job name: backup
+Build tag: jenkins-backup-3
+Node name: master
+Node labels: master
+Workspace: /var/lib/jenkins/jobs/backup/workspace
+Jenkins URL: https://stars-app.renci.org/jenkins/
+Jenkins Home: /var/lib/jenkins
+Jenkins passwor: [*******]
+Removing existing devops directory for git clone.
+Cloning into 'devops'...
+appstore
+dug
+my dire  appstore
+dug
+Current Dir- /var/lib/jenkins/jobs/backup/workspace/devops/cicd/jenkins/backup-07-07-2020
+ls: cannot access /var/lib/jenkins/jobs/bin/jobs/bin/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/boot/jobs/boot/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/dev/jobs/dev/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/etc/jobs/etc/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/home/jobs/home/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/lib/jobs/lib/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/lib64/jobs/lib64/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/media/jobs/media/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/mnt/jobs/mnt/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/opt/jobs/opt/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/proc/jobs/proc/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/projects/jobs/projects/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/root/jobs/root/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/run/jobs/run/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/sbin/jobs/sbin/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/scratch/jobs/scratch/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/srv/jobs/srv/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/ssdscratch/jobs/ssdscratch/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/sys/jobs/sys/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/tmp/jobs/tmp/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/usr/jobs/usr/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/vagrant/jobs/vagrant/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/var/jobs/var/: No such file or directory
+
+ls: cannot access /var/lib/jenkins/jobs/zookeeper_server.pid/jobs/zookeeper_server.pid/: No such file or directory
+
+Finished: SUCCESS

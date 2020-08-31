@@ -1,0 +1,11 @@
+commit 5d14aa0fefb58f4cedecba874ea5df995b245053
+tree b6774b20a549049832bbaa15a7118be81e85da0f
+parent b6de5dfc1a8a5318020581e787b5662cb3ed7ed3
+author YaphetKG <kebedey@renci.org> 2020-06-19 16:33:55 -0400
+committer YaphetKG <kebedey@renci.org> 2020-06-19 16:33:55 -0400
+
+    adding permission on docker-varnish for varnish user, on linux builds docker-varnish is copied as root.
+
+
+:100644 100644 ec26d6b082625c6ed792320f457f3a8781235b01 5cfe6bb3dacafd16b33d9b68f08ee4dbd0f35c34 M	docker/docker-compose.yml
+:100644 100644 d91afe73869ebb03bfc75949508c3bfa908c481e 5752d0826eaeede4768299023a8c6c827a30fabe M	docker/tranql-varnish/Dockerfile

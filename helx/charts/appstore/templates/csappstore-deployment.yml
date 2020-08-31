@@ -33,6 +33,7 @@ spec:
         args: ["bin/appstore updatedb {{ .Values.djangoSettings }} && bin/appstore createsuperuser && bin/appstore run {{ .Values.djangoSettings }}"]
         # For debugging when things go wrong.
         # args: ["while true; do date; sleep 5; done"]
+        # args: ["echo \"try this:\" && echo \"bin/appstore updatedb {{ .Values.djangoSettings }} && bin/appstore createsuperuser && bin/appstore run {{ .Values.djangoSettings }}\" && while true; do date; sleep 15; done"]
         env:
         # - name: DATABASE_USER
         #   valueFrom:
@@ -53,6 +54,26 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: DJANGO_SETTINGS_MODULE
+              name: csappstore-env
+        - name: ALLOW_DJANGO_LOGIN
+          valueFrom:
+            configMapKeyRef:
+              key: ALLOW_DJANGO_LOGIN
+              name: csappstore-env
+        - name: ALLOW_SAML_LOGIN
+          valueFrom:
+            configMapKeyRef:
+              key: ALLOW_SAML_LOGIN
+              name: csappstore-env
+        - name: SAML2_AUTH_ASSERTION_URL
+          valueFrom:
+            configMapKeyRef:
+              key: SAML2_AUTH_ASSERTION_URL
+              name: csappstore-env
+        - name: SAML2_AUTH_ENTITY_ID
+          valueFrom:
+            configMapKeyRef:
+              key: SAML2_AUTH_ENTITY_ID
               name: csappstore-env
         - name: OAUTH_DB_DIR
           valueFrom:
@@ -89,10 +110,10 @@ spec:
             configMapKeyRef:
               key: NRC_PORT
               name: csappstore-env
-        - name: CSAPPSTORE_SECRET_KEY
+        - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              key: SECRET_KEY
+              key: APPSTORE_SECRET_KEY
               name: csappstore-secret
         - name: APPSTORE_DJANGO_USERNAME
           valueFrom:
@@ -195,10 +216,20 @@ spec:
         volumeMounts:
           - mountPath: /var/lib/sqlite3
             name: appstore-oauth-volume
+          {{- if .Values.appStorage.claimName }}
+          - name: app-mounts-claim
+            mountPath: /usr/src/inst-mgmt/log
+            subPath: log
+          {{- end}}
       {{- else if .Values.oauth.pvcname }}
         volumeMounts:
           - mountPath: /var/lib/sqlite3
             name: appstore-oauth-volume
+          {{- if .Values.appStorage.claimName }}
+          - name: app-mounts-claim
+            mountPath: /usr/src/inst-mgmt/log
+            subPath: log
+          {{- end}}
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -210,4 +241,9 @@ spec:
         - name: appstore-oauth-volume
           persistentVolumeClaim:
             claimName: {{ .Values.oauth.pvcname }}
+      {{- end }}
+      {{- if .Values.appStorage.claimName }}
+        - name: app-mounts-claim
+          persistentVolumeClaim:
+            claimName: {{ .Values.appStorage.claimName }}
       {{- end }}

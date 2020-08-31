@@ -4,8 +4,9 @@
 # Install base applications to Kubernetes cluster.
 #
 
-# expand variables and print commands
+
 #set -x
+
 
 function print_apps_help() {
   echo "\
@@ -15,6 +16,10 @@ usage: $0 <action> <app> <option>
   -c [config file]  Specify config file.
   -h|--help         Print this help message.
 "
+}
+
+random-string() {
+  env LC_CTYPE=C tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w ${1:-32} | head -n 1
 }
 
 if [[ $# = 0 ]]; then
@@ -109,7 +114,6 @@ NFS_CLNT_STORAGE_SIZE=${NFS_CLNT_STORAGE_SIZE-"5Gi"}
 NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"stdnfs-sc"}
 
 NEXTFLOW_PVC=${NEXTFLOW_PVC-"deepgtex-prp"}
-# NEXTFLOW_STORAGE_SIZE=${NEXTFLOW_STORAGE_SIZE-"5Gi"}
 NEXTFLOW_PV_STORAGE_SIZE=${NEXTFLOW_PV_STORAGE_SIZE-"5Gi"}
 NEXTFLOW_PV_ACCESSMODE=${NEXTFLOW_PV_ACCESSMODE-"ReadWriteMany"}
 NEXTFLOW_NFS_SERVER=${NEXTFLOW_NFS_SERVER-$NFS_CLNT_PV_NFS_SRVR}
@@ -139,14 +143,21 @@ NGINX_SERVICE_HTTP_PORT=${NGINX_SERVICE_HTTP_PORT-""}
 NGINX_SERVICE_HTTPS_PORT=${NGINX_SERVICE_HTTPS_PORT-""}
 NGINX_TARGET_HTTP_PORT=${NGINX_TARGET_HTTP_PORT-""}
 NGINX_TARGET_HTTPS_PORT=${NGINX_TARGET_HTTPS_PORT-""}
+NGINX_SERVICE_NODEPORT=${NGINX_SERVICE_NODEPORT-""}
 NGINX_INGRESS_HOST=${NGINX_INGRESS_HOST-""}
 NGINX_INGRESS_CLASS=${NGINX_INGRESS_CLASS-""}
+# Set NGINX_INGRESS_TRAEFIK_ROUTER_TLS to "" to set it to "" in ingress YAML.
+# Leave unset to not include the key/value pair in the ingress YAML.
+# NGINX_INGRESS_TRAEFIK_ROUTER_TLS=${NGINX_INGRESS_TRAEFIK_ROUTER_TLS-""}
 NGINX_VAR_STORAGE_CLAIMNAME=${NGINX_VAR_STORAGE_CLAIMNAME-""}
 NGINX_VAR_STORAGE_EXISTING_CLAIM=${NGINX_VAR_STORAGE_EXISTING_CLAIM-""}
 NGINX_VAR_STORAGE_SIZE=${NGINX_VAR_STORAGE_SIZE-""}
 NGINX_VAR_STORAGE_CLASS=${NGINX_VAR_STORAGE_CLASS-""}
+NGINX_RESTARTR_API=${NGINX_RESTARTR_API-false}
 
 HELM=${HELM-helm}
+# HELM_DEBUG="--debug"
+HELM_DEBUG=${HELM_DEBUG-""}
 COMMONSSHARE_HELM_RELEASE=${COMMONSSHARE_HELM_RELEASE-"commonsshare"}
 COMMONSSHARE_DEPLOYMENT=${COMMONSSHARE_DEPLOYMENT-false}
 CAT_HELM_DIR=${CAT_HELM_DIR-"${K8S_DEVOPS_CORE_HOME}/helx"}
@@ -160,6 +171,7 @@ CAT_PV_STORAGECLASS=${CAT_PV_STORAGECLASS-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-sc
 CAT_PV_STORAGE_SIZE=${CAT_PV_STORAGE_SIZE-"10Gi"}
 CAT_DISK_SIZE=${CAT_DISK_SIZE-"10GB"}
 CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
+CAT_PVC_ACCESSMODE=${CAT_PVC_ACCESSMODE-"ReadWriteMany"}
 
 APPSTORE_HELM_RELEASE=${APPSTORE_HELM_RELEASE-"appstore"}
 APPSTORE_RUNASUSER=${APPSTORE_RUNASUSER-""}
@@ -170,9 +182,6 @@ APPSTORE_OAUTH_PD_DELETE_W_APP=${APPSTORE_OAUTH_PD_DELETE_W_APP-false}
 APPSTORE_OAUTH_PV_NAME=${APPSTORE_OAUTH_PV_NAME-"${PV_PREFIX}appstore-oauth-pv"}
 # Define APPSTORE_OAUTH_PVC to use a PVC for the oauth sqlite3 db storage.
 APPSTORE_OAUTH_PVC=${APPSTORE_OAUTH_PVC-"appstore-oauth-pvc"}
-# Define APPSTORE_OAUTH_PV_STORAGECLASS to create a PVC and not use one already
-# created.
-# APPSTORE_OAUTH_PV_STORAGECLASS is left unset b/c it might need to be set to "".
 APPSTORE_OAUTH_PVC_USE_EXISTING=${APPSTORE_OAUTH_PVC_USE_EXISTING-true}
 APPSTORE_OAUTH_PVC_STORAGE=${APPSTORE_OAUTH_PVC_STORAGE-"100Mi"}
 APPSTORE_OAUTH_PV_STORAGECLASS=${APPSTORE_OAUTH_PV_STORAGECLASS-"${PV_PREFIX}appstore-oauth-sc"}
@@ -184,6 +193,9 @@ APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
 APPSTORE_DJANGO_SETTINGS=${APPSTORE_DJANGO_SETTINGS-""}
 APPSTORE_IMAGE_PULL_SECRETS=${APPSTORE_IMAGE_PULL_SECRETS-""}
 APPSTORE_WITH_AMBASSADOR=${APPSTORE_WITH_AMBASSADOR-true}
+APPSTORE_SAML2_AUTH_ASSERTION_URL=${APPSTORE_SAML2_AUTH_ASSERTION_URL-""}
+APPSTORE_SAML2_AUTH_ENTITY_ID=${APPSTORE_SAML2_AUTH_ENTITY_ID-""}
+APPSTORE_STORAGE_CLAIMNAME=${APPSTORE_STORAGE_CLAIMNAME-""}
 
 export CLOUD_TOP_USER_HOME=${CLOUD_TOP_USER_HOME-"/home/cloud-top"}
 export CLOUD_TOP_USER_NAME=${CLOUD_TOP_USER_NAME-"cloud-top"}
@@ -202,6 +214,7 @@ TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
 DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
+DYNAMIC_NFSCP_DEPLOYMENT_EXISTS=${DYNAMIC_NFSCP_DEPLOYMENT_EXISTS-false}
 
 NFSSP_NAME=${NFSSP_NAME-"${PV_PREFIX}nfssp"}
 # NFSSP persistent storage does not work on NFS storage.
@@ -267,6 +280,7 @@ NFSRODS_CONFIG_PV_ACCESSMODE=${NFSRODS_CONFIG_PV_ACCESSMODE-"ReadWriteMany"}
 
 USE_NFS_PVS=${USE_NFS_PVS-true}
 
+RESTARTR_DEPLOYMENT=${RESTARTR_DEPLOYMENT-false}
 RESTARTR_ROOT=${RESTARTR_ROOT-"$HELXPLATFORM_HOME/restartr"}
 RESTARTR_HELM_DIR=${RESTARTR_HELM_DIR-"$RESTARTR_ROOT/kubernetes/helm"}
 RESTARTR_IMAGE_TAG=${RESTARTR_IMAGE_TAG-""}
@@ -279,6 +293,14 @@ RESTARTR_MONGO_REQUEST_CPU=${RESTARTR_MONGO_REQUEST_CPU-"0.25"}
 RESTARTR_MONGO_REQUEST_MEMORY=${RESTARTR_MONGO_REQUEST_MEMORY-"200Mi"}
 RESTARTR_MONGO_LIMIT_CPU=${RESTARTR_MONGO_LIMIT_CPU-"0.4"}
 RESTARTR_MONGO_LIMIT_MEMORY=${RESTARTR_MONGO_LIMIT_MEMORY-"512Mi"}
+RESTARTR_MONGO_ADMIN_USERNAME=${RESTARTR_MONGO_ADMIN_USERNAME-"admin"}
+RESTARTR_MONGO_ADMIN_PASSWORD=${RESTARTR_MONGO_ADMIN_PASSWORD-""}
+if [ -z $RESTARTR_MONGO_ADMIN_PASSWORD ]
+then
+  RESTARTR_MONGO_ADMIN_PASSWORD=`random-string 20`
+  echo "RESTARTR_MONGO_ADMIN_PASSWORD set to random string."
+  echo "RESTARTR_MONGO_ADMIN_PASSWORD: $RESTARTR_MONGO_ADMIN_PASSWORD"
+fi
 
 EFK_NAMESPACE=${EFK_NAMESPACE-"logging"}
 EFK_HELM_RELEASE=${EFK_HELM_RELEASE-"efk"}
@@ -371,12 +393,14 @@ function deleteGKEPV(){
 
 function deployDynamicPVCP() {
   if [ "$DYNAMIC_NFSCP_DEPLOYMENT" == true ]; then
-    echo "Deploying NFS Client Provisioner for Dynamic PVCs"
-    $HELM -n $NAMESPACE upgrade --install \
-                 --set nfs.server=$NFSCP_SERVER \
-                 --set nfs.path=$NFSCP_PATH \
-                 --set storageClass.name=$NFSCP_STORAGECLASS \
-                 $NFSCP_NAME stable/nfs-client-provisioner
+    if [ "$DYNAMIC_NFSCP_DEPLOYMENT_EXISTS" == false ]; then
+      echo "Deploying NFS Client Provisioner for Dynamic PVCs"
+      $HELM -n $NAMESPACE upgrade --install \
+                   --set nfs.server=$NFSCP_SERVER \
+                   --set nfs.path=$NFSCP_PATH \
+                   --set storageClass.name=$NFSCP_STORAGECLASS \
+                   $NFSCP_NAME stable/nfs-client-provisioner
+    fi
   else
     if [ "$GKE_DEPLOYMENT" == true ]; then
       createGCEDisk $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_STORAGE
@@ -517,12 +541,13 @@ spec:
 
 function deletePVC(){
     export PVC_NAME=$1
-    export PVC_STORAGE_SIZE=$2
-    # PVC_STORAGE_CLASS_NAME can be empty.
-    export PVC_STORAGE_CLASS_NAME=$3
-    echo "# deleting $PVC_NAME PVC"
-    cat $K8S_DEVOPS_CORE_HOME/nfs-server/pvc-template.yaml | envsubst | \
-        kubectl delete -n $NAMESPACE -f -
+    # export PVC_STORAGE_SIZE=$2
+    # # PVC_STORAGE_CLASS_NAME can be empty.
+    # export PVC_STORAGE_CLASS_NAME=$3
+    # echo "# deleting $PVC_NAME PVC"
+    # cat $K8S_DEVOPS_CORE_HOME/nfs-server/pvc-template.yaml | envsubst | \
+    #     kubectl delete -n $NAMESPACE -f -
+    kubectl -n $NAMESPACE delete pvc $PVC_NAME
     echo "# $PVC_NAME PVC deleted"
 }
 
@@ -686,7 +711,7 @@ function deployTycho(){
     HELM_VALUES+=",image=$TYCHO_API_IMAGE"
   fi
   $HELM -n $NAMESPACE upgrade --install $TYCHO_HELM_RELEASE \
-     $CAT_HELM_DIR/charts/tycho-api --debug --logtostderr --set $HELM_VALUES
+     $CAT_HELM_DIR/charts/tycho-api $HELM_DEBUG --logtostderr --set $HELM_VALUES
    echo "# end deploying Tycho"
 }
 
@@ -702,27 +727,18 @@ function deployAppStore(){
   echo "# deploying AppStore"
   if [ "$GKE_DEPLOYMENT" == true ]
   then
-    createNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
-        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
-        "ReadWriteMany"
-    createNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
-        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
     createGCEDisk $APPSTORE_OAUTH_PD_NAME $APPSTORE_OAUTH_PV_STORAGE_SIZE
     createGKEPV $APPSTORE_OAUTH_PD_NAME $APPSTORE_OAUTH_PV_NAME \
         $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PVC
     createGKEPVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PV_STORAGE_SIZE
   elif [ "$USE_NFS_PVS" == true ]
   then
-    createNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_ACCESSMODE $CAT_PV_STORAGECLASS
     createNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
         $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
         $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
     createPVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PVC_STORAGE \
          $APPSTORE_OAUTH_PV_ACCESSMODE $APPSTORE_OAUTH_PV_STORAGECLASS
   else
-    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $APPSTORE_OAUTH_PV_ACCESSMODE $CAT_PV_STORAGECLASS
     createPVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PVC_STORAGE \
          $APPSTORE_OAUTH_PV_ACCESSMODE $APPSTORE_OAUTH_PV_STORAGECLASS
   fi
@@ -769,10 +785,30 @@ function deployAppStore(){
   then
    HELM_VALUES+=",securityContext.fsGroup=$APPSTORE_FSGROUP"
   fi
+  if [ ! -z "$APPSTORE_SAML2_AUTH_ASSERTION_URL" ]
+  then
+   HELM_VALUES+=",django.saml2auth.ASSERTION_URL=$APPSTORE_SAML2_AUTH_ASSERTION_URL"
+  fi
+  if [ ! -z "$APPSTORE_SAML2_AUTH_ENTITY_ID" ]
+  then
+   HELM_VALUES+=",django.saml2auth.ENTITY_ID=$APPSTORE_SAML2_AUTH_ENTITY_ID"
+  fi
+  if [ ! -z "$APPSTORE_ALLOW_DJANGO_LOGIN" ]
+  then
+   HELM_VALUES+=",django.ALLOW_DJANGO_LOGIN=$APPSTORE_ALLOW_DJANGO_LOGIN"
+  fi
+  if [ ! -z "$APPSTORE_ALLOW_SAML_LOGIN" ]
+  then
+   HELM_VALUES+=",django.ALLOW_SAML_LOGIN=$APPSTORE_ALLOW_SAML_LOGIN"
+  fi
+  if [ ! -z "$APPSTORE_STORAGE_CLAIMNAME" ]
+  then
+   HELM_VALUES+=",appStorage.claimName=$APPSTORE_STORAGE_CLAIMNAME"
+  fi
 
   HELM_VALUES+=",django.APPSTORE_DJANGO_USERNAME=\"`encodeString "$APPSTORE_DJANGO_USERNAME"`\""
   HELM_VALUES+=",django.APPSTORE_DJANGO_PASSWORD=\"`encodeString "$APPSTORE_DJANGO_PASSWORD"`\""
-  HELM_VALUES+=",django.SECRET_KEY=\"`encodeString "$SECRET_KEY"`\""
+  HELM_VALUES+=",django.SECRET_KEY=\"`encodeString "$APPSTORE_SECRET_KEY"`\""
   HELM_VALUES+=",django.EMAIL_HOST_USER=\"`encodeString "$EMAIL_HOST_USER"`\""
   HELM_VALUES+=",django.EMAIL_HOST_PASSWORD=\"`encodeString "$EMAIL_HOST_PASSWORD"`\""
   HELM_VALUES+=",django.oauth.OAUTH_PROVIDERS=\"`encodeString "$OAUTH_PROVIDERS"`\""
@@ -803,7 +839,7 @@ function deployAppStore(){
   HELM_VALUES+=",apps.NAPARI_USER_NAME=\"`encodeString "$NAPARI_USER_NAME"`\""
   HELM_VALUES+=",apps.NAPARI_VNC_PW=\"`encodeString "$NAPARI_VNC_PW"`\""
   $HELM -n $NAMESPACE upgrade $APPSTORE_HELM_RELEASE \
-     $CAT_HELM_DIR/charts/appstore --install --debug --logtostderr --set $HELM_VALUES
+     $CAT_HELM_DIR/charts/appstore --install $HELM_DEBUG --logtostderr --set $HELM_VALUES
   echo "# end deploying AppStore"
 }
 
@@ -811,12 +847,12 @@ function deployAppStore(){
 function deleteAppStore(){
   echo "# deleting AppStore"
   $HELM -n $NAMESPACE delete $APPSTORE_HELM_RELEASE
+  echo "# end deleting AppStore"
+}
+
+function deleteAppStoreData(){
+  echo "# deleting AppStore data"
   if [ "$GKE_DEPLOYMENT" == true ]; then
-    deleteNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
-        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
-    deleteNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
-        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
-        "ReadWriteMany"
     deleteGKEPVC $APPSTORE_OAUTH_PVC
     deleteGKEPV $APPSTORE_OAUTH_PV_NAME
     if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
@@ -828,25 +864,62 @@ function deleteAppStore(){
     fi
   elif [ "$USE_NFS_PVS" == true ]
   then
-    deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-    deleteNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-    deletePVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PVC_STORAGE \
-        $APPSTORE_OAUTH_PV_STORAGECLASS $APPSTORE_OAUTH_PV_ACCESSMODE
+    deletePVC $APPSTORE_OAUTH_PVC
     deleteNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
         $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
         $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
+        echo "-------------------------"
   else
     if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
       echo "### Deleting AppStore Oauth PVC."
-      deletePVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_STORAGECLASS
-      deletePVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PVC_STORAGE \
-          $APPSTORE_OAUTH_PV_STORAGECLASS $APPSTORE_OAUTH_PV_ACCESSMODE
+      deletePVC $APPSTORE_OAUTH_PVC
     else
       echo "### Not deleting AppStore Oauth PVC."
     fi
   fi
-  echo "# end deleting AppStore"
+  echo "# end deleting AppStore Data"
+}
+
+
+function createStdNFS(){
+  echo "# creating stdnfs"
+  if [ "$GKE_DEPLOYMENT" == true ]
+  then
+    createNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
+        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
+        "ReadWriteMany"
+    createNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
+        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
+  elif [ "$USE_NFS_PVS" == true ]
+  then
+    createNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_ACCESSMODE $CAT_PV_STORAGECLASS
+  else
+    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PVC_ACCESSMODE $CAT_PV_STORAGECLASS
+  fi
+  echo "# stdnfs created"
+}
+
+
+function deleteStdNFS(){
+  echo "# deleting stdnfs"
+  $HELM -n $NAMESPACE delete $APPSTORE_HELM_RELEASE
+  if [ "$GKE_DEPLOYMENT" == true ]; then
+    deleteNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
+        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
+    deleteNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
+        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
+        "ReadWriteMany"
+  elif [ "$USE_NFS_PVS" == true ]
+  then
+    deletePVC $CAT_USER_STORAGE_NAME
+    deleteNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
+        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
+  else
+    deletePVC $CAT_USER_STORAGE_NAME
+  fi
+  echo "# end deleting stdnfs"
 }
 
 
@@ -871,7 +944,7 @@ function deployCommonsShare(){
     ## Deploy CommonsShare
     HELM_VALUES="web.db.storageClass=$COMMONSSHARE_DB_STORAGECLASS"
     $HELM -n $NAMESPACE upgrade --install $COMMONSSHARE_HELM_RELEASE \
-      $CAT_HELM_DIR/charts/commonsshare --debug --logtostderr --set $HELM_VALUES
+      $CAT_HELM_DIR/charts/commonsshare $HELM_DEBUG --logtostderr --set $HELM_VALUES
   fi
   echo "# end deploying CommonsShare"
 }
@@ -912,7 +985,7 @@ function deployAmbassador(){
    else
      HELM_SET_ARG="--set $HELM_VALUES"
    fi
-   $HELM -n $NAMESPACE upgrade --install $AMBASSADOR_HELM_RELEASE $AMBASSADOR_HELM_DIR --debug \
+   $HELM -n $NAMESPACE upgrade --install $AMBASSADOR_HELM_RELEASE $AMBASSADOR_HELM_DIR $HELM_DEBUG \
        --logtostderr $HELM_SET_ARG
    echo "# end deploying Ambassador"
 }
@@ -937,8 +1010,15 @@ function deployNginxRevProxy(){
         --from-file=ca.crt=$NGINX_TLS_CA_CRT
    fi
    HELM_VALUES="service.serverName=$NGINX_SERVERNAME"
-   HELM_VALUES+=",service.IP=$NGINX_IP"
+   if [ ! -z "${NGINX_IP}" ]
+   then
+     HELM_VALUES+=",service.IP=$NGINX_IP"
+   fi
    HELM_VALUES+=",service.type=\"$NGINX_SERVICE_TYPE\""
+   if [ ! -z "$NGINX_SERVICE_NODEPORT" ]
+     then
+     HELM_VALUES+=",service.nodePort=$NGINX_SERVICE_NODEPORT"
+   fi
    if [ ! -z "$NGINX_SERVICE_HTTP_PORT" ]
      then
      HELM_VALUES+=",service.httpPort=$NGINX_SERVICE_HTTP_PORT"
@@ -975,6 +1055,10 @@ function deployNginxRevProxy(){
    then
      HELM_VALUES+=",ingress.class=\"$NGINX_INGRESS_CLASS\""
    fi
+   if [ ! -z ${NGINX_INGRESS_TRAEFIK_ROUTER_TLS+x} ]
+   then
+     HELM_VALUES+=",ingress.traefikRouterTls=\"$NGINX_INGRESS_TRAEFIK_ROUTER_TLS\""
+   fi
    if [ ! -z "$NGINX_VAR_STORAGE_CLAIMNAME" ]
    then
     HELM_VALUES+=",varStorage.claimName=$NGINX_VAR_STORAGE_CLAIMNAME"
@@ -991,7 +1075,11 @@ function deployNginxRevProxy(){
    then
     HELM_VALUES+=",varStorage.storageClass=$NGINX_VAR_STORAGE_CLASS"
    fi
-   $HELM -n $NAMESPACE upgrade --install $NGINX_HELM_RELEASE $NGINX_HELM_DIR --debug \
+   if [ "$NGINX_RESTARTR_API" == true ]
+   then
+     HELM_VALUES+=",restartrApi=$NGINX_RESTARTR_API"
+   fi
+   $HELM -n $NAMESPACE upgrade --install $NGINX_HELM_RELEASE $NGINX_HELM_DIR $HELM_DEBUG \
        --logtostderr --set $HELM_VALUES
    echo "# end deploying Nginx"
 }
@@ -1016,7 +1104,7 @@ function deployNFSRODS(){
   HELM_VALUES="config.claimName=$NFSRODS_CONFIG_CLAIMNAME"
   HELM_VALUES+=",config.storageClass=$NFSRODS_CONFIG_PV_STORAGECLASS"
   HELM_VALUES+=",service.ip=$NFSRODS_PV_NFS_SERVER_IP"
-  $HELM -n $NAMESPACE upgrade --install $NFSRODS_HELM_RELEASE $NFSRODS_HELM_DIR --debug \
+  $HELM -n $NAMESPACE upgrade --install $NFSRODS_HELM_RELEASE $NFSRODS_HELM_DIR $HELM_DEBUG \
       --logtostderr --set $HELM_VALUES
   createNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
       $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
@@ -1029,16 +1117,22 @@ function deployNFSRODS(){
 
 function deleteNFSRODS(){
   echo "deleting NFSRODS"
-  deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
+  deletePVC $NFSRODS_PVC_CLAIMNAME
   deleteNFSPV $NFSRODS_PV_NAME $NFSRODS_PV_NFS_SERVER_IP \
       $NFSRODS_PV_NFS_PATH $NFSRODS_PV_STORAGECLASS \
       $NFSRODS_PV_STORAGE_SIZE $NFSRODS_PV_ACCESSMODE
   $HELM -n $NAMESPACE delete $NFSRODS_HELM_RELEASE
-  deletePVC $NFSRODS_PVC_CLAIMNAME $NFSRODS_PVC_STORAGE_SIZE $NFSRODS_PV_STORAGECLASS
+  echo "NFSRODS deleted"
+}
+
+
+function deleteNFSRODSData(){
+  echo "deleting NFSRODS data"
+  deletePVC $NFSRODS_PVC_CLAIMNAME
   deleteNFSPV $NFSRODS_CONFIG_PV_NAME $NFSRODS_CONFIG_NFS_SERVER \
       $NFSRODS_CONFIG_NFS_PATH $NFSRODS_CONFIG_PV_STORAGECLASS \
       $NFSRODS_CONFIG_PV_STORAGE_SIZE $NFSRODS_CONFIG_PV_ACCESSMODE
-  echo "NFSRODS deleted"
+  echo "NFSRODS data deleted"
 }
 
 
@@ -1069,25 +1163,11 @@ function deleteNextflowStorage(){
         $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NEXTFLOW_PV_STORAGE_SIZE \
         $NEXTFLOW_PV_ACCESSMODE
   else
-    deletePVC $NEXTFLOW_PVC $NEXTFLOW_PV_STORAGE_SIZE $NEXTFLOW_PV_STORAGECLASS
+    deletePVC $NEXTFLOW_PVC
     deleteNFSPV $NEXTFLOW_PV_NAME $NEXTFLOW_NFS_SERVER \
         $NEXTFLOW_NFS_PATH $NEXTFLOW_PV_STORAGECLASS \
         $NEXTFLOW_PV_STORAGE_SIZE $NEXTFLOW_PV_ACCESSMODE
   fi
-}
-
-
-function blackbalsam(){
-  echo "Deploying blackbalsam"
-  # Blackbalsam deployable via HelX
-  # 1)     Create serviceaccount “spark” and assign the edit clusterrole using a rolebinding.
-  # 2)     Install minio,
-  #         a) Install helm3
-  #         b) helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-  #         c) helm install --set accessKey=minio --set secretKey=minio123 --set name=minio minio stable/minio -n <namespace>
-  # 3)     Clone blackbalsam repo to the /home/shared directory on stdnfs PVC.
-  # 4)     Provide a .blackbalsam.yaml config file in the /home/shared.
-
 }
 
 
@@ -1104,11 +1184,13 @@ function restartr(){
     HELM_VALUES+=",mongo.request.memory=$RESTARTR_MONGO_REQUEST_MEMORY"
     HELM_VALUES+=",mongo.limit.cpu=$RESTARTR_MONGO_LIMIT_CPU"
     HELM_VALUES+=",mongo.limit.memory=$RESTARTR_MONGO_LIMIT_MEMORY"
-    if [ ! -z "$RESTARTR_IMAGE" ]
+    HELM_VALUES+=",mongo_username=$RESTARTR_MONGO_ADMIN_USERNAME"
+    HELM_VALUES+=",mongo_password=$RESTARTR_MONGO_ADMIN_PASSWORD"
+    if [ ! -z "$RESTARTR_IMAGE_TAG" ]
     then
       HELM_VALUES+=",api.image_tag=$RESTARTR_IMAGE_TAG"
     fi
-    $HELM -n $NAMESPACE upgrade --install $RESTARTR_HELM_RELEASE $RESTARTR_HELM_DIR --debug \
+    $HELM -n $NAMESPACE upgrade --install $RESTARTR_HELM_RELEASE $RESTARTR_HELM_DIR $HELM_DEBUG \
         --logtostderr --set $HELM_VALUES
     echo "finished deploying restartr"
   elif [ "$1" == "delete" ]
@@ -1136,7 +1218,12 @@ case $APPS_ACTION in
           deployNFSRODS
         fi
         # deployELK
+        createStdNFS
         deployCAT
+        if [ "$RESTARTR_DEPLOYMENT" == true ]
+        then
+          restartr deploy
+        fi
         deployAmbassador
         deployNginxRevProxy
         createNextflowStorage
@@ -1177,6 +1264,9 @@ case $APPS_ACTION in
       restartr)
         restartr deploy
         ;;
+      stdnfs)
+        createStdNFS
+        ;;
       tycho)
         deployTycho
         ;;
@@ -1192,16 +1282,37 @@ case $APPS_ACTION in
         deleteNextflowStorage
         deleteNginxRevProxy
         deleteAmbassador
+        if [ "$RESTARTR_DEPLOYMENT" == true ]
+        then
+          restartr delete
+        fi
         deleteCAT
+        deleteAppStoreData
+        deleteStdNFS
         # deleteELK
         if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
           deleteNFSRODS
+          deleteNFSRODSData
         fi
         if [ "$GKE_DEPLOYMENT" == true ];
         then
           deleteNFSServer
         fi
         deleteDynamicPVCP
+        ;;
+      apps)
+        deleteNginxRevProxy
+        deleteAmbassador
+        if [ "$RESTARTR_DEPLOYMENT" == true ]
+        then
+          restartr delete
+        fi
+        deleteCAT
+        # deleteELK
+        # Not deleting NFSRODS b/c it has a PV.
+        # if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
+        #   deleteNFSRODS
+        # fi
         ;;
       ambassador)
         deleteAmbassador
@@ -1238,6 +1349,9 @@ case $APPS_ACTION in
         ;;
       restartr)
         restartr delete
+        ;;
+      stdnfs)
+        deleteStdNFS
         ;;
       tycho)
         deleteTycho

@@ -1,0 +1,51 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: dataverse
+  labels:
+    app.kubernetes.io/name: configmap
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/component: configmap
+    app.kubernetes.io/part-of: dataverse
+    app.kubernetes.io/managed-by: kubectl
+data:
+  ### GENERAL SETTINGS
+  POSTGRES_DATABASE: dataverse-postgres
+  POSTGRESQL_SERVICE_HOST: postgresql
+  POSTGRESQL_SERVICE_PORT: "5432"
+  POSTGRES_SERVER: postgresql
+  dataverse_fqdn: dataverse-igilani.blackbalsam-cluster.edc.renci.org 
+  dataverse_siteUrl: https://\${dataverse_fqdn}
+  dataverse_rserve_host: rserve
+  dataverse_rserve_port: "6311"
+  dataverse_rserve_user: rserve
+  dataverse_rserve_password: '${ALIAS=rserve_password_alias}'
+
+  ### CONTACT SETTINGS
+  # Sender address of all mails sent by Dataverse
+  MAIL_FROMADDRESS: "do-not-reply@example.org"
+  # Root dataverse contact
+  CONTACT_MAIL: rdm@example.org
+  # Installation contact
+  db_SystemEmail: "Example - Research Data Management <rdm@example.org>"
+
+  ### DOI SETTINGS
+  doi_baseurlstring: https://doi.test.datacite.org/
+  doi_username: UNCCH.RENCI2
+  db_DoiProvider: DataCite
+  db_Protocol: doi
+  db_Authority: "10.80514"
+  db_Shoulder: EXAMPLE/
+
+  ### FILE STORAGE
+  dataverse_files_directory: /data
+  dataverse_files_storage__driver__id: "s3"
+  dataverse_files_s3__custom__endpoint__url: http://minio:9000
+  dataverse_files_s3__bucket__name: dataverse
+  # required for Minio!
+  dataverse_files_s3__path__style__access: "true"
+
+  ### CUSTOMIZATION
+  db_StatusMessageHeader: "HeLx"
+  db_StatusMessageText: "HeLx DataVerse"

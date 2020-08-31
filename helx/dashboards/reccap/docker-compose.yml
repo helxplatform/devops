@@ -1,0 +1,11 @@
+﻿version: "3"
+services:
+  reccap-dashboard-webapp:
+    image: olegkap/reccap-dashboard
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      RECCAP_RedcapSettings__ApiToken: "API_TOKEN_HERE"
+      RECCAP_RedcapSettings__ApiUrl: "https://redcap.unc.edu/api/"
+      RECCAP_ConnectionStrings__DefaultConnection: "blank"

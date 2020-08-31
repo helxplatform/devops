@@ -1,0 +1,31 @@
+Started by user [8mha:////4AKlbaGiTjK4/6tx36g/NqgzS+rEHIIQCdUcI1vy2PjnAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgZu/dLi1CL9YqDmDADPSPjkwAAAAA==[0mMani Singh
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/backup/workspace
+[EnvInject] - Mask passwords that will be passed as build parameters.
+[workspace] $ /bin/bash -xe /tmp/jenkins8080509486639792135.sh
++ set +x
+Build number: 58
+Build ID: 58
+Job name: backup
+Build tag: jenkins-backup-58
+Node name: master
+Node labels: master
+Workspace: /var/lib/jenkins/jobs/backup/workspace
+Jenkins URL: https://stars-app.renci.org/jenkins/
+Jenkins Home: /var/lib/jenkins
+Removing existing devops directory for git clone.
+Cloning into 'devops'...
+appstore
+backup-07-07-2020
+dug
+my dire  appstore
+dug
+Current Dir- /var/lib/jenkins/jobs/backup/workspace/devops/cicd/jenkins/backup-07-08-2020/jobs
+appstore
+if : just app_path/jobs
+Current Dir- /var/lib/jenkins/jobs/appstore
+another if : app_path/jobs/app
+/tmp/jenkins8080509486639792135.sh: line 75: local: can only be used in a function
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

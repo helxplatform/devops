@@ -89,6 +89,8 @@ postgres: False
 django:
   APPSTORE_DJANGO_USERNAME: ""
   APPSTORE_DJANGO_PASSWORD: ""
+  ALLOW_DJANGO_LOGIN: ""
+  ALLOW_SAML_LOGIN: ""
   SECRET_KEY: ""
   EMAIL_HOST_USER: ""
   EMAIL_HOST_PASSWORD: ""
@@ -104,6 +106,9 @@ django:
     GOOGLE_SITES: ""
     GOOGLE_CLIENT_ID: ""
     GOOGLE_SECRET: ""
+  saml2auth:
+    ASSERTION_URL: ""
+    ENTITY_ID: ""
 irods:
   BRAINI_RODS: ""
   NRC_MICROSCOPY_IRODS: ""
@@ -122,3 +127,9 @@ apps:
   NAPARI_USER_HOME: "/home/cloud-top"
   NAPARI_USER_NAME: "cloud-top"
   NAPARI_VNC_PW: ""
+
+appStorage:
+  existingClaim: false
+  claimName: 
+  storageSize: 2Gi
+  storageClass:

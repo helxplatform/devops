@@ -1,0 +1,27 @@
+Started by user [8mha:////4AKlbaGiTjK4/6tx36g/NqgzS+rEHIIQCdUcI1vy2PjnAAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyuEgZu/dLi1CL9YqDmDADPSPjkwAAAAA==[0mMani Singh
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/backup/workspace
+[EnvInject] - Mask passwords that will be passed as build parameters.
+[workspace] $ /bin/bash -xe /tmp/jenkins1016535252751146428.sh
++ set +x
+Build number: 17
+Build ID: 17
+Job name: backup
+Build tag: jenkins-backup-17
+Node name: master
+Node labels: master
+Workspace: /var/lib/jenkins/jobs/backup/workspace
+Jenkins URL: https://stars-app.renci.org/jenkins/
+Jenkins Home: /var/lib/jenkins
+Jenkins passwor: [*******]
+Removing existing devops directory for git clone.
+Cloning into 'devops'...
+appstore
+dug
+my dire  appstore
+dug
+Current Dir- /var/lib/jenkins/jobs/backup/workspace/devops/cicd/jenkins/backup-07-07-2020
+/tmp/jenkins1016535252751146428.sh: line 62: syntax error near unexpected token `elif'
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

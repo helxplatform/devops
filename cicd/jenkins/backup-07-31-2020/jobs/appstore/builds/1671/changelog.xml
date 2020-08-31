@@ -1,0 +1,12 @@
+commit 05d0ee5131863055a8db4053550b009ee8f6335d
+tree a9521a77c4b903eb146f4b71def72fdff6ea2c8a
+parent 63b9c16b779ea1e57995f0a47af45cd76619f36b
+author muralikarthikk <muralikarthik.k123@gmail.com> 2020-07-17 14:36:58 +0000
+committer muralikarthikk <muralikarthik.k123@gmail.com> 2020-07-17 14:36:58 +0000
+
+    web browser handling the timeout
+
+
+:100755 100755 bff8d2b6025139f53c1b93e81602390f762b26fa 5b00f337c71e6e8115b92d4f6d73e7bff6c3b2f0 M	appstore/bin/appstore
+:100644 100644 d60da8d46cf85099ada2c282a76786f7fea3a56f 31036215ceb527892f1c5c15def260ef4b816343 M	appstore/core/templates/starting.html
+:100644 100644 bd05c7e90288458e1826feea6b1b1e2a23b506e8 b541082a7045e37667cb7ebb3894990f0d877191 M	appstore/core/views.py

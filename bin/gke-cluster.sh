@@ -25,6 +25,7 @@
 #
 
 # expand variables and print commands
+
 #set -x
 
 function print_help() {
