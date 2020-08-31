@@ -22,22 +22,6 @@ spec:
           envFrom:
           - secretRef:
               name: {{ .Values.name }}-secret
-          #env:
-          #  - name: RECCAP_RedcapSettings__ApiToken
-          #    valueFrom:
-          #      secretKeyRef:
-          #        name: reccap-dashboard-webapp-secret
-          #        key: RECCAP_RedcapSettings__ApiToken
-          #  - name: RECCAP_RedcapSettings__ApiUrl
-          #    valueFrom:
-          #      secretKeyRef:
-          #        name: reccap-dashboard-webapp-secret
-          #        key: RECCAP_RedcapSettings__ApiUrl
-          #   - name: RECCAP_ConnectionStrings__DefaultConnection
-          #    valueFrom:
-          #      secretKeyRef:
-          #        name: reccap-dashboard-webapp-secret
-          #        key: RECCAP_ConnectionStrings__DefaultConnection
           ports:
             - name: http
               containerPort: 80
