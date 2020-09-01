@@ -9,9 +9,6 @@ WS=$WORKSPACE
 GITDIR="devops"
 CLONE_HOME="$WS/$GITDIR"
 
-echo "Checking PRODUCT: $PRODUCT"
-echo "Checking DEV: $DEV"
-
 # Installing helm if does not exist.
 if [ ! -d $HOME/helm ];
 then
@@ -32,5 +29,5 @@ chmod -R 755 $CLONE_HOME
 
 # Deleting all then deploying all.
 bash k8s-apps.sh -c $CLONE_HOME/cicd/$PRODUCT/$DEV.sh delete apps
-sleep 10
+sleep 30
 bash k8s-apps.sh -c $CLONE_HOME/cicd/$PRODUCT/$DEV.sh deploy all
