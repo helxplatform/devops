@@ -30,9 +30,8 @@ function scan_clair () {
    echo "ETHO IP = $ETH0_IP"
    echo "Running clair on $REPO . . ."
    docker pull $ORG/$REPO:$BRANCH-$VERSION
-   $CLAIR_PROG --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$CLAIR_HM/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION > $CLAIR_HM/tableoutput.txt
+   $CLAIR_PROG --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$CLAIR_HM/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION | tee $CLAIR_HM/tableoutput.txt
    sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $CLAIR_HM/tableoutput.txt > $CLAIR_HM/clean_tableoutput.txt
-   cat $CLAIR_HM/clean_tableoutput.txt
 }
 
 # NOTE: Use of these functions requires the creation of a global var
