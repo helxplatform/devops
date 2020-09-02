@@ -18,20 +18,22 @@
 # -------------------------------------------------------------------------
 
 function scan_clair () {
-   CLAIR_PROG="/usr/bin/clair-scanner"
-   CLAIR_HM="/var/jenkins_home/clair"
    ORG="$1"
    REPO="$2"
    BRANCH="$3"
    VERSION="$4"
+   CLAIR_PROG="/usr/bin/clair-scanner"
+   CLAIR_HM="/var/jenkins_home/clair"
+   OUTPUT_DIR=$CLAIR_HM/$REPO_$BUILD_BRANCH_$VER
    CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
    ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
    echo "Running clair on $REPO . . ."
    docker pull $ORG/$REPO:$BRANCH-$VERSION
-   $CLAIR_PROG --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$CLAIR_HM/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION | tee $CLAIR_HM/tableoutput.txt
-   sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $CLAIR_HM/tableoutput.txt > $CLAIR_HM/clean_tableoutput.txt
+   mkdir $OUTPUT_DIR
+   $CLAIR_PROG --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$OUTPUT_DIR/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION | tee $OUTPUT_DIR/tableoutput.txt
+   sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $OUTPUT_DIR/tableoutput.txt > $OUTPUT_DIR/clean_tableoutput.txt
 }
 
 # NOTE: Use of these functions requires the creation of a global var
