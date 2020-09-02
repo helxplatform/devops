@@ -25,7 +25,8 @@
 #
 
 # expand variables and print commands
-# set -x
+
+#set -x
 
 function print_help() {
   echo "\
