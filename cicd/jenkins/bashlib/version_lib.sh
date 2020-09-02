@@ -24,7 +24,7 @@ function scan_clair () {
    VERSION="$4"
    CLAIR_PROG="/usr/bin/clair-scanner"
    CLAIR_HM="/var/jenkins_home/clair"
-   OUTPUT_DIR=$CLAIR_HM/$REPO_$BRANCH_$VERSION
+   OUTPUT_DIR=$CLAIR_HM/$REPO-$BRANCH-$VERSION
    echo "OUTPUT_DIR is $OUTPUT_DIR"
    CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
