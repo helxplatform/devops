@@ -42,7 +42,9 @@ function scan_clair () {
    echo "OUTPUT_DIR=[$OUTPUT_DIR]"
    echo "IMAGE=[$IMAGE]"   
    docker pull $IMAGE
-   mkdir $OUTPUT_DIR
+   if [ ! -d "$OUTPUT_DIR" ]; then
+      mkdir $OUTPUT_DIR
+   fi
    $CLAIR_PROG --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$OUTPUT_DIR/clair_report.json" $IMAGE | tee $OUTPUT_DIR/tableoutput.txt
    sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $OUTPUT_DIR/tableoutput.txt > $OUTPUT_DIR/clean_tableoutput.txt
 }
