@@ -24,16 +24,26 @@ function scan_clair () {
    VERSION="$4"
    CLAIR_PROG="/usr/bin/clair-scanner"
    CLAIR_HM="/var/jenkins_home/clair"
-   OUTPUT_DIR=$CLAIR_HM/$REPO-$BRANCH-$VERSION
-   echo "OUTPUT_DIR is $OUTPUT_DIR"
+
+   if [ $BRANCH ] then
+      OUTPUT_DIR=$CLAIR_HM/$REPO-$VERSION
+      IMAGE="$ORG/$REPO:$VERSION"
+   else
+      OUTPUT_DIR=$CLAIR_HM/$REPO-$BRANCH-$VERSION
+      IMAGE="$ORG/$REPO:$BRANCH-$VERSION"
+   fi
+
    CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
    ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
+
    echo "Running clair on $REPO . . ."
-   docker pull $ORG/$REPO:$BRANCH-$VERSION
+   echo "OUTPUT_DIR=[$OUTPUT_DIR]"
+   echo "IMAGE=[$IMAGE]"   
+   docker pull $IMAGE
    mkdir $OUTPUT_DIR
-   $CLAIR_PROG --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$OUTPUT_DIR/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION | tee $OUTPUT_DIR/tableoutput.txt
+   $CLAIR_PROG --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$OUTPUT_DIR/clair_report.json" $IMAGE | tee $OUTPUT_DIR/tableoutput.txt
    sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $OUTPUT_DIR/tableoutput.txt > $OUTPUT_DIR/clean_tableoutput.txt
 }
 
