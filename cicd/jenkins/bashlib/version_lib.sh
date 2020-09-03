@@ -25,7 +25,7 @@ function scan_clair () {
    CLAIR_PROG="/usr/bin/clair-scanner"
    CLAIR_HM="/var/jenkins_home/clair"
 
-   if [ -z "${$BRANCH}" ]; then
+   if [ -z "$BRANCH" ]; then
       OUTPUT_DIR=$CLAIR_HM/$REPO-$VERSION
       IMAGE="$ORG/$REPO:$VERSION"
    else
