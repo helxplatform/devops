@@ -337,7 +337,7 @@ spec:
       serviceAccountName: "custom-jenkins"
       initContainers:
         - name: "copy-default-config"
-          image: "heliumdatastage/jenkins-master:v0.0.14"
+          image: "heliumdatastage/jenkins-master:v0.0.15"
           imagePullPolicy: "Always"
           command: [ "sh", "/var/jenkins_config/apply_config.sh" ]
           env:
@@ -373,7 +373,7 @@ spec:
               name: plugin-dir
       containers:
         - name: jenkins
-          image: "heliumdatastage/jenkins-master:v0.0.14"
+          image: "heliumdatastage/jenkins-master:v0.0.15"
           imagePullPolicy: "Always"
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin", "--httpPort=8080", "-v /var/run/docker.sock:/var/run/docker.sock"]
           env:
@@ -383,7 +383,7 @@ spec:
                   fieldPath: metadata.name
             - name: JAVA_OPTS
               value: >
-                -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/New_York
+                -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/New_York -Dhudson.model.DirectoryBrowserSupport.CSP=
                 
             - name: JENKINS_OPTS
               value: ""
