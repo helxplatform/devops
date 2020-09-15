@@ -36,7 +36,7 @@ function scan_clair () {
 
 
 # -------------------------------------------------------------------------
-# postprocess_clair_output
+# postprocess_clair_output  
 # Cleans up clair json output including creating links from urls and creates
 #    html table. Sets up an index.html and links to table from jenkins build
 #    page.
