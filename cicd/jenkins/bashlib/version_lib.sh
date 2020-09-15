@@ -1,3 +1,54 @@
+# -------------------------------------------------------------------------
+# scan-clair
+# Security scans Docker images. Meant to be called from containerized Jenkins
+# Pre-requisites:
+#    - A clair server and clair db are running on the same Docker network
+#    - clair-scanner exists on Jenkins server at specified location
+# Parameters:
+# $1 - Organization or name of the DockerHub repo to scan
+# $2 - DockerHub repo to scan
+# $3 - Branch part of version tag of repo to scan, if any
+#        or "" if none
+# $4 - Version number including "v" if any of repo to be
+#        scanned.
+# Example call: scan-clair "heliumdatastage" "appstore" "develop" "v0.0.13"
+# Result: 
+#    - Outputs clean table of security scan information in $CLAIR_HM/clean_tableoutput.txt
+#    - Displays clean output table in Jenkins build log.
+# -------------------------------------------------------------------------
+
+function scan_clair () {
+   ORG="$1"
+   REPO="$2"
+   BRANCH="$3"
+   VERSION="$4"
+   CLAIR_PROG="/usr/bin/clair-scanner"
+   CLAIR_HM="/var/jenkins_home/clair"
+
+   if [ -z "$BRANCH" ]; then
+      OUTPUT_DIR=$CLAIR_HM/$REPO-$VERSION
+      IMAGE="$ORG/$REPO:$VERSION"
+   else
+      OUTPUT_DIR=$CLAIR_HM/$REPO-$BRANCH-$VERSION
+      IMAGE="$ORG/$REPO:$BRANCH-$VERSION"
+   fi
+
+   CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
+   echo "Clair IP = $CLAIR_IP"
+   ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
+   echo "ETHO IP = $ETH0_IP"
+
+   echo "Running clair on $REPO . . ."
+   echo "OUTPUT_DIR=[$OUTPUT_DIR]"
+   echo "IMAGE=[$IMAGE]"   
+   docker pull $IMAGE
+   if [ ! -d "$OUTPUT_DIR" ]; then
+      mkdir $OUTPUT_DIR
+   fi
+   $CLAIR_PROG --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$OUTPUT_DIR/clair_report.json" $IMAGE | tee $OUTPUT_DIR/tableoutput.txt
+   sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $OUTPUT_DIR/tableoutput.txt > $OUTPUT_DIR/clean_tableoutput.txt
+}
+
 # NOTE: Use of these functions requires the creation of a global var
 # in the calling script called VERSION_FILE, which is the path to a 
 # file containing a version number of the form vn.n.n or optionally 
