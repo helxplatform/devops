@@ -1245,7 +1245,7 @@ case $APPS_ACTION in
         fi
         deployAmbassador
         deployNginxRevProxy
-        createNextflowStorage
+        # createNextflowStorage
         ;;
       ambassador)
         deployAmbassador
