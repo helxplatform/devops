@@ -1,5 +1,9 @@
 # Continuous Integration/Continuous Delivery
 
+
+![HeLX CICD Pipeline](images/CICD_pipeline.png "HeLX CICD Pipeline")
+
+##
 ## Build
 
 ### Jenkins
