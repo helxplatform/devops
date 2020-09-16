@@ -14,7 +14,7 @@ CI/CD is implemented as an automation pipeline. The HeLX CI/CD pipeline consists
 1) **General Approach**
 2) **System Architecture**\
     a) **Machine User**\
-    A machine user has been created to represent developers on Github, and Dockerhub to prevent the need for individual userids and passwords from needing to be used. This user's userid is ***rencibuild*** and has an email address of ***helx-dev@lists.renci.org***. The use of a list email address allows multiple users to monitor incoming correspondence from Github and Dockerhub and respond as needed.
+    A machine user has been created to represent developers on Github and Dockerhub to prevent the need for individual userids and passwords from needing to be used. This user's userid is ***rencibuild*** and has an email address of ***helx-dev@lists.renci.org***. The use of a list email address allows multiple users to monitor incoming correspondence from Github and Dockerhub and respond as needed.
     
     This user of necessity has privileges on many helxplatform GitHub repos that allow it to create repos and actions as well as respond to commits, etc. It's also an organization member on DockerHub so that it can push images.
   
