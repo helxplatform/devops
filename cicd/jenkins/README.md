@@ -14,13 +14,15 @@
     c) Kubernetes
 3) Build Scripts
 4) Versioning\
-There are two types of versioning currently used in HeLX CICD, manual and automatic. Most projects use automatic versioning with a small number (2-3) still using the older manual approach. They will be converted eventually so that there's only one versioning approach.\
+There are two types of versioning currently used in HeLX CICD, manual and automatic. Most projects use automatic versioning with a small number (2-3) still using the older manual approach. They will be converted eventually so that there's only one versioning approach.
+  
     a) Manual\
     Manual versioning works with the use of a hidden .ver file which contains the version number. This file typically lives in the top level bin directory or in some cases in docker/bin where the comp shell scripts exists. Developers increment the version in this file when they wish to bump the version up. TranQL is an example of a project currently using this type of versioning. Code typically retrieves the version in a build script this way:
     ```````````````````````````````
     ver=$(cat ./docker/bin/.ver)
     ```````````````````````````````
-    This can help identify manually versioned build scripts.\
+    This can help identify manually versioned build scripts.  
+    
     b) Automatic\
     Automatic versioning uses two bash functions and a version files on the jenkins server to manage version numbers. These functions, get_ver and incr_ver, live in bash_lib on GitHub in the devops repo. The version files are initially set by the build script under the jobs directory for the project's build. For example, for the develop build for appstore, the version file will be set at:
     `````````````````````````````````````````````````
