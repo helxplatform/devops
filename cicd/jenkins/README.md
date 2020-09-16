@@ -4,6 +4,9 @@
 ![HeLX CICD Pipeline](images/CICD_pipeline.png "HeLX CICD Pipeline")
 
 ##
+Continuous Integration/Continuous Delivery (CI/CD) is a set of best practices implemented through automation that raise code quality, increase developer productivity, detect defects and security issues as early as possible, and help deliver high quality software to customers. Because it removes significant overhead from developers, it speeds development and lowers development costs.
+
+CI/CD is implemented as an automation pipeline. The HeLX CI/CD pipeline consists of build, static analysis, unit test, containerization, security scanning, and deployment stages.
 
 ## Build
 
@@ -61,12 +64,12 @@ name: Linter
 
 on:
   push:
-    branches: [ master ]
-    
+    branches: [ master, develop ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v2
 
@@ -76,8 +79,8 @@ jobs:
 
     - name: Super-Linter
       uses: github/super-linter@v3
-      env: 
-        OUTPUT_FOLDER: SL_LOGS
+      env:
+        VALIDATE_ALL_CODEBASE: false
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````
 
 **Notes:**
