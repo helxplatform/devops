@@ -14,7 +14,8 @@ CI/CD is implemented as an automation pipeline. The HeLX CI/CD pipeline consists
 1) **General Approach**
 2) **System Architecture**\
     a) **Machine User**\
-    A machine user has been created to represent developers on Github, and Dockerhub to prevent the need for individual userids and passwords from needing to be used. This user's userid is ***rencibuild*** and has an email address of ***helx-dev@lists.renci.org***. The use of a list email address allows multiple users to monitor incoming correspondence from Github and Dockerhub and respond as needed.\
+    A machine user has been created to represent developers on Github, and Dockerhub to prevent the need for individual userids and passwords from needing to be used. This user's userid is ***rencibuild*** and has an email address of ***helx-dev@lists.renci.org***. The use of a list email address allows multiple users to monitor incoming correspondence from Github and Dockerhub and respond as needed.
+    
     This user of necessity has privileges on many helxplatform GitHub repos that allow it to create repos and actions as well as respond to commits, etc. It's also an organization member on DockerHub so that it can push images.
   
     b) **Docker**\
@@ -58,7 +59,7 @@ Here are the steps to set up a new repo for the Super-Linter action:
 5) At the top of the template, give it the name **linter.yml**
 6) Highlight the entire text of the workflow file and paste in the yaml text below in its place.
 7) Save the file.
-8) This sets up an action on the **default** branch, which must be done before setting up an action on any non-default branch. To set up an action on a non-default branch after saving this file, **merge** this file to the desired branch. **Copying it in will not work.**
+8) This sets up an action on the **default** branch (usually the master branch), which must be done before setting up an action on any non-default branch. To set up an action on a non-default branch after saving this file, **merge** this file to the desired branch. **Copying it in will not work.**
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````
 name: Linter
 
@@ -87,6 +88,8 @@ jobs:
   - The action is triggered on commits to GitHub (see "on: push:" in the yaml).
   - The yaml file passes a GitHub token to the workflow. However, there's a GitHub bug which causes it to to not recognize the token, so the logs will complain about not getting one. The action works anyway.
   - Super-Linter was designed to be used with a pull request model rather than using a push event. That would allow the developer to fix any linting errors under the pull request before it is closed and is thus cleaner as the commmit will ultimately show a check next to it since you can make multiple commits under a pull request. With a push model, if there are errors, an "x" will show for that commit and it must be fixed with a second commit, which will then have a check next to it.
+  - Super-Linter defaults to linting the entire repo at once. This leads to an enormous amount of output when run on a large existing body of code. For this reason, we decided to set **VALIDATE_ALL_CODEBASE** to **FALSE**. This means that only new and changed files in a commit are linted, which is more manageable during a development cycle. In a greefield condition, setting it to **TRUE** makes more sense.
+  - Other individual linter settings have been left at their defaults. With the number of linters involved, each having dozens of settings, it seemed prudent to let them run with their well-considered defaults initially and then adjust for any pain points as needed.
   - GitHub hints that it has plans to move Super-Linter "closer to the developer" in the future. But for now, using it locally is unsupported. That said, it is possible to get it to run locally using the instructions found [here](https://github.com/github/super-linter/blob/master/docs/run-linter-locally.md). However, it was not possible to get it running directly in a container on the server in the time available and may not be possible until GitHub develops it further.
 
 ### Using Super-Linter in Development:
