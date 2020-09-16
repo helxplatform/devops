@@ -49,3 +49,4 @@ varStorage:
 image: heliumdatastage/nginx:bdcat-nginx-amb-2
 
 restartrApi: false
+dugApi: false

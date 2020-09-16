@@ -306,12 +306,15 @@ RESTARTR_MONGO_LIMIT_CPU=${RESTARTR_MONGO_LIMIT_CPU-"0.4"}
 RESTARTR_MONGO_LIMIT_MEMORY=${RESTARTR_MONGO_LIMIT_MEMORY-"512Mi"}
 RESTARTR_MONGO_ADMIN_USERNAME=${RESTARTR_MONGO_ADMIN_USERNAME-"admin"}
 RESTARTR_MONGO_ADMIN_PASSWORD=${RESTARTR_MONGO_ADMIN_PASSWORD-""}
-if [ -z ${RESTARTR_MONGO_ADMIN_PASSWORD+x} ]
+if [ "$RESTARTR_DEPLOYMENT" == true ]
 then
-  RESTARTR_MONGO_ADMIN_PASSWORD=`random-string 20`
-  echo "RESTARTR_MONGO_ADMIN_PASSWORD set to random string."
-  echo "RESTARTR_MONGO_ADMIN_PASSWORD set to random string." >> $DEPLOY_LOG
-  echo "RESTARTR_MONGO_ADMIN_PASSWORD: $RESTARTR_MONGO_ADMIN_PASSWORD" >> $DEPLOY_LOG
+  if [ -z ${RESTARTR_MONGO_ADMIN_PASSWORD+x} ]
+  then
+    RESTARTR_MONGO_ADMIN_PASSWORD=`random-string 20`
+    echo "RESTARTR_MONGO_ADMIN_PASSWORD set to random string."
+    echo "RESTARTR_MONGO_ADMIN_PASSWORD set to random string." >> $DEPLOY_LOG
+    echo "RESTARTR_MONGO_ADMIN_PASSWORD: $RESTARTR_MONGO_ADMIN_PASSWORD" >> $DEPLOY_LOG
+  fi
 fi
 
 EFK_NAMESPACE=${EFK_NAMESPACE-"logging"}
@@ -325,6 +328,42 @@ EFK_VERSION_ARG=${EFK_VERSION_ARG-"--version=v2.0.0"}
 # running other related commands (like deleting a PV then deleting the related
 # disk).
 KUBE_WAIT_TIME=15
+
+DUG_API=${DUG_API-false}
+DUG_HELM_RELEASE=${DUG_HELM_RELEASE-"dug"}
+DUG_HOME=${DUG_HOME-"$HELXPLATFORM_HOME/dug"}
+DUG_HELM_DIR=${DUG_HELM_DIR-"$DUG_HOME/kubernetes/helm"}
+DUG_ES_PD_NAME=${DUG_ES_PD_NAME-"${PV_PREFIX}dug-es-disk"}
+DUG_ES_PD_DELETE_W_APP=${DUG_ES_PD_DELETE_W_APP-false}
+DUG_ES_PVC=${DUG_ES_PVC-"dug-elasticsearch-pvc"}
+DUG_ES_PV_STORAGE_SIZE=${DUG_ES_PV_STORAGE_SIZE-"5G"}
+DUG_ES_PV_ACCESSMODE=${DUG_ES_PV_ACCESSMODE-"ReadWriteMany"}
+DUG_ES_NFS_SERVER=${DUG_ES_NFS_SERVER-$NFS_CLNT_PV_NFS_SRVR}
+DUG_ES_NFS_PATH=${DUG_ES_NFS_PATH-"/dug-elasticsearch"}
+DUG_ES_PV_STORAGECLASS=${DUG_ES_PV_STORAGECLASS-"${PV_PREFIX}dug-elasticsearch-sc"}
+DUG_ES_PV_NAME=${DUG_ES_PV_NAME-"${PV_PREFIX}dug-elasticsearch-pv"}
+DUG_ES_APP_NAME=${DUG_ES_APP_NAME-"dug-elasticsearch"}
+DUG_NEO4J_PD_NAME=${DUG_NEO4J_PD_NAME-"${PV_PREFIX}dug-neo4j-disk"}
+DUG_NEO4J_PD_DELETE_W_APP=${DUG_NEO4J_PD_DELETE_W_APP-false}
+DUG_NEO4J_PVC=${DUG_NEO4J_PVC-"dug-neo4j-pvc"}
+DUG_NEO4J_PV_STORAGE_SIZE=${DUG_NEO4J_PV_STORAGE_SIZE-"1G"}
+DUG_NEO4J_PV_ACCESSMODE=${DUG_NEO4J_PV_ACCESSMODE-"ReadWriteMany"}
+DUG_NEO4J_NFS_SERVER=${DUG_NEO4J_NFS_SERVER-$NFS_CLNT_PV_NFS_SRVR}
+DUG_NEO4J_NFS_PATH=${DUG_NEO4J_NFS_PATH-"/dug-neo4j"}
+DUG_NEO4J_PV_STORAGECLASS=${DUG_NEO4J_PV_STORAGECLASS-"${PV_PREFIX}dug-neo4j-sc"}
+DUG_NEO4J_PV_NAME=${DUG_NEO4J_PV_NAME-"${PV_PREFIX}dug-neo4j-pv"}
+DUG_NEO4J_APP_NAME=${DUG_NEO4J_APP_NAME-"dug-neo4j"}
+DUG_REDIS_PD_NAME=${DUG_REDIS_PD_NAME-"${PV_PREFIX}dug-redis-disk"}
+DUG_REDIS_PD_DELETE_W_APP=${DUG_REDIS_PD_DELETE_W_APP-false}
+DUG_REDIS_PVC=${DUG_REDIS_PVC-"dug-redis-pvc"}
+DUG_REDIS_PV_STORAGE_SIZE=${DUG_REDIS_PV_STORAGE_SIZE-"5G"}
+DUG_REDIS_PV_ACCESSMODE=${DUG_REDIS_PV_ACCESSMODE-"ReadWriteMany"}
+DUG_REDIS_NFS_SERVER=${DUG_REDIS_NFS_SERVER-$NFS_CLNT_PV_NFS_SRVR}
+DUG_REDIS_NFS_PATH=${DUG_REDIS_NFS_PATH-"/dug-redis"}
+DUG_REDIS_PV_STORAGECLASS=${DUG_REDIS_PV_STORAGECLASS-"${PV_PREFIX}dug-redis-sc"}
+DUG_REDIS_PV_NAME=${DUG_REDIS_PV_NAME-"${PV_PREFIX}dug-redis-pv"}
+DUG_REDIS_APP_NAME=${DUG_REDIS_APP_NAME-"dug-redis"}
+DUG_WEB_APP_NAME=${DUG_WEB_APP_NAME-"dug-web"}
 
 #
 # end default user-definable variable definitions
@@ -884,10 +923,12 @@ function deleteAppStoreData(){
   elif [ "$USE_NFS_PVS" == true ]
   then
     deletePVC $APPSTORE_OAUTH_PVC
-    deleteNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
-        $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
-        $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
-        echo "-------------------------"
+    if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
+      deleteNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
+          $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
+          $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
+      echo "-------------------------"
+    fi
   else
     if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
       echo "### Deleting AppStore Oauth PVC."
@@ -1098,6 +1139,10 @@ function deployNginxRevProxy(){
    then
      HELM_VALUES+=",restartrApi=$NGINX_RESTARTR_API"
    fi
+   if [ "$DUG_API" == true ]
+   then
+     HELM_VALUES+=",dugApi=true"
+   fi
    $HELM -n $NAMESPACE upgrade --install $NGINX_HELM_RELEASE $NGINX_HELM_DIR $HELM_DEBUG \
        --logtostderr --set $HELM_VALUES
    echo "# end deploying Nginx"
@@ -1223,6 +1268,153 @@ function restartr(){
 }
 
 
+function dug(){
+  if [ "$1" == "deploy" ]
+  then
+    echo "deploying dug"
+    # cat $DUG_HOME/kubernetes/dug-secrets-template.yaml | envsubst | kubectl apply -n $NAMESPACE -f -
+
+    HELM_VALUES="dug.elasticsearch.pvc_name=$DUG_ES_PVC"
+    HELM_VALUES+=",dug.neo4j.pvc_name=$DUG_NEO4J_PVC"
+    HELM_VALUES+=",dug.redis.pvc_name=$DUG_REDIS_PVC"
+    HELM_VALUES+=",dug.elasticsearch.app_name=$DUG_ES_APP_NAME"
+    HELM_VALUES+=",dug.neo4j.app_name=$DUG_NEO4J_APP_NAME"
+    HELM_VALUES+=",dug.redis.app_name=$DUG_REDIS_APP_NAME"
+    HELM_VALUES+=",dug.web.app_name=$DUG_WEB_APP_NAME"
+    HELM_VALUES+=",dug.elasticsearch.deployment_name=$DUG_ES_APP_NAME"
+    HELM_VALUES+=",dug.neo4j.deployment_name=$DUG_NEO4J_APP_NAME"
+    HELM_VALUES+=",dug.redis.deployment_name=$DUG_REDIS_APP_NAME"
+    HELM_VALUES+=",dug.web.deployment_name=$DUG_WEB_APP_NAME"
+    HELM_VALUES+=",dug.elasticsearch.service_name=$DUG_ES_APP_NAME"
+    HELM_VALUES+=",dug.neo4j.service_name=$DUG_NEO4J_APP_NAME"
+    HELM_VALUES+=",dug.redis.service_name=$DUG_REDIS_APP_NAME"
+    HELM_VALUES+=",dug.web.service_name=$DUG_WEB_APP_NAME"
+    if [ ! -z "$DUG_IMAGE_TAG" ]
+    then
+      HELM_VALUES+=",dug.web.image_tag=$DUG_IMAGE_TAG"
+    fi
+    if [ "$HELM_VALUES" = "" ]; then
+      HELM_SET_ARG=""
+    else
+      HELM_SET_ARG="--set $HELM_VALUES"
+    fi
+    $HELM -n $NAMESPACE upgrade --install $DUG_HELM_RELEASE \
+        $DUG_HELM_DIR $HELM_DEBUG --logtostderr $HELM_SET_ARG
+    echo "finished deploying dug"
+  elif [ "$1" == "delete" ]
+  then
+    echo "deleting dug"
+    $HELM -n $NAMESPACE delete $DUG_HELM_RELEASE
+    echo "finished deleting dug"
+  else
+    echo "unknown option for dug"
+  fi
+}
+
+
+function dugStorage(){
+  if [ "$1" == "deploy" ]
+  then
+    echo "# creating storage for Dug"
+    if [ "$GKE_DEPLOYMENT" == true ]; then
+      createGCEDisk $DUG_ES_PD_NAME $DUG_ES_PV_STORAGE_SIZE
+      createGKEPV $DUG_ES_PD_NAME $DUG_ES_PV_NAME \
+          $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PVC
+      createGKEPVC $DUG_ES_PVC $DUG_ES_PV_STORAGE_SIZE
+      createGCEDisk $DUG_NEO4J_PD_NAME $DUG_NEO4J_PV_STORAGE_SIZE
+      createGKEPV $DUG_NEO4J_PD_NAME $DUG_NEO4J_PV_NAME \
+          $DUG_NEO4J_PV_STORAGE_SIZE $DUG_NEO4J_PVC
+      createGKEPVC $DUG_NEO4J_PVC $DUG_NEO4J_PV_STORAGE_SIZE
+      createGCEDisk $DUG_REDIS_PD_NAME $DUG_REDIS_PV_STORAGE_SIZE
+      createGKEPV $DUG_REDIS_PD_NAME $DUG_REDIS_PV_NAME \
+          $DUG_REDIS_PV_STORAGE_SIZE $DUG_REDIS_PVC
+      createGKEPVC $DUG_REDIS_PVC $DUG_REDIS_PV_STORAGE_SIZE
+    elif [ "$USE_NFS_PVS" == true ]
+    then
+      createNFSPV $DUG_ES_PV_NAME $DUG_ES_NFS_SERVER \
+          $DUG_ES_NFS_PATH $DUG_ES_PV_STORAGECLASS \
+          $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PV_ACCESSMODE
+      createPVC $DUG_ES_PVC $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PV_ACCESSMODE \
+          $DUG_ES_PV_STORAGECLASS
+      createNFSPV $DUG_NEO4J_PV_NAME $DUG_NEO4J_NFS_SERVER \
+          $DUG_NEO4J_NFS_PATH $DUG_NEO4J_PV_STORAGECLASS \
+          $DUG_NEO4J_PV_STORAGE_SIZE $DUG_NEO4J_PV_ACCESSMODE
+      createPVC $DUG_NEO4J_PVC $DUG_NEO4J_PV_STORAGE_SIZE \
+          $DUG_NEO4J_PV_ACCESSMODE $DUG_NEO4J_PV_STORAGECLASS
+      createNFSPV $DUG_REDIS_PV_NAME $DUG_REDIS_NFS_SERVER \
+          $DUG_REDIS_NFS_PATH $DUG_REDIS_PV_STORAGECLASS \
+          $DUG_REDIS_PV_STORAGE_SIZE $DUG_REDIS_PV_ACCESSMODE
+      createPVC $DUG_REDIS_PVC $DUG_REDIS_PV_STORAGE_SIZE \
+          $DUG_REDIS_PV_ACCESSMODE $DUG_REDIS_PV_STORAGECLASS
+    else
+      createPVC $DUG_ES_PVC $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PV_ACCESSMODE \
+          $DUG_ES_PV_STORAGECLASS
+      createPVC $DUG_NEO4J_PVC $DUG_NEO4J_PV_STORAGE_SIZE \
+          $DUG_NEO4J_PV_ACCESSMODE $DUG_NEO4J_PV_STORAGECLASS
+      createPVC $DUG_REDIS_PVC $DUG_REDIS_PV_STORAGE_SIZE \
+          $DUG_REDIS_PV_ACCESSMODE $DUG_REDIS_PV_STORAGECLASS
+    fi
+    echo "# finishedcreating storage for Dug"
+  elif [ "$1" == "delete" ]
+  then
+    echo "# deleting storage for Dug"
+    if [ "$GKE_DEPLOYMENT" == true ]; then
+      deleteGKEPVC $DUG_ES_PVC
+      deleteGKEPV $DUG_ES_PV_NAME
+      if [ "$DUG_ES_PD_DELETE_W_APP" == true ]; then
+        echo "### Deleting Dug ElasticSearch Persistent disk."
+        sleep $KUBE_WAIT_TIME
+        deleteGCEDisk $DUG_ES_PD_NAME
+      else
+        echo "### Not deleting Dug ElasticSearch Persistent disk."
+      fi
+      deleteGKEPVC $DUG_NEO4J_PVC
+      deleteGKEPV $DUG_NEO4J_PV_NAME
+      if [ "$DUG_NEO4J_PD_DELETE_W_APP" == true ]; then
+        echo "### Deleting Dug Neo4J Persistent disk."
+        sleep $KUBE_WAIT_TIME
+        deleteGCEDisk $DUG_NEO4J_PD_NAME
+      else
+        echo "### Not deleting Dug Neo4J Persistent disk."
+      fi
+      deleteGKEPVC $DUG_REDIS_PVC
+      deleteGKEPV $DUG_REDIS_PV_NAME
+      if [ "$DUG_REDIS_PD_DELETE_W_APP" == true ]; then
+        echo "### Deleting Dug Redis Persistent disk."
+        sleep $KUBE_WAIT_TIME
+        deleteGCEDisk $DUG_REDIS_PD_NAME
+      else
+        echo "### Not deleting Dug Redis Persistent disk."
+      fi
+    elif [ "$USE_NFS_PVS" == true ]
+    then
+      deletePVC $DUG_ES_PVC
+      if [ "$DUG_ES_PD_DELETE_W_APP" == true ]; then
+        deleteNFSPV $DUG_ES_PV_NAME $DUG_ES_NFS_SERVER \
+            $DUG_ES_NFS_PATH $DUG_ES_PV_STORAGECLASS \
+            $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PV_ACCESSMODE
+      fi
+      deletePVC $DUG_NEO4J_PVC
+      if [ "$DUG_NEO4J_PD_DELETE_W_APP" == true ]; then
+        deleteNFSPV $DUG_NEO4J_PV_NAME $DUG_NEO4J_NFS_SERVER \
+            $DUG_NEO4J_NFS_PATH $DUG_NEO4J_PV_STORAGECLASS \
+            $DUG_NEO4J_PV_STORAGE_SIZE $DUG_NEO4J_PV_ACCESSMODE
+      fi
+      deletePVC $DUG_REDIS_PVC
+      if [ "$DUG_REDIS_PD_DELETE_W_APP" == true ]; then
+        deleteNFSPV $DUG_REDIS_PV_NAME $DUG_REDIS_NFS_SERVER \
+            $DUG_REDIS_NFS_PATH $DUG_REDIS_PV_STORAGECLASS \
+            $DUG_REDIS_PV_STORAGE_SIZE $DUG_REDIS_PV_ACCESSMODE
+      fi
+    else
+      deletePVC $DUG_ES_PVC
+      deletePVC $DUG_NEO4J_PVC
+      deletePVC $DUG_REDIS_PVC
+    fi
+    echo "# finished deleting storage for Dug"
+  fi
+}
+
 case $APPS_ACTION in
   deploy)
     case $APP in
@@ -1243,6 +1435,11 @@ case $APPS_ACTION in
         then
           restartr deploy
         fi
+        if [ "$DUG_API" == true ]
+        then
+          dugStorage deploy
+          dug deploy
+        fi
         deployAmbassador
         deployNginxRevProxy
         # createNextflowStorage
@@ -1258,6 +1455,12 @@ case $APPS_ACTION in
         ;;
       cat)
         deployCAT
+        ;;
+      dug)
+        dug deploy
+        ;;
+      dugstorage)
+        dugStorage deploy
         ;;
       dynamicpvcp)
         deployDynamicPVCP
@@ -1301,6 +1504,11 @@ case $APPS_ACTION in
         deleteNextflowStorage
         deleteNginxRevProxy
         deleteAmbassador
+        if [ "$DUG_API" == true ]
+        then
+          dug delete
+          dugStorage delete
+        fi
         if [ "$RESTARTR_DEPLOYMENT" == true ]
         then
           restartr delete
@@ -1327,6 +1535,10 @@ case $APPS_ACTION in
           restartr delete
         fi
         deleteCAT
+        if [ "$DUG_API" == true ]
+        then
+          dug delete
+        fi
         # deleteELK
         # Not deleting NFSRODS b/c it has a PV.
         # if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
@@ -1344,6 +1556,12 @@ case $APPS_ACTION in
         ;;
       commonsshare)
         deleteCommonsShare
+        ;;
+      dug)
+        dug delete
+        ;;
+      dugstorage)
+        dugStorage delete
         ;;
       dynamicpvcp)
         deleteDynamicPVCP
