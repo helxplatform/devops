@@ -11,14 +11,23 @@ CI/CD is implemented as an automation pipeline. The HeLX CI/CD pipeline consists
 ## Build
 
 ### Jenkins
-1) **General Approach**
+1) **General Approach**\
+The HeLX CI/CD is based on a pipeline of services that process, test, package, and deploy the code. To the extent possible, these services are run on and by a Jenkins server run on a cluster hosted at RENCI. This Jenkins server is run as a Docker container managed by Kubernetes on the cluster.
+
+The one exception to this is static analysis, which is run on GitHub, due to the choice to use the Super-Linter lint aggregator. It runs as a Github workflow action on GitHub servers.
+
+Using a containerized Jenkins server allows the entire CI/CD pipeline to be backed up and restored in the case of a crash or outage along with its build data, along with all the other normal benefits of containerized services.
+
 2) **System Architecture**\
     a) **Machine User**\
-    A machine user has been created to represent developers on Github and Dockerhub to prevent the need for individual userids and passwords from needing to be used. This user's userid is ***rencibuild*** and has an email address of ***helx-dev@lists.renci.org***. The use of a list email address allows multiple users to monitor incoming correspondence from Github and Dockerhub and respond as needed.
+    A machine user represents developers on Github and Dockerhub to prevent the need for any individual userids and passwords in build scripts. This user's userid is ***rencibuild*** and has an email address of ***helx-dev@lists.renci.org***. The use of a list email address allows multiple users to monitor incoming correspondence from Github and Dockerhub and respond as needed.
     
     This user of necessity has privileges on many helxplatform GitHub repos that allow it to create repos and actions as well as respond to commits, etc. It's also an organization member on DockerHub so that it can push images.
   
-    b) **Docker**\
+    b) **Docker**
+    
+    
+    
     c) **Kubernetes**
 3) **Build Scripts**
 4) **Versioning**\
