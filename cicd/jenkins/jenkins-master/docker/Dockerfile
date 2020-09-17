@@ -4,7 +4,7 @@ USER root
 
 RUN echo "deb http://ftp.debian.org/debian stable main contrib non-free" > /etc/apt/sources.list && \
     apt-get update -qq && \
-    apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common gir1.2-glib-2.0 gir1.2-packagekitglib-1.0 python-apt-common python3 python3-venv python3-dbus python3-gi python python-pip python3-software-properties python3-pip python3-wheel python3-setuptools sudo less vim-tiny gettext-base
+    apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common gir1.2-glib-2.0 gir1.2-packagekitglib-1.0 python-apt-common python3 python3-venv python3-dbus python3-gi python python-pip python3-software-properties python3-pip python3-wheel python3-setuptools ruby ruby-bundler sudo less vim-tiny gettext-base
 
 RUN pip  install --upgrade pip wheel setuptools && \
     curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
@@ -21,12 +21,20 @@ RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debia
     chmod +x /usr/local/bin/clair-scanner  && \
     ln -s /usr/local/bin/clair-scanner /usr/bin/clair-scanner
 
+RUN mkdir ruby && \
+    cd ruby && \
+    curl https://rubygems.org/rubygems/rubygems-3.1.4.tgz -o rubygems-3.1.4.tgz && \
+    ls -l && \
+    ls -l .. && \ 
+    tar -xzvf rubygems-3.1.4.tgz && \
+    cd rubygems-3.1.4 && \
+    ruby setup.rb && \
+    gem install json2table
+
 ENV USER jenkins
 ENV UID 1000
-RUN usermod -aG sudo -p '$6$zltyyttlas$DwfqAq2l5HlUE2WnEUhFtAi1Je3YE2uH50fdyyUmUjoXzmzZGm3ch4eaT/N6O62JgSKdhy0tslF/f8dNdXZQt/' jenkins
-# ENV HOME /home/$USER
-# RUN useradd -m -b /home -d $HOME --shell /bin/bash --uid $UID -U -G jenkins $USER && \
-# RUN groupadd docker
+RUN usermod -p '$6$zltyyttlas$DwfqAq2l5HlUE2WnEUhFtAi1Je3YE2uH50fdyyUmUjoXzmzZGm3ch4eaT/N6O62JgSKdhy0tslF/f8dNdXZQt/' jenkins && \
+    usermod -aG sudo jenkins
 
 ## For Blackbalsam build:
 ENV USER2 jovyan
@@ -42,3 +50,4 @@ USER jenkins
 RUN mkdir /var/jenkins_home/clair && \
     mkdir /var/jenkins_home/clair/whitelists && \
     touch /var/jenkins_home/clair/whitelists/common-whitelist.yaml
+    
