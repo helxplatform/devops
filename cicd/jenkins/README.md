@@ -25,14 +25,43 @@ The HeLX CI/CD is based on a pipeline of services that process, test, package, a
     This user of necessity has privileges on many helxplatform GitHub repos that allow it to create repos and actions as well as respond to commits, etc. It's also an organization member on DockerHub so that it can push images.
   
     b) **Docker**\
-    The Jenkins server is based on the Jenkins:lts Docker image, with modifications required for HeLX. This includes modifications for running Docker in a Docker container, docker-ce, docker-ce-cli, docker-compose, building certain languages, clair security scanner, and tools to ease administration (curl, less, vim-tiny, sudo).
+    The Jenkins server is based on the Jenkins:lts Docker image (currently jenkins-2.4.0), with modifications required for HeLX. This includes modifications for running Docker in a Docker container, docker-ce, docker-ce-cli, docker-compose, building certain languages, clair security scanner, and tools to ease administration (curl, less, vim-tiny, sudo).
     
     Most changes are added as the **root** user. Although its not visible in our Dockerfile, the jenkins:lts image does add a **jenkins** user Our Dockerfile switches to the **jenkins** user before adding some file changes which need **jenkins** user file permissions. This also becomes the running user on the container. One additional user, **jovyan**, is added, which is required for the blackbalsam build.
     
     The [Dockerfile](https://github.com/helxplatform/devops/cicd/jenkins/jenkins-master/docker/Dockerfile) is located in the GitHub 
-**helxplatform/devops repo**.
+**helxplatform/devops** repo.
     
-    c) **Kubernetes**
+    c) **Kubernetes**\
+    The Jenkins server's docker capabilities are managed using Kubernetes. All Kubernetes resource files are combined into one yaml file which is [stored](https://github.com/helxplatform/devops/cicd/jenkins/jenkins-master/kubernetes/jenkins-blackbalsam-k8s-no-jcasc.yaml) in Github in the **helxplatform/devops** repo. The following types of Kubernetes resource files are combined into this one file. For more specifics on the information defined within the individual sections, please view the [file](https://github.com/helxplatform/devops/cicd/jenkins/jenkins-master/kubernetes/jenkins-blackbalsam-k8s-no-jcasc.yaml) itself.
+      - Service Account
+        - Provides an identity for the Pod.
+      - Secret
+         - Defines Admin username and password.
+      - Jenkins ConfigMap
+         - Contains:
+           - config.xml
+           - Location configuration (URL)
+           - CLI toggle (set to true)
+           - apply_config.sh
+             - Applies the Jenkins XML configuration.
+             - Installs plugins.
+           - plugins.txt
+             - The list of plugins to be installed including their versions.
+      - Jenkins Tests ConfigMap
+        - Contains:
+          - run.sh
+            - A test which checks if Jenkins is up and available for login after startup.
+      - Role
+        - Defines a Jenkins uses to schedule agents via the Kubernetes plugin.
+      - RoleBinding
+        - Binds the scheduling role (above) to the Jenkins Service Accounts.
+      - Jenkins Service
+        - Defines characteristics such as ports and service type of main Jenkins service.
+      - Jenkins-Agent Service
+        - Defines characteristics such as ports and service type of Jenkins agents.
+      - Jenkins Deployment
+        - Defines init containers and containers of Jenkins including environment, resources, volumes, liveness probes, and the /var/docker.sock Docker connection.
     
 3) **Build Scripts**
 4) **Versioning**\
