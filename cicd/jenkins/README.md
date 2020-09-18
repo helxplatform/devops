@@ -75,27 +75,27 @@ The HeLX CI/CD is based on a pipeline of services that process, test, package, a
         - Defines init containers and containers of Jenkins including environment, resources, volumes, liveness probes, and the /var/docker.sock Docker connection.
     
 3) **Build Scripts**\
-Each project is configured with what Jenkins refers to as a "freestyle" build script. Freestyle build scripts are Bash scripts that are input into the Jenkins "Configure" UI.
+   Each project is configured with what Jenkins refers to as a "freestyle" build script. Freestyle build scripts are Bash scripts that are input into the Jenkins "Configure" UI.
 
-Each script follows a similar pattern:
-   1) Defines pathnames and other necessary definitions.
-   2) Retrieves the bashlib library from GitHub, which contains versioning functions if automatic versioning is used (see below).
-   3) Retrieves the clair library functions for security scanning from GitHub (see below).
-   4) Pulls the code from GitHub to the workspace.
-   5) Gets the version number (and increments it for automatic versioning--see below).
-   6) Calls **docker build** to build the image.
-   7) If the build fails, it exits. If it succeeds, continues to the next step.
-   8) Sets up and executes unit tests, typically using pytest.
-   9) If unit tests fail, it exits and emails the result. If it succeeds, continues to the next step.
-   10) Calls **docker push** to push the images to DockerHub.
-   11) Calls the scan_clair library function to do security scanning (see below). Note that the images must be in a Docker repository in order for clair to scan them.
-   12) Calls the postprocess_clair_output library function to clean the clair data, turn it from json into an html table, and set it up in a web server.
-   13) Removes the built images, now that they're in Docker, to save space.
-   
-Notes:
-  - In addition to the freestyle approach, scripts can be done in a pipeline format. There are some advantages to doing the pipeline format and it may be worth doing future scripts using this approach.
-  - It's likely that the pattern described above can be condensed into one or more library functions, added to bashlib, and then just called from the build script.
-  - Images must be in a Docker repository in order for clair to scan them.
+   Each script follows a similar pattern:
+     - Defines pathnames and other necessary definitions.
+     - Retrieves the bashlib library from GitHub, which contains versioning functions if automatic versioning is used (see below).
+     - Retrieves the clair library functions for security scanning from GitHub (see below).
+     - Pulls the code from GitHub to the workspace.
+     - Gets the version number (and increments it for automatic versioning--see below).
+     - Calls **docker build** to build the image.
+     - If the build fails, it exits. If it succeeds, continues to the next step.
+     - Sets up and executes unit tests, typically using pytest.
+     - If unit tests fail, it exits and emails the result. If it succeeds, continues to the next step.
+     - Calls **docker push** to push the images to DockerHub.
+     - Calls the scan_clair library function to do security scanning (see below). Note that the images must be in a Docker repository in order for clair to scan them.
+     - Calls the postprocess_clair_output library function to clean the clair data, turn it from json into an html table, and set it up in a web server.
+     - Removes the built images, now that they're in Docker, to save space.
+
+   **Notes:**
+      - In addition to the freestyle approach, scripts can be done in a pipeline format. There are some advantages to doing the pipeline format and it may be worth doing future scripts using this approach.
+      - It's likely that the pattern described above can be condensed into one or more library functions, added to bashlib, and then just called from the build script.
+      - Images must be in a Docker repository in order for clair to scan them.
   
    
 4) **Versioning**\
