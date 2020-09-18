@@ -14,7 +14,6 @@
 # Example call: scan-clair "heliumdatastage" "appstore" "develop" "v0.0.13"
 # Result: 
 #    - Outputs clean table of security scan information in $CLAIR_HM/clean_tableoutput.txt
-#    - Displays clean output table in Jenkins build log.
 # -------------------------------------------------------------------------
 
 function scan_clair () {
