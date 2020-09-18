@@ -24,16 +24,27 @@ The HeLX CI/CD is based on a pipeline of services that process, test, package, a
     
     This user of necessity has privileges on many helxplatform GitHub repos that allow it to create repos and actions as well as respond to commits, etc. It's also an organization member on DockerHub so that it can push images.
   
-    b) **Docker**\
-    The Jenkins server is based on the Jenkins:lts Docker image (currently jenkins-2.4.0), with modifications required for HeLX. This includes modifications for running Docker in a Docker container, docker-ce, docker-ce-cli, docker-compose, building certain languages, clair security scanner, and tools to ease administration (curl, less, vim-tiny, sudo).
+    b) **Docker**
+    1) **DockerFile**\
+       The Jenkins server is based on the Jenkins:lts Docker image (currently jenkins-2.4.0), with modifications required for HeLX. This includes modifications for running Docker in a Docker container, docker-ce, docker-ce-cli, docker-compose, building certain languages, clair security scanner, and tools to ease administration (curl, less, vim-tiny, sudo).
     
-    Most changes are added as the **root** user. Although its not visible in our Dockerfile, the jenkins:lts image does add a **jenkins** user Our Dockerfile switches to the **jenkins** user before adding some file changes which need **jenkins** user file permissions. This also becomes the running user on the container. One additional user, **jovyan**, is added, which is required for the blackbalsam build.
+       Most changes are added as the **root** user. Although its not visible in our Dockerfile, the jenkins:lts image does add a **jenkins** user Our Dockerfile switches to the **jenkins** user before adding some file changes which need **jenkins** user file permissions. This also becomes the running user on the container. One additional user, **jovyan**, is added, which is required for the blackbalsam build.
     
-    The [Dockerfile](https://github.com/helxplatform/devops/cicd/jenkins/jenkins-master/docker/Dockerfile) is located in the GitHub 
+       The [Dockerfile](https://github.com/helxplatform/devops/cicd/jenkins/jenkins-master/docker/Dockerfile) is located in the GitHub 
 **helxplatform/devops** repo.
-    
+
+    2) **Docker In Docker**\
+       Because Jenkins is running as a Docker container and has to build new Docker containers, a problem arises: how to run Docker in Docker. Because Docker wasn't designed to run this way, it presents a unique set of challenges. 
+       The seminal article about this, ["Using Docker-in-Docker for your CI or testing environment? Think twice."](Using Docker-in-Docker for your CI or testing environment? Think twice.) was written by Jérôme Petazzoni. Petazzoni outlines three major problems with running Docker in Docker:
+         - It conflicts with and confuses Linux Security Modules) like AppArmor and SELinux.
+         - It creates conflicts between storage drivers, since the outer Docker  container runs on a "normal" filesystem such as EXT4 but the inner Docker will run on a copy-on-write filesystem such as AUFS or perhaps Device Mapper. Many combinations of filesystems won't even work together and they depend on what the outer Docker container is using. Even the official DIND repo runs into these issues.
+         - Most critically, it creates problems with build caches which can lead to data corruption.
+       He does however, offer a solution. Enabling a docker socket in the CI container using the -v switch to bind-mount it. This gives the container access to the Docker socket so that is can build, push, and start containers. The only difference from true Docker in Docker solution is that when it starts a container, instead of starting a “child” container, it starts a “sibling” container. Since the goal of CI is building and pushing images, this is not an issue.
+       
+       The HeLX implementation does use this approach since its the least problematic. The code that does this is in the Deployment section of the Kubernetes resource file, [jenkins-blackbalsam-k8s-no-jcasc.yaml](https://github.com/helxplatform/devops/cicd/jenkins/jenkins-master/kubernetes/jenkins-blackbalsam-k8s-no-jcasc.yaml) (see below under Kubernetes for more information on this file).
+     
     c) **Kubernetes**\
-    The Jenkins server's docker capabilities are managed using Kubernetes. All Kubernetes resource files are combined into one yaml file which is [stored](https://github.com/helxplatform/devops/cicd/jenkins/jenkins-master/kubernetes/jenkins-blackbalsam-k8s-no-jcasc.yaml) in Github in the **helxplatform/devops** repo. The following types of Kubernetes resource files are combined into this one file. For more specifics on the information defined within the individual sections, please view the [file](https://github.com/helxplatform/devops/cicd/jenkins/jenkins-master/kubernetes/jenkins-blackbalsam-k8s-no-jcasc.yaml) itself.
+    The Jenkins server's docker capabilities are managed using Kubernetes. All Kubernetes resource files are combined into one yaml file, [jenkins-blackbalsam-k8s-no-jcasc.yaml](https://github.com/helxplatform/devops/cicd/jenkins/jenkins-master/kubernetes/jenkins-blackbalsam-k8s-no-jcasc.yaml) which is stored in Github's **helxplatform/devops** repo. The following types of Kubernetes resource files are combined into this one file. For more specifics on the information defined within the individual sections, please view the [file](https://github.com/helxplatform/devops/cicd/jenkins/jenkins-master/kubernetes/jenkins-blackbalsam-k8s-no-jcasc.yaml) itself.
       - Service Account
         - Provides an identity for the Pod.
       - Secret
@@ -63,7 +74,30 @@ The HeLX CI/CD is based on a pipeline of services that process, test, package, a
       - Jenkins Deployment
         - Defines init containers and containers of Jenkins including environment, resources, volumes, liveness probes, and the /var/docker.sock Docker connection.
     
-3) **Build Scripts**
+3) **Build Scripts**\
+Each project is configured with what Jenkins refers to as a "freestyle" build script. Freestyle build scripts are Bash scripts that are input into the Jenkins "Configure" UI.
+
+Each script follows a similar pattern:
+   1) Defines pathnames and other necessary definitions.
+   2) Retrieves the bashlib library from GitHub, which contains versioning functions if automatic versioning is used (see below).
+   3) Retrieves the clair library functions for security scanning from GitHub (see below).
+   4) Pulls the code from GitHub to the workspace.
+   5) Gets the version number (and increments it for automatic versioning--see below).
+   6) Calls **docker build** to build the image.
+   7) If the build fails, it exits. If it succeeds, continues to the next step.
+   8) Sets up and executes unit tests, typically using pytest.
+   9) If unit tests fail, it exits and emails the result. If it succeeds, continues to the next step.
+   10) Calls **docker push** to push the images to DockerHub.
+   11) Calls the scan_clair library function to do security scanning (see below). Note that the images must be in a Docker repository in order for clair to scan them.
+   12) Calls the postprocess_clair_output library function to clean the clair data, turn it from json into an html table, and set it up in a web server.
+   13) Removes the built images, now that they're in Docker, to save space.
+   
+Notes:
+  - In addition to the freestyle approach, scripts can be done in a pipeline format. There are some advantages to doing the pipeline format and it may be worth doing future scripts using this approach.
+  - It's likely that the pattern described above can be condensed into one or more library functions, added to bashlib, and then just called from the build script.
+  - Images must be in a Docker repository in order for clair to scan them.
+  
+   
 4) **Versioning**\
 There are two types of versioning currently used in HeLX CICD, manual and automatic. Most projects use automatic versioning with a small number (2-3) still using the older manual approach. They will be converted eventually so that there's only one versioning approach.
   
@@ -141,5 +175,6 @@ Details to come.
 ## Unit Test
 
 ## Containerize
+Images are created using the **docker push** command and stored in DockerHub public repositories
 
 ## Security Scan
