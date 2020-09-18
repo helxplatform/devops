@@ -169,12 +169,12 @@ jobs:
   - Other individual linter settings have been left at their defaults. With the number of linters involved, each having dozens of settings, it seemed prudent to let them run with their well-considered defaults initially and then adjust for any pain points as needed.
   - GitHub hints that it has plans to move Super-Linter "closer to the developer" in the future. But for now, using it locally is unsupported. That said, it is possible to get it to run locally using the instructions found [here](https://github.com/github/super-linter/blob/master/docs/run-linter-locally.md). However, it was not possible to get it running directly in a container on the server in the time available and may not be possible until GitHub develops it further.
 
-### Using Super-Linter in Development:
-Details to come.
-
 ## Unit Test
+Unit tests are conducted after the build if the build passes. The tests are set up and executed as part of the freestyle bash script part of the build in all but one case. The TranQL build, however is split into two separate builds.  The first, called tranQL-server, runs the unit tests. If it succeeds, it invokes tranql-docker, which then proceeds to to the actual build.
+
+The remaining builds proceed by creating a python virtual environment and sourcing it, then using python's pip to install the necessary requirements to run the application from the project's requirements.txt file. They then invoke pytest directly or, more frequently, a bash script in the project's bin directory to run the tests.
 
 ## Containerize
-Images are created using the **docker push** command and stored in DockerHub public repositories
+If the build passes its unit test phase, the images that were created using the **docker build** command and pushed to DockerHub using the **docker push** command and where they are stored in DockerHub public repositories.
 
 ## Security Scan
