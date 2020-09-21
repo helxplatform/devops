@@ -27,12 +27,10 @@ function scan_clair () {
    ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
    echo "Running clair on $REPO . . ."
-
-    echo "clair is temporarily disabled."
-
    docker pull $ORG/$REPO:$BRANCH-$VERSION
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$CLAIR_HM/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION > $CLAIR_HM/tableoutput.txt
    sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $CLAIR_HM/tableoutput.txt > $CLAIR_HM/clean_tableoutput.txt
+   echo "clair scan complete."
    #cat $CLAIR_HM/clean_tableoutput.txt
 }
 
