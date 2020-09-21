@@ -163,28 +163,28 @@ data:
     yes n | cp -i /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins/;
     echo "finished initialization"
   plugins.txt: |-
-    kubernetes:1.27.1
+    kubernetes:1.27.11
     workflow-job:2.39
     workflow-aggregator:2.6
     credentials-binding:1.23
     git:4.4.2
     configuration-as-code:1.43
     kubernetes-cd:2.3.0
-    blueocean:1.23.2
-    active-directory:2.16
+    blueocean:1.24
+    active-directory:2.17
     role-strategy:3.0
     ant:1.11
     antisamy-markup-formatter:2.1
     build-timeout:1.2.0
     dashboard-view:2.13
     docker-workflow:1.23
-    email-ext:2.75
+    email-ext:2.76
     external-monitor-job:1.7
     github-api:1.116
     gradle:1.36
     icon-shim:2.0.3
     javadoc:1.6
-    ldap:1.25
+    ldap:1.26
     mapdb-api:1.0.9.0
     nodelabelparameter:1.7.2
     pam-auth:1.6
