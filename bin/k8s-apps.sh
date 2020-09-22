@@ -12,7 +12,8 @@ function print_apps_help() {
   echo "\
 usage: $0 <action> <app> <option>
   actions: deploy, delete
-  apps: cat, elk, all, nginx-revproxy, efk, ambassador, appstore, commonsshare, tycho, nextflowstorage, nfs-server, nfsrods
+  apps: all, cat, dug, dugstorage, elk, nginx-revproxy, efk, ambassador,
+        appstore, commonsshare, tycho, nextflowstorage, nfs-server, nfsrods
   -c [config file]  Specify config file.
   -h|--help         Print this help message.
 "
@@ -117,7 +118,7 @@ NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"stdnfs"}
 NFS_CLNT_STORAGE_SIZE=${NFS_CLNT_STORAGE_SIZE-"5Gi"}
 NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"stdnfs-sc"}
 
-NEXTFLOW_PVC=${NEXTFLOW_PVC-"deepgtex-prp"}
+NEXTFLOW_PVC=${NEXTFLOW_PVC-"stdnfs"}
 NEXTFLOW_PV_STORAGE_SIZE=${NEXTFLOW_PV_STORAGE_SIZE-"5Gi"}
 NEXTFLOW_PV_ACCESSMODE=${NEXTFLOW_PV_ACCESSMODE-"ReadWriteMany"}
 NEXTFLOW_NFS_SERVER=${NEXTFLOW_NFS_SERVER-$NFS_CLNT_PV_NFS_SRVR}
@@ -143,10 +144,10 @@ NGINX_TLS_CRT=${NGINX_TLS_CRT-""}
 NGINX_TLS_CA_CRT=${NGINX_TLS_CA_CRT-""}
 NGINX_DNS_RESOLVER=${NGINX_DNS_RESOLVER-""}
 NGINX_SERVICE_TYPE=${NGINX_SERVICE_TYPE-"LoadBalancer"}
-NGINX_SERVICE_HTTP_PORT=${NGINX_SERVICE_HTTP_PORT-""}
-NGINX_SERVICE_HTTPS_PORT=${NGINX_SERVICE_HTTPS_PORT-""}
-NGINX_TARGET_HTTP_PORT=${NGINX_TARGET_HTTP_PORT-""}
-NGINX_TARGET_HTTPS_PORT=${NGINX_TARGET_HTTPS_PORT-""}
+NGINX_SERVICE_HTTP_PORT=${NGINX_SERVICE_HTTP_PORT-"80"}
+NGINX_SERVICE_HTTPS_PORT=${NGINX_SERVICE_HTTPS_PORT-"443"}
+NGINX_TARGET_HTTP_PORT=${NGINX_TARGET_HTTP_PORT-"8080"}
+NGINX_TARGET_HTTPS_PORT=${NGINX_TARGET_HTTPS_PORT-"8443"}
 NGINX_SERVICE_NODEPORT=${NGINX_SERVICE_NODEPORT-""}
 NGINX_INGRESS_HOST=${NGINX_INGRESS_HOST-""}
 NGINX_INGRESS_CLASS=${NGINX_INGRESS_CLASS-""}
@@ -338,7 +339,7 @@ DUG_ES_PD_DELETE_W_APP=${DUG_ES_PD_DELETE_W_APP-false}
 DUG_ES_PVC=${DUG_ES_PVC-"dug-elasticsearch-pvc"}
 DUG_ES_PV_STORAGE_SIZE=${DUG_ES_PV_STORAGE_SIZE-"5G"}
 DUG_ES_PV_ACCESSMODE=${DUG_ES_PV_ACCESSMODE-"ReadWriteMany"}
-DUG_ES_NFS_SERVER=${DUG_ES_NFS_SERVER-$NFS_CLNT_PV_NFS_SRVR}
+DUG_ES_NFS_SERVER=${DUG_ES_NFS_SERVER-$CAT_NFS_SERVER}
 DUG_ES_NFS_PATH=${DUG_ES_NFS_PATH-"/dug-elasticsearch"}
 DUG_ES_PV_STORAGECLASS=${DUG_ES_PV_STORAGECLASS-"${PV_PREFIX}dug-elasticsearch-sc"}
 DUG_ES_PV_NAME=${DUG_ES_PV_NAME-"${PV_PREFIX}dug-elasticsearch-pv"}
@@ -348,7 +349,7 @@ DUG_NEO4J_PD_DELETE_W_APP=${DUG_NEO4J_PD_DELETE_W_APP-false}
 DUG_NEO4J_PVC=${DUG_NEO4J_PVC-"dug-neo4j-pvc"}
 DUG_NEO4J_PV_STORAGE_SIZE=${DUG_NEO4J_PV_STORAGE_SIZE-"1G"}
 DUG_NEO4J_PV_ACCESSMODE=${DUG_NEO4J_PV_ACCESSMODE-"ReadWriteMany"}
-DUG_NEO4J_NFS_SERVER=${DUG_NEO4J_NFS_SERVER-$NFS_CLNT_PV_NFS_SRVR}
+DUG_NEO4J_NFS_SERVER=${DUG_NEO4J_NFS_SERVER-$CAT_NFS_SERVER}
 DUG_NEO4J_NFS_PATH=${DUG_NEO4J_NFS_PATH-"/dug-neo4j"}
 DUG_NEO4J_PV_STORAGECLASS=${DUG_NEO4J_PV_STORAGECLASS-"${PV_PREFIX}dug-neo4j-sc"}
 DUG_NEO4J_PV_NAME=${DUG_NEO4J_PV_NAME-"${PV_PREFIX}dug-neo4j-pv"}
@@ -358,12 +359,14 @@ DUG_REDIS_PD_DELETE_W_APP=${DUG_REDIS_PD_DELETE_W_APP-false}
 DUG_REDIS_PVC=${DUG_REDIS_PVC-"dug-redis-pvc"}
 DUG_REDIS_PV_STORAGE_SIZE=${DUG_REDIS_PV_STORAGE_SIZE-"5G"}
 DUG_REDIS_PV_ACCESSMODE=${DUG_REDIS_PV_ACCESSMODE-"ReadWriteMany"}
-DUG_REDIS_NFS_SERVER=${DUG_REDIS_NFS_SERVER-$NFS_CLNT_PV_NFS_SRVR}
+DUG_REDIS_NFS_SERVER=${DUG_REDIS_NFS_SERVER-$CAT_NFS_SERVER}
 DUG_REDIS_NFS_PATH=${DUG_REDIS_NFS_PATH-"/dug-redis"}
 DUG_REDIS_PV_STORAGECLASS=${DUG_REDIS_PV_STORAGECLASS-"${PV_PREFIX}dug-redis-sc"}
 DUG_REDIS_PV_NAME=${DUG_REDIS_PV_NAME-"${PV_PREFIX}dug-redis-pv"}
 DUG_REDIS_APP_NAME=${DUG_REDIS_APP_NAME-"dug-redis"}
 DUG_WEB_APP_NAME=${DUG_WEB_APP_NAME-"dug-web"}
+DUG_SC_APP_NAME=${DUG_SC_APP_NAME-"dug-search-client"}
+DUG_NBOOST_APP_NAME=${DUG_NBOOST_APP_NAME-"dug-nboost"}
 
 #
 # end default user-definable variable definitions
@@ -1281,14 +1284,20 @@ function dug(){
     HELM_VALUES+=",dug.neo4j.app_name=$DUG_NEO4J_APP_NAME"
     HELM_VALUES+=",dug.redis.app_name=$DUG_REDIS_APP_NAME"
     HELM_VALUES+=",dug.web.app_name=$DUG_WEB_APP_NAME"
+    HELM_VALUES+=",dug.search_client.app_name=$DUG_SC_APP_NAME"
+    HELM_VALUES+=",dug.nboost.app_name=$DUG_NBOOST_APP_NAME"
     HELM_VALUES+=",dug.elasticsearch.deployment_name=$DUG_ES_APP_NAME"
     HELM_VALUES+=",dug.neo4j.deployment_name=$DUG_NEO4J_APP_NAME"
     HELM_VALUES+=",dug.redis.deployment_name=$DUG_REDIS_APP_NAME"
     HELM_VALUES+=",dug.web.deployment_name=$DUG_WEB_APP_NAME"
+    HELM_VALUES+=",dug.search_client.deployment_name=$DUG_SC_APP_NAME"
+    HELM_VALUES+=",dug.nboost.deployment_name=$DUG_NBOOST_APP_NAME"
     HELM_VALUES+=",dug.elasticsearch.service_name=$DUG_ES_APP_NAME"
     HELM_VALUES+=",dug.neo4j.service_name=$DUG_NEO4J_APP_NAME"
     HELM_VALUES+=",dug.redis.service_name=$DUG_REDIS_APP_NAME"
     HELM_VALUES+=",dug.web.service_name=$DUG_WEB_APP_NAME"
+    HELM_VALUES+=",dug.search_client.service_name=$DUG_SC_APP_NAME"
+    HELM_VALUES+=",dug.nboost.service_name=$DUG_NBOOST_APP_NAME"
     if [ ! -z "$DUG_IMAGE_TAG" ]
     then
       HELM_VALUES+=",dug.web.image_tag=$DUG_IMAGE_TAG"
