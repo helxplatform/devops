@@ -14,7 +14,6 @@
 # Example call: scan-clair "heliumdatastage" "appstore" "develop" "v0.0.13"
 # Result: 
 #    - Outputs clean table of security scan information in $CLAIR_HM/clean_tableoutput.txt
-#    - Displays clean output table in Jenkins build log.
 # -------------------------------------------------------------------------
 
 function scan_clair () {
@@ -31,7 +30,8 @@ function scan_clair () {
    docker pull $ORG/$REPO:$BRANCH-$VERSION
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$CLAIR_HM/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION > $CLAIR_HM/tableoutput.txt
    sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $CLAIR_HM/tableoutput.txt > $CLAIR_HM/clean_tableoutput.txt
-   cat $CLAIR_HM/clean_tableoutput.txt
+   echo "clair scan complete."
+   #cat $CLAIR_HM/clean_tableoutput.txt
 }
 
 
@@ -67,7 +67,9 @@ function postprocess_clair_output() {
 
    CLAIR_DIR=/var/jenkins_home/clair
    PROJ_DIR=$CLAIR_DIR/$REPO-$BRANCH-$VER
-   WK_DIR=/var/jenkins_home/workspace/$REPO
+   WKSPC_DIR=/var/jenkins_home/workspace/
+   LF_DIR="${CTEST:-$REPO}"
+   WK_DIR=$WKSPC_DIR$LF_DIR
 
    lines_to_remove=9
    num_lines=$(awk '/Medium/ { exit }
@@ -87,15 +89,13 @@ function postprocess_clair_output() {
                               json2table > \
                               $PROJ_DIR/clair_html_file.html
 
-
    sed -i 's|>\(https.*\)\(CVE-.*[0-9]\)<|><a href="\1\2" target="_blank">\2<|g'\
                               $PROJ_DIR/clair_html_file.html
 
    rm $PROJ_DIR/clair_report_edited.json
 
-   cd /var/jenkins_home/workspace/ctest
-
-   if [ ! -d $WK__DIR/html ]; then
+   cd $WK_DIR
+   if [ ! -d "$WK__DIR/html" ]; then
       mkdir $WK_DIR/html
    fi
 
