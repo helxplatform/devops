@@ -17,7 +17,6 @@ metadata:
       connect_timeout_ms: 500000
 spec:
   type: {{ .Values.service.type }}
-  #clusterIP: None
   ports:
     - port: {{ .Values.service.httpPort }}
       targetPort: {{ .Values.service.httpTargetPort }}

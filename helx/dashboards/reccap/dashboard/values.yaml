@@ -8,9 +8,9 @@ name: "reccap-dashboard-webapp"
 
 image:
   repository: heliumdatastage/reccap-dashboard
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "reccap-dash"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -19,19 +19,15 @@ fullnameOverride: ""
 podAnnotations: {}
 
 podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
 service:
   type: ClusterIP
   httpPort: 5000
-  httpTargetPort: 80
+  httpTargetPort: 5000
   httpsPort: 5001
-  httpsTargetPort: 443 
+  httpsTargetPort: 5001 
+
+secrets:
+  REDCapAPIKey: ""
+  REDCapAPIURL: ""
+  RECCAPConnString: "blank"  
