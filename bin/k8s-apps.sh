@@ -107,6 +107,38 @@ SECRET_FILENAME_SUFFIX=${SECRET_FILENAME_SUFFIX-"-${CLUSTER_NAME}-${NAMESPACE}"}
 DEPLOY_LOG_DIR=${DEPLOY_LOG_DIR-"${PWD}"}
 DEPLOY_LOG=${DEPLOY_LOG-"${DEPLOY_LOG_DIR}/deploy-log-${CLUSTER_NAME}-${NAMESPACE}-$TIMESTAMP.txt"}
 
+# Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
+DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-false}
+DYNAMIC_NFSCP_DEPLOYMENT_EXISTS=${DYNAMIC_NFSCP_DEPLOYMENT_EXISTS-false}
+
+DYNAMIC_NFSSP_DEPLOYMENT=${DYNAMIC_NFSSP_DEPLOYMENT-false}
+NFSSP_NAME=${NFSSP_NAME-"${PV_PREFIX}nfssp"}
+# NFSSP persistent storage does not work on NFS storage.
+NFSSP_PERSISTENCE_ENABLED=${NFSSP_PERSISTENCE_ENABLED-false}
+NFSSP_PERSISTENCE_SIZE=${NFSSP_PERSISTENCE_SIZE-"100Gi"}
+# The default storageClass for GKE is standard.
+NFSSP_PERSISTENCE_STORAGECLASS=${NFSSP_PERSISTENCE_STORAGECLASS-""}
+NFSSP_STORAGECLASS=${NFSSP_STORAGECLASS-"$NFSSP_NAME-sc"}
+
+NFSCP_SERVER=${NFSCP_SERVER-""}
+# Currently the NFSCP_PATH directory needs to exist on the NFS server.
+NFSCP_PATH=${NFSCP_PATH-""}
+NFSCP_NAME=${NFSCP_NAME-"nfscp"}
+NFSCP_STORAGECLASS=${NFSCP_STORAGECLASS-"$NFSCP_NAME-sc"}
+
+if $DYNAMIC_NFSCP_DEPLOYMENT; then
+  NFSP_STORAGECLASS=$NFSCP_STORAGECLASS
+fi
+if $DYNAMIC_NFSSP_DEPLOYMENT; then
+  NFSP_STORAGECLASS=$NFSSP_STORAGECLASS
+fi
+
+# GCE_DYN_STORAGE_PD_NAME="${PV_PREFIX}nfssp"
+GCE_DYN_STORAGE_PD_NAME="${NFSSP_NAME}"
+GCE_DYN_STORAGE_PV_NAME="${GCE_DYN_STORAGE_PD_NAME}-nfs-server-provisioner"
+GCE_DYN_STORAGE_PV_STORAGE=$NFSSP_PERSISTENCE_SIZE
+GCE_DYN_STORAGE_CLAIMREF="data-$GCE_DYN_STORAGE_PV_NAME-0"
+
 GCE_NFS_SERVER_DISK=${GCE_NFS_SERVER_DISK-"${PV_PREFIX}stdnfs-disk"}
 GCE_NFS_SERVER_DISK_DELETE_W_APP=${GCE_NFS_SERVER_DISK_DELETE_W_APP-false}
 GCE_NFS_SERVER_STORAGE=${GCE_NFS_SERVER_STORAGE-"100Gi"}
@@ -168,9 +200,9 @@ COMMONSSHARE_DEPLOYMENT=${COMMONSSHARE_DEPLOYMENT-false}
 CAT_HELM_DIR=${CAT_HELM_DIR-"${K8S_DEVOPS_CORE_HOME}/helx"}
 CAT_USER_STORAGE_NAME=${CAT_USER_STORAGE_NAME-"stdnfs"}
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"10Gi"}
-CAT_PD_NAME=${CAT_PD_NAME-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-disk"}
+# CAT_PD_NAME=${CAT_PD_NAME-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-disk"}
 CAT_PV_NAME=${CAT_PV_NAME-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-pv"}
-CAT_NFS_SERVER=${CAT_NFS_SERVER-""}
+CAT_NFS_SERVER=${CAT_NFS_SERVER-"$NFSCP_SERVER"}
 CAT_NFS_PATH=${CAT_NFS_PATH-"/sfdnfs"}
 CAT_PV_STORAGECLASS=${CAT_PV_STORAGECLASS-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-sc"}
 CAT_PV_STORAGE_SIZE=${CAT_PV_STORAGE_SIZE-"10Gi"}
@@ -223,36 +255,6 @@ TYCHO_HELM_RELEASE=${TYCHO_HELM_RELEASE-"tycho-api"}
 TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-""}
 TYCHO_API_IMAGE=${TYCHO_API_IMAGE-""}
 TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
-
-# Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
-DYNAMIC_NFSCP_DEPLOYMENT=${DYNAMIC_NFSCP_DEPLOYMENT-true}
-DYNAMIC_NFSCP_DEPLOYMENT_EXISTS=${DYNAMIC_NFSCP_DEPLOYMENT_EXISTS-false}
-
-NFSSP_NAME=${NFSSP_NAME-"${PV_PREFIX}nfssp"}
-# NFSSP persistent storage does not work on NFS storage.
-NFSSP_PERSISTENCE_ENABLED=${NFSSP_PERSISTENCE_ENABLED-false}
-NFSSP_PERSISTENCE_SIZE=${NFSSP_PERSISTENCE_SIZE-"100Gi"}
-# The default storageClass for GKE is standard.
-NFSSP_PERSISTENCE_STORAGECLASS=${NFSSP_PERSISTENCE_STORAGECLASS-""}
-NFSSP_STORAGECLASS=${NFSSP_STORAGECLASS-"$NFSSP_NAME-sc"}
-
-NFSCP_SERVER=${NFSCP_SERVER-""}
-# Currently the NFSCP_PATH directory needs to exist on the NFS server.
-NFSCP_PATH=${NFSCP_PATH-""}
-NFSCP_NAME=${NFSCP_NAME-"nfscp"}
-NFSCP_STORAGECLASS=${NFSCP_STORAGECLASS-"$NFSCP_NAME-sc"}
-
-if $DYNAMIC_NFSCP_DEPLOYMENT; then
-  NFSP_STORAGECLASS=$NFSCP_STORAGECLASS
-else
-  NFSP_STORAGECLASS=$NFSSP_STORAGECLASS
-fi
-
-# GCE_DYN_STORAGE_PD_NAME="${PV_PREFIX}nfssp"
-GCE_DYN_STORAGE_PD_NAME="${NFSSP_NAME}"
-GCE_DYN_STORAGE_PV_NAME="${GCE_DYN_STORAGE_PD_NAME}-nfs-server-provisioner"
-GCE_DYN_STORAGE_PV_STORAGE=$NFSSP_PERSISTENCE_SIZE
-GCE_DYN_STORAGE_CLAIMREF="data-$GCE_DYN_STORAGE_PV_NAME-0"
 
 ELASTIC_PVC_STORAGE=${ELASTIC_PVC_STORAGE-"10Gi"}
 # Set X_STORAGECLASS to "" to use the default storage class.
@@ -455,12 +457,8 @@ function deployDynamicPVCP() {
                    --set storageClass.name=$NFSCP_STORAGECLASS \
                    $NFSCP_NAME stable/nfs-client-provisioner
     fi
-  else
-    if [ "$GKE_DEPLOYMENT" == true ]; then
-      createGCEDisk $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_STORAGE
-      createGKEPV $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_NAME \
-          $GCE_DYN_STORAGE_PV_STORAGE $GCE_DYN_STORAGE_CLAIMREF
-    fi
+  fi
+  if [ "$DYNAMIC_NFSSP_DEPLOYMENT" == true ]; then
     echo "Deploying NFS Server Provisioner for Dynamic PVCs"
     HELM_VALUES="persistence.enabled=$NFSSP_PERSISTENCE_ENABLED"
     HELM_VALUES+=",storageClass.name=$NFSSP_STORAGECLASS"
@@ -469,6 +467,11 @@ function deployDynamicPVCP() {
     $HELM -n $NAMESPACE upgrade --install $NFSSP_NAME \
         --set $HELM_VALUES stable/nfs-server-provisioner
   fi
+  if [ "$GKE_DEPLOYMENT" == true ]; then
+    createGCEDisk $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_STORAGE
+    createGKEPV $GCE_DYN_STORAGE_PD_NAME $GCE_DYN_STORAGE_PV_NAME \
+        $GCE_DYN_STORAGE_PV_STORAGE $GCE_DYN_STORAGE_CLAIMREF
+  fi
 }
 
 
@@ -476,16 +479,17 @@ function deleteDynamicPVCP() {
   if [ "$DYNAMIC_NFSCP_DEPLOYMENT" == true ]; then
     echo "Deleting NFS Client Provisioner for Dynamic PVCs"
     $HELM -n $NAMESPACE delete $NFSCP_NAME
-  else
+  fi
+  if [ "$DYNAMIC_NFSSP_DEPLOYMENT" == true ]; then
     echo "Deleting NFS Server Provisioner for Dynamic PVCs"
     $HELM -n $NAMESPACE delete $NFSSP_NAME
-    if [ "$GKE_DEPLOYMENT" == true ]; then
-      deleteGKEPVC $GCE_DYN_STORAGE_CLAIMREF
-      deleteGKEPV $GCE_DYN_STORAGE_PV_NAME
-      echo "Pausing for PV to be deleted fully."
-      sleep $KUBE_WAIT_TIME
-      deleteGCEDisk $GCE_DYN_STORAGE_PD_NAME
-    fi
+  fi
+  if [ "$GKE_DEPLOYMENT" == true ]; then
+    deleteGKEPVC $GCE_DYN_STORAGE_CLAIMREF
+    deleteGKEPV $GCE_DYN_STORAGE_PV_NAME
+    echo "Pausing for PV to be deleted fully."
+    sleep $KUBE_WAIT_TIME
+    deleteGCEDisk $GCE_DYN_STORAGE_PD_NAME
   fi
 }
 
@@ -539,7 +543,6 @@ function deleteEFK(){
 
 function deployNFSServer(){
    echo "# deploying NFS"
-   kubectl create namespace $NAMESPACE
    createGCEDisk $GCE_NFS_SERVER_DISK $GCE_NFS_SERVER_STORAGE
    export GCE_NFS_SERVER_DISK
    cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
@@ -925,8 +928,8 @@ function deleteAppStoreData(){
     fi
   elif [ "$USE_NFS_PVS" == true ]
   then
-    deletePVC $APPSTORE_OAUTH_PVC
     if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]; then
+      deletePVC $APPSTORE_OAUTH_PVC
       deleteNFSPV $APPSTORE_OAUTH_PV_NAME $APPSTORE_OAUTH_NFS_SERVER \
           $APPSTORE_OAUTH_NFS_PATH $APPSTORE_OAUTH_PV_STORAGECLASS \
           $APPSTORE_OAUTH_PV_STORAGE_SIZE $APPSTORE_OAUTH_PV_ACCESSMODE
@@ -1363,7 +1366,7 @@ function dugStorage(){
       createPVC $DUG_REDIS_PVC $DUG_REDIS_PV_STORAGE_SIZE \
           $DUG_REDIS_PV_ACCESSMODE $DUG_REDIS_PV_STORAGECLASS
     fi
-    echo "# finishedcreating storage for Dug"
+    echo "# finished creating storage for Dug"
   elif [ "$1" == "delete" ]
   then
     echo "# deleting storage for Dug"
@@ -1397,20 +1400,20 @@ function dugStorage(){
       fi
     elif [ "$USE_NFS_PVS" == true ]
     then
-      deletePVC $DUG_ES_PVC
       if [ "$DUG_ES_PD_DELETE_W_APP" == true ]; then
+        deletePVC $DUG_ES_PVC
         deleteNFSPV $DUG_ES_PV_NAME $DUG_ES_NFS_SERVER \
             $DUG_ES_NFS_PATH $DUG_ES_PV_STORAGECLASS \
             $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PV_ACCESSMODE
       fi
-      deletePVC $DUG_NEO4J_PVC
       if [ "$DUG_NEO4J_PD_DELETE_W_APP" == true ]; then
+        deletePVC $DUG_NEO4J_PVC
         deleteNFSPV $DUG_NEO4J_PV_NAME $DUG_NEO4J_NFS_SERVER \
             $DUG_NEO4J_NFS_PATH $DUG_NEO4J_PV_STORAGECLASS \
             $DUG_NEO4J_PV_STORAGE_SIZE $DUG_NEO4J_PV_ACCESSMODE
       fi
-      deletePVC $DUG_REDIS_PVC
       if [ "$DUG_REDIS_PD_DELETE_W_APP" == true ]; then
+        deletePVC $DUG_REDIS_PVC
         deleteNFSPV $DUG_REDIS_PV_NAME $DUG_REDIS_NFS_SERVER \
             $DUG_REDIS_NFS_PATH $DUG_REDIS_PV_STORAGECLASS \
             $DUG_REDIS_PV_STORAGE_SIZE $DUG_REDIS_PV_ACCESSMODE
@@ -1426,6 +1429,7 @@ function dugStorage(){
 
 case $APPS_ACTION in
   deploy)
+    kubectl create namespace $NAMESPACE
     case $APP in
       all)
         deployDynamicPVCP
