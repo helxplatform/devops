@@ -14,7 +14,6 @@
 # Example call: scan-clair "heliumdatastage" "appstore" "develop" "v0.0.13"
 # Result: 
 #    - Outputs clean table of security scan information in $CLAIR_HM/clean_tableoutput.txt
-#    - Displays clean output table in Jenkins build log.
 # -------------------------------------------------------------------------
 
 function scan_clair () {
@@ -31,7 +30,8 @@ function scan_clair () {
    docker pull $ORG/$REPO:$BRANCH-$VERSION
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$CLAIR_HM/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION > $CLAIR_HM/tableoutput.txt
    sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $CLAIR_HM/tableoutput.txt > $CLAIR_HM/clean_tableoutput.txt
-   cat $CLAIR_HM/clean_tableoutput.txt
+   echo "clair scan complete."
+   #cat $CLAIR_HM/clean_tableoutput.txt
 }
 
 
@@ -64,8 +64,6 @@ function postprocess_clair_output() {
    REPO=$2
    BRANCH=$3
    VER=$4
-
-   set up env var for ctest here and set wk_dir to it if its set
 
    CLAIR_DIR=/var/jenkins_home/clair
    PROJ_DIR=$CLAIR_DIR/$REPO-$BRANCH-$VER
