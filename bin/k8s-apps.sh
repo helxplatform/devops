@@ -333,6 +333,10 @@ EFK_VERSION_ARG=${EFK_VERSION_ARG-"--version=v2.0.0"}
 KUBE_WAIT_TIME=15
 
 DUG_API=${DUG_API-false}
+# The Dug API is currently served directly from Ambassador and bypasses Nginx.
+# So DUG_API_WITH_NGINX should be set to false unless we want to disable the
+# Ambassador annotations in the Dug Helm chart.
+DUG_API_WITH_NGINX=${DUG_API_WITH_NGINX-false}
 DUG_HELM_RELEASE=${DUG_HELM_RELEASE-"dug"}
 DUG_HOME=${DUG_HOME-"$HELXPLATFORM_HOME/dug"}
 DUG_HELM_DIR=${DUG_HELM_DIR-"$DUG_HOME/kubernetes/helm"}
@@ -1145,7 +1149,7 @@ function deployNginxRevProxy(){
    then
      HELM_VALUES+=",restartrApi=$NGINX_RESTARTR_API"
    fi
-   if [ "$DUG_API" == true ]
+   if [ "$DUG_API_WITH_NGINX" == true ]
    then
      HELM_VALUES+=",dugApi=true"
    fi
