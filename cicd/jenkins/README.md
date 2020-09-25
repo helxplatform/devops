@@ -178,3 +178,27 @@ The remaining builds proceed by creating a python virtual environment and sourci
 If the build passes its unit test phase, the images that were created using the **docker build** command and pushed to DockerHub using the **docker push** command and where they are stored in DockerHub public repositories.
 
 ## Security Scan
+Security scanning is done by using the open source vulnerability container scanner **clair**.  The base **clair** program, originally created by CoreOS, is [available](https://github.com/quay/clair) in GitHub. However, HeLX CICD uses two versions with additional capabilities from the **arminc** repo. [clair-scanner](https://github.com/arminc/clair-scanner) is an enhanced scanner that includes the use of a whitelist. And [clair-local-scan](https://github.com/arminc/clair-local-scan) provides a server and postgres database pre-loaded with vulnerability information that is updated daily. This is important because vulnerability information is updated each day and uploading this information to the database generally takes thirty minutes or more. With **clair-local-scan**'s pre-built containers, new server/database containers can simply be started each day with essentially no downtime due to loading.
+
+A library function has been created called scan_clair, which users can call from their builds using environmental variables describing the build image and version they wish to scan. A typical call looks as follows:
+```````````````````````````
+scan_clair "$ORG" "$REPO" "$BUILD_BRANCH" "$ver" || true
+```````````````````````````
+The use of "|| true" at the end is required because clair returns a non-zero return code when it finds vulnerabilities, which will stop the build without it.
+
+The scan_clair function does some preliminary work to determine required IP addresses for the scan, pulls the image if necessary, and invokes the scanner.
+
+A second function, **post_process_clair_output** is also available, which 
+
+- Cleans control characters from the data,
+- Converts JSON output into an HTML table,
+- Removes redundant data,
+- Removes CVE's below a given threshold,
+- Turns all URL's into HTML links, and
+- Adds some CSS to remove double lines between table cells and provide other formatting.
+
+This function is called in the following manner:
+```````````````````````````
+post_process_clair_output "$ORG" "$REPO" "$BUILD_BRANCH" "$ver"
+```````````````````````````
+It is not currently invoked pending the creation of a dashboard. Calls to **post_process_clair_output** will be added to builds once the dashboard is in place.

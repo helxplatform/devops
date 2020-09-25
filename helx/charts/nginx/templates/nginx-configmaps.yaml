@@ -69,14 +69,14 @@ data:
                 }
 
                 {{- if .Values.restartrApi }}
-                location ~ .(.*\.json)$ {
-                         proxy_set_header Host $http_host;
-                         proxy_set_header X-Real-IP $remote_addr;
-                         proxy_set_header X-Scheme $scheme;
-                         proxy_http_version 1.1;
-                         proxy_pass http://restartr-api-service:5552/$1;
-                         proxy_set_header requestUri $request_uri;
-                         # resolver {{ .Values.service.resolver }};
+                location ~ .(.*1\.json)$ {
+                        proxy_set_header Host $http_host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Scheme $scheme;
+                        proxy_http_version 1.1;
+                        proxy_pass http://restartr-api-service:5552/$1;
+                        proxy_set_header requestUri $request_uri;
+                        # resolver {{ .Values.service.resolver }};
 
                 }
 
