@@ -20,9 +20,7 @@ The HeLX CI/CD is based on a pipeline of services that process, test, package, a
 
 2) **System Architecture**\
     a) **Machine User**\
-    A machine user represents developers on Github and Dockerhub to prevent the need for any individual userids and passwords in build scripts. This user's userid is ***rencibuild*** and has an email address of ***helx-dev@lists.renci.org***. The use of a list email address allows multiple users to monitor incoming correspondence from Github and Dockerhub and respond as needed.
-    
-    This user of necessity has privileges on many helxplatform GitHub repos that allow it to create repos and actions as well as respond to commits, etc. It's also an organization member on DockerHub so that it can push images.
+    A machine user represents developers on Github and Dockerhub to prevent the need for any individual userids and passwords in build scripts. This user also allows multiple developers to monitor incoming correspondence from Github and Dockerhub and respond as needed.
   
     b) **Docker**
     1) **DockerFile**\
