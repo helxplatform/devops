@@ -53,5 +53,3 @@ dugApi: false
 
 # For TACC, set this to true and specify the hostname
 http_host: false
-http_host_name: <domain_name>
-
