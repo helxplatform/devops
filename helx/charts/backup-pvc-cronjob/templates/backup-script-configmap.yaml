@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "backup-pvc-cronjob.fullname" . }}-configmap
+data:
+  backup.sh: |
+    #!/bin/bash
+    RETENTION_COUNT={{ .Values.retention }}
+    TIMESTAMP=`date "+%Y%m%d%H%M"`
+    SRC=/backup-src
+    BAK=/backup-dst
+    echo "backup start: `date`"
+    ls -alh $SRC/
+    ls -alh $BAK/
+    cd $SRC/
+    tar -cvzf $BAK/backup-$TIMESTAMP.tar.gz *
+    ls -alh $BAK/
+    FILE_COUNT=`find $BAK -maxdepth 1 -name backup-*.tar.gz -type f | wc -l`
+    if [ $FILE_COUNT -gt $RETENTION_COUNT ]; then
+      CURRENT_BACKUPS=`find $BAK -maxdepth 1 -name backup-*.tar.gz -type f | sort -r`
+      for BACKUP in $CURRENT_BACKUPS; do
+        let "BACKUP_COUNT += 1"
+        if [ "$BACKUP_COUNT" -le "$RETENTION_COUNT" ]; then
+          echo "Keeping backup: $BACKUP"
+        else
+          echo "Removing backup: $BACKUP"
+          rm $BACKUP
+        fi
+      done
+    fi
+    echo "backup end: `date`"
