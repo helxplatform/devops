@@ -8,6 +8,9 @@ metadata:
   name: {{ template "tycho-api.name" . }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if .Values.service.ip_none }}
+  clusterIP: None
+  {{- end }}
   selector:
     app: {{ template "tycho-api.name" . }}
     service: {{ template "tycho-api.name" . }}

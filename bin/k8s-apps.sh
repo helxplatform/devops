@@ -191,6 +191,7 @@ NGINX_VAR_STORAGE_EXISTING_CLAIM=${NGINX_VAR_STORAGE_EXISTING_CLAIM-""}
 NGINX_VAR_STORAGE_SIZE=${NGINX_VAR_STORAGE_SIZE-""}
 NGINX_VAR_STORAGE_CLASS=${NGINX_VAR_STORAGE_CLASS-""}
 NGINX_RESTARTR_API=${NGINX_RESTARTR_API-false}
+NGINX_HTTP_HOST=${NGINX_HTTP_HOST-false}
 
 HELM=${HELM-helm}
 # HELM_DEBUG="--debug"
@@ -1152,6 +1153,10 @@ function deployNginxRevProxy(){
    if [ "$DUG_API_WITH_NGINX" == true ]
    then
      HELM_VALUES+=",dugApi=true"
+   fi
+   if [ "$NGINX_HTTP_HOST" == true ]
+   then
+     HELM_VALUES+=",http_host=true"
    fi
    $HELM -n $NAMESPACE upgrade --install $NGINX_HELM_RELEASE $NGINX_HELM_DIR $HELM_DEBUG \
        --logtostderr --set $HELM_VALUES

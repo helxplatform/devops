@@ -14,6 +14,7 @@ serviceAccount:
 service:
   type: ClusterIP
   port: 80
+  ip_none: true 
 
 resources:
   limits:
