@@ -1,6 +1,6 @@
 # -------------------------------------------------------------------------
-# scan-clair
-# Security scans Docker images. Meant to be called from containerized Jenkins
+# scan_clair
+# Security scans Docker images. Call from containerized Jenkins
 # Pre-requisites:
 #    - A clair server and clair db are running on the same Docker network
 #    - clair-scanner exists on Jenkins server at specified location
@@ -13,25 +13,39 @@
 #        scanned.
 # Example call: scan-clair "heliumdatastage" "appstore" "develop" "v0.0.13"
 # Result: 
-#    - Outputs clean table of security scan information in $CLAIR_HM/clean_tableoutput.txt
+#    - Outputs:
+#       1) JSON table of security scan information
+#       2) Text table of security scan information, free of control chars
 # -------------------------------------------------------------------------
 
 function scan_clair () {
-   CLAIR_HM="/var/jenkins_home/clair"
+   CLAIR_XFM="/var/jenkins_home/clair/xfm" # clair output transform dir
    ORG="$1"
    REPO="$2"
    BRANCH="$3"
    VERSION="$4"
+
    CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
    ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
    echo "Running clair on $REPO . . ."
    docker pull $ORG/$REPO:$BRANCH-$VERSION
-   $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r "$CLAIR_HM/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION > $CLAIR_HM/tableoutput.txt
-   sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $CLAIR_HM/tableoutput.txt > $CLAIR_HM/clean_tableoutput.txt
+
+   if [ ! -d "$CLAIR_XFM" ]; then
+      mkdir "$CLAIR_XFM"
+   fi
+
+   $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
+      "$CLAIR_XFM/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION > \
+      "$CLAIR_XFM/table.txt"
+
+   sed -r "s/\x1B\[(([-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" "$CLAIR_XFM/table.txt" > \
+      "$CLAIR_XFM/clean_table.txt"
+
+   rm -f "$CLAIR_XFM/table.txt"
+
    echo "clair scan complete."
-   #cat $CLAIR_HM/clean_tableoutput.txt
 }
 
 
@@ -71,6 +85,8 @@ function postprocess_clair_output() {
    LF_DIR="${CTEST:-$REPO}"
    WK_DIR=$WKSPC_DIR$LF_DIR
 
+   # Print lines in awk until the first line that has a Medium threshold
+   # That leaves 9 lines that need to be removed at the end.
    lines_to_remove=9
    num_lines=$(awk '/Medium/ { exit }
         { print }
@@ -78,6 +94,8 @@ function postprocess_clair_output() {
                          tee $PROJ_DIR/clair_report_edited.json | \
                          wc -l)
 
+   # Note for future development: change clair_report_final below to
+   # clair_report_edited2.json
    head -n $( expr $num_lines - $lines_to_remove )   \
                 $PROJ_DIR/clair_report_edited.json > \
                 $PROJ_DIR/clair_report_final.json
@@ -85,13 +103,23 @@ function postprocess_clair_output() {
    cat >> $PROJ_DIR/clair_report_final.json \
           $CLAIR_DIR/template_json_ending.txt
 
+   # Note for future development: Call python program here to re-order
+   # json list of vulnerability info prior to calling json2table. Also
+   # use clair_report_edited2.json name when calling it, keep "final"
+   # name here.
    cat $PROJ_DIR/clair_report_final.json | \
                               json2table > \
                               $PROJ_DIR/clair_html_file.html
 
+   # Convert bare link to an href with CVE as target:
+   # Future Dev:
+   # Note: this href column should be moved to CVE column's place above
+   # and its column deleted.
+   # Note also, the redundant "Unapproved" CVE column should be removed too.
    sed -i 's|>\(https.*\)\(CVE-.*[0-9]\)<|><a href="\1\2" target="_blank">\2<|g'\
                               $PROJ_DIR/clair_html_file.html
 
+   # Remove edited2 file here too.
    rm $PROJ_DIR/clair_report_edited.json
 
    cd $WK_DIR
