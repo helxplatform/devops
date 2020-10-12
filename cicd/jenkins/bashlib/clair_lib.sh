@@ -42,13 +42,14 @@ function scan_clair () {
    fi
 
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      "$CLAIR_XFM/$BRANCH-$VERSION/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION > \
-      "$CLAIR_XFM/$BRANCH-$VERSION/table.txt"
+      "$CLAIR_XFM/$REPO-$BRANCH-$VERSION/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION > \
+      "$CLAIR_XFM/$REPO-$BRANCH-$VERSION/table.txt"
 
-   sed -r "s/\x1B\[(([-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" "$CLAIR_XFM/$BRANCH-$VERSION/table.txt" > \
-      "$CLAIR_XFM/$BRANCH-$VERSION/clean_table.txt"
+   # Remove control chars
+   grep -o "[[:print:][:space:]]*" "$CLAIR_XFM/$REPO-$BRANCH-$VERSION/table.txt" > \
+        "$CLAIR_XFM/$REPO-$BRANCH-$VERSION/table.txt"
 
-   rm -f "$CLAIR_XFM/$BRANCH-$VERSION/table.txt"
+   rm -f "$CLAIR_XFM/$REPO-$BRANCH-$VERSION/table.txt"
 
    echo "clair scan complete."
 }
