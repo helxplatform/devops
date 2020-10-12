@@ -19,6 +19,7 @@
 # -------------------------------------------------------------------------
 
 function scan_clair () {
+   CLAIR_HM="/var/jenkins_home/clair/"
    CLAIR_XFM="/var/jenkins_home/clair/xfm" # clair output transform dir
    ORG="$1"
    REPO="$2"
@@ -36,14 +37,18 @@ function scan_clair () {
       mkdir "$CLAIR_XFM"
    fi
 
+   if [ ! -d "$CLAIR_XFM/$BRANCH-$VERSION" ]; then
+      mkdir "$CLAIR_XFM/$BRANCH-$VERSION"
+   fi
+
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      "$CLAIR_XFM/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION > \
-      "$CLAIR_XFM/table.txt"
+      "$CLAIR_XFM/$BRANCH-$VERSION/clair_report.json" $ORG/$REPO:$BRANCH-$VERSION > \
+      "$CLAIR_XFM/$BRANCH-$VERSION/table.txt"
 
-   sed -r "s/\x1B\[(([-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" "$CLAIR_XFM/table.txt" > \
-      "$CLAIR_XFM/clean_table.txt"
+   sed -r "s/\x1B\[(([-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" "$CLAIR_XFM/$BRANCH-$VERSION/table.txt" > \
+      "$CLAIR_XFM/$BRANCH-$VERSION/clean_table.txt"
 
-   rm -f "$CLAIR_XFM/table.txt"
+   rm -f "$CLAIR_XFM/$BRANCH-$VERSION/table.txt"
 
    echo "clair scan complete."
 }
