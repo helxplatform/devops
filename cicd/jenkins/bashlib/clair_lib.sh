@@ -34,7 +34,7 @@ function scan_clair () {
    ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
    echo "Running clair on $REPO . . ."
-   docker pull "$ORG/$REPO:$BRANCH_$VER"
+   docker pull "$ORG/$REPO:$BRANCH-$VER"
 
    if [ ! -d "$CLAIR_XFM" ]; then
       /bin/mkdir "$CLAIR_XFM"
