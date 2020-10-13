@@ -37,13 +37,13 @@ function scan_clair () {
    docker pull "$ORG/$REPO:$BRANCH-$VER"
 
    if [ ! -d "$CLAIR_XFM" ]; then
-      mkdir "$CLAIR_XFM"
+      /bin/mkdir "$CLAIR_XFM"
    fi
 
    if [ ! -d "$XFM_DIR" ]; then
-      "mkdir $XFM_DIR"
+      echo "Creating $XFM_DIR"
+      /bin/mkdir "$XFM_DIR"
    fi
-
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
       "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VERSION" > "$XFM_DIR/table.txt"
 
