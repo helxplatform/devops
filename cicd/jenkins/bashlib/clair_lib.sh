@@ -33,7 +33,7 @@ function scan_clair () {
    echo "Clair IP = $CLAIR_IP"
    ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
-   echo "Running clair on $REPO . . ."
+   echo "Running clair on $ORG/$REPO:$BRANCH-$VER . . ."
    docker pull "$ORG/$REPO:$BRANCH-$VER"
 
    if [ ! -d "$CLAIR_XFM" ]; then
@@ -44,8 +44,9 @@ function scan_clair () {
       echo "Creating $XFM_DIR"
       /bin/mkdir "$XFM_DIR"
    fi
+   echo "Invoking clair-scanner on $ORG/$REPO:$BRANCH-$VERSION"
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      "$XFM_DIR/clair_report.json" '$ORG/$REPO:$BRANCH_$VERSION' > "$XFM_DIR/table.txt"
+      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VERSION" > "$XFM_DIR/table.txt"
 
    # Remove control chars
    grep -o "[[:print:][:space:]]*" "$XFM_DIR/table.txt" > \
