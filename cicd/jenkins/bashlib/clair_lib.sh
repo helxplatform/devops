@@ -27,14 +27,14 @@ function scan_clair () {
 
    CLAIR_HM="/var/jenkins_home/clair"
    CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
-   XFM_DIR="$CLAIR_XFM/$REPO-$BRANCH-$VER"
+   XFM_DIR="$CLAIR_XFM/$REPO_$BRANCH_$VER"
 
    CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
    ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
    echo "Running clair on $REPO . . ."
-   docker pull "$ORG/$REPO:$BRANCH-$VER"
+   docker pull "$ORG/$REPO:$BRANCH_$VER"
 
    if [ ! -d "$CLAIR_XFM" ]; then
       /bin/mkdir "$CLAIR_XFM"
@@ -45,7 +45,7 @@ function scan_clair () {
       /bin/mkdir "$XFM_DIR"
    fi
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VERSION" > "$XFM_DIR/table.txt"
+      "$XFM_DIR/clair_report.json" '$ORG/$REPO:$BRANCH_$VERSION' > "$XFM_DIR/table.txt"
 
    # Remove control chars
    grep -o "[[:print:][:space:]]*" "$XFM_DIR/table.txt" > \
@@ -72,7 +72,7 @@ function scan_clair () {
 #        scanned.
 # $5 - Vulnerability threshold. All vulnerabilities at or below this threshold
 #        will be removed from the report.
-# Example call: postprocess-clair-output "heliumdatastage" "appstore" "develop" "v0.0.13" Medium
+# Example call: postprocess_clair_output "heliumdatastage" "appstore" "develop" "v0.0.13" Medium
 # Result:
 #    - Clair json output has Medium and below CVE's removed.
 #    - All URL's are turned into HTML links.
@@ -91,9 +91,9 @@ function postprocess_clair_output() {
    JENKINS_HM="/var/jenkins_home"
    CLAIR_HM="$JENKINS_HM/clair"
    CLAIR_XFM="$CLAIR_HM/xfm"
-   XFM_DIR="$CLAIR_XFM/$REPO-$BRANCH-$VER"
+   XFM_DIR="$CLAIR_XFM/$REPO_$BRANCH_$VER"
    CLAIR_RPT="$CLAIR_HM/reports"
-   RPT_DIR="$CLAIR_RPT/$REPO-$BRANCH-$VER"
+   RPT_DIR="$CLAIR_RPT/$REPO_$BRANCH_$VER"
 
    lines_to_remove=9
    num_lines=$(awk "              \
@@ -125,18 +125,18 @@ function postprocess_clair_output() {
    if [ ! -d "$RPT_DIR" ]; then
       mkdir "$RPT_DIR"
    fi
-   cp $XFM_DIR/clair_table.html $RPT_DIR/vuln-table-$REPO-$BRANCH-$VER.html
+   cp $XFM_DIR/clair_table.html $RPT_DIR/vuln_table_$REPO_$BRANCH_$VER.html
 
    # Add link to new vuln file into index.html file:
    x="$CLAIR_RPT/index.html"
-   RPT_DIR="$CLAIR_RPT/$REPO-$BRANCH-$VER"
+   RPT_DIR="$CLAIR_RPT/$REPO_$BRANCH_$VER"
 
    # >>---> ADD LINK HERE
 
    # Clean up
    cd "$XFM_DIR/.."
-   tar -czvf "$REPO-$BRANCH-$VER.tar.gz" "$REPO-$BRANCH-$VER/"
-   mv "$REPO-$BRANCH-$VER.tar.gz" "$REPO-$BRANCH-$VER/"
-   cd "$REPO-$BRANCH-$VER/"
+   tar -czvf "$REPO_$BRANCH_$VER.tar.gz" "$REPO_$BRANCH_$VER/"
+   mv "$REPO_$BRANCH_$VER.tar.gz" "$REPO_$BRANCH_$VER/"
+   cd "$REPO_$BRANCH_$VER/"
    rm -f clair_* clean* vuln*
 }
