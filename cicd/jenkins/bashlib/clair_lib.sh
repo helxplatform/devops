@@ -34,23 +34,23 @@ function scan_clair () {
    ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
    echo "Running clair on $REPO . . ."
-   docker pull $ORG/$REPO:$BRANCH-$VERSION
+   docker pull "$ORG/$REPO:$BRANCH-$VERSION"
 
    if [ ! -d "$CLAIR_XFM" ]; then
-      mkdir $CLAIR_XFM
+      mkdir "$CLAIR_XFM"
    fi
 
    if [ ! -d "$XFM_DIR" ]; then
-      mkdir $XFM_DIR
+      "mkdir $XFM_DIR"
    fi
 
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      $XFM_DIR/clair_report.json $ORG/$REPO:$BRANCH-$VERSION > $XFM_DIR/table.txt
+      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VERSION" > "$XFM_DIR/table.txt"
 
    # Remove control chars
-   grep -o "[[:print:][:space:]]*" $XFM_DIR/table.txt > \
-                                   $XFM_DIR/clean_table.txt
-   rm -f $XFM_DIR/table.txt
+   grep -o "[[:print:][:space:]]*" "$XFM_DIR/table.txt" > \
+                                   "$XFM_DIR/clean_table.txt"
+   rm -f "$XFM_DIR/table.txt"
    echo "clair scan complete."
 }
 
@@ -100,43 +100,43 @@ function postprocess_clair_output() {
    /unapproved/,/]/  { next }     \
    /$THRESHOLD/      { exit }     \
                      { print }    \
-   END               { print NR }" $XFM_DIR/clair_report.json | \
-                               tee $XFM_DIR/clair_report_edited.json | \
+   END               { print NR }" "$XFM_DIR/clair_report.json" | \
+                               tee "$XFM_DIR/clair_report_edited.json" | \
                                wc -l)
 
    head -n $( expr $num_lines - $lines_to_remove )  \
-                $XFM_DIR/clair_report_edited.json > \
-                $XFM_DIR/clair_report_final.json
+                "$XFM_DIR/clair_report_edited.json" > \
+                "$XFM_DIR/clair_report_final.json"
 
    # Add back sane JSON ending to file.
-   cat >> $XFM_DIR/clair_report_final.json \
-          $CLAIR_DIR/template_json_ending.txt
+   cat >> "$XFM_DIR/clair_report_final.json" \
+          "$CLAIR_DIR/template_json_ending.txt"
 
-   cat $XFM_DIR/clair_report_final.json | \
+   cat "$XFM_DIR/clair_report_final.json" | \
                               json2table > \
-                              $XFM_DIR/clair_table.html
+                              "$XFM_DIR/clair_table.html"
 
    # Convert bare link to an href with CVE as target:
    sed -i 's|>\(https.*\)\(CVE-.*[0-9]\)<|><a href="\1\2" target="_blank">\2<|g' \
-                              $XFM_DIR/clair_table.html
+                              "$XFM_DIR/clair_table.html"
 
    # >>---> INSERT NEW HTML BODY HERE
 
    if [ ! -d "$RPT_DIR" ]; then
-      mkdir $RPT_DIR
+      mkdir "$RPT_DIR"
    fi
    cp $XFM_DIR/clair_table.html $RPT_DIR/vuln-table-$REPO-$BRANCH-$VER.html
 
    # Add link to new vuln file into index.html file:
-   $CLAIR_RPT/index.html
+   x="$CLAIR_RPT/index.html"
    RPT_DIR="$CLAIR_RPT/$REPO-$BRANCH-$VER"
 
    # >>---> ADD LINK HERE
 
    # Clean up
-   cd $XFM_DIR/..
-   tar -czvf $REPO-$BRANCH-$VER.tar.gz $REPO-$BRANCH-$VER/
-   mv $REPO-$BRANCH-$VER.tar.gz $REPO-$BRANCH-$VER/
-   cd $REPO-$BRANCH-$VER/
+   cd "$XFM_DIR/.."
+   tar -czvf "$REPO-$BRANCH-$VER.tar.gz" "$REPO-$BRANCH-$VER/"
+   mv "$REPO-$BRANCH-$VER.tar.gz" "$REPO-$BRANCH-$VER/"
+   cd "$REPO-$BRANCH-$VER/"
    rm -f clair_* clean* vuln*
 }
