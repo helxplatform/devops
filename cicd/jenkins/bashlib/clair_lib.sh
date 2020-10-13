@@ -20,14 +20,14 @@
 
 function scan_clair () {
 
-   CLAIR_HM="/var/jenkins_home/clair"
-   CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
-   XFM_DIR="$CLAIR_XFM/$REPO-$BRANCH-$VER"
-
    ORG="$1"
    REPO="$2"
    BRANCH="$3"
    VERSION="$4"
+
+   CLAIR_HM="/var/jenkins_home/clair"
+   CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
+   XFM_DIR="$CLAIR_XFM/$REPO-$BRANCH-$VER"
 
    CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
