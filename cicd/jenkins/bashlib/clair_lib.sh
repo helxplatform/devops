@@ -23,7 +23,7 @@ function scan_clair () {
    ORG="$1"
    REPO="$2"
    BRANCH="$3"
-   VERSION="$4"
+   VER="$4"
 
    CLAIR_HM="/var/jenkins_home/clair"
    CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
@@ -34,7 +34,7 @@ function scan_clair () {
    ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
    echo "Running clair on $REPO . . ."
-   docker pull "$ORG/$REPO:$BRANCH-$VERSION"
+   docker pull "$ORG/$REPO:$BRANCH-$VER"
 
    if [ ! -d "$CLAIR_XFM" ]; then
       mkdir "$CLAIR_XFM"
