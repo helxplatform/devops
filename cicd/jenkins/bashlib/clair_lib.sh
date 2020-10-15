@@ -27,7 +27,12 @@ function scan_clair () {
 
    CLAIR_HM="/var/jenkins_home/clair"
    CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
-   XFM_DIR="$CLAIR_XFM/$REPO_$BRANCH_$VER"
+   FN="$REPO-$BRANCH-$VER"
+   XFM_DIR="$CLAIR_XFM/$FN"
+
+   echo "FN=$FN"
+   echo "XFM_DIR=$XFM_DIR"
+   echo "image=$ORG/$REPO:$BRANCH-$VER"
 
    CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
@@ -44,9 +49,9 @@ function scan_clair () {
       echo "Creating $XFM_DIR"
       /bin/mkdir "$XFM_DIR"
    fi
-   echo "Invoking clair-scanner on $ORG/$REPO:$BRANCH-$VERSION"
+   echo "Invoking clair-scanner on $ORG/$REPO:$BRANCH-$VER"
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VERSION" > "$XFM_DIR/table.txt"
+      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VER" > "$XFM_DIR/table.txt"
 
    # Remove control chars
    grep -o "[[:print:][:space:]]*" "$XFM_DIR/table.txt" > \
@@ -92,9 +97,14 @@ function postprocess_clair_output() {
    JENKINS_HM="/var/jenkins_home"
    CLAIR_HM="$JENKINS_HM/clair"
    CLAIR_XFM="$CLAIR_HM/xfm"
-   XFM_DIR="$CLAIR_XFM/$REPO_$BRANCH_$VER"
+   FN="$REPO-$BRANCH-$VER"
+   XFM_DIR="$CLAIR_XFM/$FN"
    CLAIR_RPT="$CLAIR_HM/reports"
-   RPT_DIR="$CLAIR_RPT/$REPO_$BRANCH_$VER"
+   RPT_DIR="$CLAIR_RPT/$FN"
+
+   echo "FN=$FN"
+   echo "XFM_DIR=$XFM_DIR"
+   echo "image=$ORG/$REPO:$BRANCH-$VER"
 
    lines_to_remove=9
    num_lines=$(awk "              \
@@ -111,7 +121,7 @@ function postprocess_clair_output() {
 
    # Add back sane JSON ending to file.
    cat >> "$XFM_DIR/clair_report_final.json" \
-          "$CLAIR_DIR/template_json_ending.txt"
+          "$CLAIR_HM/template_json_ending.txt"
 
    cat "$XFM_DIR/clair_report_final.json" | \
                               json2table > \
@@ -136,8 +146,8 @@ function postprocess_clair_output() {
 
    # Clean up
    cd "$XFM_DIR/.."
-   tar -czvf "$REPO_$BRANCH_$VER.tar.gz" "$REPO_$BRANCH_$VER/"
-   mv "$REPO_$BRANCH_$VER.tar.gz" "$REPO_$BRANCH_$VER/"
-   cd "$REPO_$BRANCH_$VER/"
+   tar -czvf "$FN.tar.gz" "$FN/"
+   mv "$FN.tar.gz" "$FN/"
+   cd "$FN/"
    rm -f clair_* clean* vuln*
 }
