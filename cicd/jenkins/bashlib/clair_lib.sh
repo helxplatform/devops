@@ -46,7 +46,7 @@ function scan_clair () {
    fi
    echo "Invoking clair-scanner on $ORG/$REPO:$BRANCH-$VERSION"
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VERSION" > "$XFM_DIR/table.txt"
+      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VER" > "$XFM_DIR/table.txt"
 
    # Remove control chars
    grep -o "[[:print:][:space:]]*" "$XFM_DIR/table.txt" > \
