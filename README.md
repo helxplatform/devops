@@ -129,7 +129,7 @@ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scr
 chmod 700 get_helm.sh
 ./get_helm.sh
 ```
-Create a text file named "env-vars-helx.sh" with the following that will contain a few variables that are used in the creation of the Kubernetes cluster.  Edit the variables as needed, at the very least you will need to update the PROJECT_ID.
+Create a text file named "env-vars-helx.sh" in your home directory (or elsewhere and adjust the GKE_CLUSTER_CONFIG variable below) with the following that will contain a few variables that are used in the creation of the Kubernetes cluster.  Edit the variables as needed, at the very least you will need to update the PROJECT_ID.
 
 ```
 export PROJECT="< Google project Id >" # Set this to your Google project ID.
@@ -140,7 +140,7 @@ export CLUSTER_VERSION="1.17.12-gke.500" # Check what GKE supports.
 ```
 After the variables file is changed open a terminal and change your current directory to where it is located.  Run the following commands to create the cluster.
 ```
-source $HOME/env-vars-helx.sh
+source $GKE_CLUSTER_CONFIG
 # Create directory to hold the source repositories.
 mkdir -p $HELXPLATFORM_HOME
 cd $HELXPLATFORM_HOME
@@ -186,14 +186,14 @@ export EMAIL_HOST_PASSWORD="< SECRET HERE >"
 
 ### Commands to Deploy HeLx
 ```
-$HELXPLATFORM_HOME/devops/bin/k8s-apps.sh -c $HOME/env-vars-helx.sh deploy all
+$HELXPLATFORM_HOME/devops/bin/k8s-apps.sh -c $GKE_CLUSTER_CONFIG deploy all
 ```
 
 ### Commands to Delete HeLx
 ```
-$HELXPLATFORM_HOME/devops/bin/k8s-apps.sh -c $HOME/env-vars-helx.sh delete all
+$HELXPLATFORM_HOME/devops/bin/k8s-apps.sh -c $GKE_CLUSTER_CONFIG delete all
 ```
 ### Commands to Delete Cluster
 ```
-$HELXPLATFORM_HOME/devops/bin/gke-cluster.sh -c $HOME/env-vars-helx.sh delete cluster
+$HELXPLATFORM_HOME/devops/bin/gke-cluster.sh -c $GKE_CLUSTER_CONFIG delete cluster
 ```
