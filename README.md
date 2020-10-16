@@ -18,12 +18,6 @@ cd $HELXPLATFORM_HOME
 git clone https://github.com/helxplatform/devops.git
 ```
 
-## Install all charts using a single command
-```
-cd $HELXPLATFORM_HOME/devops
-helm install release-name helx/ -n namespace
-```
-
 ## Install charts individually
 ### Ambassador
 1) Make a copy of the ambassador Helm chart values.yaml file and edit as needed.
