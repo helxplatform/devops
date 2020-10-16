@@ -12,7 +12,7 @@
 
 ```
 export HELXPLATFORM_HOME=$HOME/src/helxplatform
-export HELX_NAMESPACE=helx
+export NAMESPACE=helx
 mkdir -p $HELXPLATFORM_HOME
 cd $HELXPLATFORM_HOME
 git clone https://github.com/helxplatform/devops.git
@@ -29,7 +29,7 @@ vi ambassador-values.yaml
 
 ```
 cd $HELXPLATFORM_HOME/devops/helx/charts/
-helm install ambassador ambassador/ -n $HELX_NAMESPACE
+helm install ambassador ambassador/ -n $NAMESPACE
 ```
 
 ### AppsStore
@@ -42,7 +42,7 @@ vi appstore-values.yaml
 
 ```
 cd $HELXPLATFORM_HOME/devops/helx/charts/
-helm install appstore appstore/ -n $HELX_NAMESPACE
+helm install appstore appstore/ -n $NAMESPACE
 ```
 
 ***NOTE***:
@@ -63,7 +63,7 @@ vi nginx-values.yaml
 
 ```
 cd $HELXPLATFORM_HOME/devops/helx/charts/
-helm install nginx-revproxy nginx/ -n $HELX_NAMESPACE
+helm install nginx-revproxy nginx/ -n $NAMESPACE
 ```
 
 ### tycho-api
@@ -76,7 +76,7 @@ vi tycho-api-values.yaml
 
 ```
 cd $HELXPLATFORM_HOME/devops/helx/charts/
-helm install tycho-api tycho-api/ -n $HELX_NAMESPACE
+helm install tycho-api tycho-api/ -n $NAMESPACE
 ```
 ***NOTE***:
 A PVC will also need to be created before Helm chart is deployed.  This is used for user data.  The default PVC name is "stdnfs".
