@@ -148,6 +148,8 @@ git clone https://github.com/helxplatform/devops.git
 cd $HELXPLATFORM_HOME/devops/bin
 ./gke-cluster.sh deploy cluster
 ```
+***NOTE***
+You can also use the "-c" flag with gke-cluster.sh to specify the environment file instead of sourcing the environment file and having activate variables in your shell.
 
 You should now have a running Kubernetes cluster on GKE.  Run a kubectl command to make sure you are connected to the cluster.  You should get something similar to the following.
 ```
@@ -171,9 +173,6 @@ export NAMESPACE="helx"
 export NGINX_SERVERNAME="< helx.example.com >"
 export NGINX_IP="< 192.168.0.1 >"
 export NGINX_TLS_SECRET="< helx-tls-secret >"
-export APPSTORE_IMAGE="heliumdatastage/appstore:develop-v0.0.40"
-export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.27"
-export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
 export APPSTORE_DJANGO_PASSWORD="< SECRET HERE >"
 export SECRET_KEY="< SECRET HERE (50 chars) >"
 export OAUTH_PROVIDERS="google"
@@ -182,18 +181,31 @@ export GOOGLE_CLIENT_ID="< SECRET HERE >"
 export GOOGLE_SECRET="< SECRET HERE >"
 export EMAIL_HOST_USER="< email@example.com >"
 export EMAIL_HOST_PASSWORD="< SECRET HERE >"
+# You can set specific images to use with these variables.
+# export APPSTORE_IMAGE="heliumdatastage/appstore:develop-v0.0.40"
+# export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.27"
+# export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
 ```
 
 ### Commands to Deploy HeLx
 ```
-$HELXPLATFORM_HOME/devops/bin/k8s-apps.sh -c $GKE_CLUSTER_CONFIG deploy all
+$HELXPLATFORM_HOME/devops/bin/k8s-apps.sh deploy all
 ```
+***NOTE***
+You can also use the "-c" flag with k8s-apps.sh to specify the environment file instead of sourcing the environment file and having activate variables in your shell.
 
 ### Commands to Delete HeLx
 ```
-$HELXPLATFORM_HOME/devops/bin/k8s-apps.sh -c $GKE_CLUSTER_CONFIG delete all
+$HELXPLATFORM_HOME/devops/bin/k8s-apps.sh delete all
 ```
+***NOTE***
+The defaults are set to not delete the GCE disks when deleting the apps.  To delete the disks also you can set the following environment variables.
+```
+export APPSTORE_OAUTH_PD_DELETE_W_APP=true
+export GCE_NFS_SERVER_DISK_DELETE_W_APP=true
+```
+
 ### Commands to Delete Cluster
 ```
-$HELXPLATFORM_HOME/devops/bin/gke-cluster.sh -c $GKE_CLUSTER_CONFIG delete cluster
+$HELXPLATFORM_HOME/devops/bin/gke-cluster.sh delete cluster
 ```
