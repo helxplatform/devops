@@ -140,7 +140,7 @@ export CLUSTER_VERSION="1.17.12-gke.500" # Check what GKE supports.
 ```
 After the variables file is changed open a terminal and change your current directory to where it is located.  Run the following commands to create the cluster.
 ```
-source env-vars-helx.sh
+source $HOME/env-vars-helx.sh
 # Create directory to hold the source repositories.
 mkdir -p $HELXPLATFORM_HOME
 cd $HELXPLATFORM_HOME
@@ -149,7 +149,7 @@ cd $HELXPLATFORM_HOME/devops/bin
 ./gke-cluster.sh deploy cluster
 ```
 
-You should now have a running Kubernetes cluster on GKE.  Run a kubectl command to make sure you are connected to the cluster.
+You should now have a running Kubernetes cluster on GKE.  Run a kubectl command to make sure you are connected to the cluster.  You should get something similar to the following.
 ```
 [vagrant@localhost bin]$ kubectl get no
 NAME                                                 STATUS   ROLES    AGE    VERSION
