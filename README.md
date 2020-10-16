@@ -1,8 +1,10 @@
-# Install helx
+# Install HeLx to a Kubernetes Cluster
+
+To install HeLx you will need access to a Kubernetes cluster.  This includes having kubectl installed and a kubeconfig with enough privileges to create resources in a namespace.  In our examples below we use "helx" as the namespace, so that will need to exist in your cluster.
 
 ## Initial Setup
 
-### Install helm3
+### Install Helm Version 3
 1) [Download](https://github.com/helm/helm/releases) any helm3 release.
 2) Unpack it using tar (tar -zxvf helm-v3.0.0-linux-amd64.tar.gz).
 3) Move the helm binary to a desired location (mv linux-amd64/helm /usr/local/bin/helm).
@@ -18,7 +20,7 @@ cd $HELXPLATFORM_HOME
 git clone https://github.com/helxplatform/devops.git
 ```
 
-## Install charts individually
+## Install Charts Individually
 ### Ambassador
 1) Make a copy of the ambassador Helm chart values.yaml file and edit as needed.
 ```
@@ -32,7 +34,7 @@ cd $HELXPLATFORM_HOME/devops/helx/charts/
 helm install ambassador ambassador/ -n $NAMESPACE
 ```
 
-### AppsStore
+### AppStore
 1) Make a copy of the appstore Helm chart values.yaml file and edit as needed.
 ```
 cp $HELXPLATFORM_HOME/devops/helx/charts/appstore/values.yaml appstore-values.yaml
@@ -59,7 +61,7 @@ c) A PVC will be needed for persistent storage.
 cp $HELXPLATFORM_HOME/devops/helx/charts/nginx/values.yaml nginx-values.yaml
 vi nginx-values.yaml
 ```
-2) Install the chart with Helm.
+2) Install the Chart with Helm.
 
 ```
 cd $HELXPLATFORM_HOME/devops/helx/charts/
@@ -124,7 +126,7 @@ gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cl
 EOF
 sudo yum install -y kubectl git
 
-# install helm3 (could be dangerous)
+# install helm3
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
