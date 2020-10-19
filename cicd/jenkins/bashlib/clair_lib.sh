@@ -102,52 +102,43 @@ function postprocess_clair_output() {
    CLAIR_RPT="$CLAIR_HM/reports"
    RPT_DIR="$CLAIR_RPT/$FN"
 
-   echo "FN=$FN"
-   echo "XFM_DIR=$XFM_DIR"
-   echo "image=$ORG/$REPO:$BRANCH-$VER"
+   # Remove redundant unapproved list
+   awk "/unapproved/,/]/ { next }       \
+                         { print }" "$XFM_DIR/clair_report.json" > "$XFM_DIR/clair_report_edited.json" 
 
-   lines_to_remove=9
-   num_lines=$(awk "              \
-   /unapproved/,/]/  { next }     \
-   /$THRESHOLD/      { exit }     \
-                     { print }    \
-   END               { print NR }" "$XFM_DIR/clair_report.json" | \
-                               tee "$XFM_DIR/clair_report_edited.json" | \
-                               wc -l)
-
-   head -n $( expr $num_lines - $lines_to_remove )  \
-                "$XFM_DIR/clair_report_edited.json" > \
-                "$XFM_DIR/clair_report_final.json"
-
-   # Add back sane JSON ending to file.
-   cat >> "$XFM_DIR/clair_report_final.json" \
-          "$CLAIR_HM/template_json_ending.txt"
-
-   cat "$XFM_DIR/clair_report_final.json" | \
-                              json2table > \
+   # Convert JSON to HTML and refine HTML
+   cat "$CLAIR_HM/template_html_css_body_open.txt" > "$XFM_DIR/clair_table.html"
+   cat "$XFM_DIR/clair_report_edited.json" | \
+                               json2table >> \
                               "$XFM_DIR/clair_table.html"
+   cat "$CLAIR_HM/template_html_body_close.txt" >> "$XFM_DIR/clair_table.html"
 
    # Convert bare link to an href with CVE as target:
    sed -i 's|>\(https.*\)\(CVE-.*[0-9]\)<|><a href="\1\2" target="_blank">\2<|g' \
                               "$XFM_DIR/clair_table.html"
 
-   # >>---> INSERT NEW HTML BODY HERE
+   # Remove redundant CVE col and clean up related info
+   awk "/^<th>Vulnerability<\/th>/                { next }                             \
+        /^<th>Link<\/th>/                         { print \"<th>Vulnerability</th>\" } \
+        /^<th>Link<\/th>/                         { next }                             \
+        /^<td>CVE-[0-9]+-[0-9]+<\/td>/            { next }                             \
+                                                  { print }"                           \
+                         "$XFM_DIR/clair_table.html" > "$XFM_DIR/clair_table_updated.html"
 
    if [ ! -d "$RPT_DIR" ]; then
       mkdir "$RPT_DIR"
    fi
-   cp $XFM_DIR/clair_table.html $RPT_DIR/vuln_table_$REPO_$BRANCH_$VER.html
+   cp "$XFM_DIR/clair_table_updated.html" "$RPT_DIR/vuln_table_$REPO-$BRANCH-$VER.html"
 
-   # Add link to new vuln file into index.html file:
-   x="$CLAIR_RPT/index.html"
-   RPT_DIR="$CLAIR_RPT/$REPO_$BRANCH_$VER"
-
-   # >>---> ADD LINK HERE
+   # >>---> ADD LINK TO NEW VULN FILE IN index.html FILE HERE:
+   #html_to_update.html="$CLAIR_RPT/index.html" # actually cp to a different filename and then mv back
+   #RPT_DIR="$CLAIR_RPT/$REPO_$BRANCH_$VER"
 
    # Clean up
-   cd "$XFM_DIR/.."
-   tar -czvf "$FN.tar.gz" "$FN/"
-   mv "$FN.tar.gz" "$FN/"
-   cd "$FN/"
-   rm -f clair_* clean* vuln*
+#   cd "$XFM_DIR/.."
+#   tar -czvf "$FN.tar.gz" "$FN/"
+#   mv "$FN.tar.gz" "$FN/"
+#   cd "$FN/"
+#   rm -f clair_* clean* vuln*
 }
+
