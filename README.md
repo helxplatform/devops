@@ -2,7 +2,7 @@
 
 HeLx puts the most advanced analytical scientific models at investigator's finger tips using equally advanced cloud native, container orchestrated, distributed computing systems. HeLx can be applied in many domains. Its ability to empower researchers to leverage advanced analytical tools without installation or other infrastructure concerns has broad reaching benefits.
 
-Contact `HeLx Help <mailto:catalyst-admin@lists.renci.org>`__ with questions.
+Contact [HeLx Help](mailto:catalyst-admin@lists.renci.org) with questions.
 
 # Installing HeLx to a Kubernetes Cluster
 
@@ -30,6 +30,8 @@ git clone https://github.com/helxplatform/devops.git
 ```
 
 # Prerequisites to Install on GKE
+
+Export environment variables to your shell.
 ```
 export PROJECT=google-project-id-here
 export AVAILABILITY_ZONE=us-east1-b
@@ -58,35 +60,43 @@ For GKE you can use the following command to create a disk to use.
 gcloud compute disks create --project $PROJECT --zone=$AVAILABILITY_ZONE --size=100Mi $PD_NAME
 ```
 
-1) Make a copy of the appstore Helm chart values.yaml file and edit.  There are several variables that need to be set.  These values need to be base64 encoded.  The following command can be used to base64 encode string values.
-
-```
-echo -n "my password" | base64
-```
+1) Make a copy of the appstore Helm chart values.yaml file and edit.  There are several variables that need to be set.
 
 The Django admin user and password.
+```
  django.APPSTORE_DJANGO_USERNAME
  django.APPSTORE_DJANGO_PASSWORD
+```
 
 Set a 50 charactor random string.
+```
  django.SECRET_KEY
+```
 
 OAuth setup for user authentication.
+```
  django.oauth.OAUTH_PROVIDERS = ( google | github | google,github )
+```
 
 Include these if using Github OAuth.
+```
  django.oauth.GITHUB_NAME
  django.oauth.GITHUB_CLIENT_IT
  django.oauth.GITHUB_SECRET
+```
 
 Include these if using Google OAuth.
+```
  django.oauth.GOOGLE_NAME
  django.oauth.GOOGLE_CLIENT_ID
  django.oauth.GOOGLE_SECRET
+```
 
 If you have setup a Google account for email configure these.
+```
  django.EMAIL_HOST_USER
  django.EMAIL_HOST_PASSWORD
+```
 
 ```
 cp $HELXPLATFORM_HOME/devops/helx/charts/appstore/values.yaml appstore-values.yaml
