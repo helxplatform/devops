@@ -109,7 +109,7 @@ REGION=${REGION-us-east1}
 ZONE_EXTENSION=${ZONE_EXTENSION-b}
 CLUSTER_ENV=${CLUSTER_ENV-dev}
 CLUSTER_NAME=${CLUSTER_NAME-${USER}-cluster}
-CLUSTER_VERSION=${CLUSTER_VERSION-1.17.12-gke.500}
+CLUSTER_VERSION=${CLUSTER_VERSION-1.17.12-gke.1501}
 MACHINE_TYPE=${MACHINE_TYPE-n1-standard-2}
 ADD_CLUSTER_ACCELERATOR=${ADD_CLUSTER_ACCELERATOR-false}
 NP_NAME=${NP_NAME-"custom-node-pool"}
@@ -218,17 +218,6 @@ function deployCluster(){
   # echo "adding kubeconfig username/password credentials to $KUBECONFIG"
   # kubectl config set-credentials ${KUBECONFIG_USER} --username=admin --password=$(cluster_admin_password_gke)
   KUBECONFIG=$SCRIPT_KUBECONFIG
-
-  # Create roles for RBAC Helm
-  if $RBAC_ENABLED; then
-    echo "Creating RBAC binding for HELM tiller account."
-    status_code=$(curl -L -w '%{http_code}' -o rbac-config.yaml -s "https://gitlab.com/charts/gitlab/raw/master/doc/installation/examples/rbac-config.yaml");
-    if [ "$status_code" != 200 ]; then
-      echo "Failed to download rbac-config.yaml, status code: $status_code";
-      exit 1;
-    fi
-    kubectl create -f rbac-config.yaml;
-  fi
 
   if ${ADD_CLUSTER_ACCELERATOR}; then
     installAcceleratorDaemonset

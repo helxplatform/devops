@@ -130,15 +130,11 @@ spec:
             secretKeyRef:
               key: OAUTH_PROVIDERS
               name: csappstore-secret
+        {{ if .Values.django.oauth.GITHUB_NAME }}
         - name: GITHUB_NAME
           valueFrom:
             secretKeyRef:
               key: GITHUB_NAME
-              name: csappstore-secret
-        - name: GITHUB_SITES
-          valueFrom:
-            secretKeyRef:
-              key: GITHUB_SITES
               name: csappstore-secret
         - name: GITHUB_CLIENT_ID
           valueFrom:
@@ -150,15 +146,26 @@ spec:
             secretKeyRef:
               key: GITHUB_SECRET
               name: csappstore-secret
+          {{ if .Values.django.oauth.GITHUB_KEY }}
+        - name: GITHUB_KEY
+          valueFrom:
+            secretKeyRef:
+              key: GITHUB_KEY
+              name: csappstore-secret
+          {{- end }}
+          {{ if .Values.django.oauth.GITHUB_SITES }}
+        - name: GITHUB_SITES
+          valueFrom:
+            secretKeyRef:
+              key: GITHUB_SITES
+              name: csappstore-secret
+          {{- end }}
+        {{- end }}
+        {{ if .Values.django.oauth.GOOGLE_NAME }}
         - name: GOOGLE_NAME
           valueFrom:
             secretKeyRef:
               key: GOOGLE_NAME
-              name: csappstore-secret
-        - name: GOOGLE_SITES
-          valueFrom:
-            secretKeyRef:
-              key: GOOGLE_SITES
               name: csappstore-secret
         - name: GOOGLE_CLIENT_ID
           valueFrom:
@@ -170,6 +177,22 @@ spec:
             secretKeyRef:
               key: GOOGLE_SECRET
               name: csappstore-secret
+          {{ if .Values.django.oauth.GOOGLE_KEY }}
+        - name: GOOGLE_KEY
+          valueFrom:
+            secretKeyRef:
+              key: GOOGLE_KEY
+              name: csappstore-secret
+          {{- end }}
+          {{ if .Values.django.oauth.GOOGLE_SITES }}
+        - name: GOOGLE_SITES
+          valueFrom:
+            secretKeyRef:
+              key: GOOGLE_SITES
+              name: csappstore-secret
+          {{- end }}
+        {{- end }}
+        {{- if .Values.irods.enabled }}
         - name: BRAINI_RODS
           valueFrom:
             secretKeyRef:
@@ -200,6 +223,7 @@ spec:
             secretKeyRef:
               key: IROD_ZONE
               name: csappstore-secret
+        {{- end }}
         - name: EMAIL_HOST_USER
           valueFrom:
             secretKeyRef:
