@@ -1598,6 +1598,9 @@ case $APPS_ACTION in
       appstore)
         deleteAppStore
         ;;
+      appstoredata)
+        deleteAppStoreData
+        ;;
       cat)
         deleteCAT
         ;;

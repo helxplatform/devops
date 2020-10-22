@@ -78,7 +78,7 @@ ambassador:
    # flag: <True or False>
    flag: true
 
-image: "heliumdatastage/commonsshare_appstore:1.1.25"
+image: "heliumdatastage/appstore:dev-v.0.01"
 # imagePullSecrets: some-secret
 
 djangoSettings: cat

@@ -14,7 +14,7 @@ serviceAccount:
 service:
   type: ClusterIP
   port: 80
-  ip_none: true 
+  ip_none: true
 
 resources:
   limits:
@@ -24,7 +24,7 @@ resources:
      cpu: 100m
      memory: 128Mi
 
-image: heliumdatastage/tycho-api:v1.0
+image: heliumdatastage/tycho-api:develop-v0.0.29
 
 # Set either useClusterRole or useRole to true.
 useClusterRole: false
@@ -34,6 +34,6 @@ useRole: true
 useSparkServiceAccount: true
 
 # Specify a PV to use as HeLx's stdnfs.
-stdnfsPvc: stdnfs  
+stdnfsPvc: stdnfs
 # Create Home directories
-createHomeDirs: true 
+createHomeDirs: true

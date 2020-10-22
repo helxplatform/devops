@@ -17,12 +17,10 @@ service:
   type: LoadBalancer
   IP:
   httpPort: 80
-  httpTargetPort: 80
+  httpTargetPort: 8080
   httpsPort: 443
-  httpsTargetPort: 443
+  httpsTargetPort: 8443
   serverName: _
-  resolver: coredns.kube-system.svc
-  # resolver: kube-dns.kube-system.svc
   # nodePort: 31337
 
 # Set the DEV_PHASE.dev True, if Appstore/Tycho running locally. Else, set it to False
@@ -46,7 +44,7 @@ varStorage:
   storageSize: 2Gi
   storageClass:
 
-image: heliumdatastage/nginx:bdcat-nginx-amb-2
+image: heliumdatastage/nginx:cca-v0.0.5
 
 restartrApi: false
 dugApi: false
