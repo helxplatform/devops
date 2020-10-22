@@ -69,25 +69,24 @@ db:
 # Define storageClass to have this chart create a PVC, otherwise it expects
 # one to exist.
 oauth:
-  pvcname:
-  # pvcname: appstore-oauth-pvc
+  pvcname: appstore-oauth-pvc
   storageClass:
   # storageClass: appstore-oauth-sc
   # existingClaim:
 
 ambassador:
    # flag: <True or False>
-   flag: True
+   flag: true
 
-image: "heliumdatastage/commonsshare_appstore:1.1.25"
+image: "heliumdatastage/appstore:dev-v.0.01"
 # imagePullSecrets: some-secret
 
 djangoSettings: cat
 
-postgres: False
+postgres: false
 
 django:
-  APPSTORE_DJANGO_USERNAME: ""
+  APPSTORE_DJANGO_USERNAME: "admin"
   APPSTORE_DJANGO_PASSWORD: ""
   ALLOW_DJANGO_LOGIN: ""
   ALLOW_SAML_LOGIN: ""
@@ -110,6 +109,7 @@ django:
     ASSERTION_URL: ""
     ENTITY_ID: ""
 irods:
+  enabled: false
   BRAINI_RODS: ""
   NRC_MICROSCOPY_IRODS: ""
   RODS_USERNAME: ""
@@ -137,6 +137,6 @@ apps:
 
 appStorage:
   existingClaim: false
-  claimName: 
+  claimName:
   storageSize: 2Gi
   storageClass:

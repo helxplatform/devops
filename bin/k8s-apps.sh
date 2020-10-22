@@ -4,10 +4,6 @@
 # Install base applications to Kubernetes cluster.
 #
 
-
-#set -x
-
-
 function print_apps_help() {
   echo "\
 usage: $0 <action> <app> <option>
@@ -15,6 +11,7 @@ usage: $0 <action> <app> <option>
   apps: all, cat, dug, dugstorage, elk, nginx-revproxy, efk, ambassador,
         appstore, commonsshare, tycho, nextflowstorage, nfs-server, nfsrods
   -c [config file]  Specify config file.
+  -d|--debug        Add debug outputs
   -h|--help         Print this help message.
 "
 }
@@ -27,6 +24,8 @@ if [[ $# = 0 ]]; then
   print_apps_help
   exit 1
 fi
+
+HELX_DEBUG=""
 
 while [[ $# > 0 ]]
   do
@@ -54,6 +53,9 @@ while [[ $# > 0 ]]
       CLUSTER_CONFIG="$2"
       shift
       ;;
+    -d|--debug)
+      HELX_DEBUG="true"
+      ;;
     *)
       # unknown option
       print_apps_help
@@ -63,6 +65,11 @@ while [[ $# > 0 ]]
   shift # past argument or value
 done
 
+if [ "$HELX_DEBUG" == true ]
+then
+  set -x
+  HELM_DEBUG="--debug"
+fi
 
 # To override the variables below you can can export them out in a file and
 # then set the variable "CLUSTER_CONFIG" to the location of that file.
@@ -195,7 +202,6 @@ NGINX_RESTARTR_API=${NGINX_RESTARTR_API-false}
 NGINX_HTTP_HOST=${NGINX_HTTP_HOST-false}
 
 HELM=${HELM-helm}
-# HELM_DEBUG="--debug"
 HELM_DEBUG=${HELM_DEBUG-""}
 COMMONSSHARE_HELM_RELEASE=${COMMONSSHARE_HELM_RELEASE-"commonsshare"}
 COMMONSSHARE_DEPLOYMENT=${COMMONSSHARE_DEPLOYMENT-false}
@@ -216,6 +222,8 @@ APPSTORE_HELM_RELEASE=${APPSTORE_HELM_RELEASE-"appstore"}
 APPSTORE_RUNASUSER=${APPSTORE_RUNASUSER-""}
 APPSTORE_RUNASGROUP=${APPSTORE_RUNASGROUP-""}
 APPSTORE_FSGROUP=${APPSTORE_FSGROUP-""}
+APPSTORE_DJANGO_USERNAME=${APPSTORE_DJANGO_USERNAME-"admin"}
+APPSTORE_DJANGO_PASSWORD=${APPSTORE_DJANGO_PASSWORD-"admin"}
 APPSTORE_OAUTH_PD_NAME=${APPSTORE_OAUTH_PD_NAME-"${DISK_PREFIX}appstore-oauth-disk"}
 APPSTORE_OAUTH_PD_DELETE_W_APP=${APPSTORE_OAUTH_PD_DELETE_W_APP-false}
 APPSTORE_OAUTH_PV_NAME=${APPSTORE_OAUTH_PV_NAME-"${PV_PREFIX}appstore-oauth-pv"}
@@ -316,8 +324,9 @@ then
   if [ -z ${RESTARTR_MONGO_ADMIN_PASSWORD+x} ]
   then
     RESTARTR_MONGO_ADMIN_PASSWORD=`random-string 20`
-    echo "RESTARTR_MONGO_ADMIN_PASSWORD set to random string."
+    echo "RESTARTR_MONGO_ADMIN_PASSWORD set to random string. Check $DEPLOY_LOG."
     echo "RESTARTR_MONGO_ADMIN_PASSWORD set to random string." >> $DEPLOY_LOG
+    echo "DATE: `date`" >> $DEPLOY_LOG
     echo "RESTARTR_MONGO_ADMIN_PASSWORD: $RESTARTR_MONGO_ADMIN_PASSWORD" >> $DEPLOY_LOG
   fi
 fi
@@ -731,12 +740,6 @@ spec:
 }
 
 
-function encodeString(){
-  ENCODED_STRING=`echo -n "$1" | base64 | tr -d '\n'`
-  echo -n $ENCODED_STRING
-}
-
-
 function deployCAT(){
   echo "# deploying CAT"
   deployCommonsShare
@@ -790,6 +793,14 @@ function deleteTycho(){
 
 function deployAppStore(){
   echo "# deploying AppStore"
+  if [ -z ${APPSTORE_DJANGO_PASSWORD+x} ]
+  then
+    APPSTORE_DJANGO_PASSWORD=`random-string 20`
+    echo "APPSTORE_DJANGO_PASSWORD set to random string.  Check $DEPLOY_LOG."
+    echo "APPSTORE_DJANGO_PASSWORD set to random string." >> $DEPLOY_LOG
+    echo "DATE: `date`" >> $DEPLOY_LOG
+    echo "APPSTORE_DJANGO_PASSWORD: $APPSTORE_DJANGO_PASSWORD" >> $DEPLOY_LOG
+  fi
   if [ "$GKE_DEPLOYMENT" == true ]
   then
     createGCEDisk $APPSTORE_OAUTH_PD_NAME $APPSTORE_OAUTH_PV_STORAGE_SIZE
@@ -871,45 +882,54 @@ function deployAppStore(){
    HELM_VALUES+=",appStorage.claimName=$APPSTORE_STORAGE_CLAIMNAME"
   fi
 
-  HELM_VALUES+=",django.APPSTORE_DJANGO_USERNAME=\"`encodeString "$APPSTORE_DJANGO_USERNAME"`\""
-  HELM_VALUES+=",django.APPSTORE_DJANGO_PASSWORD=\"`encodeString "$APPSTORE_DJANGO_PASSWORD"`\""
-  HELM_VALUES+=",django.SECRET_KEY=\"`encodeString "$APPSTORE_SECRET_KEY"`\""
-  HELM_VALUES+=",django.EMAIL_HOST_USER=\"`encodeString "$EMAIL_HOST_USER"`\""
-  HELM_VALUES+=",django.EMAIL_HOST_PASSWORD=\"`encodeString "$EMAIL_HOST_PASSWORD"`\""
-  HELM_VALUES+=",django.oauth.OAUTH_PROVIDERS=\"`encodeString "$OAUTH_PROVIDERS"`\""
-  HELM_VALUES+=",django.oauth.github.GITHUB_NAME=\"`encodeString "$GITHUB_NAME"`\""
-  HELM_VALUES+=",django.oauth.github.GITHUB_KEY=\"`encodeString "$GITHUB_KEY"`\""
-  HELM_VALUES+=",django.oauth.github.GITHUB_SITES=\"`encodeString "$GITHUB_SITES"`\""
-  HELM_VALUES+=",django.oauth.github.GITHUB_CLIENT_ID=\"`encodeString "$GITHUB_CLIENT_ID"`\""
-  HELM_VALUES+=",django.oauth.github.GITHUB_SECRET=\"`encodeString "$GITHUB_SECRET"`\""
-  HELM_VALUES+=",django.oauth.google.GOOGLE_NAME=\"`encodeString "$GOOGLE_NAME"`\""
-  HELM_VALUES+=",django.oauth.google.GOOGLE_KEY=\"`encodeString "$GOOGLE_KEY"`\""
-  HELM_VALUES+=",django.oauth.google.GOOGLE_SITES=\"`encodeString "$GOOGLE_SITES"`\""
-  HELM_VALUES+=",django.oauth.google.GOOGLE_CLIENT_ID=\"`encodeString "$GOOGLE_CLIENT_ID"`\""
-  HELM_VALUES+=",django.oauth.google.GOOGLE_SECRET=\"`encodeString "$GOOGLE_SECRET"`\""
-  HELM_VALUES+=",irods.BRAINI_RODS=\"`encodeString "$BRAINI_RODS"`\""
-  HELM_VALUES+=",irods.NRC_MICROSCOPY_IRODS=\"`encodeString "$NRC_MICROSCOPY_IRODS"`\""
-  HELM_VALUES+=",irods.RODS_USERNAME=\"`encodeString "$RODS_USERNAME"`\""
-  HELM_VALUES+=",irods.RODS_PASSWORD=\"`encodeString "$RODS_PASSWORD"`\""
-  HELM_VALUES+=",irods.IROD_COLLECTIONS=\"`encodeString "$IROD_COLLECTIONS"`\""
-  HELM_VALUES+=",irods.IROD_ZONE=\"`encodeString "$IROD_ZONE"`\""
+  HELM_VALUES+=",django.APPSTORE_DJANGO_USERNAME=$APPSTORE_DJANGO_USERNAME"
+  HELM_VALUES+=",django.APPSTORE_DJANGO_PASSWORD=$APPSTORE_DJANGO_PASSWORD"
+  HELM_VALUES+=",django.SECRET_KEY=$SECRET_KEY"
+  HELM_VALUES+=",django.EMAIL_HOST_USER=$EMAIL_HOST_USER"
+  HELM_VALUES+=",django.EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD"
+  # HELM_VALUES+=",django.oauth.OAUTH_PROVIDERS=$OAUTH_PROVIDERS"
+  HELM_VALUES+=",django.oauth.OAUTH_PROVIDERS=$OAUTH_PROVIDERS"
+  HELM_VALUES+=",django.oauth.GITHUB_NAME=$GITHUB_NAME"
+  HELM_VALUES+=",django.oauth.GITHUB_KEY=$GITHUB_KEY"
+  HELM_VALUES+=",django.oauth.GITHUB_SITES=$GITHUB_SITES"
+  HELM_VALUES+=",django.oauth.GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID"
+  HELM_VALUES+=",django.oauth.GITHUB_SECRET=$GITHUB_SECRET"
+  HELM_VALUES+=",django.oauth.GOOGLE_NAME=$GOOGLE_NAME"
+  HELM_VALUES+=",django.oauth.GOOGLE_KEY=$GOOGLE_KEY"
+  HELM_VALUES+=",django.oauth.GOOGLE_SITES=$GOOGLE_SITES"
+  HELM_VALUES+=",django.oauth.GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID"
+  HELM_VALUES+=",django.oauth.GOOGLE_SECRET=$GOOGLE_SECRET"
 
-  HELM_VALUES+=",apps.CLOUD_TOP_USER_HOME=\"`encodeString "$CLOUD_TOP_USER_HOME"`\""
-  HELM_VALUES+=",apps.CLOUD_TOP_USER_NAME=\"`encodeString "$CLOUD_TOP_USER_NAME"`\""
-  HELM_VALUES+=",apps.CLOUD_TOP_VNC_PW=\"`encodeString "$CLOUD_TOP_VNC_PW"`\""
-  HELM_VALUES+=",apps.IMAGEJ_USER_HOME=\"`encodeString "$IMAGEJ_USER_HOME"`\""
-  HELM_VALUES+=",apps.IMAGEJ_USER_NAME=\"`encodeString "$IMAGEJ_USER_NAME"`\""
-  HELM_VALUES+=",apps.IMAGEJ_VNC_PW=\"`encodeString "$IMAGEJ_VNC_PW"`\""
-  HELM_VALUES+=",apps.NAPARI_USER_HOME=\"`encodeString "$NAPARI_USER_HOME"`\""
-  HELM_VALUES+=",apps.NAPARI_USER_NAME=\"`encodeString "$NAPARI_USER_NAME"`\""
-  HELM_VALUES+=",apps.NAPARI_VNC_PW=\"`encodeString "$NAPARI_VNC_PW"`\""
-  HELM_VALUES+=",apps.DICOMCT_USER_HOME=\"`encodeString "$DICOMCT_USER_HOME"`\""
-  HELM_VALUES+=",apps.DICOMCT_USER_NAME=\"`encodeString "$DICOMCT_USER_NAME"`\""
-  HELM_VALUES+=",apps.DICOMCT_VNC_PW=\"`encodeString "$DICOMCT_VNC_PW"`\""
-  HELM_VALUES+=",apps.DICOMGH_USER_HOME=\"`encodeString "$DICOMGH_USER_HOME"`\""
-  HELM_VALUES+=",apps.DICOMGH_USER_NAME=\"`encodeString "$DICOMGH_USER_NAME"`\""
-  HELM_VALUES+=",apps.DICOMGH_VNC_PW=\"`encodeString "$DICOMGH_VNC_PW"`\""
-  HELM_VALUES+=",apps.DICOMGH_GOOGLE_CLIENT_ID=\"`encodeString "$DICOMGH_GOOGLE_CLIENT_ID"`\""
+  if [ ! -z "$BRAINI_RODS" ]
+  then
+    HELM_VALUES+=",irods.enabled=true"
+    HELM_VALUES+=",irods.BRAINI_RODS=$BRAINI_RODS"
+    HELM_VALUES+=",irods.NRC_MICROSCOPY_IRODS=$NRC_MICROSCOPY_IRODS"
+    HELM_VALUES+=",irods.RODS_USERNAME=$RODS_USERNAME"
+    HELM_VALUES+=",irods.RODS_PASSWORD=$RODS_PASSWORD"
+    HELM_VALUES+=",irods.IROD_COLLECTIONS=$IROD_COLLECTIONS"
+    HELM_VALUES+=",irods.IROD_ZONE=$IROD_ZONE"
+  fi
+
+  HELM_VALUES+=",apps.CLOUD_TOP_USER_HOME=$CLOUD_TOP_USER_HOME"
+  HELM_VALUES+=",apps.CLOUD_TOP_USER_NAME=$CLOUD_TOP_USER_NAME"
+  HELM_VALUES+=",apps.CLOUD_TOP_VNC_PW=$CLOUD_TOP_VNC_PW"
+  HELM_VALUES+=",apps.IMAGEJ_USER_HOME=$IMAGEJ_USER_HOME"
+  HELM_VALUES+=",apps.IMAGEJ_USER_NAME=$IMAGEJ_USER_NAME"
+  HELM_VALUES+=",apps.IMAGEJ_VNC_PW=$IMAGEJ_VNC_PW"
+  HELM_VALUES+=",apps.NAPARI_USER_HOME=$NAPARI_USER_HOME"
+  HELM_VALUES+=",apps.NAPARI_USER_NAME=$NAPARI_USER_NAME"
+  HELM_VALUES+=",apps.NAPARI_VNC_PW=$NAPARI_VNC_PW"
+  HELM_VALUES+=",apps.DICOMCT_USER_HOME=$DICOMCT_USER_HOME"
+  HELM_VALUES+=",apps.DICOMCT_USER_NAME=$DICOMCT_USER_NAME"
+  HELM_VALUES+=",apps.DICOMCT_VNC_PW=$DICOMCT_VNC_PW"
+  HELM_VALUES+=",apps.DICOMGH_USER_HOME=$DICOMGH_USER_HOME"
+  HELM_VALUES+=",apps.DICOMGH_USER_NAME=$DICOMGH_USER_NAME"
+  HELM_VALUES+=",apps.DICOMGH_VNC_PW=$DICOMGH_VNC_PW"
+  if [ ! -z "$DICOMGH_GOOGLE_CLIENT_ID" ]
+  then
+    HELM_VALUES+=",apps.DICOMGH_GOOGLE_CLIENT_ID=$DICOMGH_GOOGLE_CLIENT_ID"
+  fi
   $HELM -n $NAMESPACE upgrade $APPSTORE_HELM_RELEASE \
      $CAT_HELM_DIR/charts/appstore --install $HELM_DEBUG --logtostderr --set $HELM_VALUES
   echo "# end deploying AppStore"
@@ -1577,6 +1597,9 @@ case $APPS_ACTION in
         ;;
       appstore)
         deleteAppStore
+        ;;
+      appstoredata)
+        deleteAppStoreData
         ;;
       cat)
         deleteCAT
