@@ -80,10 +80,12 @@ function scan_clair () {
 #        will be removed from the report.
 # Example call: postprocess_clair_output "heliumdatastage" "appstore" "develop" "v0.0.13" Medium
 # Result:
-#    - Clair json output has Medium and below CVE's removed.
-#    - All URL's are turned into HTML links.
-#    - HTML Publisher server is set up for related build page.
-#    - HTML table of CVE's is linked from related build page.
+#    - Data has been converted from JSON into readable HTML.
+#    - Redundant CVE information has been removed from table and and columns 
+#         consolidated into a single CVE link.
+#    - Unapproved CVE info at top has been removed as redundant.
+#    - Double lines have been removed from table styling (except for nested table)
+#    - Source clair html files are organized by directory.
 # -------------------------------------------------------------------------
 
 function postprocess_clair_output() {
@@ -102,22 +104,24 @@ function postprocess_clair_output() {
    CLAIR_RPT="$CLAIR_HM/reports"
    RPT_DIR="$CLAIR_RPT/$FN"
 
-   # Remove redundant unapproved list
-   awk "/unapproved/,/]/ { next }       \
+   echo "FN=$FN"
+   echo "XFM_DIR=$XFM_DIR"
+   echo "image=$ORG/$REPO:$BRANCH-$VER"
+
+   awk "/unapproved/,/]/ { next }       \ 
                          { print }" "$XFM_DIR/clair_report.json" > "$XFM_DIR/clair_report_edited.json" 
 
-   # Convert JSON to HTML and refine HTML
    cat "$CLAIR_HM/template_html_css_body_open.txt" > "$XFM_DIR/clair_table.html"
    cat "$XFM_DIR/clair_report_edited.json" | \
                                json2table >> \
                               "$XFM_DIR/clair_table.html"
    cat "$CLAIR_HM/template_html_body_close.txt" >> "$XFM_DIR/clair_table.html"
 
+
    # Convert bare link to an href with CVE as target:
    sed -i 's|>\(https.*\)\(CVE-.*[0-9]\)<|><a href="\1\2" target="_blank">\2<|g' \
                               "$XFM_DIR/clair_table.html"
 
-   # Remove redundant CVE col and clean up related info
    awk "/^<th>Vulnerability<\/th>/                { next }                             \
         /^<th>Link<\/th>/                         { print \"<th>Vulnerability</th>\" } \
         /^<th>Link<\/th>/                         { next }                             \
@@ -130,15 +134,38 @@ function postprocess_clair_output() {
    fi
    cp "$XFM_DIR/clair_table_updated.html" "$RPT_DIR/vuln_table_$REPO-$BRANCH-$VER.html"
 
-   # >>---> ADD LINK TO NEW VULN FILE IN index.html FILE HERE:
-   #html_to_update.html="$CLAIR_RPT/index.html" # actually cp to a different filename and then mv back
-   #RPT_DIR="$CLAIR_RPT/$REPO_$BRANCH_$VER"
+   # Add link to new vuln file in index.html:
+   if [ $REPO == "tranql-app"  -o \
+        $REPO == "tranql-base" -o \
+        $REPO == "helx-hail"   -o \
+        $REPO == "conda-layer" -o \
+        $REPO == "jdk-layer" ]; then
+      PAD="        "
+   else
+      PAD="    "
+   fi
+
+   repl="$PAD<li><a href=\"\/$REPO-develop-$ver\/vuln_table_$REPO-develop-$ver.html\" target=\"_blank\">Develop branch $ver vulnerabilities<\/a><\/li>"
+   rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
+   tmpf=index_$rnd_str.html
+
+   echo "tmpfile is $tmpf"
+
+   echo "sed\'ing $CLAIR_RPT/index.html into $CLAIR_RPT/$tmpf"
+   sed -e "/^.*$REPO-develop-VER.*$/p" \
+       -e "s|^.*$REPO-develop-VER.*$|$repl|" $CLAIR_RPT/index.html > $CLAIR_RPT/$tmpf
+
+   echo "DIFFS"
+   diff $CLAIR_RPT/index.html $CLAIR_RPT/$tmpf
+
+   echo "mv ing $CLAIR_RPT/$tmpf to $CLAIR_RPT/index.html"
+   mv $CLAIR_RPT/$tmpf $CLAIR_RPT/index.html
 
    # Clean up
-#   cd "$XFM_DIR/.."
-#   tar -czvf "$FN.tar.gz" "$FN/"
-#   mv "$FN.tar.gz" "$FN/"
-#   cd "$FN/"
-#   rm -f clair_* clean* vuln*
+   #cd "$XFM_DIR/.."
+   #tar -czvf "$FN.tar.gz" "$FN/"
+   #mv "$FN.tar.gz" "$FN/"
+   #cd "$FN/"
+   #rm -f clair_* clean* vuln*
 }
 
