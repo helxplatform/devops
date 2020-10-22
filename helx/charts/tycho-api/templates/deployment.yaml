@@ -28,13 +28,11 @@ spec:
         image: {{ .Values.image }}
         env:
         - name: CREATE_HOME_DIRS
-          {{- if .Values.createHomeDirs }}
-          value: "True"
-          {{- else }}
-          value: "False"
-          {{- end }}
+          value: "{{- .Values.createHomeDirs }}"
         - name: STDNFS_PVC
-          value: {{ .Values.stdnfsPvc }}
+          value: "{{ .Values.stdnfsPvc }}"
+        - name: RUNASROOT
+          value: "{{ .Values.runAsRoot }}"
         imagePullPolicy: "Always"
         name: {{ template "tycho-api.name" . }}
         ports:
