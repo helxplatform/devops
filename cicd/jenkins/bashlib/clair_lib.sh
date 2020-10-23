@@ -155,9 +155,6 @@ function postprocess_clair_output() {
    sed -e "/^.*$REPO-develop-VER.*$/p" \
        -e "s|^.*$REPO-develop-VER.*$|$repl|" $CLAIR_RPT/index.html > $CLAIR_RPT/$tmpf
 
-   echo "DIFFS"
-   diff $CLAIR_RPT/index.html $CLAIR_RPT/$tmpf
-
    echo "mv ing $CLAIR_RPT/$tmpf to $CLAIR_RPT/index.html"
    mv $CLAIR_RPT/$tmpf $CLAIR_RPT/index.html
 
