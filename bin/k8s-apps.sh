@@ -265,6 +265,9 @@ TYCHO_HELM_RELEASE=${TYCHO_HELM_RELEASE-"tycho-api"}
 TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-""}
 TYCHO_API_IMAGE=${TYCHO_API_IMAGE-""}
 TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
+TYCHO_STDNFS_PVC=${TYCHO_STDNFS_PVC-""}
+TYCHO_CREATE_HOME_DIRS=${TYCHO_CREATE_HOME_DIRS-""}
+TYCHO_RUNASROOT=${TYCHO_RUNASROOT-""}
 
 ELASTIC_PVC_STORAGE=${ELASTIC_PVC_STORAGE-"10Gi"}
 # Set X_STORAGECLASS to "" to use the default storage class.
@@ -777,6 +780,18 @@ function deployTycho(){
   if [ ! -z "$TYCHO_API_IMAGE" ]
   then
     HELM_VALUES+=",image=$TYCHO_API_IMAGE"
+  fi
+  if [ ! -z "$TYCHO_STDNFS_PVC" ]
+  then
+    HELM_VALUES+=",stdnfsPvc=$TYCHO_STDNFS_PVC"
+  fi
+  if [ ! -z "$TYCHO_CREATE_HOME_DIRS" ]
+  then
+    HELM_VALUES+=",createHomeDirs=$TYCHO_CREATE_HOME_DIRS"
+  fi
+  if [ ! -z "$TYCHO_RUNASROOT" ]
+  then
+    HELM_VALUES+=",runAsRoot=$TYCHO_RUNASROOT"
   fi
   $HELM -n $NAMESPACE upgrade --install $TYCHO_HELM_RELEASE \
      $CAT_HELM_DIR/charts/tycho-api $HELM_DEBUG --logtostderr --set $HELM_VALUES

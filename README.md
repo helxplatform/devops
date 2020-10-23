@@ -45,7 +45,26 @@ gcloud compute disks create $STDNFS_GCE_DISK --project $PROJECT --zone=$AVAILABI
 
 #### NFS Server (for GKE)
 
-ToDo
+1) Make a copy of the nfs-server Helm chart values.yaml file and edit as needed.  For standard installations you can use the default values.
+
+```
+cp $HELXPLATFORM_HOME/devops/helx/charts/nfs-server/values.yaml $HELXPLATFORM_HOME/nfs-server-values.yaml
+vi $HELXPLATFORM_HOME/nfs-server-values.yaml
+```
+
+2) Modify these variables in $HELXPLATFORM_HOME/nfs-server-values.yaml for your environment.
+
+Set gcePersistentDiskPdName to "$USER-cluster-stdnfs-disk" (uncomment the line and replace $USER with your username).
+
+```
+ storage.gcePersistentDiskPdName
+```
+
+3) Install the chart with Helm.
+
+```
+helm install nfs-server $HELXPLATFORM_HOME/devops/helx/charts/nfs-server -n $NAMESPACE --values $HELXPLATFORM_HOME/nfs-server-values.yaml
+```
 
 ### Individual Deployments
 

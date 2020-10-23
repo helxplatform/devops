@@ -37,3 +37,5 @@ useSparkServiceAccount: true
 stdnfsPvc: stdnfs
 # Create Home directories
 createHomeDirs: true
+
+runAsRoot: true
