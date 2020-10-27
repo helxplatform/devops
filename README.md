@@ -127,7 +127,7 @@ Include these if using Google OAuth.
  django.oauth.GOOGLE_SECRET
 ```
 
-If you have setup a Google account for email configure these.  This is meant to be configured with [https://myaccount.google.com/apppasswords/](Google App Password) credentials.
+If you have setup a Google account for email configure these.  This is meant to be configured with [Google App Password](https://myaccount.google.com/apppasswords/) credentials.
 
 ```
  django.EMAIL_HOST_USER
