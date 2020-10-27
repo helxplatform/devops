@@ -120,19 +120,14 @@ irods:
 apps:
   CLOUD_TOP_USER_HOME: "/home/cloud-top"
   CLOUD_TOP_USER_NAME: "cloud-top"
-  CLOUD_TOP_VNC_PW: ""
   IMAGEJ_USER_HOME: "/home/cloud-top"
   IMAGEJ_USER_NAME: "cloud-top"
-  IMAGEJ_VNC_PW: ""
   NAPARI_USER_HOME: "/home/cloud-top"
   NAPARI_USER_NAME: "cloud-top"
-  NAPARI_VNC_PW: ""
   DICOMCT_USER_HOME: "/home/cloud-top"
   DICOMCT_USER_NAME: "cloud-top"
-  DICOMCT_VNC_PW: ""
   DICOMGH_USER_HOME: "/home/cloud-top"
   DICOMGH_USER_NAME: "cloud-top"
-  DICOMGH_VNC_PW: ""
   DICOMGH_GOOGLE_CLIENT_ID: ""
 
 appStorage:
