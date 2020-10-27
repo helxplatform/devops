@@ -127,7 +127,7 @@ Include these if using Google OAuth.
  django.oauth.GOOGLE_SECRET
 ```
 
-If you have setup a Google account for email configure these.
+If you have setup a Google account for email configure these.  This is meant to be configured with [https://myaccount.google.com/apppasswords](Google App Password) credentials.
 
 ```
  django.EMAIL_HOST_USER
@@ -307,10 +307,9 @@ export GOOGLE_CLIENT_ID="< SECRET HERE >"
 export GOOGLE_SECRET="< SECRET HERE >"
 export EMAIL_HOST_USER="< email@example.com >"
 export EMAIL_HOST_PASSWORD="< SECRET HERE >"
-export CLOUD_TOP_VNC_PW='< SECRET HERE >'
 # You can set specific images to use with these variables.
-export APPSTORE_IMAGE="heliumdatastage/appstore:dev-v.0.01"
-export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.29"
+export APPSTORE_IMAGE="heliumdatastage/appstore:develop-v0.0.44"
+export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.32"
 export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
 ```
 
