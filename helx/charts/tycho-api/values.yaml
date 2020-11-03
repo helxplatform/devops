@@ -39,3 +39,8 @@ stdnfsPvc: stdnfs
 createHomeDirs: true
 
 runAsRoot: true
+
+# Variables for default volumes.
+parent_dir: "/home/pvc"
+subpath_dir: null
+shared_dir: "shared_data"
