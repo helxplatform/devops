@@ -78,7 +78,7 @@ ambassador:
    # flag: <True or False>
    flag: true
 
-image: "heliumdatastage/appstore:develop-v0.0.44"
+image: "heliumdatastage/appstore:develop-v0.0.51"
 # imagePullSecrets: some-secret
 
 djangoSettings: cat
@@ -118,16 +118,6 @@ irods:
   IROD_ZONE: ""
 
 apps:
-  CLOUD_TOP_USER_HOME: "/home/cloud-top"
-  CLOUD_TOP_USER_NAME: "cloud-top"
-  IMAGEJ_USER_HOME: "/home/cloud-top"
-  IMAGEJ_USER_NAME: "cloud-top"
-  NAPARI_USER_HOME: "/home/cloud-top"
-  NAPARI_USER_NAME: "cloud-top"
-  DICOMCT_USER_HOME: "/home/cloud-top"
-  DICOMCT_USER_NAME: "cloud-top"
-  DICOMGH_USER_HOME: "/home/cloud-top"
-  DICOMGH_USER_NAME: "cloud-top"
   DICOMGH_GOOGLE_CLIENT_ID: ""
 
 appStorage:
