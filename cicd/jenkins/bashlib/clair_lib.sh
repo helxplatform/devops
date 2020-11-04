@@ -54,8 +54,8 @@ function scan_clair () {
       "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VER" > "$XFM_DIR/table.txt"
 
    # Remove control chars
-   grep -o "[[:print:][:space:]]*" "$XFM_DIR/table.txt" > \
-                                   "$XFM_DIR/clean_table.txt"
+   sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $XFM_DIR/table.txt > \
+                                                        $XFM_DIR/clean_table.txt
    rm -f "$XFM_DIR/table.txt"
    echo "clair scan complete."
 }
