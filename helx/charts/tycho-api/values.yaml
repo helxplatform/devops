@@ -41,6 +41,6 @@ createHomeDirs: true
 runAsRoot: true
 
 # Variables for default volumes.
-parent_dir: "/home/pvc"
+parent_dir: "/home"
 subpath_dir: null
-shared_dir: "shared_data"
+shared_dir: "shared"
