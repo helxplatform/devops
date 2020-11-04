@@ -113,7 +113,7 @@ HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"$( cd "$( dirname "${BASH_SOURCE[0]}" )" 
 K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELXPLATFORM_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
 SECRET_FILENAME_SUFFIX=${SECRET_FILENAME_SUFFIX-"-${CLUSTER_NAME}-${NAMESPACE}"}
-DEPLOY_LOG_DIR=${DEPLOY_LOG_DIR-"${PWD}"}
+DEPLOY_LOG_DIR=${DEPLOY_LOG_DIR-"${HELXPLATFORM_HOME}"}
 DEPLOY_LOG=${DEPLOY_LOG-"${DEPLOY_LOG_DIR}/deploy-log-${CLUSTER_NAME}-${NAMESPACE}-$TIMESTAMP.txt"}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
@@ -253,6 +253,9 @@ TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
 TYCHO_STDNFS_PVC=${TYCHO_STDNFS_PVC-""}
 TYCHO_CREATE_HOME_DIRS=${TYCHO_CREATE_HOME_DIRS-""}
 TYCHO_RUNASROOT=${TYCHO_RUNASROOT-""}
+TYCHO_PARENT_DIR=${TYCHO_PARENT_DIR-""} # Chart default is "/home/pvc".
+TYCHO_SUBPATH_DIR=${TYCHO_SUBPATH_DIR-""} # Chart default is null, which uses $USER.
+TYCHO_SHARED_DIR=${TYCHO_SHARED_DIR-""} # Chart default is "shared_data".
 
 ELASTIC_PVC_STORAGE=${ELASTIC_PVC_STORAGE-"10Gi"}
 # Set X_STORAGECLASS to "" to use the default storage class.
@@ -329,7 +332,7 @@ EFK_VERSION_ARG=${EFK_VERSION_ARG-"--version=v2.0.0"}
 # Some commands need to be given time to execute after they are run before
 # running other related commands (like deleting a PV then deleting the related
 # disk).
-KUBE_WAIT_TIME=30
+KUBE_WAIT_TIME=${KUBE_WAIT_TIME-30}
 
 DUG_API=${DUG_API-false}
 # The Dug API is currently served directly from Ambassador and bypasses Nginx.
@@ -777,6 +780,18 @@ function deployTycho(){
   if [ ! -z "$TYCHO_RUNASROOT" ]
   then
     HELM_VALUES+=",runAsRoot=$TYCHO_RUNASROOT"
+  fi
+  if [ ! -z "$TYCHO_PARENT_DIR" ]
+  then
+    HELM_VALUES+=",parent_dir=$TYCHO_PARENT_DIR"
+  fi
+  if [ ! -z "$TYCHO_SUBPATH_DIR" ]
+  then
+    HELM_VALUES+=",subpath_dir=$TYCHO_SUBPATH_DIR"
+  fi
+  if [ ! -z "$TYCHO_SHARED_DIR" ]
+  then
+    HELM_VALUES+=",shared_dir=$TYCHO_SHARED_DIR"
   fi
   $HELM -n $NAMESPACE upgrade --install $TYCHO_HELM_RELEASE \
      $CAT_HELM_DIR/charts/tycho-api $HELM_DEBUG --logtostderr --set $HELM_VALUES
