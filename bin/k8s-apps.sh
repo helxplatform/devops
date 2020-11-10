@@ -806,8 +806,8 @@ function deleteTycho(){
 }
 
 
-function deployAppStore(){
-  echo "# deploying AppStore"
+function createAppStoreData(){
+  echo "# creating AppStore data"
   if [ -z ${APPSTORE_DJANGO_PASSWORD+x} ]
   then
     APPSTORE_DJANGO_PASSWORD=`random-string 20`
@@ -833,6 +833,11 @@ function deployAppStore(){
     createPVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PVC_STORAGE \
          $APPSTORE_OAUTH_PV_ACCESSMODE $APPSTORE_OAUTH_PV_STORAGECLASS
   fi
+}
+
+
+function deployAppStore(){
+  createAppStoreData
   ## Deploy AppStore
   HELM_VALUES="db.storageClass=$APPSTORE_DB_STORAGECLASS"
   if [ ! -z "$APPSTORE_OAUTH_PVC" ]
@@ -1492,6 +1497,9 @@ case $APPS_ACTION in
         ;;
       appstore)
         deployAppStore
+        ;;
+      appstoredata)
+        createAppStoreData
         ;;
       commonsshare)
         deployCommonsShare
