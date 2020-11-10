@@ -300,7 +300,6 @@ export NGINX_SERVERNAME="< helx.example.com >"
 export NGINX_IP="< 192.168.0.1 >"
 export NGINX_TLS_SECRET="< helx-tls-secret >"
 export APPSTORE_DJANGO_PASSWORD="< SECRET HERE >"
-export SECRET_KEY="< SECRET HERE (50 chars) >"
 export OAUTH_PROVIDERS="google"
 export GOOGLE_NAME="< Google OAuth App Name >"
 export GOOGLE_CLIENT_ID="< SECRET HERE >"
@@ -308,8 +307,8 @@ export GOOGLE_SECRET="< SECRET HERE >"
 export EMAIL_HOST_USER="< email@example.com >"
 export EMAIL_HOST_PASSWORD="< SECRET HERE >"
 # You can set specific images to use with these variables.
-export APPSTORE_IMAGE="heliumdatastage/appstore:develop-v0.0.44"
-export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.32"
+export APPSTORE_IMAGE="heliumdatastage/appstore:develop-v0.0.51"
+export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.38"
 export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
 ```
 
