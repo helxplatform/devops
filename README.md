@@ -99,12 +99,6 @@ The Django admin user and password.
  django.APPSTORE_DJANGO_PASSWORD
 ```
 
-Set a 50 charactor random string.
-
-```
- django.SECRET_KEY
-```
-
 OAuth setup for user authentication.  You will need to configure Google, Github or both for user authentication.
 
 ```
