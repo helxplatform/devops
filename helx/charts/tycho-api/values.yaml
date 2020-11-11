@@ -24,7 +24,7 @@ resources:
      cpu: 100m
      memory: 128Mi
 
-image: heliumdatastage/tycho-api:develop-v0.0.51
+image: heliumdatastage/tycho-api:develop-v0.0.38
 
 # Set either useClusterRole or useRole to true.
 useClusterRole: false
