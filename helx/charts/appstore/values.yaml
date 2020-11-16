@@ -120,7 +120,7 @@ appStorage:
   storageClass:
 
 userStorage:
-  existingClaim: false
+  create: true
   claimName: stdnfs
-  storageSize: 2Gi
+  storageSize: 10Gi
   storageClass:

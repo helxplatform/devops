@@ -1,5 +1,4 @@
-{{- if not .Values.userStorage.existingClaim }}
-{{- if .Values.userStorage.claimName }}
+{{- if eq .Values.userStorage.create true }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -13,5 +12,4 @@ spec:
     requests:
       storage: {{ .Values.userStorage.storageSize }}
   storageClassName: {{ .Values.userStorage.storageClass }}
-{{- end }}
 {{- end }}
