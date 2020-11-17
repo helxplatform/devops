@@ -9,7 +9,7 @@ backup-pvc-cronjob:
 commonsshare:
   enabled: false
 nfs-server:
-  enabled: false
+  enabled: true
 nfsrods:
   enabled: false
 nginx:

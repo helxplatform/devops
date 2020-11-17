@@ -1,6 +1,6 @@
-Use the following command to get the Django admin username and password:
-  kubectl get secret csappstore-secret -o jsonpath="{.data.APPSTORE_DJANGO_USERNAME}" | base64 --decode && echo
-  kubectl get secret csappstore-secret -o jsonpath="{.data.APPSTORE_DJANGO_PASSWORD}" | base64 --decode && echo
+Use the following commands to get information about how to log in to the HeLx website.
 
-To get the IP of the HeLx web service use this command:
-  kubectl get svc nginx-revproxy -o jsonpath="{.status.loadBalancer.ingress[*].ip}" && echo
+DJANGO_ADMIN_USERNAME=`kubectl get secret csappstore-secret -o jsonpath="{.data.APPSTORE_DJANGO_USERNAME}" | base64 --decode`
+DJANGO_ADMIN_PASSWORD=`kubectl get secret csappstore-secret -o jsonpath="{.data.APPSTORE_DJANGO_PASSWORD}" | base64 --decode`
+HELX_IP=`kubectl get svc nginx-revproxy -o jsonpath="{.status.loadBalancer.ingress[*].ip}"`
+printf "Django admin username: $DJANGO_ADMIN_USERNAME\nDjango admin password: $DJANGO_ADMIN_PASSWORD\nHeLx URL: http://$HELX_IP\nDjango admin URL: http://$HELX_IP/admin\n"

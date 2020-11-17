@@ -56,9 +56,12 @@ tolerations: []
 
 affinity: {}
 
-# Specify gcePersistentDiskPdName OR claimName, not both.
+# Specify gcePersistentDiskPdName OR claimName, not both.  If both are specified
+# the GCE persistent disk is used for storage.
 storage:
   claimName: nfs-server-pvc
+  storageClassName: standard
+  pvcStorage: 10Gi
   # gcePersistentDiskPdName:  gce-nfs-server-disk
 
 stdnfs:

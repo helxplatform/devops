@@ -184,9 +184,9 @@ Now that everything is installed you should be able to log in as the Django admi
 
 To deploy HeLx 1.0 on the Google Kubernetes Engine you will need to have an account with Google Cloud Platform and configure the [Google Cloud SDK](https://cloud.google.com/sdk/docs/quickstarts) on your local system.  
 
-## Centos 8 Workstation Configuration and Deployment to GKE Cluster
+## HeLx Deployment to GKE Cluster Using Centos 8
 
-### Tools Setup
+### Tools Setup for Centos 8
 
 ```
 sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
@@ -233,7 +233,7 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 ```
 
-### Cluster Environment Variables and Creation of Cluster in GKE
+### Create Cluster in GKE Using Script
 Create a text file named "env-vars-helx.sh" in the HeLx Platform directory (or elsewhere and adjust the CLUSTER_CONFIG variable below) with the following that will contain a few variables that are used in the creation of the Kubernetes cluster.  Edit the variables as needed, at the very least you will need to update the PROJECT_ID.  Values with "< text >" need to be replaced with values for your environment.
 
 ```
@@ -335,3 +335,17 @@ export GCE_NFS_SERVER_DISK_DELETE_W_APP=true
 ```
 $HELXPLATFORM_HOME/devops/bin/gke-cluster.sh -c $CLUSTER_CONFIG delete cluster
 ```
+
+# Minimal Deployment to GKE Cluster Using HeLx Parent Helm Chart
+Follow instructions in the "Tools Setup for Centos 8" and "Create Cluster in GKE Using Script" sections above.
+```
+helm install helx . $HELXPLATFORM_HOME/devops/helx
+```
+It will take a few minutes for HeLx to deploy.  Follow the instructions in the output of the Helm command to log in as the Django admin.  Once logged in as the Django admin you can go to the HeLx URL and navigate to the apps section to create new apps.
+
+To delete HeLx run this command.
+```
+helm delete helx
+```
+***NOTE***
+You will need to delete any apps created with HeLx using the web UI or manually with kubectl commands.
