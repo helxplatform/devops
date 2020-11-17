@@ -110,7 +110,7 @@ CLUSTER_NAME=${CLUSTER_NAME-"${USER}-cluster"}
 PV_PREFIX=${PV_PREFIX-"$NAMESPACE-"}
 DISK_PREFIX=${DISK_PREFIX-"${CLUSTER_NAME}-${PV_PREFIX}"}
 HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/../.."}
-K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELXPLATFORM_HOME}/devops"}
+HELX_DEVOPS_HOME=${HELX_DEVOPS_HOME-"${HELXPLATFORM_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
 SECRET_FILENAME_SUFFIX=${SECRET_FILENAME_SUFFIX-"-${CLUSTER_NAME}-${NAMESPACE}"}
 DEPLOY_LOG_DIR=${DEPLOY_LOG_DIR-"${HELXPLATFORM_HOME}"}
@@ -166,14 +166,14 @@ NEXTFLOW_NFS_PATH=${NEXTFLOW_NFS_PATH-"/nextflow"}
 NEXTFLOW_PV_STORAGECLASS=${NEXTFLOW_PV_STORAGECLASS-"${PV_PREFIX}nextflow-sc"}
 NEXTFLOW_PV_NAME=${NEXTFLOW_PV_NAME-"${PV_PREFIX}nextflow-pv"}
 
-AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/ambassador"}
+AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$HELX_DEVOPS_HOME/helx/charts/ambassador"}
 AMBASSADOR_HELM_RELEASE=${AMBASSADOR_HELM_RELEASE-"ambassador"}
 AMBASSADOR_RUNASUSER=${AMBASSADOR_RUNASUSER-""}
 AMBASSADOR_RUNASGROUP=${AMBASSADOR_RUNASGROUP-""}
 AMBASSADOR_FSGROUP=${AMBASSADOR_FSGROUP-""}
 AMBASSADOR_ROLE_INGRESSES=${AMBASSADOR_ROLE_INGRESSES-""}
 USE_CLUSTER_ROLES=${USE_CLUSTER_ROLES-false}
-NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/helx/charts/nginx"}
+NGINX_HELM_DIR=${NGINX_HELM_DIR="$HELX_DEVOPS_HOME/helx/charts/nginx"}
 NGINX_HELM_RELEASE=${NGINX_HELM_RELEASE-"nginx-revproxy"}
 NGINX_IMAGE=${NGINX_IMAGE-""}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
@@ -205,7 +205,7 @@ HELM=${HELM-helm}
 HELM_DEBUG=${HELM_DEBUG-""}
 COMMONSSHARE_HELM_RELEASE=${COMMONSSHARE_HELM_RELEASE-"commonsshare"}
 COMMONSSHARE_DEPLOYMENT=${COMMONSSHARE_DEPLOYMENT-false}
-CAT_HELM_DIR=${CAT_HELM_DIR-"${K8S_DEVOPS_CORE_HOME}/helx"}
+CAT_HELM_DIR=${CAT_HELM_DIR-"${HELX_DEVOPS_HOME}/helx"}
 CAT_USER_STORAGE_NAME=${CAT_USER_STORAGE_NAME-"stdnfs"}
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"10Gi"}
 # CAT_PD_NAME=${CAT_PD_NAME-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-disk"}
@@ -274,7 +274,7 @@ HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/secr
 HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/commonsshare/templates/hydroshare-secret.yaml"}
 
 NFSRODS_HELM_RELEASE=${NFSRODS_HELM_RELEASE-"nfsrods"}
-NFSRODS_HELM_DIR=${NFSRODS_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/nfsrods"}
+NFSRODS_HELM_DIR=${NFSRODS_HELM_DIR-"$HELX_DEVOPS_HOME/helx/charts/nfsrods"}
 NFSRODS_PV_NAME=${NFSRODS_PV_NAME-"${PV_PREFIX}$NFSRODS_HELM_RELEASE-pv"}
 NFSRODS_PV_STORAGE_SIZE=${NFSRODS_PV_STORAGE_SIZE-"100Gi"}
 NFSRODS_PV_STORAGECLASS=${NFSRODS_PV_STORAGECLASS-"${PV_PREFIX}$NFSRODS_HELM_RELEASE-sc"}
@@ -511,11 +511,11 @@ function deployELK(){
    export ELASTICSEARCH_REQUESTS_MEMORY
    export ELASTICSEARCH_LIMITS_MEMORY
    export ES_JAVA_OPTS
-   cat $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
+   cat $HELX_DEVOPS_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
           kubectl apply -n $NAMESPACE -f -
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/logstash/
+   kubectl apply -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/elasticsearch/es-service.yaml
+   kubectl apply -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/kibana/
+   kubectl apply -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/logstash/
    echo "# end deploying ELK"
 }
 
@@ -523,12 +523,12 @@ function deployELK(){
 function deleteELK(){
    echo "# deleting ELK"
    # delete ELK
-   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
-   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/logstash/
-   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
+   kubectl delete -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/elasticsearch/es-service.yaml
+   kubectl delete -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/logstash/
+   kubectl delete -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/kibana/
    export PVC_STORAGE_CLASS_NAME=$NFSP_STORAGECLASS
    export ELASTIC_PVC_STORAGE
-   cat $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
+   cat $HELX_DEVOPS_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
           kubectl delete -n $NAMESPACE -f -
    echo "# end deleting ELK"
 }
@@ -554,10 +554,10 @@ function deployNFSServer(){
    echo "# deploying NFS"
    createGCEDisk $GCE_NFS_SERVER_DISK $GCE_NFS_SERVER_STORAGE
    export GCE_NFS_SERVER_DISK
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
+   cat $HELX_DEVOPS_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl create -n $NAMESPACE -f -
    kubectl apply -n $NAMESPACE -R -f \
-       $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
+       $HELX_DEVOPS_HOME/nfs-server/nfs-server-svc.yaml
    echo "# end deploying NFS"
 }
 
@@ -567,7 +567,7 @@ function deleteNFSServer(){
    kubectl -n $NAMESPACE delete pvc $NFS_CLNT_PVC_NAME
    kubectl -n $NAMESPACE delete pv $NFS_CLNT_PV_NAME
    export GCE_NFS_SERVER_DISK=${1-$GCE_NFS_SERVER_DISK}
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
+   cat $HELX_DEVOPS_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl delete -n $NAMESPACE -f -
    kubectl delete -n $NAMESPACE svc nfs-server
    if [ "$GCE_NFS_SERVER_DISK_DELETE_W_APP" == true ]; then
@@ -607,12 +607,6 @@ spec:
 
 function deletePVC(){
     export PVC_NAME=$1
-    # export PVC_STORAGE_SIZE=$2
-    # # PVC_STORAGE_CLASS_NAME can be empty.
-    # export PVC_STORAGE_CLASS_NAME=$3
-    # echo "# deleting $PVC_NAME PVC"
-    # cat $K8S_DEVOPS_CORE_HOME/nfs-server/pvc-template.yaml | envsubst | \
-    #     kubectl delete -n $NAMESPACE -f -
     kubectl -n $NAMESPACE delete pvc $PVC_NAME
     echo "# $PVC_NAME PVC deleted"
 }
