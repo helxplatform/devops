@@ -328,7 +328,7 @@ export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.38"
 export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
 ```
 
-The full file appears below:
+The full file appears below with example values or placeholders which you'll need to replace with your own values:
 ```
 export NAMESPACE="jdoe_deploy"
 export GKE_DEPLOYMENT=false
@@ -349,7 +349,7 @@ export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
 ```
 For Github OAuth, you need to create an OAuth App in the settings of your Github account.  During the creation set "Homepage URL" to "https://[your hostname]/accounts/login" and "Authorization Callback URL" to "https://[your hostname]/accounts/github/login/callback/".  Add variables for GITHUB_NAME, GITHUB_CLIENT_ID, and GITHUB_SECRET in the variables file and assign the corresponding values after the OAuth App is created.
 
-As seen below, the rest of the file remains the same except for the three GitHub variables.
+As seen below, the rest of the file remains the same except for the three GitHub variables. Again, please replace the values with your own values.
 
 ```
 export NAMESPACE="jdoe_deploy"
