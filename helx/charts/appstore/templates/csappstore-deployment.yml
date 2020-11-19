@@ -25,7 +25,7 @@ spec:
         image: {{ .Values.image }}
         imagePullPolicy: Always
         command: ['/bin/bash', '-c']
-        args: ["bin/appstore updatedb {{ .Values.djangoSettings }} && bin/appstore createsuperuser && bin/appstore run {{ .Values.djangoSettings }}"]
+        args: ["bin/appstore updatedb {{ .Values.djangoSettings }} && bin/appstore createsuperuser && bin/appstore manageauthorizedusers {{ .Values.djangoSettings }} && bin/appstore run {{ .Values.djangoSettings }}"]
         # For debugging when things go wrong.
         # args: ["while true; do date; sleep 5; done"]
         env:
@@ -109,6 +109,20 @@ spec:
             secretKeyRef:
               key: APPSTORE_DJANGO_PASSWORD
               name: csappstore-secret
+        {{ if .Values.django.REMOVE_AUTHORIZED_USERS }}
+        - name: REMOVE_AUTHORIZED_USERS
+          valueFrom:
+            secretKeyRef:
+              key: REMOVE_AUTHORIZED_USERS
+              name: csappstore-secret
+        {{- end }}
+        {{ if .Values.django.AUTHORIZED_USERS }}
+        - name: AUTHORIZED_USERS
+          valueFrom:
+            secretKeyRef:
+              key: AUTHORIZED_USERS
+              name: csappstore-secret
+        {{- end }}
         - name: OAUTH_PROVIDERS
           valueFrom:
             secretKeyRef:
