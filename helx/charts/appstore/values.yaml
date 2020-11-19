@@ -80,6 +80,8 @@ djangoSettings: cat
 # postgres: false
 
 django:
+  AUTHORIZED_USERS: ""
+  REMOVE_AUTHORIZED_USERS: ""
   APPSTORE_DJANGO_USERNAME: "admin"
   APPSTORE_DJANGO_PASSWORD: ""
   ALLOW_DJANGO_LOGIN: ""

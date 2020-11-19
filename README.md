@@ -328,7 +328,7 @@ export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.38"
 export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
 ```
 
-The full file appears below:
+The full file appears below with example values or placeholders which you'll need to replace with your own values:
 ```
 export NAMESPACE="jdoe_deploy"
 export GKE_DEPLOYMENT=false
@@ -347,9 +347,27 @@ export APPSTORE_IMAGE="heliumdatastage/appstore:develop-v0.0.51"
 export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.38"
 export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
 ```
-For Github OAuth, you need to create an OAuth App in the settings of your Github account.  During the creation set "Homepage URL" to "https://[your hostname]/accounts/login" and "Authorization Callback URL" to "https://[your hostname]/accounts/github/login/callback/".  Add variables for GITHUB_NAME, GITHUB_CLIENT_ID, and GITHUB_SECRET in the variables file and assign the corresponding values after the OAuth App is created.
+For Github OAuth, you need to create an OAuth App in the settings of your Github account.  
+1) Go to the upper-right corner of any page, click your profile photo, then click Settings.
+2) In the left sidebar, click Developer settings.
+3) In the left sidebar, click OAuth Apps.
+4) Click New OAuth App.
+5) In "Application name", type the name of your app, e.g. jdoe-blackbalsam-github. You'll use this name as the env var GITHUB_NAME.
+6) In "Homepage URL", type the full URL to your app's login page, e.g. https://[your hostname]/accounts/login.
+7) You may optionally add a description of the application for users in the "Application description" field.
+8) In "Authorization callback URL", type the callback URL of your app, e.g. "https://[your hostname]/accounts/github/login/callback/".
+9) Click Register application.
+10) Record the Client ID and Client Secret to put in the GITHUB_CLIENT_ID and GITHUB_SECRET environment variables.
 
-As seen below, the rest of the file remains the same except for the three GitHub variables.
+```
+export OAUTH_PROVIDERS="google"
+export GITHUB_NAME="jdoe-blackbalsam-github"
+export GITHUB_CLIENT_ID="1ab2c3de789123456789"
+export GITHUB_SECRET="f4af51762caedab7aa123"
+```
+
+
+As seen below, the rest of the file remains the same except for the three GitHub variables. Again, please replace the values with your own values.
 
 ```
 export NAMESPACE="jdoe_deploy"
@@ -360,8 +378,8 @@ export NGINX_TLS_SECRET="doe-helx-tls-secret"
 export APPSTORE_DJANGO_PASSWORD="jdoe-dJaNGG0-53cret_Pa$$w0rd"
 export OAUTH_PROVIDERS="github"
 export GITHUB_NAME="jdoe-blackbalsam-github"
-export GITHUB_CLIENT_ID="<  GITHUB CLIENT_ID HERE >"
-export GITHUB_SECRET="< GITHUB SECRET HERE >"
+export GITHUB_CLIENT_ID="1ab2c3de789123456789"
+export GITHUB_SECRET="f4af51762caedab7aa123"
 export EMAIL_HOST_USER="none"
 export EMAIL_HOST_PASSWORD="none"
 # You can set specific images to use with these variables.
