@@ -82,6 +82,9 @@ djangoSettings: cat
 django:
   AUTHORIZED_USERS: ""
   REMOVE_AUTHORIZED_USERS: ""
+  # Defaults to "master". Specify "develop" to switch.
+  DOCKSTORE_APPS_BRANCH: "develop"
+  ###################################################
   APPSTORE_DJANGO_USERNAME: "admin"
   APPSTORE_DJANGO_PASSWORD: ""
   ALLOW_DJANGO_LOGIN: ""
