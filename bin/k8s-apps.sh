@@ -109,11 +109,11 @@ ENVIRONMENT=${ENVIRONMENT-"dev"}
 CLUSTER_NAME=${CLUSTER_NAME-"${USER}-cluster"}
 PV_PREFIX=${PV_PREFIX-"$NAMESPACE-"}
 DISK_PREFIX=${DISK_PREFIX-"${CLUSTER_NAME}-${PV_PREFIX}"}
-HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"../.."}
-K8S_DEVOPS_CORE_HOME=${K8S_DEVOPS_CORE_HOME-"${HELXPLATFORM_HOME}/devops"}
+HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/../.."}
+HELX_DEVOPS_HOME=${HELX_DEVOPS_HOME-"${HELXPLATFORM_HOME}/devops"}
 GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
 SECRET_FILENAME_SUFFIX=${SECRET_FILENAME_SUFFIX-"-${CLUSTER_NAME}-${NAMESPACE}"}
-DEPLOY_LOG_DIR=${DEPLOY_LOG_DIR-"${PWD}"}
+DEPLOY_LOG_DIR=${DEPLOY_LOG_DIR-"${HELXPLATFORM_HOME}"}
 DEPLOY_LOG=${DEPLOY_LOG-"${DEPLOY_LOG_DIR}/deploy-log-${CLUSTER_NAME}-${NAMESPACE}-$TIMESTAMP.txt"}
 
 # Set DYNAMIC_NFSCP_DEPLOYMENT to false if NFS storage is not available (GKE).
@@ -166,14 +166,14 @@ NEXTFLOW_NFS_PATH=${NEXTFLOW_NFS_PATH-"/nextflow"}
 NEXTFLOW_PV_STORAGECLASS=${NEXTFLOW_PV_STORAGECLASS-"${PV_PREFIX}nextflow-sc"}
 NEXTFLOW_PV_NAME=${NEXTFLOW_PV_NAME-"${PV_PREFIX}nextflow-pv"}
 
-AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/ambassador"}
+AMBASSADOR_HELM_DIR=${AMBASSADOR_HELM_DIR-"$HELX_DEVOPS_HOME/helx/charts/ambassador"}
 AMBASSADOR_HELM_RELEASE=${AMBASSADOR_HELM_RELEASE-"ambassador"}
 AMBASSADOR_RUNASUSER=${AMBASSADOR_RUNASUSER-""}
 AMBASSADOR_RUNASGROUP=${AMBASSADOR_RUNASGROUP-""}
 AMBASSADOR_FSGROUP=${AMBASSADOR_FSGROUP-""}
 AMBASSADOR_ROLE_INGRESSES=${AMBASSADOR_ROLE_INGRESSES-""}
 USE_CLUSTER_ROLES=${USE_CLUSTER_ROLES-false}
-NGINX_HELM_DIR=${NGINX_HELM_DIR="$K8S_DEVOPS_CORE_HOME/helx/charts/nginx"}
+NGINX_HELM_DIR=${NGINX_HELM_DIR="$HELX_DEVOPS_HOME/helx/charts/nginx"}
 NGINX_HELM_RELEASE=${NGINX_HELM_RELEASE-"nginx-revproxy"}
 NGINX_IMAGE=${NGINX_IMAGE-""}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
@@ -182,7 +182,6 @@ NGINX_TLS_SECRET=${NGINX_TLS_SECRET-""}
 NGINX_TLS_KEY=${NGINX_TLS_KEY-""}
 NGINX_TLS_CRT=${NGINX_TLS_CRT-""}
 NGINX_TLS_CA_CRT=${NGINX_TLS_CA_CRT-""}
-NGINX_DNS_RESOLVER=${NGINX_DNS_RESOLVER-""}
 NGINX_SERVICE_TYPE=${NGINX_SERVICE_TYPE-"LoadBalancer"}
 NGINX_SERVICE_HTTP_PORT=${NGINX_SERVICE_HTTP_PORT-"80"}
 NGINX_SERVICE_HTTPS_PORT=${NGINX_SERVICE_HTTPS_PORT-"443"}
@@ -205,7 +204,7 @@ HELM=${HELM-helm}
 HELM_DEBUG=${HELM_DEBUG-""}
 COMMONSSHARE_HELM_RELEASE=${COMMONSSHARE_HELM_RELEASE-"commonsshare"}
 COMMONSSHARE_DEPLOYMENT=${COMMONSSHARE_DEPLOYMENT-false}
-CAT_HELM_DIR=${CAT_HELM_DIR-"${K8S_DEVOPS_CORE_HOME}/helx"}
+CAT_HELM_DIR=${CAT_HELM_DIR-"${HELX_DEVOPS_HOME}/helx"}
 CAT_USER_STORAGE_NAME=${CAT_USER_STORAGE_NAME-"stdnfs"}
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"10Gi"}
 # CAT_PD_NAME=${CAT_PD_NAME-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-disk"}
@@ -243,7 +242,8 @@ APPSTORE_WITH_AMBASSADOR=${APPSTORE_WITH_AMBASSADOR-true}
 APPSTORE_SAML2_AUTH_ASSERTION_URL=${APPSTORE_SAML2_AUTH_ASSERTION_URL-""}
 APPSTORE_SAML2_AUTH_ENTITY_ID=${APPSTORE_SAML2_AUTH_ENTITY_ID-""}
 APPSTORE_STORAGE_CLAIMNAME=${APPSTORE_STORAGE_CLAIMNAME-""}
-
+APPSTORE_USERSTORAGE_CREATE=${APPSTORE_USERSTORAGE_CREATE-"false"}
+APPSTORE_ACCOUNT_DEFAULT_HTTP_PROTOCOL=${APPSTORE_ACCOUNT_DEFAULT_HTTP_PROTOCOL-"https"}
 export DICOMGH_GOOGLE_CLIENT_ID=${DICOMGH_GOOGLE_CLIENT_ID-""}
 
 TYCHO_HELM_RELEASE=${TYCHO_HELM_RELEASE-"tycho-api"}
@@ -253,6 +253,9 @@ TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
 TYCHO_STDNFS_PVC=${TYCHO_STDNFS_PVC-""}
 TYCHO_CREATE_HOME_DIRS=${TYCHO_CREATE_HOME_DIRS-""}
 TYCHO_RUNASROOT=${TYCHO_RUNASROOT-""}
+TYCHO_PARENT_DIR=${TYCHO_PARENT_DIR-""} # Chart default is "/home/pvc".
+TYCHO_SUBPATH_DIR=${TYCHO_SUBPATH_DIR-""} # Chart default is null, which uses $USER.
+TYCHO_SHARED_DIR=${TYCHO_SHARED_DIR-""} # Chart default is "shared_data".
 
 ELASTIC_PVC_STORAGE=${ELASTIC_PVC_STORAGE-"10Gi"}
 # Set X_STORAGECLASS to "" to use the default storage class.
@@ -270,7 +273,7 @@ HYDROSHARE_SECRET_SRC_FILE=${HYDROSHARE_SECRET_SRC_FILE-"$HELXPLATFORM_HOME/secr
 HYDROSHARE_SECRET_DST_FILE=${HYDROSHARE_SECRET_DST_FILE-"$CAT_HELM_DIR/charts/commonsshare/templates/hydroshare-secret.yaml"}
 
 NFSRODS_HELM_RELEASE=${NFSRODS_HELM_RELEASE-"nfsrods"}
-NFSRODS_HELM_DIR=${NFSRODS_HELM_DIR-"$K8S_DEVOPS_CORE_HOME/helx/charts/nfsrods"}
+NFSRODS_HELM_DIR=${NFSRODS_HELM_DIR-"$HELX_DEVOPS_HOME/helx/charts/nfsrods"}
 NFSRODS_PV_NAME=${NFSRODS_PV_NAME-"${PV_PREFIX}$NFSRODS_HELM_RELEASE-pv"}
 NFSRODS_PV_STORAGE_SIZE=${NFSRODS_PV_STORAGE_SIZE-"100Gi"}
 NFSRODS_PV_STORAGECLASS=${NFSRODS_PV_STORAGECLASS-"${PV_PREFIX}$NFSRODS_HELM_RELEASE-sc"}
@@ -329,7 +332,7 @@ EFK_VERSION_ARG=${EFK_VERSION_ARG-"--version=v2.0.0"}
 # Some commands need to be given time to execute after they are run before
 # running other related commands (like deleting a PV then deleting the related
 # disk).
-KUBE_WAIT_TIME=30
+KUBE_WAIT_TIME=${KUBE_WAIT_TIME-30}
 
 DUG_API=${DUG_API-false}
 # The Dug API is currently served directly from Ambassador and bypasses Nginx.
@@ -507,11 +510,11 @@ function deployELK(){
    export ELASTICSEARCH_REQUESTS_MEMORY
    export ELASTICSEARCH_LIMITS_MEMORY
    export ES_JAVA_OPTS
-   cat $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
+   cat $HELX_DEVOPS_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
           kubectl apply -n $NAMESPACE -f -
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
-   kubectl apply -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/logstash/
+   kubectl apply -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/elasticsearch/es-service.yaml
+   kubectl apply -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/kibana/
+   kubectl apply -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/logstash/
    echo "# end deploying ELK"
 }
 
@@ -519,12 +522,12 @@ function deployELK(){
 function deleteELK(){
    echo "# deleting ELK"
    # delete ELK
-   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/elasticsearch/es-service.yaml
-   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/logstash/
-   kubectl delete -n $NAMESPACE -R -f $K8S_DEVOPS_CORE_HOME/kibana/
+   kubectl delete -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/elasticsearch/es-service.yaml
+   kubectl delete -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/logstash/
+   kubectl delete -n $NAMESPACE -R -f $HELX_DEVOPS_HOME/kibana/
    export PVC_STORAGE_CLASS_NAME=$NFSP_STORAGECLASS
    export ELASTIC_PVC_STORAGE
-   cat $K8S_DEVOPS_CORE_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
+   cat $HELX_DEVOPS_HOME/elasticsearch/elasticsearch-template.yaml | envsubst | \
           kubectl delete -n $NAMESPACE -f -
    echo "# end deleting ELK"
 }
@@ -550,10 +553,10 @@ function deployNFSServer(){
    echo "# deploying NFS"
    createGCEDisk $GCE_NFS_SERVER_DISK $GCE_NFS_SERVER_STORAGE
    export GCE_NFS_SERVER_DISK
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
+   cat $HELX_DEVOPS_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl create -n $NAMESPACE -f -
    kubectl apply -n $NAMESPACE -R -f \
-       $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-svc.yaml
+       $HELX_DEVOPS_HOME/nfs-server/nfs-server-svc.yaml
    echo "# end deploying NFS"
 }
 
@@ -563,7 +566,7 @@ function deleteNFSServer(){
    kubectl -n $NAMESPACE delete pvc $NFS_CLNT_PVC_NAME
    kubectl -n $NAMESPACE delete pv $NFS_CLNT_PV_NAME
    export GCE_NFS_SERVER_DISK=${1-$GCE_NFS_SERVER_DISK}
-   cat $K8S_DEVOPS_CORE_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
+   cat $HELX_DEVOPS_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
        kubectl delete -n $NAMESPACE -f -
    kubectl delete -n $NAMESPACE svc nfs-server
    if [ "$GCE_NFS_SERVER_DISK_DELETE_W_APP" == true ]; then
@@ -603,12 +606,6 @@ spec:
 
 function deletePVC(){
     export PVC_NAME=$1
-    # export PVC_STORAGE_SIZE=$2
-    # # PVC_STORAGE_CLASS_NAME can be empty.
-    # export PVC_STORAGE_CLASS_NAME=$3
-    # echo "# deleting $PVC_NAME PVC"
-    # cat $K8S_DEVOPS_CORE_HOME/nfs-server/pvc-template.yaml | envsubst | \
-    #     kubectl delete -n $NAMESPACE -f -
     kubectl -n $NAMESPACE delete pvc $PVC_NAME
     echo "# $PVC_NAME PVC deleted"
 }
@@ -778,6 +775,18 @@ function deployTycho(){
   then
     HELM_VALUES+=",runAsRoot=$TYCHO_RUNASROOT"
   fi
+  if [ ! -z "$TYCHO_PARENT_DIR" ]
+  then
+    HELM_VALUES+=",parent_dir=$TYCHO_PARENT_DIR"
+  fi
+  if [ ! -z "$TYCHO_SUBPATH_DIR" ]
+  then
+    HELM_VALUES+=",subpath_dir=$TYCHO_SUBPATH_DIR"
+  fi
+  if [ ! -z "$TYCHO_SHARED_DIR" ]
+  then
+    HELM_VALUES+=",shared_dir=$TYCHO_SHARED_DIR"
+  fi
   $HELM -n $NAMESPACE upgrade --install $TYCHO_HELM_RELEASE \
      $CAT_HELM_DIR/charts/tycho-api $HELM_DEBUG --logtostderr --set $HELM_VALUES
    echo "# end deploying Tycho"
@@ -791,8 +800,8 @@ function deleteTycho(){
 }
 
 
-function deployAppStore(){
-  echo "# deploying AppStore"
+function createAppStoreData(){
+  echo "# creating AppStore data"
   if [ -z ${APPSTORE_DJANGO_PASSWORD+x} ]
   then
     APPSTORE_DJANGO_PASSWORD=`random-string 20`
@@ -818,6 +827,11 @@ function deployAppStore(){
     createPVC $APPSTORE_OAUTH_PVC $APPSTORE_OAUTH_PVC_STORAGE \
          $APPSTORE_OAUTH_PV_ACCESSMODE $APPSTORE_OAUTH_PV_STORAGECLASS
   fi
+}
+
+
+function deployAppStore(){
+  createAppStoreData
   ## Deploy AppStore
   HELM_VALUES="db.storageClass=$APPSTORE_DB_STORAGECLASS"
   if [ ! -z "$APPSTORE_OAUTH_PVC" ]
@@ -882,12 +896,12 @@ function deployAppStore(){
    HELM_VALUES+=",appStorage.claimName=$APPSTORE_STORAGE_CLAIMNAME"
   fi
 
+  HELM_VALUES+=",userStorage.create=$APPSTORE_USERSTORAGE_CREATE"
   HELM_VALUES+=",django.APPSTORE_DJANGO_USERNAME=$APPSTORE_DJANGO_USERNAME"
   HELM_VALUES+=",django.APPSTORE_DJANGO_PASSWORD=$APPSTORE_DJANGO_PASSWORD"
   HELM_VALUES+=",django.SECRET_KEY=$SECRET_KEY"
   HELM_VALUES+=",django.EMAIL_HOST_USER=$EMAIL_HOST_USER"
   HELM_VALUES+=",django.EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD"
-  # HELM_VALUES+=",django.oauth.OAUTH_PROVIDERS=$OAUTH_PROVIDERS"
   HELM_VALUES+=",django.oauth.OAUTH_PROVIDERS=$OAUTH_PROVIDERS"
   HELM_VALUES+=",django.oauth.GITHUB_NAME=$GITHUB_NAME"
   HELM_VALUES+=",django.oauth.GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID"
@@ -895,6 +909,7 @@ function deployAppStore(){
   HELM_VALUES+=",django.oauth.GOOGLE_NAME=$GOOGLE_NAME"
   HELM_VALUES+=",django.oauth.GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID"
   HELM_VALUES+=",django.oauth.GOOGLE_SECRET=$GOOGLE_SECRET"
+  HELM_VALUES+=",ACCOUNT_DEFAULT_HTTP_PROTOCOL=$APPSTORE_ACCOUNT_DEFAULT_HTTP_PROTOCOL"
 
   if [ ! -z "$BRAINI_RODS" ]
   then
@@ -1113,10 +1128,6 @@ function deployNginxRevProxy(){
    if [ ! -z "$NGINX_TLS_SECRET" ]
    then
      HELM_VALUES+=",SSL.nginxTLSSecret=$NGINX_TLS_SECRET"
-   fi
-   if [ ! -z "$NGINX_DNS_RESOLVER" ]
-   then
-     HELM_VALUES+=",service.resolver=$NGINX_DNS_RESOLVER"
    fi
    if [ ! -z "$NGINX_INGRESS_HOST" ]
    then
@@ -1477,6 +1488,9 @@ case $APPS_ACTION in
         ;;
       appstore)
         deployAppStore
+        ;;
+      appstoredata)
+        createAppStoreData
         ;;
       commonsshare)
         deployCommonsShare

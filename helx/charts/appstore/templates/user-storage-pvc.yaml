@@ -1,0 +1,15 @@
+{{- if eq .Values.userStorage.create true }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.userStorage.claimName }}
+  labels:
+    app: cs-{{ template "appstore.name" . }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.userStorage.storageSize }}
+  storageClassName: {{ .Values.userStorage.storageClass }}
+{{- end }}

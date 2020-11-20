@@ -49,4 +49,4 @@ config:
   claimName: nfsrods-config-pvc
   storageClass: nfsrods-config-sc
 
-runArgs: "/usr/sbin/useradd -m -u 999 -s /bin/bash rods; ./start.sh"
+runArgs: "/usr/sbin/useradd -m -u 1000 -s /bin/bash rods; ./start.sh"

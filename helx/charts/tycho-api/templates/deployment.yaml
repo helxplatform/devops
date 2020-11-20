@@ -33,6 +33,14 @@ spec:
           value: "{{ .Values.stdnfsPvc }}"
         - name: RUNASROOT
           value: "{{ .Values.runAsRoot }}"
+        - name: PARENT_DIR
+          value: "{{ .Values.parent_dir }}"
+        {{- if .Values.subpath_dir }}
+        - name: SUBPATH_DIR
+          value: "{{ .Values.subpath_dir }}"
+        {{- end }}
+        - name: SHARED_DIR
+          value: "{{ .Values.shared_dir }}"
         imagePullPolicy: "Always"
         name: {{ template "tycho-api.name" . }}
         ports:

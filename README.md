@@ -99,12 +99,6 @@ The Django admin user and password.
  django.APPSTORE_DJANGO_PASSWORD
 ```
 
-Set a 50 charactor random string.
-
-```
- django.SECRET_KEY
-```
-
 OAuth setup for user authentication.  You will need to configure Google, Github or both for user authentication.
 
 ```
@@ -190,9 +184,9 @@ Now that everything is installed you should be able to log in as the Django admi
 
 To deploy HeLx 1.0 on the Google Kubernetes Engine you will need to have an account with Google Cloud Platform and configure the [Google Cloud SDK](https://cloud.google.com/sdk/docs/quickstarts) on your local system.  
 
-## Centos 8 Workstation Configuration and Deployment to GKE Cluster
+## HeLx Deployment to GKE Cluster Using Centos 8
 
-### Tools Setup
+### Tools Setup for Centos 8
 
 ```
 sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
@@ -240,7 +234,7 @@ chmod 700 get_helm.sh
 ```
 
 ### Cluster Environment Variables and Creation of Cluster in GKE
-Create a text file named "env-vars-helx.sh" in the HeLx Platform directory (or elsewhere and adjust the CLUSTER_CONFIG variable below) with the following that will contain a few variables that are used in the creation of the Kubernetes cluster.  Edit the variables as needed, at the very least you will need to update the PROJECT_ID.  Values with "< text >" need to be replaced with values for your environment.
+Create a text file named "env-vars-helx.sh" in the HeLx Platform directory. You may also create this file elsewhere and point to it with the CLUSTER_CONFIG variable below. It should contain the following variables that are used in the creation of the Kubernetes cluster.  Edit the variables as needed. At the very least you will need to update the PROJECT_ID.  Values with "< text >" need to be replaced with values for your environment.
 
 ```
 export PROJECT="< Google project Id >" # Set this to your Google project ID.
@@ -280,36 +274,117 @@ gke-vagrant-cluster-dev-default-pool-b7fb2793-q3p1   Ready    <none>   114s   v1
 
 To deploy HeLx into the cluster you need to add a few more environment variables the config file, in this document we use "env-vars-helx.sh".  
 
-It is suggested to use a static IP address for the HeLx web service.  If you do use a static IP address then assign that to the NGINX_IP variable.  Remove the NGINX_IP line if you are not using a static IP.  Set NGINX_SERVERNAME to the DNS hostname you want to use.  Create a TLS secret in the same namespace as you are deploying HeLx and set NGINX_TLS_SECRET to the name of the secret.  If you do not want to use HTTPS then remove the NGINX_TLS_SECRET line.
+Set a unique namespace for your deployment, perhaps using your name or part of your name.
+```
+export NAMESPACE=<namespace> # example: "jdoe_deploy"
+```
+Set GKE_DEPLOYMENT to "false".
+```
+export GKE_DEPLOYMENT=false
+```
+Set NGINX_SERVERNAME to the DNS hostname you want to use.
+```
+NGINX_SERVERNAME=< dns_name> # example: "helx.jdoe.cluster.edc.example.org"
+```
+It is suggested to use a static IP address for the HeLx web service.  If you do use a static IP address, then assign it to the NGINX_IP variable.  
+```
+export NGINX_IP=<"ip_address"> # example: "10.10.10.10"
+```
+Remove the NGINX_IP line if you are not using a static IP. You can use the command "kubectl get svc" to get the IP that is assigned to nginx-revproxy if you did not set a static IP.
 
-Set APPSTORE_DJANGO_PASSWORD to a long, secure password for the admin user account in Django, which is used to administer users for HeLx.  Once HeLx is deployed you can use https://[your hostname]/admin to log in and create user accounts for the system.  For Django, also create a random, 50 character string and assign it to SECRET_KEY.
-
+If you plan to use HTTPS, create a TLS secret in the namespace you are using and set NGINX_TLS_SECRET to the name of the secret.  If you do not plan to use HTTPS, remove the NGINX_TLS_SECRET line.
+```
+NGINX_TLS_SECRET=< tls_secret > # example: jdoe-helx-tls-secret
+```
+Set APPSTORE_DJANGO_PASSWORD to a long, secure password for the admin user account in Django, which is used to administer users for HeLx.  Once HeLx is deployed you can use https://[your hostname]/admin to log in and create user accounts for the system.  If not set a random password will be generated.
+```
+export APPSTORE_DJANGO_PASSWORD=< admin_secret > # example: jdoe-dJaNGG0-53cret_Pa$$w0rd
+```
 For OAuth setup you can use Github, Google, or both.  To use Google you will set OAUTH_PROVIDERS to just "google" and for Github use "github".  If you want to use both set it to "google,github".
 
-For Google OAuth you will need to log in to your GCP account and add an OAuth Client ID.  Once logged in, navigate to "API & Services"->"Credentials" and create a new "OAuth client ID" with the application type of "Web application".  Add an entry to the "Authorized JavaScript origins" URIs for "https://[your hostname]" and to "Authorized redirect URIs" to "https://[your hostname]/accounts/google/login/callback/".  After the credentials are created set GOOGLE_NAME, GOOGLE_CLIENT_ID, and GOOGLE_SECRET.
-
-For Github you will need to create an OAuth App in the settings of your Github account.  During the creation set "Homepage URL" to "https://[your hostname]/accounts/login" and "Authorization Callback URL" to "https://[your hostname]/accounts/github/login/callback/".  Add variables for GITHUB_NAME, GITHUB_CLIENT_ID, and GITHUB_SECRET in the variables file and assign the corresponding values after the OAuth App is created.
-
-To configure outgoing emails you will need to create a Google email account and setup an App Password for the email account.  Set EMAIL_HOST_USER and EMAIL_HOST_PASSWORD to what is setup.
-
+For Google OAuth you will need to log in to your GCP account and get an OAuth Client ID.
+1) Point your browser to https://console.cloud.google.com/home/dashboard.  
+2) Then follow: Navigation->APIs & Services->Credentials->CREATE CREDENTIALS->OAuth Client ID.
+3) Choose Application Type: Web Application.
+4) Enter a name for your application, e.g. jdoe-blackbalsam-google. The chosen name should be used for the GOOGLE_NAME environment variable below.
+5) For Authorized javascript origins, enter your dns name: https://helx.jdoe.cluster.edc.example.org.  
+6) For Authorized redirect URIs, enter: https://helx.jdoe.cluster.edc.example.org/google/login/callback/.
+You will be supplied with Google Client ID and Google Secret, which need to be entered as environment variables.
 ```
-export NAMESPACE="helx"
-export GKE_DEPLOYMENT=true
-export USE_NFS_PVS=false
-export NGINX_SERVERNAME="< helx.example.com >"
-export NGINX_IP="< 192.168.0.1 >"
-export NGINX_TLS_SECRET="< helx-tls-secret >"
-export APPSTORE_DJANGO_PASSWORD="< SECRET HERE >"
-export SECRET_KEY="< SECRET HERE (50 chars) >"
 export OAUTH_PROVIDERS="google"
-export GOOGLE_NAME="< Google OAuth App Name >"
+export GOOGLE_NAME="jdoe-blackbalsam-google"
+export GOOGLE_CLIENT_ID="12345678912-24m1q8va5qseq4sva8m3ottbbcbbao1.apps.googleusercontent.com"
+export GOOGLE_SECRET="iABBc_2c_X_GeQOuq7MalxZ"
+```
+For EMAIL_HOST_USER and EMAIL_HOST_PASSWORD, you may simply enter "none" for now.
+```
+export EMAIL_HOST_USER="none"
+export EMAIL_HOST_PASSWORD="none"
+```
+You can set specific images to use with APPSTORE_IMAGE, TYCHO_API_IMAGE, and NGINX_IMAGE, if you wish.
+```
+export APPSTORE_IMAGE="heliumdatastage/appstore:develop-v.0.0.51"
+export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.38"
+export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
+```
+
+The full file appears below with example values or placeholders which you'll need to replace with your own values:
+```
+export NAMESPACE="jdoe_deploy"
+export GKE_DEPLOYMENT=false
+export NGINX_SERVERNAME="helx.jdoe.cluster.edc.example.org"
+export NGINX_IP="192.168.0.1"
+export NGINX_TLS_SECRET="doe-helx-tls-secret"
+export APPSTORE_DJANGO_PASSWORD="jdoe-dJaNGG0-53cret_Pa$$w0rd"
+export OAUTH_PROVIDERS="google"
+export GOOGLE_NAME="jdoe-blackbalsam-google"
 export GOOGLE_CLIENT_ID="< SECRET HERE >"
 export GOOGLE_SECRET="< SECRET HERE >"
-export EMAIL_HOST_USER="< email@example.com >"
-export EMAIL_HOST_PASSWORD="< SECRET HERE >"
+export EMAIL_HOST_USER="none"
+export EMAIL_HOST_PASSWORD="none"
 # You can set specific images to use with these variables.
-export APPSTORE_IMAGE="heliumdatastage/appstore:develop-v0.0.44"
-export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.32"
+export APPSTORE_IMAGE="heliumdatastage/appstore:develop-v0.0.51"
+export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.38"
+export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
+```
+For Github OAuth, you need to create an OAuth App in the settings of your Github account.  
+1) Go to the upper-right corner of any page, click your profile photo, then click Settings.
+2) In the left sidebar, click Developer settings.
+3) In the left sidebar, click OAuth Apps.
+4) Click New OAuth App.
+5) In "Application name", type the name of your app, e.g. jdoe-blackbalsam-github. You'll use this name as the env var GITHUB_NAME.
+6) In "Homepage URL", type the full URL to your app's login page, e.g. https://[your hostname]/accounts/login.
+7) You may optionally add a description of the application for users in the "Application description" field.
+8) In "Authorization callback URL", type the callback URL of your app, e.g. "https://[your hostname]/accounts/github/login/callback/".
+9) Click Register application.
+10) Record the Client ID and Client Secret to put in the GITHUB_CLIENT_ID and GITHUB_SECRET environment variables.
+
+```
+export OAUTH_PROVIDERS="google"
+export GITHUB_NAME="jdoe-blackbalsam-github"
+export GITHUB_CLIENT_ID="1ab2c3de789123456789"
+export GITHUB_SECRET="f4af51762caedab7aa123"
+```
+
+
+As seen below, the rest of the file remains the same except for the three GitHub variables. Again, please replace the values with your own values.
+
+```
+export NAMESPACE="jdoe_deploy"
+export GKE_DEPLOYMENT=false
+export NGINX_SERVERNAME="helx.jdoe.cluster.edc.example.org"
+export NGINX_IP="192.168.0.1"
+export NGINX_TLS_SECRET="doe-helx-tls-secret"
+export APPSTORE_DJANGO_PASSWORD="jdoe-dJaNGG0-53cret_Pa$$w0rd"
+export OAUTH_PROVIDERS="github"
+export GITHUB_NAME="jdoe-blackbalsam-github"
+export GITHUB_CLIENT_ID="1ab2c3de789123456789"
+export GITHUB_SECRET="f4af51762caedab7aa123"
+export EMAIL_HOST_USER="none"
+export EMAIL_HOST_PASSWORD="none"
+# You can set specific images to use with these variables.
+export APPSTORE_IMAGE="heliumdatastage/appstore:develop-v0.0.51"
+export TYCHO_API_IMAGE="heliumdatastage/tycho-api:develop-v0.0.38"
 export NGINX_IMAGE="heliumdatastage/nginx:cca-v0.0.5"
 ```
 
@@ -342,3 +417,17 @@ export GCE_NFS_SERVER_DISK_DELETE_W_APP=true
 ```
 $HELXPLATFORM_HOME/devops/bin/gke-cluster.sh -c $CLUSTER_CONFIG delete cluster
 ```
+
+# Minimal Deployment to GKE Cluster Using HeLx Parent Helm Chart
+Follow instructions in the "Tools Setup for Centos 8" and "Create Cluster in GKE Using Script" sections above.
+```
+helm install helx . $HELXPLATFORM_HOME/devops/helx
+```
+It will take a few minutes for HeLx to deploy.  Follow the instructions in the output of the Helm command to log in as the Django admin.  Once logged in as the Django admin you can go to the HeLx URL and navigate to the apps section to create new apps.
+
+To delete HeLx run this command.
+```
+helm delete helx
+```
+***NOTE***
+You will need to delete any apps created with HeLx using the web UI or manually with kubectl commands.

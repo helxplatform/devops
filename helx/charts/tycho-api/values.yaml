@@ -24,7 +24,7 @@ resources:
      cpu: 100m
      memory: 128Mi
 
-image: heliumdatastage/tycho-api:develop-v0.0.32
+image: heliumdatastage/tycho-api:develop-v0.0.38
 
 # Set either useClusterRole or useRole to true.
 useClusterRole: false
@@ -39,3 +39,8 @@ stdnfsPvc: stdnfs
 createHomeDirs: true
 
 runAsRoot: true
+
+# Variables for default volumes.
+parent_dir: "/home"
+subpath_dir: null
+shared_dir: "shared"
