@@ -1,0 +1,15 @@
+{{- if not .Values.storage.gcePersistentDiskPdName }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.storage.claimName }}
+  labels:
+    {{- include "nfs-server.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.storage.pvcStorage }}
+  storageClassName: {{ .Values.storage.storageClassName }}
+{{- end }}
