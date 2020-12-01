@@ -421,7 +421,7 @@ $HELXPLATFORM_HOME/devops/bin/gke-cluster.sh -c $CLUSTER_CONFIG delete cluster
 # Minimal Deployment to GKE Cluster Using HeLx Parent Helm Chart
 Follow instructions in the "Tools Setup for Centos 8" and "Create Cluster in GKE Using Script" sections above.
 ```
-helm install helx . $HELXPLATFORM_HOME/devops/helx
+helm install helx $HELXPLATFORM_HOME/devops/helx
 ```
 It will take a few minutes for HeLx to deploy.  Follow the instructions in the output of the Helm command to log in as the Django admin.  Once logged in as the Django admin you can go to the HeLx URL and navigate to the apps section to create new apps.
 
