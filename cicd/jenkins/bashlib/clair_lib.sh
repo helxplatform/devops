@@ -1,4 +1,135 @@
 # -------------------------------------------------------------------------
+# start_clair
+# Starts clair db and server
+# Pre-requisites:
+#    - None
+# Parameters:
+#    - N/A
+# Example call: start_clair
+# Result:
+#    - Outputs:
+#       1) clair db and clair server are running
+#       2) /var/jenkins_home/clair/pid_lock has the container ids of server/db
+#       3) logs of execution are in /var/jenkins_home/clair_startup_log.txt
+# -------------------------------------------------------------------------
+function start_clair ()
+{
+   #set -ex
+
+   exec 3>&1 4>&2
+   trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
+   exec 1>>/var/jenkins_home/clair/clair_startup_log.txt 2>&1
+   #exec 1>>/var/log/clair/clair_startup_log.txt 2>&1
+   #exec 1>>./clair_startup_log.txt 2>&1
+
+   DIVIDER="------------------------------------------------------------------------------------"
+   echo $DIVIDER
+   echo `date` "Starting new clair server and db."
+
+   PID=/var/jenkins_home/clair/pid_lock
+   FIVE_MIN_IN_HALF_SECS=600
+   count=1
+   while  [ test -f "$PID" && count <= FIVE_MIN_IN_HALF_SECS ]
+   do
+      if [ count -lt FIVE_MIN_IN_HALF_SECS  ]; then
+         echo "Waiting on pid_lock"
+         sleep .5
+         ((count++))
+      else
+         echo "ERROR: Timed out waiting on $PID!"
+         echo "Taking Corrective action: Stopping and removing existing clair server and db!"
+      fi
+   done
+
+   clair_images=$(docker ps | grep clair | cut -d' ' -f1 | paste -d " "  - -)
+   if [ -n "$clair_images" ]; then
+
+      echo `date` "Stopping old containers."
+      docker kill $clair_images || true
+
+      echo `date` "Removing stopped containers."
+      docker container rm $clair_images || true
+   fi
+
+   # Start most current version of clair-db
+   echo `date` "Starting new clair db . . ."
+   db_cont_id=$(docker run -d --name clair-db arminc/clair-db:latest | cut -c1-12)
+   if [  $? -eq 0 ]; then
+      echo `date` "New clair db started successfully."
+      echo $db_cont_id > $PID
+   else
+      echo `date` "Failed to start new clair db."
+      exit 1
+   fi
+
+   # Start clair server
+   echo `date` "Starting new clair server . . ."
+   server_cont_id=$(docker run -p 6060:6060 --link clair-db:postgres -d --name clair \
+       arminc/clair-local-scan:v2.1.0_1e2ed91d90973d68a9840e4f08798d045cf7c2d7 | cut -c1-12)
+   if [  $? -eq 0 ]; then
+      echo `date` "New clair server started successfully."
+      echo $server_cont_id >> $PID
+   else
+      echo `date` "Failed to start new clair server."
+      echo `date` "Deleting clair db."
+      docker kill $db_cont_id || true
+      docker container rm $db_cont_id || true
+      rm -rf $PID
+      exit 2
+   fi
+
+   echo "Done."
+   echo $DIVIDER
+}
+
+
+# -------------------------------------------------------------------------
+# stop_clair
+# Stops clair db and server
+# Pre-requisites:
+#    - None
+# Parameters:
+#    - N/A
+# Example call: stop_clair
+# Result:
+#    - Outputs:
+#       1) clair db and clair server containers are stopped and removed
+#       2) /var/jenkins_home/clair/pid_lock is removed
+#       3) logs of execution are in /var/jenkins_home/clair_startup_log.txt
+# -------------------------------------------------------------------------
+function stop_clair ()
+{
+   #set -ex
+
+   exec 3>&1 4>&2
+   trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
+   exec 1>>/var/jenkins_home/clair/clair_startup_log.txt 2>&1
+   #exec 1>>/var/log/clair/clair_startup_log.txt 2>&1
+   #exec 1>>./clair_startup_log.txt 2>&1
+
+   DIVIDER="------------------------------------------------------------------------------------"
+   echo $DIVIDER
+   echo `date` "Stopping clair server and db."
+
+   PID=/var/jenkins_home/clair/pid_lock
+   clair_images=$(docker ps | grep clair | cut -d' ' -f1 | paste -d " "  - -)
+   if [ -n "$clair_images" ]; then
+
+      echo `date` "Stopping old containers."
+      docker kill $clair_images || true
+
+      echo `date` "Removing stopped containers."
+      docker container rm $clair_images || true
+   fi
+
+   rm -rf $PID
+
+   echo "Done."
+   echo $DIVIDER
+}
+
+
+# -------------------------------------------------------------------------
 # scan_clair
 # Security scans Docker images. Call from containerized Jenkins
 # Pre-requisites:
@@ -17,7 +148,6 @@
 #       1) JSON table of security scan information
 #       2) Text table of security scan information, free of control chars
 # -------------------------------------------------------------------------
-
 function scan_clair () {
 
    ORG="$1"
@@ -49,9 +179,18 @@ function scan_clair () {
       echo "Creating $XFM_DIR"
       /bin/mkdir "$XFM_DIR"
    fi
+
+   # start clair server and db here
+   # echo "Starting clair server and db . . ."
+   # start_clair
+
    echo "Invoking clair-scanner on $ORG/$REPO:$BRANCH-$VER"
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
       "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VER" > "$XFM_DIR/table.txt"
+
+   # Stop clair server and db here
+   # echo "Stopping clair server and db  . . ."
+   # stop_clair
 
    # Remove control chars
    sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $XFM_DIR/table.txt > \
@@ -87,7 +226,6 @@ function scan_clair () {
 #    - Double lines have been removed from table styling (except for nested table)
 #    - Source clair html files are organized by directory.
 # -------------------------------------------------------------------------
-
 function postprocess_clair_output() {
 
    ORG=$1
@@ -164,5 +302,6 @@ function postprocess_clair_output() {
    #mv "$FN.tar.gz" "$FN/"
    #cd "$FN/"
    #rm -f clair_* clean* vuln*
+   echo "Postprocessing clair output complete."
 }
 
