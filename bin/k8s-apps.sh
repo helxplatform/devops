@@ -245,6 +245,8 @@ APPSTORE_STORAGE_CLAIMNAME=${APPSTORE_STORAGE_CLAIMNAME-""}
 APPSTORE_USERSTORAGE_CREATE=${APPSTORE_USERSTORAGE_CREATE-"false"}
 APPSTORE_ACCOUNT_DEFAULT_HTTP_PROTOCOL=${APPSTORE_ACCOUNT_DEFAULT_HTTP_PROTOCOL-"https"}
 export DICOMGH_GOOGLE_CLIENT_ID=${DICOMGH_GOOGLE_CLIENT_ID-""}
+AUTHORIZED_USERS=${AUTHORIZED_USERS-""}
+REMOVE_AUTHORIZED_USERS=${REMOVE_AUTHORIZED_USERS-""}
 
 TYCHO_HELM_RELEASE=${TYCHO_HELM_RELEASE-"tycho-api"}
 TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-""}
@@ -352,8 +354,8 @@ DUG_ES_NFS_PATH=${DUG_ES_NFS_PATH-"/dug-elasticsearch"}
 DUG_ES_PV_STORAGECLASS=${DUG_ES_PV_STORAGECLASS-"${PV_PREFIX}dug-elasticsearch-sc"}
 DUG_ES_PV_NAME=${DUG_ES_PV_NAME-"${PV_PREFIX}dug-elasticsearch-pv"}
 DUG_ES_APP_NAME=${DUG_ES_APP_NAME-"dug-elasticsearch"}
-DUG_ES_XMS=${DUG_ES_XMS-"500m"} # initial memory allocation pool for JVM
-DUG_ES_XMX=${DUG_ES_XMX-"2g"} # maximum memory allocation pool for JVM
+DUG_ES_XMS=${DUG_ES_XMS-""} # initial memory allocation pool for JVM
+DUG_ES_XMX=${DUG_ES_XMX-""} # maximum memory allocation pool for JVM
 DUG_NEO4J_PD_NAME=${DUG_NEO4J_PD_NAME-"${DISK_PREFIX}dug-neo4j-disk"}
 DUG_NEO4J_PD_DELETE_W_APP=${DUG_NEO4J_PD_DELETE_W_APP-false}
 DUG_NEO4J_PVC=${DUG_NEO4J_PVC-"dug-neo4j-pvc"}
@@ -375,7 +377,9 @@ DUG_REDIS_PV_STORAGECLASS=${DUG_REDIS_PV_STORAGECLASS-"${PV_PREFIX}dug-redis-sc"
 DUG_REDIS_PV_NAME=${DUG_REDIS_PV_NAME-"${PV_PREFIX}dug-redis-pv"}
 DUG_REDIS_APP_NAME=${DUG_REDIS_APP_NAME-"dug-redis"}
 DUG_WEB_APP_NAME=${DUG_WEB_APP_NAME-"dug-web"}
+DUG_WEB_IMAGE_TAG=${DUG_WEB_IMAGE_TAG-""}
 DUG_SC_APP_NAME=${DUG_SC_APP_NAME-"dug-search-client"}
+DUG_SC_IMAGE_TAG=${DUG_SC_IMAGE_TAG-""}
 DUG_NBOOST_APP_NAME=${DUG_NBOOST_APP_NAME-"dug-nboost"}
 
 #
@@ -926,6 +930,14 @@ function deployAppStore(){
   then
     HELM_VALUES+=",apps.DICOMGH_GOOGLE_CLIENT_ID=$DICOMGH_GOOGLE_CLIENT_ID"
   fi
+  if [ ! -z "$AUTHORIZED_USERS" ]
+  then
+    HELM_VALUES+=",django.AUTHORIZED_USERS=$AUTHORIZED_USERS"
+  fi
+  if [ ! -z "$REMOVE_AUTHORIZED_USERS" ]
+  then
+    HELM_VALUES+=",django.REMOVE_AUTHORIZED_USERS=$REMOVE_AUTHORIZED_USERS"
+  fi
   $HELM -n $NAMESPACE upgrade $APPSTORE_HELM_RELEASE \
      $CAT_HELM_DIR/charts/appstore --install $HELM_DEBUG --logtostderr --set $HELM_VALUES
   echo "# end deploying AppStore"
@@ -1325,11 +1337,22 @@ function dug(){
     HELM_VALUES+=",dug.web.service_name=$DUG_WEB_APP_NAME"
     HELM_VALUES+=",dug.search_client.service_name=$DUG_SC_APP_NAME"
     HELM_VALUES+=",dug.nboost.service_name=$DUG_NBOOST_APP_NAME"
-    HELM_VALUES+=",dug.elasticsearch.xmx=$DUG_ES_XMX"
-    HELM_VALUES+=",dug.elasticsearch.xms=$DUG_ES_XMS"
-    if [ ! -z "$DUG_IMAGE_TAG" ]
+    if [ ! -z "$DUG_ES_XMX" ]
     then
-      HELM_VALUES+=",dug.web.image_tag=$DUG_IMAGE_TAG"
+      HELM_VALUES+=",dug.elasticsearch.xmx=$DUG_ES_XMX"
+    fi
+    if [ ! -z "$DUG_ES_XMS" ]
+    then
+      HELM_VALUES+=",dug.elasticsearch.xms=$DUG_ES_XMS"
+    fi
+    HELM_VALUES+=",dug.elasticsearch.storage_class=$DUG_ES_PV_STORAGECLASS"
+    if [ ! -z "$DUG_WEB_IMAGE_TAG" ]
+    then
+      HELM_VALUES+=",dug.web.image_tag=$DUG_WEB_IMAGE_TAG"
+    fi
+    if [ ! -z "$DUG_SC_IMAGE_TAG" ]
+    then
+      HELM_VALUES+=",dug.search_client.image_tag=$DUG_SC_IMAGE_TAG"
     fi
     if [ "$HELM_VALUES" = "" ]; then
       HELM_SET_ARG=""

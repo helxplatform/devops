@@ -109,6 +109,13 @@ spec:
             secretKeyRef:
               key: APPSTORE_DJANGO_PASSWORD
               name: csappstore-secret
+        {{ if .Values.django.DOCKSTORE_APPS_BRANCH }}
+        - name: DOCKSTORE_APPS_BRANCH
+          valueFrom:
+            secretKeyRef:
+              key: DOCKSTORE_APPS_BRANCH
+              name: csappstore-secret
+        {{- end }}
         {{ if .Values.django.REMOVE_AUTHORIZED_USERS }}
         - name: REMOVE_AUTHORIZED_USERS
           valueFrom:
