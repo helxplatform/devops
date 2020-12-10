@@ -234,6 +234,9 @@ function cleanup ()
 # --- BUILD_APP --- 
 function build_app ()
 {
+
+   local -r project=$1
+
    # Array index constants
    local -r CODE_PRI_URL=0
    local -r CODE_SEC_URL=1
@@ -264,9 +267,9 @@ function build_app ()
 
    # Read YAML into arrays for processing 
    echo "Reading yaml file . . ."
-   local code_array=(`yq read -X appstore_master.yaml 'code.*'`)
-   local docker_array=(`yq read -X appstore_master.yaml 'docker.*'`)
-   local test_array=(`yq read -X appstore_master.yaml 'test.*'`)
+   local code_array=(`yq read -X $project.yaml 'code.*'`)
+   local docker_array=(`yq read -X $project.yaml 'docker.*'`)
+   local test_array=(`yq read -X $Project.yaml 'test.*'`)
 
    # yaml constants
    local -r ORG=${docker_array[$DOCKER_ORG]}
