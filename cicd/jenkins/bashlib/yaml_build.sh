@@ -19,8 +19,8 @@ function get_tags ()
    local branch=$1
    local ver=$2
 
-   echo "get_tags: $branch $ver"
-   echo "Getting tags for image . . ."
+##   echo "get_tags: $branch $ver"
+#   echo "Getting tags for image . . ."
    if [ $branch == "master" ]; then
       tags="$ver:latest"
    else
@@ -111,7 +111,7 @@ function prebuild ()
    local -r version_file=$4
    local -r build_args=$5
 
-   echo "prebuild: $org $repo $branch $build_args"
+ #  echo "prebuild: $org $repo $branch $build_args"
    incr_version $version_file
    local ver=`get_version $version_file`
    local tags=$(get_tags $branch $ver)
@@ -137,8 +137,8 @@ function build ()
 
    # handle repo 2, unusual docker filenames and paths here!!!
 
-   echo "build: $org $repo $branch $build_args $docker_path $docker_fn"
-   echo "Building app . . ."
+#   echo "build: $org $repo $branch $build_args $docker_path $docker_fn"
+#   echo "Building app . . ."
 
    # for -f, Name of the Dockerfile, the default is ‘PATH/Dockerfile’)
    #    --> comes before $docker_path, though redundant if full path given
