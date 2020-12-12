@@ -148,7 +148,7 @@ function get_version () {
     fi
 
     ver=$(< $version_file)
-    echo "$ver"
+#    echo "$ver"
     return 0
 }
 
@@ -188,7 +188,7 @@ function incr_version () {
         255) echo "Version file not found."; exit $rc;;
         *) echo "Unknown error";;
     esac
-    echo "Old version: [$oldver]."
+#    echo "Old version: [$oldver]."
     read -r major minor subminor <<< $(echo $oldver | awk -F. '{print $1, $2, $3}')
 
     newsubminor=''
@@ -228,8 +228,8 @@ function incr_version () {
     if [ -n "${minor}" ]; then newver=$newver".$newminor"; fi
     if [ -n "${subminor}" ]; then newver=$newver".$newsubminor"; fi
 
-    echo "New version: [$newver]."
-    echo "$newver"
+#    echo "New version: [$newver]."
+#    echo "$newver"
     echo "$newver" > $version_file
     return 0
 }
