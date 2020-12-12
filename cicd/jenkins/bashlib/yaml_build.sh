@@ -49,7 +49,7 @@ function check_prereqs ()
 }
 
 
-# --- INIT ---
+# --- INIT_BUILD ---
 function init_build () # $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_array
 {
    echo "Initializing build . . ."
@@ -95,7 +95,8 @@ function init_build () # $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_
 #   - $1 org - org of repo to build, if creating Dockerfile
 #   - $2 repo - repo to build, if creating Dockerfile
 #   - $3 branch - branch to build, if creating Dockerfile
-#   - $4 build_args - additional aguments to docker command, if needed
+#   - $4 version_file - path to file with current version of app
+#   - $5 build_args - additional aguments to docker command, if needed
 # returns:
 #   - String containing colon separated values for
 #      - docker tag 1
@@ -107,12 +108,12 @@ function prebuild ()
    local -r org=$1
    local -r repo=$2
    local -r branch=$3
-   local -r build_args=$4
+   local -r version_file=$4
+   local -r build_args=$5
 
    echo "prebuild: $org $repo $branch $build_args"
-
-   incr_ver
-   local ver=`get_ver`
+   incr_version $version_file
+   local ver=`get_version $version_file`
    local tags=$(get_tags $branch $ver)
    local tag_array=(${tags//:/ })
    local tag1=${tag_array[0]}
@@ -125,16 +126,16 @@ function prebuild ()
 # --- BUILD ---
 function build ()
 {
-   local org=$1
-   local repo=$2
-   local branch=$3
+   local -r org=$1
+   local -r repo=$2
+   local -rbranch=$3
    local build_args=$4  # cloudtop-ohif
-   local docker_path=$5
-   local docker_fn=$6
+   local -r tag1=5
+   local -r tag2=6
+   local -r docker_path=$7
+   local -r docker_fn=$8
 
    # handle repo 2, unusual docker filenames and paths here!!!
-
-
 
    echo "build: $org $repo $branch $build_args $docker_path $docker_fn"
    echo "Building app . . ."
@@ -142,6 +143,7 @@ function build ()
    # for -f, Name of the Dockerfile, the default is ‘PATH/Dockerfile’)
    #    --> comes before $docker_path, though redundant if full path given
 
+   if [  build_args ==  "null" ]; then build_args=""; fi
    docker build --no-cache $build_args -t $org/$repo:$tag1 \
                                        -t $org/$repo:$tag2 $docker_path
 
@@ -168,7 +170,7 @@ function unit_test ()
    local -r repo2_app_home=$9
    local -r cmd_path=$10
    local -r cmd_args=$11
-   local -r datafile=$12   #### Figure out when/where/how to use this below if its not null!!!!
+   local -r datafile=$12
 
    echo "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path $repo2_req_path $branch $repo2_app_home $cmd_path $cmd_args $datafile"
    echo "Executing unit tests . . ."
@@ -306,10 +308,11 @@ function build_app ()
    local -r JENKINS_HOME="/var/jenkins_home"
 
    # Derived constants from yaml + givens
-   local -r WS="$JENKINS_HOME/workspace/${docker_array[$DOCKER_PRI_REPO]}"
+   local -r WS="$JENKINS_HOME/workspace/$project/${docker_array[$DOCKER_PRI_REPO]}"
    local -r REPO2_APPDIR=${docker_array[$DOCKER_PRI_REPO]}
    local -r REPO2_APP_HOME="$WS/$REPO2_APPDIR"
-   echo "WS:[$WS] REPO2_APPDIR:[$REPO2_APPDIR] REPO2_APP_HOME:[$REPO2_APP_HOME]"
+   local -r VERSION_FILE="$JENKINS_HOME/jobs/$project/version/$BRANCH/ver"
+   echo "WS:[$WS] REPO2_APPDIR:[$REPO2_APPDIR] REPO2_APP_HOME:[$REPO2_APP_HOME] VERSION_FILE:[$VERSION_FILE]"
 
    echo "Invoking check_prereqs"
    check_prereqs
@@ -332,8 +335,8 @@ function build_app ()
    echo "Post-init_build function array: ${func_array}[@]"
 
    # Invoke prebuild:
-   echo "Invoking ${func_array[$PREBUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS"
-   local build_info=$(${func_array[$PREBUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS)
+   echo "Invoking ${func_array[$PREBUILD]} $ORG $REPO1 $BRANCH $VERSION_FILE $BUILD_ARGS"
+   local build_info=$(${func_array[$PREBUILD]} $ORG $REPO1 $BRANCH $VERSION_FILE $BUILD_ARGS)
 
    # Process array of returned vars for tags and version:
    local build_array=(${build_info//:/ })
@@ -342,8 +345,8 @@ function build_app ()
    local -r VER=${build_array[2]}
 
    # Invoke build:
-   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS"
-   local build_rc=$(${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS)
+   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2"
+   local build_rc=$(${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2)
    if [ $build_rc -ne 0 ]
    then
      echo "Build failed, skipping tests and not pushing to Dockerhub." >&2
