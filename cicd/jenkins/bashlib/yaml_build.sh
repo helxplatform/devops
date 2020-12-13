@@ -146,10 +146,7 @@ function build ()
 
    if [ "$build_args" ==  "null" ]; then unset build_args; fi
    if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
-   #if [ "$docker_path" == "." ]; then docker_path="./"; fi 
-
-   #docker_path="." 
-   #docker_fn="Dockerfile"
+   if [ "$docker_path" == "." ]; then docker_path="./"; fi 
 
    cd appstore
    docker build -f $docker_fn --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 $docker_path
