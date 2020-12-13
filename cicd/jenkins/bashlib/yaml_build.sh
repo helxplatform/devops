@@ -130,19 +130,15 @@ function build ()
    local -r org=$1
    local -r repo=$2
    local -r branch=$3
-   local build_args=$4  # cloudtop-ohif
+   local build_args=$4
    local -r tag1=$5
    local -r tag2=$6
    local docker_path=$7
    local docker_fn=$8
 
    # handle repo 2, unusual docker filenames and paths here!!!
-
-#   echo "build: $org $repo $branch $build_args $docker_path $docker_fn"
-#   echo "Building app . . ."
-
-   # for -f, Name of the Dockerfile, the default is ‘PATH/Dockerfile’)
-   #    --> comes before $docker_path, though redundant if full path given
+   echo "build: $org $repo $branch $build_args $docker_path $docker_fn"
+   echo "Building app . . ."
 
    if [ "$build_args" ==  "null" ]; then unset build_args; fi
    if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
@@ -150,14 +146,6 @@ function build ()
 
    cd appstore
    docker build -f $docker_fn --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 $docker_path
-#   docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 .
-
-   # Get build return value to return in array to calling function for handling there.
-   rc=$?
-
-   # handle repo 2, unusual docker filenames and paths here!!!
-
-   echo "$rc"
 }
 
 
@@ -177,14 +165,20 @@ function unit_test ()
    local -r cmd_args=$11
    local -r datafile=$12
 
-   echo "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path $repo2_req_path $branch $repo2_app_home $cmd_path $cmd_args $datafile"
+   echo -n "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path "
+   echo "$repo2_req_path $branch $repo2_app_home $cmd_path $cmd_args $datafile"
    echo "Executing unit tests . . ."
    if [ $cmd_path != "null" ]; then
+      pwd
+      ls -l
+      cd appstore
       pwd
       ls -l
       /usr/bin/python3 -m venv venv && \
       source venv/bin/activate && \
       pip install --no-cache-dir -r $repo1_req_path --upgrade pip
+
+      # Handle case of supplemental repo needed for testing
       if [ ! -z "$repo2"       &&
            ! -z "$repo2_url"   &&
            ! -z "$repo2_req_path" &&
@@ -193,7 +187,6 @@ function unit_test ()
             pip install -r $repo2_req_path
       fi
       $cmd_path $cmd_args
-      # handle return value in calling function
    else
       true
    fi
@@ -226,7 +219,7 @@ function security_scan ()
    echo "security_scan: $org $repo $tag1"
    echo "Scanning image for security issues . . ."
    scan_clair "$org" "$repo" "$tag1"  || true
-   postprocess_clair_output "$org" "$repo" "$tag1" "Medium"
+   postprocess_clair_output "$org" "$repo" "$tag1" "Medium" || true
 }
 
 
@@ -237,7 +230,7 @@ function cleanup ()
    local repo=$2
 
    echo "cleanup: $org $repo"
-   docker images -a | grep "$org/$repo" | awk '{print $3}' | xargs docker rmi -f | true
+   docker images -a | grep "$org/$repo" | awk '{print $3}' | xargs docker rmi -f || true
 }
 
 # --- BUILD_APP --- 
@@ -353,15 +346,17 @@ function build_app ()
 
    # Invoke build:
    echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN"
-   local build_rc=$(${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN)
-   if [ $build_rc -ne 0 ]
+#   local build_rc=$(${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN)
+   ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN
+   if [ $? -ne 0 ]
    then
      echo "Build failed, skipping tests and not pushing to Dockerhub." >&2
      exit 2
    fi
 
    # Invoke unit tests:
-   echo "Invoking ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
+   echo -n "Invoking ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL "
+   echo "$REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
    ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH \
                              $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS \
                              $DATAFILE
