@@ -44,7 +44,7 @@ varStorage:
   storageSize: 2Gi
   storageClass:
 
-image: heliumdatastage/nginx:cca-v0.0.5
+image: heliumdatastage/nginx:master-v1.0.0
 
 restartrApi: false
 dugApi: false
