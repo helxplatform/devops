@@ -113,7 +113,8 @@ function prebuild ()
 
  #  echo "prebuild: $org $repo $branch $build_args"
    incr_version $version_file
-   local ver=`get_version $version_file`
+   local ver=$(get_version $version_file)
+   echo "$ver" >&2
    local tags=$(get_tags $branch $ver)
    local tag_array=(${tags//:/ })
    local tag1=${tag_array[0]}
@@ -128,12 +129,12 @@ function build ()
 {
    local -r org=$1
    local -r repo=$2
-   local -rbranch=$3
+   local -r branch=$3
    local build_args=$4  # cloudtop-ohif
-   local -r tag1=5
-   local -r tag2=6
-   local -r docker_path=$7
-   local -r docker_fn=$8
+   local -r tag1=$5
+   local -r tag2=$6
+   local docker_path=$7
+   local docker_fn=$8
 
    # handle repo 2, unusual docker filenames and paths here!!!
 
@@ -143,9 +144,16 @@ function build ()
    # for -f, Name of the Dockerfile, the default is ‘PATH/Dockerfile’)
    #    --> comes before $docker_path, though redundant if full path given
 
-   if [  build_args ==  "null" ]; then build_args=""; fi
-   docker build --no-cache $build_args -t $org/$repo:$tag1 \
-                                       -t $org/$repo:$tag2 $docker_path
+   if [ "$build_args" ==  "null" ]; then unset build_args; fi
+   if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
+   #if [ "$docker_path" == "." ]; then docker_path="./"; fi 
+
+   #docker_path="." 
+   #docker_fn="Dockerfile"
+
+   cd appstore
+   docker build -f $docker_fn --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 $docker_path
+#   docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 .
 
    # Get build return value to return in array to calling function for handling there.
    rc=$?
@@ -175,6 +183,8 @@ function unit_test ()
    echo "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path $repo2_req_path $branch $repo2_app_home $cmd_path $cmd_args $datafile"
    echo "Executing unit tests . . ."
    if [ $cmd_path != "null" ]; then
+      pwd
+      ls -l
       /usr/bin/python3 -m venv venv && \
       source venv/bin/activate && \
       pip install --no-cache-dir -r $repo1_req_path --upgrade pip
@@ -345,8 +355,8 @@ function build_app ()
    local -r VER=${build_array[2]}
 
    # Invoke build:
-   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2"
-   local build_rc=$(${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2)
+   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN"
+   local build_rc=$(${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN)
    if [ $build_rc -ne 0 ]
    then
      echo "Build failed, skipping tests and not pushing to Dockerhub." >&2

@@ -148,8 +148,8 @@ function get_version () {
     fi
 
     ver=$(< $version_file)
-#    echo "$ver"
-    return 0
+    echo "$ver"
+#    return 0
 }
 
 
@@ -181,7 +181,7 @@ function incr_version () {
     SUBMINOR_OVERFLOW=99
     MINOR_OVERFLOW=9
 
-    oldver=$(get_ver $version_file)
+    oldver=$(get_version $version_file)
     rc=$?
     case $rc in
         0) ;;
@@ -229,7 +229,6 @@ function incr_version () {
     if [ -n "${subminor}" ]; then newver=$newver".$newsubminor"; fi
 
 #    echo "New version: [$newver]."
-#    echo "$newver"
     echo "$newver" > $version_file
-    return 0
+#    return 0
 }
