@@ -176,10 +176,10 @@ function unit_test ()
       pip install --no-cache-dir -r $repo1_req_path --upgrade pip
 
       # Handle case of supplemental repo needed for testing
-      if [ ! -z "$repo2"       &&
-           ! -z "$repo2_url"   &&
-           ! -z "$repo2_req_path" &&
-           ! -z "$repo2_app_home" ]; then
+      if [ -n "$repo2" ] && \
+         [ -n "$repo2_url" ] && \
+         [ -n "$repo2_req_path" ] && \
+         [ -n "$repo2_app_home" ]; then
          if [ ! -d $repo2_app_home/$repo2 ]; then git clone --branch $branch $repo2_url ; fi && \
             pip install -r $repo2_req_path
       fi
