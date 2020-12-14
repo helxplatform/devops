@@ -211,7 +211,9 @@ function security_scan ()
 {
    local org=$1
    local repo=$2
-   local tag=$3
+   local branch=$3
+   local ver=$4
+   local tag=$5
 
    echo "security_scan: $org $repo $tag"
    echo "Scanning image for security issues . . ."
@@ -222,7 +224,7 @@ function security_scan ()
       return 1
    else
       echo "postprocessing clair output" 
-      #postprocess_clair_output_v2 "$org" "$repo" "$tag" "Medium" || true
+      postprocess_clair_output_v2 "$org" "$repo" "$branch" "$ver" "$tag" "Medium" || true
    fi
 }
 
@@ -376,7 +378,7 @@ function build_app ()
 
    # Do clair scanning
    echo "Invoking security_scan $ORG $REPO1 $TAG1"
-   security_scan $ORG $REPO1 $TAG1
+   security_scan $ORG $REPO1 $BRANCH $VER $TAG1
 
    # Clean up build artifacts
    echo "Invoking cleanup $ORG $REPO1"
