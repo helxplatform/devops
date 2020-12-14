@@ -473,23 +473,24 @@ function postprocess_clair_output_v2() {
         $locl_REPO == "helx-hail"   -o \
         $locl_REPO == "conda-layer" -o \
         $locl_REPO == "jdk-layer" ]; then
-      PAD="        "
+      locl_PAD="        "
    else
-      PAD="    "
+      locl_PAD="    "
    fi
 
-   repl="$PAD<li><a href=\"\/$locl_REPO-$locl_TAG\/vuln_table_$locl_REPO-$locl_TAG.html\" target=\"_blank\">$locl_BRANCH branch $locl_VER vulnerabilities<\/a><\/li>"
-   rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
-   tmpf=$locl_BRANCH_$rnd_str.html
+   repl="$locl_PAD<li><a href=\"\/$locl_REPO-$locl_TAG\/vuln_table_$locl_REPO-$locl_TAG.html\" target=\"_blank\">$locl_BRANCH branch $locl_VER vulnerabilities<\/a><\/li>"
+   loc_rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
+   echo "locl_BRANCH:[$locl_BRANCH] loc_RND_STR:[$loc_rnd_str]"
+   loc_tmpf="$locl_BRANCH_$loc_rnd_str.html"
 
-   echo "tmpfile is $tmpf"
+   echo "tmpfile:[$loc_tmpf]"
 
-   echo "sed\'ing $CLAIR_RPT/$locl_BRANCH.html into $CLAIR_RPT/$tmpf"
+   echo "sed\'ing $CLAIR_RPT/$locl_BRANCH.html into $CLAIR_RPT/$loc_tmpf"
    sed -e "/^.*$locl_REPO-$locl_TAG.*$/p" \
        -e "s|^.*$locl_REPO-$locl_TAG.*$|$repl|" $CLAIR_RPT/$locl_BRANCH.html > $CLAIR_RPT/$tmpf
 
    echo "mv ing $CLAIR_RPT/$tmpf to $CLAIR_RPT/$locl_BRANCH.html"
-   mv $CLAIR_RPT/$tmpf $CLAIR_RPT/$locl_BRANCH.html
+   mv $CLAIR_RPT/$loc_tmpf $CLAIR_RPT/$locl_BRANCH.html
 
    # Clean up
    #cd "$XFM_DIR/.."
