@@ -165,8 +165,7 @@ function unit_test ()
    local -r cmd_args=$11
    local -r datafile=$12
 
-   echo -n "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path "
-   echo "$repo2_req_path $branch $repo2_app_home $cmd_path $cmd_args $datafile"
+   echo -n "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path $repo2_req_path $branch $repo2_app_home $cmd_path $cmd_args $datafile"
    echo "Executing unit tests . . ."
    if [ $cmd_path != "null" ]; then
       pwd
@@ -183,6 +182,7 @@ function unit_test ()
          if [ ! -d $repo2_app_home/$repo2 ]; then git clone --branch $branch $repo2_url ; fi && \
             pip install -r $repo2_req_path
       fi
+      echo "Invoking test with cmd_path [$cmd_path] and cmd_args [$cmd_args]"
       $cmd_path $cmd_args
    else
       true
@@ -306,7 +306,8 @@ function build_app ()
    echo "DOCKER_FN:[$DOCKER_FN] DOCKER_DIR1:[$DOCKER_DIR1] DOCKER_DIR2:[$DOCKER_DIR2] BUILD_ARGS:[$BUILD_ARGS]"
 
    local -r CMD_PATH=${test_array[$TEST_CMD_PATH]}
-   local -r CMD_ARGS=${test_array[$TEST_CMD_ARGS]}
+   #local -r CMD_ARGS=${test_array[$TEST_CMD_ARGS]}
+   local -r CMD_ARGS=$(yq read $project 'test.cmd_args')
    local -r DATAFILE=${test_array[$TEST_DATAFILE]}
    echo "CMD_PATH:[$CMD_PATH] CMD_ARGS:[$CMD_ARGS] DATAFILE:[$DATAFILE]"
 
@@ -361,11 +362,8 @@ function build_app ()
    fi
 
    # Invoke unit tests:
-   echo -n "Invoking ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL "
-   echo "$REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
-   ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH \
-                             $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS \
-                             $DATAFILE
+   echo -n "Invoking ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
+   ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE
    if [ $? -ne 0 ]
    then
       echo "Unit tests failed, not pushing to DockerHub." >&2
