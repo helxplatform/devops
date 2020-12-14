@@ -211,12 +211,19 @@ function security_scan ()
 {
    local org=$1
    local repo=$2
-   local tag1=$3
+   local tag=$3
 
-   echo "security_scan: $org $repo $tag1"
+   echo "security_scan: $org $repo $tag"
    echo "Scanning image for security issues . . ."
-   scan_clair "$org" "$repo" "$tag1"  || true
-   postprocess_clair_output "$org" "$repo" "$tag1" "Medium" || true
+   scan_clair_v2 "$org" "$repo" "$tag"  || true
+   if [ $? -ne 0 ]
+   then
+      echo "Skipping clair postprocessing."
+      return 1
+   else
+      echo "postprocessing clair output" 
+      #postprocess_clair_output_v2 "$org" "$repo" "$tag" "Medium" || true
+   fi
 }
 
 
