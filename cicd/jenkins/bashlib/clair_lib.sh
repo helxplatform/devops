@@ -343,7 +343,7 @@ function scan_clair_v2 () {
    XFM_DIR="$CLAIR_XFM/$FN"
 
 
-   echo "scan_clair_v2""
+   echo "scan_clair_v2"
 
    echo "FN=$FN"
    echo "XFM_DIR=$XFM_DIR"
