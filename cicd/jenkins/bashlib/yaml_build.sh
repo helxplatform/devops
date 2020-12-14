@@ -307,7 +307,7 @@ function build_app ()
 
    local -r CMD_PATH=${test_array[$TEST_CMD_PATH]}
    #local -r CMD_ARGS=${test_array[$TEST_CMD_ARGS]}
-   local -r CMD_ARGS=$(yq read $project 'test.cmd_args')
+   local -r CMD_ARGS=$(yq read "$project.yaml" 'test.cmd_args')
    local -r DATAFILE=${test_array[$TEST_DATAFILE]}
    echo "CMD_PATH:[$CMD_PATH] CMD_ARGS:[$CMD_ARGS] DATAFILE:[$DATAFILE]"
 
