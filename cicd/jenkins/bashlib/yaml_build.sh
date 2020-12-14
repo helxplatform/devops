@@ -161,11 +161,12 @@ function unit_test ()
    local -r repo2_req_path=$7
    local -r branch=$8
    local -r repo2_app_home=$9
-   local -r cmd_path=$10
-   local -r cmd_args=$11
-   local -r datafile=$12
+   local -r cmd_path=${10}
+   local -r cmd_args=${11}
+   local -r datafile=${12}
 
-   echo -n "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path $repo2_req_path $branch $repo2_app_home $cmd_path $cmd_args $datafile"
+   echo -n "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path $repo2_req_path "
+   echo "$branch $repo2_app_home $cmd_path $cmd_args $datafile"
    echo "Executing unit tests . . ."
    if [ $cmd_path != "null" ]; then
       pwd
@@ -308,7 +309,7 @@ function build_app ()
    local -r CMD_PATH=${test_array[$TEST_CMD_PATH]}
    #local -r CMD_ARGS=${test_array[$TEST_CMD_ARGS]}
    local -r CMD_ARGS=$(yq read "$project.yaml" 'test.cmd_args')
-   local -r DATAFILE=${test_array[$TEST_DATAFILE]}
+   local -r DATAFILE=$(yq read "$project.yaml" 'test.datafile')
    echo "CMD_PATH:[$CMD_PATH] CMD_ARGS:[$CMD_ARGS] DATAFILE:[$DATAFILE]"
 
    # Fundamental given constant
@@ -353,7 +354,6 @@ function build_app ()
 
    # Invoke build:
    echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN"
-#   local build_rc=$(${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN)
    ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN
    if [ $? -ne 0 ]
    then
@@ -362,8 +362,10 @@ function build_app ()
    fi
 
    # Invoke unit tests:
-   echo -n "Invoking ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
-   ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE
+   echo -n "Invoking ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL "
+   echo "$REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
+   ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH \
+                $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE
    if [ $? -ne 0 ]
    then
       echo "Unit tests failed, not pushing to DockerHub." >&2
