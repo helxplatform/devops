@@ -81,8 +81,8 @@ function init_build () # $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_
 
    echo "Fetching curl library . . ."
    CURL_LIB_URL="https://raw.githubusercontent.com/helxplatform/devops/master/cicd/jenkins/bashlib/clair_lib.sh"
-   curl $CURL_LIB_URL > curl_lib.sh
-   . ./curl_lib.sh
+   curl $CURL_LIB_URL > clair_lib.sh
+   . ./clair_lib.sh
 }
 
 

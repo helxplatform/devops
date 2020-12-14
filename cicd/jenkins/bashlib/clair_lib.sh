@@ -468,11 +468,11 @@ function postprocess_clair_output_v2() {
    cp "$XFM_DIR/clair_table_updated.html" "$RPT_DIR/vuln_table_$locl_REPO-$locl_TAG.html"
 
    # Add link to new vuln file in index.html:
-   if [ $REPO == "tranql-app"  -o \
-        $REPO == "tranql-base" -o \
-        $REPO == "helx-hail"   -o \
-        $REPO == "conda-layer" -o \
-        $REPO == "jdk-layer" ]; then
+   if [ $locl_REPO == "tranql-app"  -o \
+        $locl_REPO == "tranql-base" -o \
+        $locl_REPO == "helx-hail"   -o \
+        $locl_REPO == "conda-layer" -o \
+        $locl_REPO == "jdk-layer" ]; then
       PAD="        "
    else
       PAD="    "
