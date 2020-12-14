@@ -481,7 +481,14 @@ function postprocess_clair_output_v2() {
    repl="$locl_PAD<li><a href=\"\/$locl_REPO-$locl_TAG\/vuln_table_$locl_REPO-$locl_TAG.html\" target=\"_blank\">$locl_BRANCH branch $locl_VER vulnerabilities<\/a><\/li>"
    loc_rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
    echo "locl_BRANCH:[$locl_BRANCH] loc_RND_STR:[$loc_rnd_str]"
-   loc_tmpf="$locl_BRANCH_$loc_rnd_str.html"
+   loc_tmpf="${locl_BRANCH}"
+   echo "loc_tmpf:[$loc_tmpf]"
+   loc_tmpf+="_"
+   echo "loc_tmpf:[$loc_tmpf]"
+   loc_tmpf+="${loc_rnd_str}"
+   echo "loc_tmpf:[$loc_tmpf]"
+   loc_tmp+=".html"
+   echo "loc_tmpf:[$loc_tmpf]"
 
    echo "tmpfile:[$loc_tmpf]"
 
