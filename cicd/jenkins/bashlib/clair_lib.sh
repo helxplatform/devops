@@ -465,7 +465,7 @@ function postprocess_clair_output_v2() {
    if [ ! -d "$RPT_DIR" ]; then
       mkdir "$RPT_DIR"
    fi
-   cp "$XFM_DIR/clair_table_updated.html" "$RPT_DIR/vuln_table_$REPO-$TAG.html"
+   cp "$XFM_DIR/clair_table_updated.html" "$RPT_DIR/vuln_table_$local_REPO-$locl_TAG.html"
 
    # Add link to new vuln file in index.html:
    if [ $REPO == "tranql-app"  -o \
