@@ -333,28 +333,28 @@ function postprocess_clair_output() {
 # -------------------------------------------------------------------------
 function scan_clair_v2 () {
 
-   ORG="$1"
-   REPO="$2"
-   TAG="$3"
+   local locl_ORG="$1"
+   local locl_REPO="$2"
+   local locl_TAG="$3"
 
-   CLAIR_HM="/var/jenkins_home/clair"
-   CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
-   FN="$REPO-$TAG"
-   XFM_DIR="$CLAIR_XFM/$FN"
+   local CLAIR_HM="/var/jenkins_home/clair"
+   local CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
+   local FN="$locl_REPO-$locl_TAG"
+   local XFM_DIR="$CLAIR_XFM/$FN"
 
 
    echo "scan_clair_v2"
 
    echo "FN=$FN"
    echo "XFM_DIR=$XFM_DIR"
-   echo "image=$ORG/$REPO:$TAG"
+   echo "image=$locl_ORG/$locl_REPO:$TAG"
 
-   CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
+   local -r CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
-   ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
+   local -r ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
-   echo "Running clair on $ORG/$REPO:$TAG . . ."
-   docker pull "$ORG/$REPO:$TAG"
+   echo "Running clair on $locl_ORG/$locl_REPO:$TAG . . ."
+   docker pull "$locl_ORG/$locl_REPO:$TAG"
 
    if [ ! -d "$CLAIR_XFM" ]; then
       /bin/mkdir "$CLAIR_XFM"
@@ -373,9 +373,9 @@ function scan_clair_v2 () {
       return 1
    fi
 
-   echo "Invoking clair-scanner on $ORG/$REPO:$TAG"
+   echo "Invoking clair-scanner on $locl_ORG/$locl_REPO:$TAG"
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$TAG" > "$XFM_DIR/table.txt"
+      "$XFM_DIR/clair_report.json" "$locl_ORG/$locl_REPO:$locl_TAG" > "$XFM_DIR/table.txt"
 
    # Stop clair server and db here
    echo "Stopping clair server and db  . . ."
@@ -420,17 +420,17 @@ function scan_clair_v2 () {
 # -------------------------------------------------------------------------
 function postprocess_clair_output_v2() {
 
-   ORG=$1
-   REPO=$2
-   BRANCH=$3
-   VER=$4
-   TAG=$5
-   THRESHOLD=$6
+   local locl_ORG=$1
+   local locl_REPO=$2
+   local locl_BRANCH=$3
+   local locl_VER=$4
+   local locl_TAG=$5
+   local locl_THRESHOLD=$6
 
    JENKINS_HM="/var/jenkins_home"
    CLAIR_HM="$JENKINS_HM/clair"
    CLAIR_XFM="$CLAIR_HM/xfm"
-   FN="$REPO-$TAG"
+   FN="$locl_REPO-$locl_TAG"
    XFM_DIR="$CLAIR_XFM/$FN"
    CLAIR_RPT="$CLAIR_HM/reports"
    RPT_DIR="$CLAIR_RPT/$FN"
@@ -439,7 +439,7 @@ function postprocess_clair_output_v2() {
 
    echo "FN=$FN"
    echo "XFM_DIR=$XFM_DIR"
-   echo "image=$ORG/$REPO:$TAG"
+   echo "image=$locl_ORG/$locl_REPO:$locl_TAG"
 
    awk "/unapproved/,/]/ { next }       \ 
                          { print }" "$XFM_DIR/clair_report.json" > "$XFM_DIR/clair_report_edited.json" 
@@ -478,18 +478,18 @@ function postprocess_clair_output_v2() {
       PAD="    "
    fi
 
-   repl="$PAD<li><a href=\"\/$REPO-$TAG\/vuln_table_$REPO-$TAG.html\" target=\"_blank\">$BRANCH branch $VER vulnerabilities<\/a><\/li>"
+   repl="$PAD<li><a href=\"\/$locl_REPO-$locl_TAG\/vuln_table_$locl_REPO-$locl_TAG.html\" target=\"_blank\">$locl_BRANCH branch $locl_VER vulnerabilities<\/a><\/li>"
    rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
-   tmpf=$BRANCH_$rnd_str.html
+   tmpf=$locl_BRANCH_$rnd_str.html
 
    echo "tmpfile is $tmpf"
 
-   echo "sed\'ing $CLAIR_RPT/$BRANCH.html into $CLAIR_RPT/$tmpf"
-   sed -e "/^.*$REPO-$TAG.*$/p" \
-       -e "s|^.*$REPO-$TAG.*$|$repl|" $CLAIR_RPT/$BRANCH.html > $CLAIR_RPT/$tmpf
+   echo "sed\'ing $CLAIR_RPT/$locl_BRANCH.html into $CLAIR_RPT/$tmpf"
+   sed -e "/^.*$locl_REPO-$locl_TAG.*$/p" \
+       -e "s|^.*$locl_REPO-$locl_TAG.*$|$repl|" $CLAIR_RPT/$locl_BRANCH.html > $CLAIR_RPT/$tmpf
 
-   echo "mv ing $CLAIR_RPT/$tmpf to $CLAIR_RPT/$BRANCH.html"
-   mv $CLAIR_RPT/$tmpf $CLAIR_RPT/$BRANCH.html
+   echo "mv ing $CLAIR_RPT/$tmpf to $CLAIR_RPT/$locl_BRANCH.html"
+   mv $CLAIR_RPT/$tmpf $CLAIR_RPT/$locl_BRANCH.html
 
    # Clean up
    #cd "$XFM_DIR/.."
