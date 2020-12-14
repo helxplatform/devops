@@ -162,8 +162,9 @@ function unit_test ()
    local -r branch=$8
    local -r repo2_app_home=$9
    local -r cmd_path=${10}
-   local -r cmd_args=${11}
-   local -r datafile=${12}
+   shift 10
+   local -r cmd_args=$1
+   local -r datafile=$2
 
    echo -n "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path $repo2_req_path "
    echo "$branch $repo2_app_home $cmd_path $cmd_args $datafile"
