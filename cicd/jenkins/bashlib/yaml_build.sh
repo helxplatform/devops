@@ -277,7 +277,7 @@ function build_app ()
    echo "Reading yaml file . . ."
    local code_array=(`yq read -X $project.yaml 'code.*'`)
    local docker_array=(`yq read -X $project.yaml 'docker.*'`)
-   local test_array=(`yq read -X $Project.yaml 'test.*'`)
+   local test_array=(`yq read -X $project.yaml 'test.*'`)
 
    # yaml constants
    local -r ORG=${docker_array[$DOCKER_ORG]}
