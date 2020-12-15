@@ -33,6 +33,8 @@ docker:
     cloudtop
   secondary_repo:
     null
+  build_args:
+    null
   docker_fn:
     null
   primary_docker_dir:

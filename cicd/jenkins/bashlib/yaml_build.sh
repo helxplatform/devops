@@ -138,7 +138,7 @@ function build ()
    local docker_fn=$9
 
    # handle repo 2, unusual docker filenames and paths here!!!
-   echo "build: $org $repo $branch $build_args $app1_path $docker_path $docker_fn"
+   echo "build: $org $repo $branch $build_args $tag1 $tag2 $app1_path $docker_path $docker_fn"
    echo "Building app . . ."
 
    if [ "$build_args" ==  "null" ]; then unset build_args; fi

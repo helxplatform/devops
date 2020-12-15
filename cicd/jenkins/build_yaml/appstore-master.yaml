@@ -39,7 +39,7 @@ docker:
   docker_fn:
     null
   primary_docker_dir:
-    .
+    "."
   secondary_docker_dir:
     null
 
