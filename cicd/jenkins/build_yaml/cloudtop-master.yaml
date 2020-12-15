@@ -1,0 +1,56 @@
+version: 0.0.1
+
+build:
+  name: 
+    cloudtop-master  
+
+app:
+  name: cloudtop
+
+code:  
+  primary_url: 
+    https://github.com/helxplatform/cloudtop.git
+  secondary_url: 
+    null
+  primary_requirements_path:
+    ./requirements.txt
+  secondary_requirements_path:
+    null
+  branch:
+    master
+  prebuild:
+    default
+  build:
+    default
+  test:
+    default
+
+docker:
+  org: 
+    heliumdatastage
+  primaryrepo: 
+    cloudtop
+  secondary_repo:
+    null
+  docker_fn:
+    null
+  primary_docker_dir:
+    .
+  secondary_docker_dir:
+    null
+
+test:
+  cmd_path: 
+    ./pytest 
+  cmd_args:
+    "-q -s --image $ORG/$PRIMARY_REPO:$TAG1 --user howard --passwd test"
+   datafile:
+    null
+
+clair:
+  cmd_args:
+    null
+  threshold:
+    null
+  whitelist:
+    null
