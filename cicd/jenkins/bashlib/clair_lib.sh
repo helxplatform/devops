@@ -479,16 +479,17 @@ function postprocess_clair_output_v2() {
    fi
 
    repl="$locl_PAD<li><a href=\"\/$locl_REPO-$locl_TAG\/vuln_table_$locl_REPO-$locl_TAG.html\" target=\"_blank\">$locl_BRANCH branch $locl_VER vulnerabilities<\/a><\/li>"
+
    locl_rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
    echo "locl_BRANCH:[$locl_BRANCH] locl_RND_STR:[$locl_rnd_str]"
    locl_tmpf="${locl_BRANCH}_${locl_rnd_str}.html"
-   echo "tmpfile:[$loc_tmpf]"
+   echo "tmpfile:[$locl_tmpf]"
 
-   echo "sed\'ing $CLAIR_RPT/$locl_BRANCH.html into $CLAIR_RPT/$loc_tmpf"
-   sed -e "/^.*$locl_REPO-$locl_TAG.*$/p" \
-       -e "s|^.*$locl_REPO-$locl_TAG.*$|$repl|" $CLAIR_RPT/$locl_BRANCH.html > $CLAIR_RPT/$locl_tmpf
+   echo "sed\'ing $CLAIR_RPT/$locl_BRANCH.html into $CLAIR_RPT/$locl_tmpf"
+   sed -e "/^.*$locl_REPO-TAG.*$/p" \
+       -e "s|^.*$locl_REPO-TAG.*$|$repl|" $CLAIR_RPT/$locl_BRANCH.html > $CLAIR_RPT/$locl_tmpf
 
-   echo "mv ing $CLAIR_RPT/$tmpf to $CLAIR_RPT/$locl_BRANCH.html"
+   echo "mv ing $CLAIR_RPT/$locl_tmpf to $CLAIR_RPT/$locl_BRANCH.html"
    mv $CLAIR_RPT/$locl_tmpf $CLAIR_RPT/$locl_BRANCH.html
 
    # Clean up
