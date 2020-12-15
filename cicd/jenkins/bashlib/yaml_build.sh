@@ -179,6 +179,7 @@ function unit_test ()
 
       # Handle case of supplemental repo needed for testing
       if [ -n "$repo2" ] && \
+         [ "$repo2" != "null" ] && \
          [ -n "$repo2_url" ] && \
          [ -n "$repo2_req_path" ] && \
          [ -n "$repo2_app_home" ]; then
