@@ -11,6 +11,8 @@ code:
     https://github.com/helxplatform/cloudtop.git
   secondary_url:
     null
+  primary_app_path:
+    "."
   primary_requirements_path:
     ./requirements.txt
   secondary_requirements_path:
@@ -34,7 +36,7 @@ docker:
   docker_fn:
     null
   primary_docker_dir:
-    .
+    "."
   secondary_docker_dir:
     null
 

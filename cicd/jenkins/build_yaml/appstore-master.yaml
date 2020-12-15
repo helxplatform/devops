@@ -12,6 +12,8 @@ code:
     https://github.com/helxplatform/appstore.git
   secondary_url: 
     https://github.com/helxplatform/tycho.git
+  primary_app_path:
+    "./appstore"
   primary_requirements_path:
     ./requirements.txt
   secondary_requirements_path:

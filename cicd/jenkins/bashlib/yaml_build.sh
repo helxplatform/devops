@@ -133,18 +133,19 @@ function build ()
    local build_args=$4
    local -r tag1=$5
    local -r tag2=$6
-   local docker_path=$7
-   local docker_fn=$8
+   local -r app1_path=$7
+   local docker_path=$8
+   local docker_fn=$9
 
    # handle repo 2, unusual docker filenames and paths here!!!
-   echo "build: $org $repo $branch $build_args $docker_path $docker_fn"
+   echo "build: $org $repo $branch $build_args $app1_path $docker_path $docker_fn"
    echo "Building app . . ."
 
    if [ "$build_args" ==  "null" ]; then unset build_args; fi
    if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
    if [ "$docker_path" == "." ]; then docker_path="./"; fi 
+   if [ "$app1_path" != "." ]; then cd $app1_path; fi
 
-   cd appstore
    docker build -f $docker_fn --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 $docker_path
 }
 
@@ -250,12 +251,13 @@ function build_app ()
    # Array index constants
    local -r CODE_PRI_URL=0
    local -r CODE_SEC_URL=1
-   local -r CODE_PRI_REQ_PATH=2
-   local -r CODE_SEC_REQ_PATH=3
-   local -r CODE_BRANCH=4
-   local -r CODE_PREBUILD=5
-   local -r CODE_BUILD=6
-   local -r CODE_TEST=7
+   local -r CODE_PRI_APP_PATH=2
+   local -r CODE_PRI_REQ_PATH=3
+   local -r CODE_SEC_REQ_PATH=4
+   local -r CODE_BRANCH=5
+   local -r CODE_PREBUILD=6
+   local -r CODE_BUILD=7
+   local -r CODE_TEST=8
 
    local -r DOCKER_ORG=0
    local -r DOCKER_PRI_REPO=1
@@ -290,7 +292,8 @@ function build_app ()
 
    local -r REPO1_URL=${code_array[$CODE_PRI_URL]}
    local -r REPO2_URL=${code_array[$CODE_SEC_URL]}
-   echo "REPO1_URL:[$REPO1_URL] REPO2_URL:[$REPO2_URL]"
+   local -r APP1_PATH=${code_array[$CODE_PRI_APP_PATH]}
+   echo "REPO1_URL:[$REPO1_URL] REPO2_URL:[$REPO2_URL] APP1_PATH:[$APP1_PATH]"
 
    local -r REQ_PREBUILD_FUNC=${code_array[$CODE_PREBUILD]}
    local -r REQ_BUILD_FUNC=${code_array[$CODE_BUILD]}
@@ -354,8 +357,8 @@ function build_app ()
    local -r VER=${build_array[2]}
 
    # Invoke build:
-   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN"
-   ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN
+   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $APP1_PATH $DOCKER_DIR1 $DOCKER_FN"
+   ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $APP1_PATH $$DOCKER_DIR1 $DOCKER_FN
    if [ $? -ne 0 ]
    then
      echo "Build failed, skipping tests and not pushing to Dockerhub." >&2
