@@ -188,8 +188,14 @@ function unit_test ()
          if [ ! -d $repo2_app_home/$repo2 ]; then git clone --branch $branch $repo2_url ; fi && \
             pip install -r $repo2_req_path
       fi
-      echo "Invoking test with cmd_path [$cmd_path] and cmd_args [$cmd_args]"
-      $cmd_path $cmd_args
+
+      if [[ "$cmd_args" =~ .*${TAG1}.* ]]; then
+         full_cmd_args=`echo $cmd_args | sed -e "s/\${TAG1}/$tag1/g"`
+      else
+         full_cmd_args="$cmd_args"
+      fi
+      echo "Invoking test with cmd_path [$cmd_path] and cmd_args [$full_cmd_args]"
+      $cmd_path $full_cmd_args
    else
       true
    fi

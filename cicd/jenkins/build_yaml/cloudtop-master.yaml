@@ -44,9 +44,9 @@ docker:
 
 test:
   cmd_path:
-    "./pytest"
+    "pytest"
   cmd_args:
-    "-q -s --image heliumdatastage/cloudtop:$tag1 --user howard --passwd test"
+    "-q -s --image heliumdatastage/cloudtop:${TAG1} --user howard --passwd test"
   datafile:
     null
 
