@@ -19,8 +19,6 @@ function get_tags ()
    local branch=$1
    local ver=$2
 
-##   echo "get_tags: $branch $ver"
-#   echo "Getting tags for image . . ."
    if [ $branch == "master" ]; then
       tags="$ver:latest"
    else
@@ -38,7 +36,7 @@ function check_prereqs ()
    echo "check_prereqs"
    bash_ver=$(bash --version | head -1 | cut -d ' ' -f4)
    arr_bash_ver=(${bash_ver//./ })
-   #echo "$bash_ver | ${arr_bash_ver[@]} | ${arr_bash_ver[0]} | ${arr_bash_ver[1]}"                                                                                           
+
    if [ ${arr_bash_ver[0]} -le $ver_major -a \
         ${arr_bash_ver[1]} -le $ver_minor ]; then
       echo "Insufficient bash version for build: [$bash_ver]"
@@ -50,7 +48,7 @@ function check_prereqs ()
 
 
 # --- INIT_BUILD ---
-function init_build () # $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_array
+function init_build ()
 {
    echo "Initializing build . . ."
 
@@ -62,15 +60,10 @@ function init_build () # $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_
    echo "init_build: $req_prebuild $req_build $req_test ${func_arr[@]}"
    echo "Setting up functions array . . ."
    request_arr=($req_prebuild $req_build $req_test)
-   #echo request_arr is ${request_arr[@]}
-   #echo func_arr is ${func_arr[@]}
    for index in {0..2}; do
-      #echo "${func_arr[$index]} ${request_arr[$index]}"
       if [ ${request_arr[$index]} != "default" ]; then
-         #echo "${request_arr[$index]} != default"
          unset func_arr[$index]
          func_arr[$index]=${request_arr[$index]}
-         #echo "Updated: ${func_arr[$index]}"
       fi
    done
 
@@ -111,7 +104,7 @@ function prebuild ()
    local -r version_file=$4
    local -r build_args=$5
 
- #  echo "prebuild: $org $repo $branch $build_args"
+ #  echo "prebuild: $org $repo $branch $version_file $build_args"
    incr_version $version_file
    local ver=$(get_version $version_file)
    echo "$ver" >&2
@@ -130,14 +123,14 @@ function build ()
    local -r org=$1
    local -r repo=$2
    local -r branch=$3
-   local build_args=$4
-   local -r tag1=$5
-   local -r tag2=$6
-   local -r app1_path=$7
-   local docker_path=$8
-   local docker_fn=$9
+   shift 3
+   local build_args=$1
+   local -r tag1=$2
+   local -r tag2=$3
+   local -r app1_path=$4
+   local docker_path=$5
+   local docker_fn=$6
 
-   # handle repo 2, unusual docker filenames and paths here!!!
    echo "build: $org $repo $branch $build_args $tag1 $tag2 $app1_path $docker_path $docker_fn"
    echo "Building app . . ."
 
