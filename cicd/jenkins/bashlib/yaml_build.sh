@@ -81,8 +81,8 @@ function init_build () # $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_
 
    echo "Fetching curl library . . ."
    CURL_LIB_URL="https://raw.githubusercontent.com/helxplatform/devops/master/cicd/jenkins/bashlib/clair_lib.sh"
-   curl $CURL_LIB_URL > curl_lib.sh
-   . ./curl_lib.sh
+   curl $CURL_LIB_URL > clair_lib.sh
+   . ./clair_lib.sh
 }
 
 
@@ -133,18 +133,19 @@ function build ()
    local build_args=$4
    local -r tag1=$5
    local -r tag2=$6
-   local docker_path=$7
-   local docker_fn=$8
+   local -r app1_path=$7
+   local docker_path=$8
+   local docker_fn=$9
 
    # handle repo 2, unusual docker filenames and paths here!!!
-   echo "build: $org $repo $branch $build_args $docker_path $docker_fn"
+   echo "build: $org $repo $branch $build_args $tag1 $tag2 $app1_path $docker_path $docker_fn"
    echo "Building app . . ."
 
    if [ "$build_args" ==  "null" ]; then unset build_args; fi
    if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
    if [ "$docker_path" == "." ]; then docker_path="./"; fi 
+   if [ "$app1_path" != "." ]; then cd $app1_path; fi
 
-   cd appstore
    docker build -f $docker_fn --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 $docker_path
 }
 
@@ -161,17 +162,15 @@ function unit_test ()
    local -r repo2_req_path=$7
    local -r branch=$8
    local -r repo2_app_home=$9
-   local -r cmd_path=$10
-   local -r cmd_args=$11
-   local -r datafile=$12
+   local -r cmd_path=${10}
+   shift 10
+   local -r cmd_args=$1
+   local -r datafile=$2
 
-   echo -n "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path "
-   echo "$repo2_req_path $branch $repo2_app_home $cmd_path $cmd_args $datafile"
+   echo -n "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path $repo2_req_path "
+   echo "$branch $repo2_app_home $cmd_path $cmd_args $datafile"
    echo "Executing unit tests . . ."
    if [ $cmd_path != "null" ]; then
-      pwd
-      ls -l
-      cd appstore
       pwd
       ls -l
       /usr/bin/python3 -m venv venv && \
@@ -179,13 +178,15 @@ function unit_test ()
       pip install --no-cache-dir -r $repo1_req_path --upgrade pip
 
       # Handle case of supplemental repo needed for testing
-      if [ ! -z "$repo2"       &&
-           ! -z "$repo2_url"   &&
-           ! -z "$repo2_req_path" &&
-           ! -z "$repo2_app_home" ]; then
+      if [ -n "$repo2" ] && \
+         [ "$repo2" != "null" ] && \
+         [ -n "$repo2_url" ] && \
+         [ -n "$repo2_req_path" ] && \
+         [ -n "$repo2_app_home" ]; then
          if [ ! -d $repo2_app_home/$repo2 ]; then git clone --branch $branch $repo2_url ; fi && \
             pip install -r $repo2_req_path
       fi
+      echo "Invoking test with cmd_path [$cmd_path] and cmd_args [$cmd_args]"
       $cmd_path $cmd_args
    else
       true
@@ -214,12 +215,21 @@ function security_scan ()
 {
    local org=$1
    local repo=$2
-   local tag1=$3
+   local branch=$3
+   local ver=$4
+   local tag=$5
 
-   echo "security_scan: $org $repo $tag1"
+   echo "security_scan: $org $repo $tag"
    echo "Scanning image for security issues . . ."
-   scan_clair "$org" "$repo" "$tag1"  || true
-   postprocess_clair_output "$org" "$repo" "$tag1" "Medium" || true
+   scan_clair_v2 "$org" "$repo" "$tag"  || true
+   if [ $? -ne 0 ]
+   then
+      echo "Skipping clair postprocessing."
+      return 1
+   else
+      echo "postprocessing clair output" 
+      postprocess_clair_output_v2 "$org" "$repo" "$branch" "$ver" "$tag" "Medium" || true
+   fi
 }
 
 
@@ -242,12 +252,13 @@ function build_app ()
    # Array index constants
    local -r CODE_PRI_URL=0
    local -r CODE_SEC_URL=1
-   local -r CODE_PRI_REQ_PATH=2
-   local -r CODE_SEC_REQ_PATH=3
-   local -r CODE_BRANCH=4
-   local -r CODE_PREBUILD=5
-   local -r CODE_BUILD=6
-   local -r CODE_TEST=7
+   local -r CODE_PRI_APP_PATH=2
+   local -r CODE_PRI_REQ_PATH=3
+   local -r CODE_SEC_REQ_PATH=4
+   local -r CODE_BRANCH=5
+   local -r CODE_PREBUILD=6
+   local -r CODE_BUILD=7
+   local -r CODE_TEST=8
 
    local -r DOCKER_ORG=0
    local -r DOCKER_PRI_REPO=1
@@ -271,7 +282,7 @@ function build_app ()
    echo "Reading yaml file . . ."
    local code_array=(`yq read -X $project.yaml 'code.*'`)
    local docker_array=(`yq read -X $project.yaml 'docker.*'`)
-   local test_array=(`yq read -X $Project.yaml 'test.*'`)
+   local test_array=(`yq read -X $project.yaml 'test.*'`)
 
    # yaml constants
    local -r ORG=${docker_array[$DOCKER_ORG]}
@@ -282,7 +293,8 @@ function build_app ()
 
    local -r REPO1_URL=${code_array[$CODE_PRI_URL]}
    local -r REPO2_URL=${code_array[$CODE_SEC_URL]}
-   echo "REPO1_URL:[$REPO1_URL] REPO2_URL:[$REPO2_URL]"
+   local -r APP1_PATH=${code_array[$CODE_PRI_APP_PATH]}
+   echo "REPO1_URL:[$REPO1_URL] REPO2_URL:[$REPO2_URL] APP1_PATH:[$APP1_PATH]"
 
    local -r REQ_PREBUILD_FUNC=${code_array[$CODE_PREBUILD]}
    local -r REQ_BUILD_FUNC=${code_array[$CODE_BUILD]}
@@ -300,8 +312,9 @@ function build_app ()
    echo "DOCKER_FN:[$DOCKER_FN] DOCKER_DIR1:[$DOCKER_DIR1] DOCKER_DIR2:[$DOCKER_DIR2] BUILD_ARGS:[$BUILD_ARGS]"
 
    local -r CMD_PATH=${test_array[$TEST_CMD_PATH]}
-   local -r CMD_ARGS=${test_array[$TEST_CMD_ARGS]}
-   local -r DATAFILE=${test_array[$TEST_DATAFILE]}
+   #local -r CMD_ARGS=${test_array[$TEST_CMD_ARGS]}
+   local -r CMD_ARGS=$(yq read "$project.yaml" 'test.cmd_args')
+   local -r DATAFILE=$(yq read "$project.yaml" 'test.datafile')
    echo "CMD_PATH:[$CMD_PATH] CMD_ARGS:[$CMD_ARGS] DATAFILE:[$DATAFILE]"
 
    # Fundamental given constant
@@ -345,9 +358,8 @@ function build_app ()
    local -r VER=${build_array[2]}
 
    # Invoke build:
-   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN"
-#   local build_rc=$(${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN)
-   ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $DOCKER_DIR1 $DOCKER_FN
+   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $APP1_PATH $DOCKER_DIR1 $DOCKER_FN"
+   ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $APP1_PATH $DOCKER_DIR1 $DOCKER_FN
    if [ $? -ne 0 ]
    then
      echo "Build failed, skipping tests and not pushing to Dockerhub." >&2
@@ -358,8 +370,7 @@ function build_app ()
    echo -n "Invoking ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL "
    echo "$REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
    ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH \
-                             $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS \
-                             $DATAFILE
+                $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH "$CMD_ARGS" $DATAFILE
    if [ $? -ne 0 ]
    then
       echo "Unit tests failed, not pushing to DockerHub." >&2
@@ -372,7 +383,7 @@ function build_app ()
 
    # Do clair scanning
    echo "Invoking security_scan $ORG $REPO1 $TAG1"
-   security_scan $ORG $REPO1 $TAG1
+   security_scan $ORG $REPO1 $BRANCH $VER $TAG1
 
    # Clean up build artifacts
    echo "Invoking cleanup $ORG $REPO1"
