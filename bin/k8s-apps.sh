@@ -344,6 +344,7 @@ DUG_API_WITH_NGINX=${DUG_API_WITH_NGINX-false}
 DUG_HELM_RELEASE=${DUG_HELM_RELEASE-"dug"}
 DUG_HOME=${DUG_HOME-"$HELXPLATFORM_HOME/dug"}
 DUG_HELM_DIR=${DUG_HELM_DIR-"$DUG_HOME/kubernetes/helm"}
+DUG_CREATE_PVCS=${DUG_CREATE_PVCS-false}
 DUG_ES_PD_NAME=${DUG_ES_PD_NAME-"${DISK_PREFIX}dug-es-disk"}
 DUG_ES_PD_DELETE_W_APP=${DUG_ES_PD_DELETE_W_APP-false}
 DUG_ES_PVC=${DUG_ES_PVC-"dug-elasticsearch-pvc"}
@@ -1345,7 +1346,19 @@ function dug(){
     then
       HELM_VALUES+=",dug.elasticsearch.xms=$DUG_ES_XMS"
     fi
-    HELM_VALUES+=",dug.elasticsearch.storage_class=$DUG_ES_PV_STORAGECLASS"
+    if [ ! -z "DUG_ES_PV_STORAGECLASS" ]
+    then
+      HELM_VALUES+=",dug.elasticsearch.storage_class=$DUG_ES_PV_STORAGECLASS"
+    fi
+    if [ ! -z "DUG_NEO4J_PV_STORAGECLASS" ]
+    then
+      HELM_VALUES+=",dug.neo4j.storage_class=$DUG_NEO4J_PV_STORAGECLASS"
+    fi
+    if [ ! -z "DUG_REDIS_PV_STORAGECLASS" ]
+    then
+      HELM_VALUES+=",dug.redis.storage_class=$DUG_REDIS_PV_STORAGECLASS"
+    fi
+    HELM_VALUES+=",dug.create_pvcs=$DUG_CREATE_PVCS"
     if [ ! -z "$DUG_WEB_IMAGE_TAG" ]
     then
       HELM_VALUES+=",dug.web.image_tag=$DUG_WEB_IMAGE_TAG"
