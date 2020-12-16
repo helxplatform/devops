@@ -190,7 +190,7 @@ function unit_test ()
       fi
 
       if [[ "$cmd_args" =~ .*${TAG1}.* ]]; then
-         full_cmd_args=`echo $cmd_args | sed -e "s/\${TAG1}/$tag1/g"`
+         full_cmd_args=`echo $cmd_args | sed -e "s/\'${TAG1}'/$tag1/g"`
       else
          full_cmd_args="$cmd_args"
       fi
