@@ -162,7 +162,7 @@ function unit_test ()
    local -r repo2_req_path=$7
    local -r branch=$8
    local -r ver=$9
-   local -r tag1=${10]
+   local -r tag1=${10}
    local -r repo2_app_home=${11}
    local -r cmd_path=${12}
    shift 12
