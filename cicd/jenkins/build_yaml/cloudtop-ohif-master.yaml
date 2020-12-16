@@ -33,18 +33,16 @@ docker:
     cloudtop-ohif
   secondary_repo:
     null
-  build_parameters:
-    --build-arg CLOUDTOP_TAG=latest
   docker_fn:
     null
   primary_docker_dir:
     .
   secondary_docker_dir:
     null
+  build_args:
+    --build-arg CLOUDTOP_TAG=latest
 
 test:
-  venv_parameters:
-    null
   cmd_path:
     null
   cmd_args:

@@ -264,10 +264,10 @@ function build_app ()
    local -r DOCKER_ORG=0
    local -r DOCKER_PRI_REPO=1
    local -r DOCKER_SEC_REPO=2
-   local -r DOCKER_BUILD_ARGS=3
-   local -r DOCKER_DF_FN=4
-   local -r DOCKER_PRI_D_DIR=5
-   local -r DOCKER_SEC_D_DIR=6
+   local -r DOCKER_DF_FN=3
+   local -r DOCKER_PRI_D_DIR=4
+   local -r DOCKER_SEC_D_DIR=5
+   local -r DOCKER_BUILD_ARGS=6
 
    local -r TEST_CMD_PATH=0
    local -r TEST_CMD_ARGS=1
@@ -313,9 +313,8 @@ function build_app ()
    echo "DOCKER_FN:[$DOCKER_FN] DOCKER_DIR1:[$DOCKER_DIR1] DOCKER_DIR2:[$DOCKER_DIR2] BUILD_ARGS:[$BUILD_ARGS]"
 
    local -r CMD_PATH=${test_array[$TEST_CMD_PATH]}
-   #local -r CMD_ARGS=${test_array[$TEST_CMD_ARGS]}
    local -r CMD_ARGS=$(yq read "$project.yaml" 'test.cmd_args')
-   local -r DATAFILE=$(yq read "$project.yaml" 'test.datafile')
+   local -r DATAFILE=$(yq read "$project.yaml" 'test.datafile')  # TODO: consider swapping order in yaml file so cmd_args is last. 
    echo "CMD_PATH:[$CMD_PATH] CMD_ARGS:[$CMD_ARGS] DATAFILE:[$DATAFILE]"
 
    # Fundamental given constant
@@ -359,8 +358,8 @@ function build_app ()
    local -r VER=${build_array[2]}
 
    # Invoke build:
-   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $APP1_PATH $DOCKER_DIR1 $DOCKER_FN"
-   ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $APP1_PATH $DOCKER_DIR1 $DOCKER_FN
+   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH [$BUILD_ARGS] $TAG1 $TAG2 $APP1_PATH $DOCKER_DIR1 $DOCKER_FN"
+   ${func_array[$BUILD]} $ORG $REPO1 $BRANCH "$BUILD_ARGS" $TAG1 $TAG2 $APP1_PATH $DOCKER_DIR1 $DOCKER_FN
    if [ $? -ne 0 ]
    then
      echo "Build failed, skipping tests and not pushing to Dockerhub." >&2

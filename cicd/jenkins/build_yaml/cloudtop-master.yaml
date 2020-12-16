@@ -33,13 +33,13 @@ docker:
     cloudtop
   secondary_repo:
     null
-  build_args:
-    null
   docker_fn:
     null
   primary_docker_dir:
     "."
   secondary_docker_dir:
+    null
+  build_args:
     null
 
 test:
