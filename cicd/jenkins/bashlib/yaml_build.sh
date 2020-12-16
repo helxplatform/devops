@@ -161,14 +161,16 @@ function unit_test ()
    local -r repo1_req_path=$6
    local -r repo2_req_path=$7
    local -r branch=$8
-   local -r repo2_app_home=$9
-   local -r cmd_path=${10}
-   shift 10
-   local -r cmd_args=$1
+   local -r ver=$9
+   local -r tag1=${10]
+   local -r repo2_app_home=${11}
+   local -r cmd_path=${12}
+   shift 12
+   local cmd_args=$1
    local -r datafile=$2
 
    echo -n "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path $repo2_req_path "
-   echo "$branch $repo2_app_home $cmd_path $cmd_args $datafile"
+   echo "$branch $ver $tag1 $repo2_app_home $cmd_path $cmd_args $datafile"
    echo "Executing unit tests . . ."
    if [ $cmd_path != "null" ]; then
       pwd
@@ -368,9 +370,9 @@ function build_app ()
 
    # Invoke unit tests:
    echo -n "Invoking ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL "
-   echo "$REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
+   echo "$REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $VER $TAG1 $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
    ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH \
-                $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH "$CMD_ARGS" $DATAFILE
+                $REPO2_REQ_PATH $BRANCH $VER $TAG1 $REPO2_APP_HOME $CMD_PATH "$CMD_ARGS" $DATAFILE
    if [ $? -ne 0 ]
    then
       echo "Unit tests failed, not pushing to DockerHub." >&2
