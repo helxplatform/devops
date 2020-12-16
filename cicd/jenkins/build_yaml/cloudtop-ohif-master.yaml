@@ -11,6 +11,8 @@ code:
     https://github.com/helxplatform/cloudtop-ohif.git
   secondary_url:
     null
+  primary_app_path:
+    "."
   primary_requirements_path:
     ./requirements.txt
   secondary_requirements_path:
