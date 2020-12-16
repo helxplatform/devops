@@ -189,10 +189,9 @@ function unit_test ()
             pip install -r $repo2_req_path
       fi
 
-      if [[ "$cmd_args" =~ .*${TAG1}.* ]]; then
-         full_cmd_args=`echo $cmd_args | sed -e "s/\'${TAG1}'/$tag1/g"`
+      if [[ "$cmd_args" =~ .*TAG1.* ]]; then
+         full_cmd_args=`echo $cmd_args | sed -e "s/\TAG1/$tag1/g"`
       else
-         echo "command args unchanged."
          full_cmd_args="$cmd_args"
       fi
       echo "Invoking test with cmd_path [$cmd_path] and cmd_args [$full_cmd_args]"
