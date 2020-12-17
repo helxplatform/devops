@@ -145,11 +145,18 @@ function build ()
    echo "Building app . . ."
 
    if [ "$build_args" ==  "null" ]; then unset build_args; fi
-   if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
-   if [ "$docker_path" == "." ]; then docker_path="./"; fi 
+   #if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
+   #if [ "$docker_path" == "." ]; then docker_path="./"; fi 
    if [ "$app1_path" != "." ]; then cd $app1_path; fi
 
-   docker build -f $docker_fn --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 $docker_path
+   if [ "$docker_fn" != "null" ]; then
+      # $docker_fn is the name of the dockerfile
+      # $docker_path must be a relative directory path from cwd to the directory containing the dockerfile
+      docker build -f $docker_fn --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 $docker_path
+   else
+      # docker assumes Dockerfile is the filename in this case
+      docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 $docker_path
+   fi
 }
 
 
