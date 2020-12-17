@@ -24,7 +24,7 @@ code:
   build:
     default
   test:
-    dug-test
+    dug_test
 
 docker:
   org:

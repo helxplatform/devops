@@ -1,4 +1,4 @@
-function cloudtopsdk-build ()
+function cloudtopsdk_build ()
 {
    local -r org=$1
    local -r repo=$2
@@ -11,7 +11,7 @@ function cloudtopsdk-build ()
    local docker_path=$5
    local docker_fn=$6
 
-   echo "cloudtopsdk-build: $org $repo $branch $build_args $tag1 $tag2 $app_home $docker_path $docker_fn"
+   echo "cloudtopsdk_build: $org $repo $branch $build_args $tag1 $tag2 $app_home $docker_path $docker_fn"
    echo "Building app . . ."
 
    python3 -m venv venv

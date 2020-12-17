@@ -22,7 +22,7 @@ code:
   prebuild:
     default
   build:
-    cloudtopsdk-build
+    cloudtopsdk_build
   test:
     default
 
