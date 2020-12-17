@@ -73,9 +73,14 @@ function init_build ()
    . ./version_lib.sh
 
    echo "Fetching curl library . . ."
-   CURL_LIB_URL="https://raw.githubusercontent.com/helxplatform/devops/master/cicd/jenkins/bashlib/clair_lib.sh"
-   curl $CURL_LIB_URL > clair_lib.sh
+   CLAIR_LIB_URL="https://raw.githubusercontent.com/helxplatform/devops/master/cicd/jenkins/bashlib/clair_lib.sh"
+   curl $CLAIR_LIB_URL > clair_lib.sh
    . ./clair_lib.sh
+
+   echo "Fetching custom libs . . ."
+   CUSTOM_LIB_URL="https://raw.githubusercontent.com/helxplatform/devops/master/cicd/jenkins/bashlib/custom_build_lib.sh"
+   curl $CUSTOM_LIB_URL > custom_build_lib.sh
+   . ./custom_build_lib.sh
 }
 
 
