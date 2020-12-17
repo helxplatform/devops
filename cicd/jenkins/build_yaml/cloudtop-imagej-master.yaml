@@ -1,0 +1,59 @@
+version: 0.0.1
+
+build:
+  name: cloudtop-imagej-master
+
+app:
+  name: cloudtop-imagej
+
+code:
+  primary_url:
+    https://github.com/helxplatform/CloudTopSDK.git
+  secondary_url:
+    null
+  primary_app_path:
+    example/imagej
+  primary_requirements_path:
+    null
+  secondary_requirements_path:
+    null
+  branch:
+    master
+  prebuild:
+    default
+  build:
+    cloudtopsdk-build
+  test:
+    default
+
+docker:
+  org:
+    heliumdatastage
+  primary_repo:
+    cloudtop-imagej
+  secondary_repo:
+    null
+  docker_fn:
+    Docker.imagej
+  primary_docker_dir:
+    example/imagej
+  secondary_docker_dir:
+    null
+  build_parameters:
+    imagej.yml "latest"
+
+test:
+  cmd_path:
+    null
+  cmd_args:
+    null
+  datafile:
+    null
+
+clair:
+  cmd_parameters:
+    null
+  threshold:
+    null
+  whitelist:
+    null
