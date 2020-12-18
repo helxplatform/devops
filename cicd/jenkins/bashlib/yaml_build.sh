@@ -148,11 +148,12 @@ function build ()
    if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
    if [ "$app1_path" != "." ]; then cd $app1_path; fi
 
-   if [ $docker_path == "."  ]; then
-      docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_fn .
-   else
-      docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_path/$docker_fn .
-   fi
+   docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_path/$docker_fn $docker_path
+#   if [ $docker_path == "."  ]; then
+#      docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_fn .
+#   else
+#      docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_path/$docker_fn .
+#   fi
 }
 
 
