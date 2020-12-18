@@ -344,7 +344,7 @@ DUG_API_WITH_NGINX=${DUG_API_WITH_NGINX-false}
 DUG_HELM_RELEASE=${DUG_HELM_RELEASE-"dug"}
 DUG_HOME=${DUG_HOME-"$HELXPLATFORM_HOME/dug"}
 DUG_HELM_DIR=${DUG_HELM_DIR-"$DUG_HOME/kubernetes/helm"}
-DUG_CREATE_PVCS=${DUG_CREATE_PVCS-false}
+DUG_CREATE_PVCS=${DUG_CREATE_PVCS-true}
 DUG_ES_PD_NAME=${DUG_ES_PD_NAME-"${DISK_PREFIX}dug-es-disk"}
 DUG_ES_PD_DELETE_W_APP=${DUG_ES_PD_DELETE_W_APP-false}
 DUG_ES_PVC=${DUG_ES_PVC-"dug-elasticsearch-pvc"}
@@ -1512,7 +1512,7 @@ case $APPS_ACTION in
         fi
         if [ "$DUG_API" == true ]
         then
-          dugStorage deploy
+          # dugStorage deploy
           dug deploy
         fi
         deployAmbassador
