@@ -44,9 +44,9 @@ docker:
 
 test:
   cmd_path:
-    bin
+    bin/test
   cmd_args:
-    test
+    null
   datafile:
     null
 
