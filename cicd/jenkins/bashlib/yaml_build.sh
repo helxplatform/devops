@@ -19,8 +19,6 @@ function get_tags ()
    local branch=$1
    local ver=$2
 
-##   echo "get_tags: $branch $ver"
-#   echo "Getting tags for image . . ."
    if [ $branch == "master" ]; then
       tags="$ver:latest"
    else
@@ -38,7 +36,7 @@ function check_prereqs ()
    echo "check_prereqs"
    bash_ver=$(bash --version | head -1 | cut -d ' ' -f4)
    arr_bash_ver=(${bash_ver//./ })
-   #echo "$bash_ver | ${arr_bash_ver[@]} | ${arr_bash_ver[0]} | ${arr_bash_ver[1]}"                                                                                           
+
    if [ ${arr_bash_ver[0]} -le $ver_major -a \
         ${arr_bash_ver[1]} -le $ver_minor ]; then
       echo "Insufficient bash version for build: [$bash_ver]"
@@ -50,7 +48,7 @@ function check_prereqs ()
 
 
 # --- INIT_BUILD ---
-function init_build () # $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_array
+function init_build ()
 {
    echo "Initializing build . . ."
 
@@ -62,15 +60,10 @@ function init_build () # $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_
    echo "init_build: $req_prebuild $req_build $req_test ${func_arr[@]}"
    echo "Setting up functions array . . ."
    request_arr=($req_prebuild $req_build $req_test)
-   #echo request_arr is ${request_arr[@]}
-   #echo func_arr is ${func_arr[@]}
    for index in {0..2}; do
-      #echo "${func_arr[$index]} ${request_arr[$index]}"
       if [ ${request_arr[$index]} != "default" ]; then
-         #echo "${request_arr[$index]} != default"
          unset func_arr[$index]
          func_arr[$index]=${request_arr[$index]}
-         #echo "Updated: ${func_arr[$index]}"
       fi
    done
 
@@ -80,9 +73,19 @@ function init_build () # $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_
    . ./version_lib.sh
 
    echo "Fetching curl library . . ."
-   CURL_LIB_URL="https://raw.githubusercontent.com/helxplatform/devops/master/cicd/jenkins/bashlib/clair_lib.sh"
-   curl $CURL_LIB_URL > clair_lib.sh
+   CLAIR_LIB_URL="https://raw.githubusercontent.com/helxplatform/devops/master/cicd/jenkins/bashlib/clair_lib.sh"
+   curl $CLAIR_LIB_URL > clair_lib.sh
    . ./clair_lib.sh
+
+   echo "Fetching custom libs . . ."
+   CUSTOM_BUILD_LIB_URL="https://raw.githubusercontent.com/helxplatform/devops/master/cicd/jenkins/bashlib/custom_build_lib.sh"
+   curl $CUSTOM_BUILD_LIB_URL > custom_build_lib.sh
+   . ./custom_build_lib.sh
+
+   echo "Fetching custom libs . . ."
+   CUSTOM_TEST_LIB_URL="https://raw.githubusercontent.com/helxplatform/devops/master/cicd/jenkins/bashlib/custom_test_lib.sh"
+   curl $CUSTOM_TEST_LIB_URL > custom_test_lib.sh
+   . ./custom_test_lib.sh
 }
 
 
@@ -111,7 +114,7 @@ function prebuild ()
    local -r version_file=$4
    local -r build_args=$5
 
- #  echo "prebuild: $org $repo $branch $build_args"
+ #  echo "prebuild: $org $repo $branch $version_file $build_args"
    incr_version $version_file
    local ver=$(get_version $version_file)
    echo "$ver" >&2
@@ -130,23 +133,26 @@ function build ()
    local -r org=$1
    local -r repo=$2
    local -r branch=$3
-   local build_args=$4
-   local -r tag1=$5
-   local -r tag2=$6
-   local -r app1_path=$7
-   local docker_path=$8
-   local docker_fn=$9
+   shift 3
+   local build_args=$1
+   local -r tag1=$2
+   local -r tag2=$3
+   local -r app1_path=$4
+   local docker_path=$5
+   local docker_fn=$6
 
-   # handle repo 2, unusual docker filenames and paths here!!!
    echo "build: $org $repo $branch $build_args $tag1 $tag2 $app1_path $docker_path $docker_fn"
    echo "Building app . . ."
 
    if [ "$build_args" ==  "null" ]; then unset build_args; fi
    if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
-   if [ "$docker_path" == "." ]; then docker_path="./"; fi 
    if [ "$app1_path" != "." ]; then cd $app1_path; fi
 
-   docker build -f $docker_fn --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 $docker_path
+   if [ $docker_path == "."  ]; then
+      docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_fn .
+   else
+      docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_path/$docker_fn .
+   fi
 }
 
 
@@ -161,14 +167,17 @@ function unit_test ()
    local -r repo1_req_path=$6
    local -r repo2_req_path=$7
    local -r branch=$8
-   local -r repo2_app_home=$9
-   local -r cmd_path=${10}
-   shift 10
-   local -r cmd_args=$1
+   local -r ver=$9
+   local -r tag1=${10}
+   local -r app_home=${11}
+   local -r repo2_app_home=${12}
+   local -r cmd_path=${13}
+   shift 13
+   local cmd_args=$1
    local -r datafile=$2
 
    echo -n "unit_test: $org $repo1 $repo2 $repo1_url $repo2_url $repo1_req_path $repo2_req_path "
-   echo "$branch $repo2_app_home $cmd_path $cmd_args $datafile"
+   echo "$branch $ver $tag1 $repo2_app_home $cmd_path $cmd_args $datafile"
    echo "Executing unit tests . . ."
    if [ $cmd_path != "null" ]; then
       pwd
@@ -186,8 +195,16 @@ function unit_test ()
          if [ ! -d $repo2_app_home/$repo2 ]; then git clone --branch $branch $repo2_url ; fi && \
             pip install -r $repo2_req_path
       fi
-      echo "Invoking test with cmd_path [$cmd_path] and cmd_args [$cmd_args]"
-      $cmd_path $cmd_args
+
+      if [[ "$cmd_args" =~ .*TAG1.* ]]; then
+         full_cmd_args=`echo $cmd_args | sed -e "s/\TAG1/$tag1/g"`
+      elif [ $cmd_args == "null"  ]; then
+         unset full_cmd_args
+      else
+         full_cmd_args="$cmd_args"
+      fi
+      echo "Invoking test with cmd_path [$cmd_path] and cmd_args [$full_cmd_args]"
+      $cmd_path $full_cmd_args
    else
       true
    fi
@@ -263,10 +280,10 @@ function build_app ()
    local -r DOCKER_ORG=0
    local -r DOCKER_PRI_REPO=1
    local -r DOCKER_SEC_REPO=2
-   local -r DOCKER_BUILD_ARGS=3
-   local -r DOCKER_DF_FN=4
-   local -r DOCKER_PRI_D_DIR=5
-   local -r DOCKER_SEC_D_DIR=6
+   local -r DOCKER_DF_FN=3
+   local -r DOCKER_PRI_D_DIR=4
+   local -r DOCKER_SEC_D_DIR=5
+   local -r DOCKER_BUILD_ARGS=6
 
    local -r TEST_CMD_PATH=0
    local -r TEST_CMD_ARGS=1
@@ -293,8 +310,8 @@ function build_app ()
 
    local -r REPO1_URL=${code_array[$CODE_PRI_URL]}
    local -r REPO2_URL=${code_array[$CODE_SEC_URL]}
-   local -r APP1_PATH=${code_array[$CODE_PRI_APP_PATH]}
-   echo "REPO1_URL:[$REPO1_URL] REPO2_URL:[$REPO2_URL] APP1_PATH:[$APP1_PATH]"
+   local -r APP_HOME=${code_array[$CODE_PRI_APP_PATH]}
+   echo "REPO1_URL:[$REPO1_URL] REPO2_URL:[$REPO2_URL] APP_HOME:[$APP_HOME]"
 
    local -r REQ_PREBUILD_FUNC=${code_array[$CODE_PREBUILD]}
    local -r REQ_BUILD_FUNC=${code_array[$CODE_BUILD]}
@@ -308,13 +325,12 @@ function build_app ()
    local -r DOCKER_FN=${docker_array[$DOCKER_DF_FN]}
    local -r DOCKER_DIR1=${docker_array[$DOCKER_PRI_D_DIR]}
    local -r DOCKER_DIR2=${docker_array[$DOCKER_SEC_D_DIR]}
-   local -r BUILD_ARGS=${docker_array[$DOCKER_BUILD_ARGS]}
+   local -r BUILD_ARGS=$(yq read "$project.yaml" 'docker.build_parameters')
    echo "DOCKER_FN:[$DOCKER_FN] DOCKER_DIR1:[$DOCKER_DIR1] DOCKER_DIR2:[$DOCKER_DIR2] BUILD_ARGS:[$BUILD_ARGS]"
 
    local -r CMD_PATH=${test_array[$TEST_CMD_PATH]}
-   #local -r CMD_ARGS=${test_array[$TEST_CMD_ARGS]}
    local -r CMD_ARGS=$(yq read "$project.yaml" 'test.cmd_args')
-   local -r DATAFILE=$(yq read "$project.yaml" 'test.datafile')
+   local -r DATAFILE=$(yq read "$project.yaml" 'test.datafile')  # TODO: consider swapping order in yaml file so cmd_args is last. 
    echo "CMD_PATH:[$CMD_PATH] CMD_ARGS:[$CMD_ARGS] DATAFILE:[$DATAFILE]"
 
    # Fundamental given constant
@@ -358,8 +374,8 @@ function build_app ()
    local -r VER=${build_array[2]}
 
    # Invoke build:
-   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $APP1_PATH $DOCKER_DIR1 $DOCKER_FN"
-   ${func_array[$BUILD]} $ORG $REPO1 $BRANCH $BUILD_ARGS $TAG1 $TAG2 $APP1_PATH $DOCKER_DIR1 $DOCKER_FN
+   echo "Invoking ${func_array[$BUILD]} $ORG $REPO1 $BRANCH [$BUILD_ARGS] $TAG1 $TAG2 $APP_HOME $DOCKER_DIR1 $DOCKER_FN"
+   ${func_array[$BUILD]} $ORG $REPO1 $BRANCH "$BUILD_ARGS" $TAG1 $TAG2 $APP_HOME $DOCKER_DIR1 $DOCKER_FN
    if [ $? -ne 0 ]
    then
      echo "Build failed, skipping tests and not pushing to Dockerhub." >&2
@@ -368,9 +384,9 @@ function build_app ()
 
    # Invoke unit tests:
    echo -n "Invoking ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL "
-   echo "$REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
+   echo "$REPO1_REQ_PATH $REPO2_REQ_PATH $BRANCH $VER $TAG1 $APP_HOME $REPO2_APP_HOME $CMD_PATH $CMD_ARGS $DATAFILE"
    ${func_array[$UNIT_TEST]} $ORG $REPO1 $REPO2 $REPO1_URL $REPO2_URL $REPO1_REQ_PATH \
-                $REPO2_REQ_PATH $BRANCH $REPO2_APP_HOME $CMD_PATH "$CMD_ARGS" $DATAFILE
+                $REPO2_REQ_PATH $BRANCH $VER $TAG1 $APP_HOME $REPO2_APP_HOME $CMD_PATH "$CMD_ARGS" $DATAFILE
    if [ $? -ne 0 ]
    then
       echo "Unit tests failed, not pushing to DockerHub." >&2

@@ -18,6 +18,7 @@ spec:
         service: {{ template "tycho-api.name" . }}
         app: {{ template "tycho-api.name" . }}
     spec:
+      serviceAccountName: tycho-api-sa
       containers:
       - command:
         - /usr/local/bin/gunicorn

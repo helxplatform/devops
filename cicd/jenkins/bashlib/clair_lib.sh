@@ -347,14 +347,14 @@ function scan_clair_v2 () {
 
    echo "FN=$FN"
    echo "XFM_DIR=$XFM_DIR"
-   echo "image=$locl_ORG/$locl_REPO:$TAG"
+   echo "image=$locl_ORG/$locl_REPO:$locl_TAG"
 
    local -r CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
    local -r ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
-   echo "Running clair on $locl_ORG/$locl_REPO:$TAG . . ."
-   docker pull "$locl_ORG/$locl_REPO:$TAG"
+   echo "Running clair on $locl_ORG/$locl_REPO:$locl_TAG . . ."
+   docker pull "$locl_ORG/$locl_REPO:$locl_TAG"
 
    if [ ! -d "$CLAIR_XFM" ]; then
       /bin/mkdir "$CLAIR_XFM"
@@ -373,7 +373,7 @@ function scan_clair_v2 () {
       return 1
    fi
 
-   echo "Invoking clair-scanner on $locl_ORG/$locl_REPO:$TAG"
+   echo "Invoking clair-scanner on $locl_ORG/$locl_REPO:$locl_TAG"
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
       "$XFM_DIR/clair_report.json" "$locl_ORG/$locl_REPO:$locl_TAG" > "$XFM_DIR/table.txt"
 

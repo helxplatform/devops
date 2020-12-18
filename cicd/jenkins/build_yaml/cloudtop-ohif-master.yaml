@@ -1,23 +1,22 @@
-version: 
-  0.0.1
+version: 0.0.1
 
 build:
-  name: appstore-master  
+  name: cloudtop-ohif-master
 
 app:
-  name: appstore
+  name: cloudtop-ohif
 
 code:
-  primary_url: 
-    https://github.com/helxplatform/appstore.git
-  secondary_url: 
-    https://github.com/helxplatform/tycho.git
+  primary_url:
+    https://github.com/helxplatform/cloudtop-ohif.git
+  secondary_url:
+    null
   primary_app_path:
-    "./appstore"
+    "."
   primary_requirements_path:
     ./requirements.txt
   secondary_requirements_path:
-    ./tycho/requirements.txt
+    null
   branch:
     master
   prebuild:
@@ -28,34 +27,33 @@ code:
     default
 
 docker:
-  org: 
+  org:
     heliumdatastage
-  primary_repo: 
-    appstore
+  primary_repo:
+    cloudtop-ohif
   secondary_repo:
-    tycho
+    null
   docker_fn:
     null
   primary_docker_dir:
-    "."
+    .
   secondary_docker_dir:
     null
   build_args:
-    null
+    --build-arg CLOUDTOP_TAG=latest
 
 test:
-  cmd_path: 
-    "bin/appstore"
-  cmd_args: 
-    "tests braini"
+  cmd_path:
+    null
+  cmd_args:
+    null
   datafile:
     null
 
 clair:
-  cmd_args:
+  cmd_parameters:
     null
   threshold:
     null
   whitelist:
     null
-
