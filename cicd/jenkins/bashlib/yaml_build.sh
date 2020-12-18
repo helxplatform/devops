@@ -198,6 +198,8 @@ function unit_test ()
 
       if [[ "$cmd_args" =~ .*TAG1.* ]]; then
          full_cmd_args=`echo $cmd_args | sed -e "s/\TAG1/$tag1/g"`
+      elif [ $cmd_args == "null"  ]; then
+         unset full_cmd_args
       else
          full_cmd_args="$cmd_args"
       fi
