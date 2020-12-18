@@ -36,7 +36,7 @@ docker:
   docker_fn:
     null
   primary_docker_dir:
-    null
+    docker/jdk-layer
   secondary_docker_dir:
     null
   build_parameters:
