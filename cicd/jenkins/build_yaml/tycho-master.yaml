@@ -30,7 +30,7 @@ docker:
   org:
     heliumdatastage
   primary_repo:
-    tycho
+    tycho-api
   secondary_repo:
     null
   docker_fn:
