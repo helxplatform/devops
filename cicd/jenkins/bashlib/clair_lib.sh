@@ -475,10 +475,10 @@ function postprocess_clair_output_v2() {
    local -r locl_rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
    local -r locl_tmpf="${locl_BRANCH}_${locl_rnd_str}.html"
    echo "sed\'ing $CLAIR_RPT/$locl_BRANCH.html into $CLAIR_RPT/$locl_tmpf"
-   sed -e "/^.*$locl_REPO.*$/p" \
-       -e "s|^.*$locl_REPO.*$|$locl_repl|" $CLAIR_RPT/$locl_BRANCH.html > $CLAIR_RPT/$locl_tmpf
+   sed -e "/^.*$locl_REPO-TAG.*$/p" \
+       -e "s|^.*$locl_REPO-TAG.*$|$locl_repl|" "$CLAIR_RPT/$locl_BRANCH.html" > "$CLAIR_RPT/$locl_tmpf"
    echo "mv ing $CLAIR_RPT/$locl_tmpf to $CLAIR_RPT/$locl_BRANCH.html"
-   mv $CLAIR_RPT/$locl_tmpf $CLAIR_RPT/$locl_BRANCH.html
+   mv "$CLAIR_RPT/$locl_tmpf" "$CLAIR_RPT/$locl_BRANCH.html"
 
    # Clean up
    #cd "$XFM_DIR/.."
