@@ -420,12 +420,12 @@ function scan_clair_v2 () {
 # -------------------------------------------------------------------------
 function postprocess_clair_output_v2() {
 
-   local locl_ORG=$1
-   local locl_REPO=$2
-   local locl_BRANCH=$3
-   local locl_VER=$4
-   local locl_TAG=$5
-   local locl_THRESHOLD=$6
+   local -r locl_ORG=$1
+   local -r locl_REPO=$2
+   local -r locl_BRANCH=$3
+   local -r locl_VER=$4
+   local -r locl_TAG=$5
+   local -r locl_THRESHOLD=$6
 
    JENKINS_HM="/var/jenkins_home"
    CLAIR_HM="$JENKINS_HM/clair"
@@ -436,20 +436,13 @@ function postprocess_clair_output_v2() {
    RPT_DIR="$CLAIR_RPT/$FN"
 
    echo "postprocess_clair_output_v2"
-
-   echo "FN=$FN"
-   echo "XFM_DIR=$XFM_DIR"
-   echo "image=$locl_ORG/$locl_REPO:$locl_TAG"
-
    awk "/unapproved/,/]/ { next }       \ 
                          { print }" "$XFM_DIR/clair_report.json" > "$XFM_DIR/clair_report_edited.json" 
-
    cat "$CLAIR_HM/template_html_css_body_open.txt" > "$XFM_DIR/clair_table.html"
    cat "$XFM_DIR/clair_report_edited.json" | \
                                json2table >> \
                               "$XFM_DIR/clair_table.html"
    cat "$CLAIR_HM/template_html_body_close.txt" >> "$XFM_DIR/clair_table.html"
-
 
    # Convert bare link to an href with CVE as target:
    sed -i 's|>\(https.*\)\(CVE-.*[0-9]\)<|><a href="\1\2" target="_blank">\2<|g' \
@@ -461,7 +454,6 @@ function postprocess_clair_output_v2() {
         /^<td>CVE-[0-9]+-[0-9]+<\/td>/            { next }                             \
                                                   { print }"                           \
                          "$XFM_DIR/clair_table.html" > "$XFM_DIR/clair_table_updated.html"
-
    if [ ! -d "$RPT_DIR" ]; then
       mkdir "$RPT_DIR"
    fi
@@ -478,17 +470,13 @@ function postprocess_clair_output_v2() {
       locl_PAD="    "
    fi
 
-   repl="$locl_PAD<li><a href=\"\/$locl_REPO-$locl_TAG\/vuln_table_$locl_REPO-$locl_TAG.html\" target=\"_blank\">$locl_BRANCH branch $locl_VER vulnerabilities<\/a><\/li>"
-
-   locl_rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
-   echo "locl_BRANCH:[$locl_BRANCH] locl_RND_STR:[$locl_rnd_str]"
-   locl_tmpf="${locl_BRANCH}_${locl_rnd_str}.html"
-   echo "tmpfile:[$locl_tmpf]"
-
+   local -r locl_uBRANCH=`echo "${locl_BRANCH^}"`
+   local -r locl_repl="$locl_PAD<li><a href=\"\/$locl_REPO-$locl_TAG\/vuln_table_$locl_REPO-$locl_TAG.html\" target=\"_blank\">$locl_uBRANCH branch $locl_VER<\/a><\/li>"
+   local -r locl_rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
+   local -r locl_tmpf="${locl_BRANCH}_${locl_rnd_str}.html"
    echo "sed\'ing $CLAIR_RPT/$locl_BRANCH.html into $CLAIR_RPT/$locl_tmpf"
-   sed -e "/^.*$locl_REPO-TAG.*$/p" \
-       -e "s|^.*$locl_REPO-TAG.*$|$repl|" $CLAIR_RPT/$locl_BRANCH.html > $CLAIR_RPT/$locl_tmpf
-
+   sed -e "/^.*$locl_REPO.*$/p" \
+       -e "s|^.*$locl_REPO.*$|$locl_repl|" $CLAIR_RPT/$locl_BRANCH.html > $CLAIR_RPT/$locl_tmpf
    echo "mv ing $CLAIR_RPT/$locl_tmpf to $CLAIR_RPT/$locl_BRANCH.html"
    mv $CLAIR_RPT/$locl_tmpf $CLAIR_RPT/$locl_BRANCH.html
 
@@ -500,5 +488,3 @@ function postprocess_clair_output_v2() {
    #rm -f clair_* clean* vuln*
    echo "Postprocessing clair output complete."
 }
-
-
