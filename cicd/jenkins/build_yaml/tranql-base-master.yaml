@@ -10,7 +10,8 @@ app:
 code:
   primary_url: 
     https://github.com/NCATS-Tangerine/tranql.git
-  secondary_url: 
+  secondary_url:
+    null 
   primary_app_path:
     "."
   primary_requirements_path:
@@ -37,6 +38,7 @@ docker:
   primary_docker_dir:
     docker/tranql-base
   secondary_docker_dir:
+    null
   build_args:
     null
 
