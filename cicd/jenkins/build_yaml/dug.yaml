@@ -1,0 +1,59 @@
+version: 0.0.1
+
+build:
+  name: dug
+
+app:
+  name: dug
+
+code:
+  primary_url:
+    https://github.com/helxplatform/dug.git
+  secondary_url:
+    null
+  primary_app_path:
+    "."
+  primary_requirements_path:
+    ./requirements.txt
+  secondary_requirements_path:
+    null
+  branch:
+    develop
+  prebuild:
+    default
+  build:
+    default
+  test:
+    dug_test
+
+docker:
+  org:
+    heliumdatastage
+  primary_repo:
+    dug
+  secondary_repo:
+    null
+  docker_fn:
+    null
+  primary_docker_dir:
+    docker/dug
+  secondary_docker_dir:
+    null
+  build_parameters:
+    null
+
+test:
+  cmd_path:
+    null
+  cmd_args:
+    null
+  datafile:
+    null
+
+clair:
+  cmd_parameters:
+    null
+  threshold:
+    null
+  whitelist:
+    null
