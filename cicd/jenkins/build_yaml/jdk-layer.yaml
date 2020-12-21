@@ -1,0 +1,59 @@
+version: 0.0.1
+
+build:
+  name: jdk-layer
+
+app:
+  name: jdk-layer
+
+code:
+  primary_url:
+    https://github.com/helxplatform/helx-hail.git
+  secondary_url:
+    null
+  primary_app_path:
+    "."
+  primary_requirements_path:
+    null
+  secondary_requirements_path:
+    null
+  branch:
+    develop
+  prebuild:
+    default
+  build:
+    default
+  test:
+    default
+
+docker:
+  org:
+    heliumdatastage
+  primary_repo:
+    jdk-layer
+  secondary_repo:
+    null
+  docker_fn:
+    null
+  primary_docker_dir:
+    docker/jdk-layer
+  secondary_docker_dir:
+    null
+  build_parameters:
+    null
+
+test:
+  cmd_path:
+    null
+  cmd_args:
+    null
+  datafile:
+    null
+
+clair:
+  cmd_parameters:
+    null
+  threshold:
+    null
+  whitelist:
+    null
