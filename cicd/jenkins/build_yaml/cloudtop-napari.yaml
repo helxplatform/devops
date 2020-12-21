@@ -1,0 +1,59 @@
+version: 0.0.1
+
+build:
+  name: cloudtop-napari
+
+app:
+  name: cloudtop-napari
+
+code:
+  primary_url:
+    https://github.com/helxplatform/CloudTopSDK.git
+  secondary_url:
+    null
+  primary_app_path:
+    example/napari
+  primary_requirements_path:
+    null
+  secondary_requirements_path:
+    null
+  branch:
+    develop
+  prebuild:
+    default
+  build:
+    cloudtopsdk_build
+  test:
+    default
+
+docker:
+  org:
+    heliumdatastage
+  primary_repo:
+    cloudtop-napari
+  secondary_repo:
+    null
+  docker_fn:
+    Docker.napari
+  primary_docker_dir:
+    example/napari
+  secondary_docker_dir:
+    null
+  build_parameters:
+    napari.yml "latest"
+
+test:
+  cmd_path:
+    null
+  cmd_args:
+    null
+  datafile:
+    null
+
+clair:
+  cmd_parameters:
+    null
+  threshold:
+    null
+  whitelist:
+    null
