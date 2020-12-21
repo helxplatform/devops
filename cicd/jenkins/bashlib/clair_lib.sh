@@ -14,13 +14,10 @@
 # -------------------------------------------------------------------------
 function start_clair ()
 {
-   #set -ex
-
+   set +ex
    exec 3>&1 4>&2
    trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
    exec 1>>/var/jenkins_home/clair/clair_startup_log.txt 2>&1
-   #exec 1>>/var/log/clair/clair_startup_log.txt 2>&1
-   #exec 1>>./clair_startup_log.txt 2>&1
 
    DIVIDER="------------------------------------------------------------------------------------"
    echo $DIVIDER
@@ -29,7 +26,7 @@ function start_clair ()
    PID=/var/jenkins_home/clair/pid_lock
    FIVE_MIN_IN_HALF_SECS=600
    count=1
-   while  [ test -f "$PID" && count <= FIVE_MIN_IN_HALF_SECS ]
+   while  [ test -f "$PID" ] && [ count <= FIVE_MIN_IN_HALF_SECS ]
    do
       if [ count -lt FIVE_MIN_IN_HALF_SECS  ]; then
          echo "Waiting on pid_lock"
@@ -80,6 +77,7 @@ function start_clair ()
 
    echo "Done."
    echo $DIVIDER
+   set -ex
 }
 
 
@@ -99,13 +97,10 @@ function start_clair ()
 # -------------------------------------------------------------------------
 function stop_clair ()
 {
-   #set -ex
-
+   set +ex
    exec 3>&1 4>&2
    trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
    exec 1>>/var/jenkins_home/clair/clair_startup_log.txt 2>&1
-   #exec 1>>/var/log/clair/clair_startup_log.txt 2>&1
-   #exec 1>>./clair_startup_log.txt 2>&1
 
    DIVIDER="------------------------------------------------------------------------------------"
    echo $DIVIDER
@@ -126,6 +121,7 @@ function stop_clair ()
 
    echo "Done."
    echo $DIVIDER
+   set -ex
 }
 
 
