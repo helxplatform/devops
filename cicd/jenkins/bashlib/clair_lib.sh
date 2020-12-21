@@ -26,7 +26,7 @@ function start_clair ()
    PID=/var/jenkins_home/clair/pid_lock
    FIVE_MIN_IN_HALF_SECS=600
    count=1
-   while  [ test -f "$PID" ] && [ count <= FIVE_MIN_IN_HALF_SECS ]
+   while  [ -f "$PID" ] && [ count <= FIVE_MIN_IN_HALF_SECS ]
    do
       if [ count -lt FIVE_MIN_IN_HALF_SECS  ]; then
          echo "Waiting on pid_lock"
