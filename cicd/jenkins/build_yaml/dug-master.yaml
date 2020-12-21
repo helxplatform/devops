@@ -34,9 +34,9 @@ docker:
   secondary_repo:
     null
   docker_fn:
-    null
+    docker/dug/Dockerfile
   primary_docker_dir:
-    docker/dug
+    .
   secondary_docker_dir:
     null
   build_parameters:
