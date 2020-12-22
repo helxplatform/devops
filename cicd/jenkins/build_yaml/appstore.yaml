@@ -1,24 +1,25 @@
-version: 0.0.1
+version:
+  0.0.1
 
 build:
-  name: tycho-master
+  name: appstore
 
 app:
-  name: tycho
+  name: appstore
 
 code:
   primary_url:
-    https://github.com/helxplatform/tycho.git
+    https://github.com/helxplatform/appstore.git
   secondary_url:
-    null
+    https://github.com/helxplatform/tycho.git
   primary_app_path:
-    "."
+    "./appstore"
   primary_requirements_path:
     ./requirements.txt
   secondary_requirements_path:
-    null
+    ./tycho/requirements.txt
   branch:
-    master
+    develop
   prebuild:
     default
   build:
@@ -30,28 +31,28 @@ docker:
   org:
     heliumdatastage
   primary_repo:
-    tycho-api
+    appstore
   secondary_repo:
-    null
+    tycho
   docker_fn:
     null
   primary_docker_dir:
-    docker/tycho-api
+    "."
   secondary_docker_dir:
     null
-  build_parameters:
+  build_args:
     null
 
 test:
   cmd_path:
-    bin/test
+    "bin/appstore"
   cmd_args:
-    null
+    "tests braini"
   datafile:
     null
 
 clair:
-  cmd_parameters:
+  cmd_args:
     null
   threshold:
     null

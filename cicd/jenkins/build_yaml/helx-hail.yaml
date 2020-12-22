@@ -1,24 +1,24 @@
 version: 0.0.1
 
 build:
-  name: tycho-master
+  name: helx-hail
 
 app:
-  name: tycho
+  name: helx-hail
 
 code:
   primary_url:
-    https://github.com/helxplatform/tycho.git
+    https://github.com/helxplatform/helx-hail.git
   secondary_url:
     null
   primary_app_path:
     "."
   primary_requirements_path:
-    ./requirements.txt
+    null
   secondary_requirements_path:
     null
   branch:
-    master
+    develop
   prebuild:
     default
   build:
@@ -30,13 +30,13 @@ docker:
   org:
     heliumdatastage
   primary_repo:
-    tycho-api
+    helx-hail
   secondary_repo:
     null
   docker_fn:
     null
   primary_docker_dir:
-    docker/tycho-api
+    docker/helx-hail
   secondary_docker_dir:
     null
   build_parameters:
@@ -44,7 +44,7 @@ docker:
 
 test:
   cmd_path:
-    bin/test
+    null
   cmd_args:
     null
   datafile:

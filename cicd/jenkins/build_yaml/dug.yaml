@@ -1,14 +1,14 @@
 version: 0.0.1
 
 build:
-  name: tycho-master
+  name: dug
 
 app:
-  name: tycho
+  name: dug
 
 code:
   primary_url:
-    https://github.com/helxplatform/tycho.git
+    https://github.com/helxplatform/dug.git
   secondary_url:
     null
   primary_app_path:
@@ -18,25 +18,25 @@ code:
   secondary_requirements_path:
     null
   branch:
-    master
+    develop
   prebuild:
     default
   build:
     default
   test:
-    default
+    dug_test
 
 docker:
   org:
     heliumdatastage
   primary_repo:
-    tycho-api
+    dug
   secondary_repo:
     null
   docker_fn:
-    null
+    docker/dug/Dockerfile
   primary_docker_dir:
-    docker/tycho-api
+    .
   secondary_docker_dir:
     null
   build_parameters:
@@ -44,7 +44,7 @@ docker:
 
 test:
   cmd_path:
-    bin/test
+    null
   cmd_args:
     null
   datafile:

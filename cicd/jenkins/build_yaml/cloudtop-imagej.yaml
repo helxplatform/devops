@@ -1,28 +1,28 @@
 version: 0.0.1
 
 build:
-  name: tycho-master
+  name: cloudtop-imagej
 
 app:
-  name: tycho
+  name: cloudtop-imagej
 
 code:
   primary_url:
-    https://github.com/helxplatform/tycho.git
+    https://github.com/helxplatform/CloudTopSDK.git
   secondary_url:
     null
   primary_app_path:
-    "."
+    example/imagej
   primary_requirements_path:
-    ./requirements.txt
+    null
   secondary_requirements_path:
     null
   branch:
-    master
+    develop
   prebuild:
     default
   build:
-    default
+    cloudtopsdk_build
   test:
     default
 
@@ -30,21 +30,21 @@ docker:
   org:
     heliumdatastage
   primary_repo:
-    tycho-api
+    cloudtop-imagej
   secondary_repo:
     null
   docker_fn:
-    null
+    Docker.imagej
   primary_docker_dir:
-    docker/tycho-api
+    example/imagej
   secondary_docker_dir:
     null
   build_parameters:
-    null
+    imagej.yml "latest"
 
 test:
   cmd_path:
-    bin/test
+    null
   cmd_args:
     null
   datafile:

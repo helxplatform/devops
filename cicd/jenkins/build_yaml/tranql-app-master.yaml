@@ -1,20 +1,21 @@
-version: 0.0.1
+version:
+  0.0.1
 
 build:
-  name: tycho-master
+  name: tranql-app-master
 
 app:
-  name: tycho
+  name: tranql-app
 
 code:
   primary_url:
-    https://github.com/helxplatform/tycho.git
+    https://github.com/NCATS-Tangerine/tranql.git
   secondary_url:
     null
   primary_app_path:
     "."
   primary_requirements_path:
-    ./requirements.txt
+    tranql/requirements.txt
   secondary_requirements_path:
     null
   branch:
@@ -28,18 +29,18 @@ code:
 
 docker:
   org:
-    heliumdatastage
+    renciorg
   primary_repo:
-    tycho-api
+    tranql-app
   secondary_repo:
     null
   docker_fn:
     null
   primary_docker_dir:
-    docker/tycho-api
+    docker/tranql-app
   secondary_docker_dir:
     null
-  build_parameters:
+  build_args:
     null
 
 test:
@@ -51,7 +52,7 @@ test:
     null
 
 clair:
-  cmd_parameters:
+  cmd_args:
     null
   threshold:
     null
