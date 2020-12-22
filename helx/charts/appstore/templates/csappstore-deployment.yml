@@ -250,7 +250,7 @@ spec:
             mountPath: /usr/src/inst-mgmt/log
             subPath: log
           {{- end}}
-      {{- else if .Values.oauth.pvcname }}
+      {{- else if .Values.oauth.claimName }}
         volumeMounts:
           - mountPath: /var/lib/sqlite3
             name: appstore-oauth-volume
@@ -265,11 +265,11 @@ spec:
         - name: {{ .Values.imagePullSecrets }}
       {{- end }}
       restartPolicy: Always
-      {{- if .Values.oauth.pvcname }}
+      {{- if .Values.oauth.claimName }}
       volumes:
         - name: appstore-oauth-volume
           persistentVolumeClaim:
-            claimName: {{ .Values.oauth.pvcname }}
+            claimName: {{ .Values.oauth.claimName }}
       {{- end }}
       {{- if .Values.appStorage.claimName }}
         - name: app-mounts-claim

@@ -124,7 +124,7 @@ DYNAMIC_NFSSP_DEPLOYMENT=${DYNAMIC_NFSSP_DEPLOYMENT-false}
 NFSSP_NAME=${NFSSP_NAME-"${DISK_PREFIX}nfssp"}
 # NFSSP persistent storage does not work on NFS storage.
 NFSSP_PERSISTENCE_ENABLED=${NFSSP_PERSISTENCE_ENABLED-false}
-NFSSP_PERSISTENCE_SIZE=${NFSSP_PERSISTENCE_SIZE-"100Gi"}
+NFSSP_PERSISTENCE_SIZE=${NFSSP_PERSISTENCE_SIZE-"20Gi"}
 # The default storageClass for GKE is standard.
 NFSSP_PERSISTENCE_STORAGECLASS=${NFSSP_PERSISTENCE_STORAGECLASS-""}
 NFSSP_STORAGECLASS=${NFSSP_STORAGECLASS-"$NFSSP_NAME-sc"}
@@ -147,19 +147,22 @@ GCE_DYN_STORAGE_PD_NAME="${NFSSP_NAME}"
 GCE_DYN_STORAGE_PV_NAME="${GCE_DYN_STORAGE_PD_NAME}-nfs-server-provisioner"
 GCE_DYN_STORAGE_CLAIMREF="data-$GCE_DYN_STORAGE_PV_NAME-0"
 
+CREATE_STATIC_PV_STORAGE=${CREATE_STATIC_PV_STORAGE-false}
+
 GCE_NFS_SERVER_DISK=${GCE_NFS_SERVER_DISK-"${DISK_PREFIX}stdnfs-disk"}
 GCE_NFS_SERVER_DISK_DELETE_W_APP=${GCE_NFS_SERVER_DISK_DELETE_W_APP-false}
 GCE_NFS_SERVER_STORAGE=${GCE_NFS_SERVER_STORAGE-"100Gi"}
+GCE_NFS_SERVER_HELM_RELEASE=${GCE_NFS_SERVER_HELM_RELEASE-"nfs-server"}
 
 NFS_CLNT_PV_NFS_PATH=${NFS_CLNT_PV_NFS_PATH-"/"}
 NFS_CLNT_PV_NFS_SRVR=${NFS_CLNT_PV_NFS_SRVR-"nfs-server.$NAMESPACE.svc.cluster.local"}
 NFS_CLNT_PV_NAME=${NFS_CLNT_PV_NAME-"${PV_PREFIX}stdnfs-pv"}
 NFS_CLNT_PVC_NAME=${NFS_CLNT_PVC_NAME-"stdnfs"}
-NFS_CLNT_STORAGE_SIZE=${NFS_CLNT_STORAGE_SIZE-"5Gi"}
+NFS_CLNT_STORAGE_SIZE=${NFS_CLNT_STORAGE_SIZE-$GCE_NFS_SERVER_STORAGE}
 NFS_CLNT_STORAGECLASS=${NFS_CLNT_STORAGECLASS-"stdnfs-sc"}
 
-NEXTFLOW_PVC=${NEXTFLOW_PVC-"stdnfs"}
-NEXTFLOW_PV_STORAGE_SIZE=${NEXTFLOW_PV_STORAGE_SIZE-"5Gi"}
+NEXTFLOW_PVC=${NEXTFLOW_PVC-$NFS_CLNT_PVC_NAME}
+NEXTFLOW_PV_STORAGE_SIZE=${NEXTFLOW_PV_STORAGE_SIZE-$NFS_CLNT_STORAGE_SIZE}
 NEXTFLOW_PV_ACCESSMODE=${NEXTFLOW_PV_ACCESSMODE-"ReadWriteMany"}
 NEXTFLOW_NFS_SERVER=${NEXTFLOW_NFS_SERVER-$NFS_CLNT_PV_NFS_SRVR}
 NEXTFLOW_NFS_PATH=${NEXTFLOW_NFS_PATH-"/nextflow"}
@@ -222,15 +225,23 @@ APPSTORE_RUNASUSER=${APPSTORE_RUNASUSER-""}
 APPSTORE_RUNASGROUP=${APPSTORE_RUNASGROUP-""}
 APPSTORE_FSGROUP=${APPSTORE_FSGROUP-""}
 APPSTORE_DJANGO_USERNAME=${APPSTORE_DJANGO_USERNAME-"admin"}
-APPSTORE_DJANGO_PASSWORD=${APPSTORE_DJANGO_PASSWORD-"admin"}
+# Set APPSTORE_DJANGO_PASSWORD to something other than "" or it will be assigned randomly.
+APPSTORE_DJANGO_PASSWORD=${APPSTORE_DJANGO_PASSWORD-""}
 APPSTORE_OAUTH_PD_NAME=${APPSTORE_OAUTH_PD_NAME-"${DISK_PREFIX}appstore-oauth-disk"}
 APPSTORE_OAUTH_PD_DELETE_W_APP=${APPSTORE_OAUTH_PD_DELETE_W_APP-false}
 APPSTORE_OAUTH_PV_NAME=${APPSTORE_OAUTH_PV_NAME-"${PV_PREFIX}appstore-oauth-pv"}
 # Define APPSTORE_OAUTH_PVC to use a PVC for the oauth sqlite3 db storage.
 APPSTORE_OAUTH_PVC=${APPSTORE_OAUTH_PVC-"appstore-oauth-pvc"}
-APPSTORE_OAUTH_PVC_USE_EXISTING=${APPSTORE_OAUTH_PVC_USE_EXISTING-true}
 APPSTORE_OAUTH_PVC_STORAGE=${APPSTORE_OAUTH_PVC_STORAGE-"100Mi"}
-APPSTORE_OAUTH_PV_STORAGECLASS=${APPSTORE_OAUTH_PV_STORAGECLASS-"${PV_PREFIX}appstore-oauth-sc"}
+if [ $CREATE_STATIC_PV_STORAGE == true ]
+then
+  APPSTORE_OAUTH_PV_STORAGECLASS=${APPSTORE_OAUTH_PV_STORAGECLASS-"${PV_PREFIX}appstore-oauth-sc"}
+  APPSTORE_OAUTH_PVC_USE_EXISTING=${APPSTORE_OAUTH_PVC_USE_EXISTING-true}
+else
+  # Use cluster default stoageclass.
+  APPSTORE_OAUTH_PV_STORAGECLASS=${APPSTORE_OAUTH_PV_STORAGECLASS-""}
+  APPSTORE_OAUTH_PVC_USE_EXISTING=${APPSTORE_OAUTH_PVC_USE_EXISTING-false}
+fi
 APPSTORE_OAUTH_NFS_SERVER=${APPSTORE_OAUTH_NFS_SERVER-$CAT_NFS_SERVER}
 APPSTORE_OAUTH_NFS_PATH=${APPSTORE_OAUTH_NFS_PATH-""}
 APPSTORE_OAUTH_PV_STORAGE_SIZE=${APPSTORE_OAUTH_PV_STORAGE_SIZE-"10Gi"}
@@ -255,9 +266,9 @@ TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
 TYCHO_STDNFS_PVC=${TYCHO_STDNFS_PVC-""}
 TYCHO_CREATE_HOME_DIRS=${TYCHO_CREATE_HOME_DIRS-""}
 TYCHO_RUNASROOT=${TYCHO_RUNASROOT-""}
-TYCHO_PARENT_DIR=${TYCHO_PARENT_DIR-""} # Chart default is "/home/pvc".
+TYCHO_PARENT_DIR=${TYCHO_PARENT_DIR-""} # Chart default is "/home".
 TYCHO_SUBPATH_DIR=${TYCHO_SUBPATH_DIR-""} # Chart default is null, which uses $USER.
-TYCHO_SHARED_DIR=${TYCHO_SHARED_DIR-""} # Chart default is "shared_data".
+TYCHO_SHARED_DIR=${TYCHO_SHARED_DIR-""} # Chart default is "shared".
 
 ELASTIC_PVC_STORAGE=${ELASTIC_PVC_STORAGE-"10Gi"}
 # Set X_STORAGECLASS to "" to use the default storage class.
@@ -266,7 +277,6 @@ ELASTICSEARCH_PRIVILEGED_SECURITY_CONTEXT=${ELASTICSEARCH_PRIVILEGED_SECURITY_CO
 ELASTICSEARCH_REQUESTS_MEMORY=${ELASTICSEARCH_REQUESTS_MEMORY-"200Mi"}
 ELASTICSEARCH_LIMITS_MEMORY=${ELASTICSEARCH_LIMITS_MEMORY-"512Mi"}
 ES_JAVA_OPTS=${ES_JAVA_OPTS-"-Xms150m -Xmx150m -XX:-AssumeMP"}
-APPSTORE_DB_STORAGECLASS=${APPSTORE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
 COMMONSSHARE_DB_STORAGECLASS=${COMMONSSHARE_DB_STORAGECLASS-$NFSP_STORAGECLASS}
 
 # This is temporary until we figure out something to use to encrypt secret
@@ -344,37 +354,40 @@ DUG_API_WITH_NGINX=${DUG_API_WITH_NGINX-false}
 DUG_HELM_RELEASE=${DUG_HELM_RELEASE-"dug"}
 DUG_HOME=${DUG_HOME-"$HELXPLATFORM_HOME/dug"}
 DUG_HELM_DIR=${DUG_HELM_DIR-"$DUG_HOME/kubernetes/helm"}
-DUG_CREATE_PVCS=${DUG_CREATE_PVCS-true}
-DUG_ES_PD_NAME=${DUG_ES_PD_NAME-"${DISK_PREFIX}dug-es-disk"}
-DUG_ES_PD_DELETE_W_APP=${DUG_ES_PD_DELETE_W_APP-false}
-DUG_ES_PVC=${DUG_ES_PVC-"dug-elasticsearch-pvc"}
-DUG_ES_PV_STORAGE_SIZE=${DUG_ES_PV_STORAGE_SIZE-"5G"}
-DUG_ES_PV_ACCESSMODE=${DUG_ES_PV_ACCESSMODE-"ReadWriteMany"}
 DUG_ES_NFS_SERVER=${DUG_ES_NFS_SERVER-$CAT_NFS_SERVER}
 DUG_ES_NFS_PATH=${DUG_ES_NFS_PATH-"/dug-elasticsearch"}
-DUG_ES_PV_STORAGECLASS=${DUG_ES_PV_STORAGECLASS-"${PV_PREFIX}dug-elasticsearch-sc"}
-DUG_ES_PV_NAME=${DUG_ES_PV_NAME-"${PV_PREFIX}dug-elasticsearch-pv"}
+if [ $CREATE_STATIC_PV_STORAGE == true ]
+then
+  DUG_ES_PV_STORAGECLASS=${DUG_ES_PV_STORAGECLASS-""}
+  DUG_NEO4J_PV_STORAGECLASS=${DUG_NEO4J_PV_STORAGECLASS-"${PV_PREFIX}dug-neo4j-sc"}
+  DUG_REDIS_PV_STORAGECLASS=${DUG_REDIS_PV_STORAGECLASS-"${PV_PREFIX}dug-redis-sc"}
+  DUG_CREATE_PVCS=${DUG_CREATE_PVCS-false}
+else
+  DUG_ES_PV_STORAGECLASS=${DUG_ES_PV_STORAGECLASS-""}
+  DUG_NEO4J_PV_STORAGECLASS=${DUG_NEO4J_PV_STORAGECLASS-""}
+  DUG_REDIS_PV_STORAGECLASS=${DUG_REDIS_PV_STORAGECLASS-""}
+  DUG_CREATE_PVCS=${DUG_CREATE_PVCS-true}
+fi
+DUG_ES_DELETE_STORAGE=${DUG_ES_DELETE_STORAGE-false}
 DUG_ES_APP_NAME=${DUG_ES_APP_NAME-"dug-elasticsearch"}
 DUG_ES_XMS=${DUG_ES_XMS-""} # initial memory allocation pool for JVM
 DUG_ES_XMX=${DUG_ES_XMX-""} # maximum memory allocation pool for JVM
 DUG_NEO4J_PD_NAME=${DUG_NEO4J_PD_NAME-"${DISK_PREFIX}dug-neo4j-disk"}
 DUG_NEO4J_PD_DELETE_W_APP=${DUG_NEO4J_PD_DELETE_W_APP-false}
 DUG_NEO4J_PVC=${DUG_NEO4J_PVC-"dug-neo4j-pvc"}
-DUG_NEO4J_PV_STORAGE_SIZE=${DUG_NEO4J_PV_STORAGE_SIZE-"1G"}
+DUG_NEO4J_PV_STORAGE_SIZE=${DUG_NEO4J_PV_STORAGE_SIZE-"10G"}
 DUG_NEO4J_PV_ACCESSMODE=${DUG_NEO4J_PV_ACCESSMODE-"ReadWriteMany"}
 DUG_NEO4J_NFS_SERVER=${DUG_NEO4J_NFS_SERVER-$CAT_NFS_SERVER}
 DUG_NEO4J_NFS_PATH=${DUG_NEO4J_NFS_PATH-"/dug-neo4j"}
-DUG_NEO4J_PV_STORAGECLASS=${DUG_NEO4J_PV_STORAGECLASS-"${PV_PREFIX}dug-neo4j-sc"}
 DUG_NEO4J_PV_NAME=${DUG_NEO4J_PV_NAME-"${PV_PREFIX}dug-neo4j-pv"}
 DUG_NEO4J_APP_NAME=${DUG_NEO4J_APP_NAME-"dug-neo4j"}
 DUG_REDIS_PD_NAME=${DUG_REDIS_PD_NAME-"${DISK_PREFIX}dug-redis-disk"}
 DUG_REDIS_PD_DELETE_W_APP=${DUG_REDIS_PD_DELETE_W_APP-false}
 DUG_REDIS_PVC=${DUG_REDIS_PVC-"dug-redis-pvc"}
-DUG_REDIS_PV_STORAGE_SIZE=${DUG_REDIS_PV_STORAGE_SIZE-"5G"}
+DUG_REDIS_PV_STORAGE_SIZE=${DUG_REDIS_PV_STORAGE_SIZE-"10G"}
 DUG_REDIS_PV_ACCESSMODE=${DUG_REDIS_PV_ACCESSMODE-"ReadWriteMany"}
 DUG_REDIS_NFS_SERVER=${DUG_REDIS_NFS_SERVER-$CAT_NFS_SERVER}
 DUG_REDIS_NFS_PATH=${DUG_REDIS_NFS_PATH-"/dug-redis"}
-DUG_REDIS_PV_STORAGECLASS=${DUG_REDIS_PV_STORAGECLASS-"${PV_PREFIX}dug-redis-sc"}
 DUG_REDIS_PV_NAME=${DUG_REDIS_PV_NAME-"${PV_PREFIX}dug-redis-pv"}
 DUG_REDIS_APP_NAME=${DUG_REDIS_APP_NAME-"dug-redis"}
 DUG_WEB_APP_NAME=${DUG_WEB_APP_NAME-"dug-web"}
@@ -556,12 +569,22 @@ function deleteEFK(){
 
 function deployNFSServer(){
    echo "# deploying NFS"
-   createGCEDisk $GCE_NFS_SERVER_DISK $GCE_NFS_SERVER_STORAGE
-   export GCE_NFS_SERVER_DISK
-   cat $HELX_DEVOPS_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
-       kubectl create -n $NAMESPACE -f -
-   kubectl apply -n $NAMESPACE -R -f \
-       $HELX_DEVOPS_HOME/nfs-server/nfs-server-svc.yaml
+
+   HELM_VALUES="stdnfs.pvcName=$NFS_CLNT_PVC_NAME"
+   if [ $CREATE_STATIC_PV_STORAGE == true ]
+   then
+     createGCEDisk $GCE_NFS_SERVER_DISK $GCE_NFS_SERVER_STORAGE
+     HELM_VALUES+=",storage.gcePersistentDiskPdName=$GCE_NFS_SERVER_DISK"
+   fi
+   if [ ! -z "$GCE_NFS_SERVER_STORAGE" ]
+   then
+     HELM_VALUES+=",storage.pvcStorage=$GCE_NFS_SERVER_STORAGE"
+     HELM_VALUES+=",stdnfs.pvStorage=$GCE_NFS_SERVER_STORAGE"
+     HELM_VALUES+=",stdnfs.pvcStorage=$GCE_NFS_SERVER_STORAGE"
+   fi
+   $HELM -n $NAMESPACE upgrade --install $GCE_NFS_SERVER_HELM_RELEASE \
+      $CAT_HELM_DIR/charts/nfs-server $HELM_DEBUG --logtostderr --set $HELM_VALUES
+
    echo "# end deploying NFS"
 }
 
@@ -570,14 +593,16 @@ function deleteNFSServer(){
    echo "# deleting NFS"
    kubectl -n $NAMESPACE delete pvc $NFS_CLNT_PVC_NAME
    kubectl -n $NAMESPACE delete pv $NFS_CLNT_PV_NAME
-   export GCE_NFS_SERVER_DISK=${1-$GCE_NFS_SERVER_DISK}
-   cat $HELX_DEVOPS_HOME/nfs-server/nfs-server-template.yaml | envsubst | \
-       kubectl delete -n $NAMESPACE -f -
-   kubectl delete -n $NAMESPACE svc nfs-server
-   if [ "$GCE_NFS_SERVER_DISK_DELETE_W_APP" == true ]; then
-     echo "### Deleting NFS Server Persistent disk."
-     sleep $KUBE_WAIT_TIME
-     deleteGCEDisk $GCE_NFS_SERVER_DISK
+
+   $HELM -n $NAMESPACE delete $GCE_NFS_SERVER_HELM_RELEASE
+
+   if [ $GCE_NFS_SERVER_DISK_DELETE_W_APP == true ]; then
+     if [ $CREATE_STATIC_PV_STORAGE == true ]
+     then
+       echo "### Deleting NFS Server Persistent disk."
+       sleep $KUBE_WAIT_TIME
+       deleteGCEDisk $GCE_NFS_SERVER_DISK
+     fi
    else
      echo "### Not deleting NFS Server Persistent disk."
    fi
@@ -807,7 +832,7 @@ function deleteTycho(){
 
 function createAppStoreData(){
   echo "# creating AppStore data"
-  if [ -z ${APPSTORE_DJANGO_PASSWORD+x} ]
+  if [ -z "$APPSTORE_DJANGO_PASSWORD" ]
   then
     APPSTORE_DJANGO_PASSWORD=`random-string 20`
     echo "APPSTORE_DJANGO_PASSWORD set to random string.  Check $DEPLOY_LOG."
@@ -836,12 +861,15 @@ function createAppStoreData(){
 
 
 function deployAppStore(){
-  createAppStoreData
+  if [ $CREATE_STATIC_PV_STORAGE == true ]
+  then
+    createAppStoreData
+  fi
+  HELM_VALUES="userStorage.existingClaim=$APPSTORE_USERSTORAGE_CREATE"
   ## Deploy AppStore
-  HELM_VALUES="db.storageClass=$APPSTORE_DB_STORAGECLASS"
   if [ ! -z "$APPSTORE_OAUTH_PVC" ]
   then
-   HELM_VALUES+=",oauth.pvcname=$APPSTORE_OAUTH_PVC"
+   HELM_VALUES+=",oauth.claimName=$APPSTORE_OAUTH_PVC"
   fi
   # check if variable is set (even if "")
   if [ ! -z ${APPSTORE_OAUTH_PV_STORAGECLASS+x} ]
@@ -901,7 +929,6 @@ function deployAppStore(){
    HELM_VALUES+=",appStorage.claimName=$APPSTORE_STORAGE_CLAIMNAME"
   fi
 
-  HELM_VALUES+=",userStorage.create=$APPSTORE_USERSTORAGE_CREATE"
   HELM_VALUES+=",django.APPSTORE_DJANGO_USERNAME=$APPSTORE_DJANGO_USERNAME"
   HELM_VALUES+=",django.APPSTORE_DJANGO_PASSWORD=$APPSTORE_DJANGO_PASSWORD"
   HELM_VALUES+=",django.SECRET_KEY=$SECRET_KEY"
@@ -939,6 +966,7 @@ function deployAppStore(){
   then
     HELM_VALUES+=",django.REMOVE_AUTHORIZED_USERS=$REMOVE_AUTHORIZED_USERS"
   fi
+
   $HELM -n $NAMESPACE upgrade $APPSTORE_HELM_RELEASE \
      $CAT_HELM_DIR/charts/appstore --install $HELM_DEBUG --logtostderr --set $HELM_VALUES
   echo "# end deploying AppStore"
@@ -948,6 +976,10 @@ function deployAppStore(){
 function deleteAppStore(){
   echo "# deleting AppStore"
   $HELM -n $NAMESPACE delete $APPSTORE_HELM_RELEASE
+  if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]
+  then
+    deleteAppStoreData
+  fi
   echo "# end deleting AppStore"
 }
 
@@ -988,11 +1020,14 @@ function createStdNFS(){
   echo "# creating stdnfs"
   if [ "$GKE_DEPLOYMENT" == true ]
   then
-    createNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
-        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
-        "ReadWriteMany"
-    createNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
-        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
+    if [ $CREATE_STATIC_PV_STORAGE == true ]
+    then
+      createNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
+          $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
+          "ReadWriteMany"
+      createNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
+          $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
+    fi
   elif [ "$USE_NFS_PVS" == true ]
   then
     createNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
@@ -1009,11 +1044,14 @@ function deleteStdNFS(){
   echo "# deleting stdnfs"
   $HELM -n $NAMESPACE delete $APPSTORE_HELM_RELEASE
   if [ "$GKE_DEPLOYMENT" == true ]; then
-    deleteNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
-        $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
-    deleteNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
-        $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
-        "ReadWriteMany"
+    if [ $CREATE_STATIC_PV_STORAGE == true ]
+    then
+      deleteNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
+          $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
+      deleteNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
+          $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
+          "ReadWriteMany"
+    fi
   elif [ "$USE_NFS_PVS" == true ]
   then
     deletePVC $CAT_USER_STORAGE_NAME
@@ -1317,8 +1355,12 @@ function dug(){
     echo "deploying dug"
     # cat $DUG_HOME/kubernetes/dug-secrets-template.yaml | envsubst | kubectl apply -n $NAMESPACE -f -
 
-    HELM_VALUES="dug.elasticsearch.pvc_name=$DUG_ES_PVC"
-    HELM_VALUES+=",dug.neo4j.pvc_name=$DUG_NEO4J_PVC"
+    if [ $CREATE_STATIC_PV_STORAGE == true ]
+    then
+      dugStorage deploy
+    fi
+
+    HELM_VALUES="dug.neo4j.pvc_name=$DUG_NEO4J_PVC"
     HELM_VALUES+=",dug.redis.pvc_name=$DUG_REDIS_PVC"
     HELM_VALUES+=",dug.elasticsearch.app_name=$DUG_ES_APP_NAME"
     HELM_VALUES+=",dug.neo4j.app_name=$DUG_NEO4J_APP_NAME"
@@ -1380,6 +1422,17 @@ function dug(){
     echo "deleting dug"
     $HELM -n $NAMESPACE delete $DUG_HELM_RELEASE
     echo "finished deleting dug"
+    if [ $CREATE_STATIC_PV_STORAGE == true ]
+    then
+      dugStorage delete
+    fi
+    if [ $DUG_ES_DELETE_STORAGE == true ]
+    then
+      # These will need to be changed if the number of replicas in dug change.
+      kubectl -n $NAMESPACE delete pvc $DUG_ES_APP_NAME-data-$DUG_ES_APP_NAME-0
+      kubectl -n $NAMESPACE delete pvc $DUG_ES_APP_NAME-data-$DUG_ES_APP_NAME-1
+      kubectl -n $NAMESPACE delete pvc $DUG_ES_APP_NAME-data-$DUG_ES_APP_NAME-2
+    fi
   else
     echo "unknown option for dug"
   fi
@@ -1391,10 +1444,6 @@ function dugStorage(){
   then
     echo "# creating storage for Dug"
     if [ "$GKE_DEPLOYMENT" == true ]; then
-      createGCEDisk $DUG_ES_PD_NAME $DUG_ES_PV_STORAGE_SIZE
-      createGKEPV $DUG_ES_PD_NAME $DUG_ES_PV_NAME \
-          $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PVC
-      createGKEPVC $DUG_ES_PVC $DUG_ES_PV_STORAGE_SIZE
       createGCEDisk $DUG_NEO4J_PD_NAME $DUG_NEO4J_PV_STORAGE_SIZE
       createGKEPV $DUG_NEO4J_PD_NAME $DUG_NEO4J_PV_NAME \
           $DUG_NEO4J_PV_STORAGE_SIZE $DUG_NEO4J_PVC
@@ -1405,11 +1454,6 @@ function dugStorage(){
       createGKEPVC $DUG_REDIS_PVC $DUG_REDIS_PV_STORAGE_SIZE
     elif [ "$USE_NFS_PVS" == true ]
     then
-      createNFSPV $DUG_ES_PV_NAME $DUG_ES_NFS_SERVER \
-          $DUG_ES_NFS_PATH $DUG_ES_PV_STORAGECLASS \
-          $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PV_ACCESSMODE
-      createPVC $DUG_ES_PVC $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PV_ACCESSMODE \
-          $DUG_ES_PV_STORAGECLASS
       createNFSPV $DUG_NEO4J_PV_NAME $DUG_NEO4J_NFS_SERVER \
           $DUG_NEO4J_NFS_PATH $DUG_NEO4J_PV_STORAGECLASS \
           $DUG_NEO4J_PV_STORAGE_SIZE $DUG_NEO4J_PV_ACCESSMODE
@@ -1421,8 +1465,6 @@ function dugStorage(){
       createPVC $DUG_REDIS_PVC $DUG_REDIS_PV_STORAGE_SIZE \
           $DUG_REDIS_PV_ACCESSMODE $DUG_REDIS_PV_STORAGECLASS
     else
-      createPVC $DUG_ES_PVC $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PV_ACCESSMODE \
-          $DUG_ES_PV_STORAGECLASS
       createPVC $DUG_NEO4J_PVC $DUG_NEO4J_PV_STORAGE_SIZE \
           $DUG_NEO4J_PV_ACCESSMODE $DUG_NEO4J_PV_STORAGECLASS
       createPVC $DUG_REDIS_PVC $DUG_REDIS_PV_STORAGE_SIZE \
@@ -1433,15 +1475,6 @@ function dugStorage(){
   then
     echo "# deleting storage for Dug"
     if [ "$GKE_DEPLOYMENT" == true ]; then
-      deleteGKEPVC $DUG_ES_PVC
-      deleteGKEPV $DUG_ES_PV_NAME
-      if [ "$DUG_ES_PD_DELETE_W_APP" == true ]; then
-        echo "### Deleting Dug ElasticSearch Persistent disk."
-        sleep $KUBE_WAIT_TIME
-        deleteGCEDisk $DUG_ES_PD_NAME
-      else
-        echo "### Not deleting Dug ElasticSearch Persistent disk."
-      fi
       deleteGKEPVC $DUG_NEO4J_PVC
       deleteGKEPV $DUG_NEO4J_PV_NAME
       if [ "$DUG_NEO4J_PD_DELETE_W_APP" == true ]; then
@@ -1462,12 +1495,6 @@ function dugStorage(){
       fi
     elif [ "$USE_NFS_PVS" == true ]
     then
-      if [ "$DUG_ES_PD_DELETE_W_APP" == true ]; then
-        deletePVC $DUG_ES_PVC
-        deleteNFSPV $DUG_ES_PV_NAME $DUG_ES_NFS_SERVER \
-            $DUG_ES_NFS_PATH $DUG_ES_PV_STORAGECLASS \
-            $DUG_ES_PV_STORAGE_SIZE $DUG_ES_PV_ACCESSMODE
-      fi
       if [ "$DUG_NEO4J_PD_DELETE_W_APP" == true ]; then
         deletePVC $DUG_NEO4J_PVC
         deleteNFSPV $DUG_NEO4J_PV_NAME $DUG_NEO4J_NFS_SERVER \
@@ -1481,7 +1508,6 @@ function dugStorage(){
             $DUG_REDIS_PV_STORAGE_SIZE $DUG_REDIS_PV_ACCESSMODE
       fi
     else
-      deletePVC $DUG_ES_PVC
       deletePVC $DUG_NEO4J_PVC
       deletePVC $DUG_REDIS_PVC
     fi
@@ -1512,7 +1538,6 @@ case $APPS_ACTION in
         fi
         if [ "$DUG_API" == true ]
         then
-          # dugStorage deploy
           dug deploy
         fi
         deployAmbassador
@@ -1585,14 +1610,12 @@ case $APPS_ACTION in
         if [ "$DUG_API" == true ]
         then
           dug delete
-          dugStorage delete
         fi
         if [ "$RESTARTR_DEPLOYMENT" == true ]
         then
           restartr delete
         fi
         deleteCAT
-        deleteAppStoreData
         deleteStdNFS
         # deleteELK
         if [ "$NFSRODS_FOR_USER_DATA" == true ]; then

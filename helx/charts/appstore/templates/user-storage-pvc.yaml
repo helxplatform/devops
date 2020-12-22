@@ -1,4 +1,4 @@
-{{- if eq .Values.userStorage.create true }}
+{{- if eq .Values.userStorage.existingClaim true }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

@@ -57,17 +57,6 @@ db:
 #   disk_name: example
 #   storageClass: ""
 
-# Define oauth settings for having a persistent sqlite3 database.  Leave both
-# pvcname and storageClass empty to storage the oauth db inside the container.
-# Define pvcname only if the PVC is already created.
-# Define storageClass to have this chart create a PVC, otherwise it expects
-# one to exist.
-oauth:
-  pvcname: appstore-oauth-pvc
-  storageClass:
-  # storageClass: appstore-oauth-sc
-  # existingClaim:
-
 ambassador:
    # flag: <True or False>
    flag: true
@@ -125,7 +114,12 @@ appStorage:
   storageClass:
 
 userStorage:
-  create: false
+  existingClaim: false
   claimName: stdnfs
   storageSize: 10Gi
+  storageClass:
+
+oauth:
+  existingClaim: false
+  claimName: appstore-oauth-pvc
   storageClass:
