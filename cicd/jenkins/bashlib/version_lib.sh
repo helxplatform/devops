@@ -61,8 +61,8 @@ function incr_version () {
     rc=$?
     case $rc in
         0) ;;
-        255) echo "Version file not found."; exit $rc;;
-        *) echo "Unknown error";;
+        255) echo "Version file not found."; return $rc;;
+        *) echo "Unknown error"; return $rc;;
     esac
     read -r major minor subminor <<< $(echo $oldver | awk -F. '{print $1, $2, $3}')
 

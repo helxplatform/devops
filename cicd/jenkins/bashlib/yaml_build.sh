@@ -124,7 +124,7 @@ function prebuild ()
     rc=$?
     case $rc in
         0) ;;
-        255) echo "${FUNCNAME[0]}: Version file not found, exiting."; return $rc;;
+        255) echo "${FUNCNAME[0]}: Failed to increment version. Exiting."; return $rc;;
         *) echo "${FUNCNAME[0]}: Unknown error"; return $rc;;
     esac
 
