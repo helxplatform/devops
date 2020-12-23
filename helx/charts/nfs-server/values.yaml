@@ -60,7 +60,7 @@ affinity: {}
 # the GCE persistent disk is used for storage.
 storage:
   claimName: nfs-server-pvc
-  storageClassName: standard
+  storageClassName:
   pvcStorage: 10Gi
   # gcePersistentDiskPdName:  gce-nfs-server-disk
 

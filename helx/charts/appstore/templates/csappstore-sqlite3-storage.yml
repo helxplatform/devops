@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ .Values.oauth.pvcname }}
+  name: {{ .Values.oauth.claimName }}
   labels:
     app: cs-{{ template "appstore.name" . }}
 spec:
