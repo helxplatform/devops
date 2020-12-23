@@ -5,6 +5,7 @@ PREBUILD=0
 BUILD=1
 UNIT_TEST=2
 
+
 # --- GET_TAGS ---
 # parameters:
 #   - $1 branch - branch being built
@@ -27,6 +28,7 @@ function get_tags ()
    echo $tags
 }
 
+
 # --- CHECK_PREREQS ---
 function check_prereqs ()
 {
@@ -34,6 +36,7 @@ function check_prereqs ()
    local -r ver_minor=3
 
    echo "check_prereqs"
+   echo "Checking pre-requisites for build . . ."
    bash_ver=$(bash --version | head -1 | cut -d ' ' -f4)
    arr_bash_ver=(${bash_ver//./ })
 
@@ -50,14 +53,13 @@ function check_prereqs ()
 # --- INIT_BUILD ---
 function init_build ()
 {
-   echo "Initializing build . . ."
-
    local -r req_prebuild=$1
    local -r req_build=$2
    local -r req_test=$3
    local -n func_arr=${4}
 
    echo "init_build: $req_prebuild $req_build $req_test ${func_arr[@]}"
+   echo "Initializing build . . ."
    echo "Setting up functions array . . ."
    request_arr=($req_prebuild $req_build $req_test)
    for index in {0..2}; do
@@ -143,17 +145,11 @@ function build ()
 
    echo "build: $org $repo $branch $build_args $tag1 $tag2 $app1_path $docker_path $docker_fn"
    echo "Building app . . ."
-
    if [ "$build_args" ==  "null" ]; then unset build_args; fi
    if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
    if [ "$app1_path" != "." ]; then cd $app1_path; fi
 
    docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_path/$docker_fn $docker_path
-#   if [ $docker_path == "."  ]; then
-#      docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_fn .
-#   else
-#      docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_path/$docker_fn .
-#   fi
 }
 
 
@@ -215,7 +211,6 @@ function unit_test ()
 # --- PUSH ---
 function push ()
 {
-
    local -r org=$1
    local -r repo=$2
    local -r tag1=$3
@@ -239,14 +234,14 @@ function security_scan ()
 
    echo "security_scan: $org $repo $tag"
    echo "Scanning image for security issues . . ."
-   scan_clair_v2 "$org" "$repo" "$tag"  || true
+   scan_clair "$org" "$repo" "$tag"  || true
    if [ $? -ne 0 ]
    then
       echo "Skipping clair postprocessing."
       return 1
    else
       echo "postprocessing clair output" 
-      postprocess_clair_output_v2 "$org" "$repo" "$branch" "$ver" "$tag" "Medium" || true
+      postprocess_clair_output "$org" "$repo" "$branch" "$ver" "$tag" "Medium" || true
    fi
 }
 
@@ -258,13 +253,13 @@ function cleanup ()
    local repo=$2
 
    echo "cleanup: $org $repo"
+   echo "Cleaning up docker images . . ."
    docker images -a | grep "$org/$repo" | awk '{print $3}' | xargs docker rmi -f || true
 }
 
 # --- BUILD_APP --- 
 function build_app ()
 {
-
    local -r project=$1
 
    # Array index constants
@@ -307,42 +302,33 @@ function build_app ()
    local -r REPO1=${docker_array[$DOCKER_PRI_REPO]}
    local -r REPO2=${docker_array[$DOCKER_SEC_REPO]}
    local -r BRANCH=${code_array[$CODE_BRANCH]}
-   echo "ORG:[$ORG] REPO1:[$REPO1] REPO2:[$REPO2] BRANCH:[$BRANCH]"
 
    local -r REPO1_URL=${code_array[$CODE_PRI_URL]}
    local -r REPO2_URL=${code_array[$CODE_SEC_URL]}
    local -r APP_HOME=${code_array[$CODE_PRI_APP_PATH]}
-   echo "REPO1_URL:[$REPO1_URL] REPO2_URL:[$REPO2_URL] APP_HOME:[$APP_HOME]"
 
    local -r REQ_PREBUILD_FUNC=${code_array[$CODE_PREBUILD]}
    local -r REQ_BUILD_FUNC=${code_array[$CODE_BUILD]}
    local -r REQ_TEST_FUNC=${code_array[$CODE_TEST]}
-   echo "REQ_PREBUILD_FUNC:[$REQ_PREBUILD_FUNC] REQ_BUILD_FUNC:[$REQ_BUILD_FUNC] REQ_TEST_FUNC:[$REQ_TEST_FUNC]"
 
    local -r REPO1_REQ_PATH=${code_array[$CODE_PRI_REQ_PATH]}
    local -r REPO2_REQ_PATH=${code_array[$CODE_SEC_REQ_PATH]}
-   echo "REPO1_REQ_PATH:[$REPO1_REQ_PATH] REPO2_REQ_PATH:[$REPO2_REQ_PATH]"
 
    local -r DOCKER_FN=${docker_array[$DOCKER_DF_FN]}
    local -r DOCKER_DIR1=${docker_array[$DOCKER_PRI_D_DIR]}
    local -r DOCKER_DIR2=${docker_array[$DOCKER_SEC_D_DIR]}
    local -r BUILD_ARGS=$(yq read "$project.yaml" 'docker.build_parameters')
-   echo "DOCKER_FN:[$DOCKER_FN] DOCKER_DIR1:[$DOCKER_DIR1] DOCKER_DIR2:[$DOCKER_DIR2] BUILD_ARGS:[$BUILD_ARGS]"
 
    local -r CMD_PATH=${test_array[$TEST_CMD_PATH]}
    local -r CMD_ARGS=$(yq read "$project.yaml" 'test.cmd_args')
-   local -r DATAFILE=$(yq read "$project.yaml" 'test.datafile')  # TODO: consider swapping order in yaml file so cmd_args is last. 
-   echo "CMD_PATH:[$CMD_PATH] CMD_ARGS:[$CMD_ARGS] DATAFILE:[$DATAFILE]"
-
-   # Fundamental given constant
-   local -r JENKINS_HOME="/var/jenkins_home"
+   local -r DATAFILE=$(yq read "$project.yaml" 'test.datafile')
 
    # Derived constants from yaml + givens
+   local -r JENKINS_HOME="/var/jenkins_home"
    local -r WS="$JENKINS_HOME/workspace/$project/${docker_array[$DOCKER_PRI_REPO]}"
    local -r REPO2_APPDIR=${docker_array[$DOCKER_PRI_REPO]}
    local -r REPO2_APP_HOME="$WS/$REPO2_APPDIR"
    local -r VERSION_FILE="$JENKINS_HOME/jobs/$project/version/$BRANCH/ver"
-   echo "WS:[$WS] REPO2_APPDIR:[$REPO2_APPDIR] REPO2_APP_HOME:[$REPO2_APP_HOME] VERSION_FILE:[$VERSION_FILE]"
 
    echo "Invoking check_prereqs"
    check_prereqs
@@ -351,13 +337,13 @@ function build_app ()
    func_array=(prebuild build unit_test)
 
    # The init function checks the app's yaml to see if it requires a custom
-   #   function for any of these three functions. If so, it updates 
+   #   function for any of the above three functions. If so, it updates
    #   func_array with the name of the custom function. 
    # The resulting function set is then invoked from the array below.
    # This provides a _very_ weak form of polymorphism akin to function 
-   #   pointers in C which reduces he amount of "hooking" that has to occur
+   #   pointers in C which reduces the amount of "hooking" that has to occur
    #   in the default functions and hopefully increases maintainability.
-   # Note: The custom functions must use the same parameter list as 
+   # For simplicity, the custom functions must use the same parameter list as
    #   the default functions.
    echo "Requested build/test functions: $REQ_PREBUILD_FUNC, $REQ_BUILD_FUNC, $REQ_TEST_FUNC"
    echo "Invoking init_build $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_array"
