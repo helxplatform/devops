@@ -1,3 +1,6 @@
+# Global:
+DIVIDER="------------------------------------------------------------------------------------"
+
 # -------------------------------------------------------------------------
 # start_clair
 # Starts clair db and server
@@ -19,7 +22,6 @@ function start_clair ()
    trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
    exec 1>>/var/jenkins_home/clair/clair_startup_log.txt 2>&1
 
-   DIVIDER="------------------------------------------------------------------------------------"
    echo $DIVIDER
    echo `date` "Starting new clair server and db."
 
@@ -102,7 +104,6 @@ function stop_clair ()
    trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
    exec 1>>/var/jenkins_home/clair/clair_startup_log.txt 2>&1
 
-   DIVIDER="------------------------------------------------------------------------------------"
    echo $DIVIDER
    echo `date` "Stopping clair server and db."
 
@@ -143,28 +144,25 @@ function stop_clair ()
 # -------------------------------------------------------------------------
 function scan_clair () {
 
-   local locl_ORG="$1"
-   local locl_REPO="$2"
-   local locl_TAG="$3"
+   local -r ORG="$1"
+   local -r REPO="$2"
+   local -r TAG="$3"
 
-   local CLAIR_HM="/var/jenkins_home/clair"
-   local CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
-   local FN="$locl_REPO-$locl_TAG"
-   local XFM_DIR="$CLAIR_XFM/$FN"
-
+   local -r CLAIR_HM="/var/jenkins_home/clair"
+   local -r CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
+   local -r FN="$REPO-$TAG"
+   local -r XFM_DIR="$CLAIR_XFM/$FN"
 
    echo "scan_clair"
 
    echo "FN=$FN"
    echo "XFM_DIR=$XFM_DIR"
-   echo "image=$locl_ORG/$locl_REPO:$locl_TAG"
-
    local -r CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
    local -r ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
-   echo "Running clair on $locl_ORG/$locl_REPO:$locl_TAG . . ."
-   docker pull "$locl_ORG/$locl_REPO:$locl_TAG"
+   echo "Running clair on $ORG/$REPO:$TAG . . ."
+   docker pull "$ORG/$REPO:$TAG"
 
    if [ ! -d "$CLAIR_XFM" ]; then
       /bin/mkdir "$CLAIR_XFM"
@@ -183,9 +181,9 @@ function scan_clair () {
       return 1
    fi
 
-   echo "Invoking clair-scanner on $locl_ORG/$locl_REPO:$locl_TAG"
+   echo "Invoking clair-scanner on $ORG/$REPO:$TAG"
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      "$XFM_DIR/clair_report.json" "$locl_ORG/$locl_REPO:$locl_TAG" > "$XFM_DIR/table.txt"
+      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$TAG" > "$XFM_DIR/table.txt"
 
    # Stop clair server and db here
    echo "Stopping clair server and db  . . ."
@@ -196,7 +194,6 @@ function scan_clair () {
                                                         $XFM_DIR/clean_table.txt
    rm -f "$XFM_DIR/table.txt"
    echo "clair scan complete."
-   return 0
 }
 
 
@@ -230,17 +227,17 @@ function scan_clair () {
 # -------------------------------------------------------------------------
 function postprocess_clair_output () {
 
-   local -r locl_ORG=$1
-   local -r locl_REPO=$2
-   local -r locl_BRANCH=$3
-   local -r locl_VER=$4
-   local -r locl_TAG=$5
-   local -r locl_THRESHOLD=$6
+   local -r ORG=$1
+   local -r REPO=$2
+   local -r BRANCH=$3
+   local -r VER=$4
+   local -r TAG=$5
+   local -r THRESHOLD=$6
 
    JENKINS_HM="/var/jenkins_home"
    CLAIR_HM="$JENKINS_HM/clair"
    CLAIR_XFM="$CLAIR_HM/xfm"
-   FN="$locl_REPO-$locl_TAG"
+   FN="$REPO-$TAG"
    XFM_DIR="$CLAIR_XFM/$FN"
    CLAIR_RPT="$CLAIR_HM/reports"
    RPT_DIR="$CLAIR_RPT/$FN"
@@ -267,28 +264,28 @@ function postprocess_clair_output () {
    if [ ! -d "$RPT_DIR" ]; then
       mkdir "$RPT_DIR"
    fi
-   cp "$XFM_DIR/clair_table_updated.html" "$RPT_DIR/vuln_table_$locl_REPO-$locl_TAG.html"
+   cp "$XFM_DIR/clair_table_updated.html" "$RPT_DIR/vuln_table_$REPO-$TAG.html"
 
    # Add link to new vuln file in index.html:
-   if [ $locl_REPO == "tranql-app"  -o \
-        $locl_REPO == "tranql-base" -o \
-        $locl_REPO == "helx-hail"   -o \
-        $locl_REPO == "conda-layer" -o \
-        $locl_REPO == "jdk-layer" ]; then
-      locl_PAD="        "
+   if [ $REPO == "tranql-app"  -o \
+        $REPO == "tranql-base" -o \
+        $REPO == "helx-hail"   -o \
+        $REPO == "conda-layer" -o \
+        $REPO == "jdk-layer" ]; then
+      PAD="        "
    else
-      locl_PAD="    "
+      PAD="    "
    fi
 
-   local -r locl_uBRANCH=`echo "${locl_BRANCH^}"`
-   local -r locl_repl="$locl_PAD<li><a href=\"\/$locl_REPO-$locl_TAG\/vuln_table_$locl_REPO-$locl_TAG.html\" target=\"_blank\">$locl_uBRANCH branch $locl_VER<\/a><\/li>"
-   local -r locl_rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
-   local -r locl_tmpf="${locl_BRANCH}_${locl_rnd_str}.html"
-   echo "sed\'ing $CLAIR_RPT/$locl_BRANCH.html into $CLAIR_RPT/$locl_tmpf"
-   sed -e "/^.*$locl_REPO-TAG.*$/p" \
-       -e "s|^.*$locl_REPO-TAG.*$|$locl_repl|" "$CLAIR_RPT/$locl_BRANCH.html" > "$CLAIR_RPT/$locl_tmpf"
-   echo "mv ing $CLAIR_RPT/$locl_tmpf to $CLAIR_RPT/$locl_BRANCH.html"
-   mv "$CLAIR_RPT/$locl_tmpf" "$CLAIR_RPT/$locl_BRANCH.html"
+   local -r uBRANCH=`echo "${BRANCH^}"`
+   local -r repl="$PAD<li><a href=\"\/$REPO-$TAG\/vuln_table_$REPO-$TAG.html\" target=\"_blank\">$uBRANCH branch $VER<\/a><\/li>"
+   local -r rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
+   local -r tmpf="${BRANCH}_${rnd_str}.html"
+   echo "sed\'ing $CLAIR_RPT/$BRANCH.html into $CLAIR_RPT/$tmpf"
+   sed -e "/^.*$REPO-TAG.*$/p" \
+       -e "s|^.*$REPO-TAG.*$|$repl|" "$CLAIR_RPT/$BRANCH.html" > "$CLAIR_RPT/$tmpf"
+   echo "mv ing $CLAIR_RPT/$tmpf to $CLAIR_RPT/$BRANCH.html"
+   mv "$CLAIR_RPT/$tmpf" "$CLAIR_RPT/$BRANCH.html"
 
    # Clean up
    #cd "$XFM_DIR/.."
@@ -296,5 +293,6 @@ function postprocess_clair_output () {
    #mv "$FN.tar.gz" "$FN/"
    #cd "$FN/"
    #rm -f clair_* clean* vuln*
+
    echo "Postprocessing clair output complete."
 }
