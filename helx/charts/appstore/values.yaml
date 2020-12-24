@@ -61,7 +61,7 @@ ambassador:
    # flag: <True or False>
    flag: true
 
-image: "heliumdatastage/appstore:master-v1.0.1"
+image: "heliumdatastage/appstore:1.0.2"
 # imagePullSecrets: some-secret
 
 djangoSettings: cat
@@ -114,10 +114,14 @@ appStorage:
   storageClass:
 
 userStorage:
-  existingClaim: false
+  createPVC: false
   claimName: stdnfs
   storageSize: 10Gi
   storageClass:
+  nfs:
+    createPV: false
+    path:
+    server:
 
 oauth:
   existingClaim: false
