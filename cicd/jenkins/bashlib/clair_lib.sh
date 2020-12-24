@@ -1,3 +1,6 @@
+# Global:
+DIVIDER="------------------------------------------------------------------------------------"
+
 # -------------------------------------------------------------------------
 # start_clair
 # Starts clair db and server
@@ -19,7 +22,6 @@ function start_clair ()
    trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
    exec 1>>/var/jenkins_home/clair/clair_startup_log.txt 2>&1
 
-   DIVIDER="------------------------------------------------------------------------------------"
    echo $DIVIDER
    echo `date` "Starting new clair server and db."
 
@@ -102,7 +104,6 @@ function stop_clair ()
    trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
    exec 1>>/var/jenkins_home/clair/clair_startup_log.txt 2>&1
 
-   DIVIDER="------------------------------------------------------------------------------------"
    echo $DIVIDER
    echo `date` "Stopping clair server and db."
 
@@ -134,192 +135,6 @@ function stop_clair ()
 # Parameters:
 # $1 - Organization or name of the DockerHub repo to scan
 # $2 - DockerHub repo to scan
-# $3 - Branch part of version tag of repo to scan, if any
-#        or "" if none
-# $4 - Version number including "v" if any of repo to be
-#        scanned.
-# Example call: scan-clair "heliumdatastage" "appstore" "develop" "v0.0.13"
-# Result: 
-#    - Outputs:
-#       1) JSON table of security scan information
-#       2) Text table of security scan information, free of control chars
-# -------------------------------------------------------------------------
-function scan_clair () {
-
-   ORG="$1"
-   REPO="$2"
-   BRANCH="$3"
-   VER="$4"
-
-   CLAIR_HM="/var/jenkins_home/clair"
-   CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
-   FN="$REPO-$BRANCH-$VER"
-   XFM_DIR="$CLAIR_XFM/$FN"
-
-   echo "scan_clair"
-
-   echo "FN=$FN"
-   echo "XFM_DIR=$XFM_DIR"
-   echo "image=$ORG/$REPO:$BRANCH-$VER"
-
-   CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
-   echo "Clair IP = $CLAIR_IP"
-   ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
-   echo "ETHO IP = $ETH0_IP"
-   echo "Running clair on $ORG/$REPO:$BRANCH-$VER . . ."
-   docker pull "$ORG/$REPO:$BRANCH-$VER"
-
-   if [ ! -d "$CLAIR_XFM" ]; then
-      /bin/mkdir "$CLAIR_XFM"
-   fi
-
-   if [ ! -d "$XFM_DIR" ]; then
-      echo "Creating $XFM_DIR"
-      /bin/mkdir "$XFM_DIR"
-   fi
-
-   # start clair server and db here
-   echo "Starting clair server and db . . ."
-   start_clair
-   if [ $? -ne 0 ]; then
-      echo "WARNING: clair failed to start, unable to scan image."
-      return 1
-   fi
-
-   echo "Invoking clair-scanner on $ORG/$REPO:$BRANCH-$VER"
-   $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$BRANCH-$VER" > "$XFM_DIR/table.txt"
-
-   # Stop clair server and db here
-   echo "Stopping clair server and db  . . ."
-   stop_clair
-
-   # Remove control chars
-   sed -r "s/\x1B\[(([0-9]+)(;[0-9]+)*)?[m,K,H,f,J]//g" $XFM_DIR/table.txt > \
-                                                        $XFM_DIR/clean_table.txt
-   rm -f "$XFM_DIR/table.txt"
-   echo "clair scan complete."
-   return 0
-}
-
-
-# -------------------------------------------------------------------------
-# postprocess_clair_output  
-# Cleans up clair json output including creating links from urls and creates
-#    html table. Sets up an index.html and links to table from jenkins build
-#    page.
-# Pre-requisites:
-#    - json2table is installed and reachable via path.
-#    - Clair scan has run.
-# Parameters:
-# $1 - Organization or name of the DockerHub repo to scan
-# $2 - DockerHub repo to scan
-# $3 - Branch part of version tag of repo to scan, if any
-#        or "" if none
-# $4 - Version number including "v" if any of repo to be
-#        scanned.
-# $5 - Vulnerability threshold. All vulnerabilities at or below this threshold
-#        will be removed from the report.
-# Example call: postprocess_clair_output "heliumdatastage" "appstore" "develop" "v0.0.13" Medium
-# Result:
-#    - Data has been converted from JSON into readable HTML.
-#    - Redundant CVE information has been removed from table and and columns 
-#         consolidated into a single CVE link.
-#    - Unapproved CVE info at top has been removed as redundant.
-#    - Double lines have been removed from table styling (except for nested table)
-#    - Source clair html files are organized by directory.
-# -------------------------------------------------------------------------
-function postprocess_clair_output() {
-
-   ORG=$1
-   REPO=$2
-   BRANCH=$3
-   VER=$4
-   THRESHOLD=$5
-
-   JENKINS_HM="/var/jenkins_home"
-   CLAIR_HM="$JENKINS_HM/clair"
-   CLAIR_XFM="$CLAIR_HM/xfm"
-   FN="$REPO-$BRANCH-$VER"
-   XFM_DIR="$CLAIR_XFM/$FN"
-   CLAIR_RPT="$CLAIR_HM/reports"
-   RPT_DIR="$CLAIR_RPT/$FN"
-
-   echo "postprocess_clair_output"
-
-   echo "FN=$FN"
-   echo "XFM_DIR=$XFM_DIR"
-   echo "image=$ORG/$REPO:$BRANCH-$VER"
-
-   awk "/unapproved/,/]/ { next }       \ 
-                         { print }" "$XFM_DIR/clair_report.json" > "$XFM_DIR/clair_report_edited.json" 
-
-   cat "$CLAIR_HM/template_html_css_body_open.txt" > "$XFM_DIR/clair_table.html"
-   cat "$XFM_DIR/clair_report_edited.json" | \
-                               json2table >> \
-                              "$XFM_DIR/clair_table.html"
-   cat "$CLAIR_HM/template_html_body_close.txt" >> "$XFM_DIR/clair_table.html"
-
-
-   # Convert bare link to an href with CVE as target:
-   sed -i 's|>\(https.*\)\(CVE-.*[0-9]\)<|><a href="\1\2" target="_blank">\2<|g' \
-                              "$XFM_DIR/clair_table.html"
-
-   awk "/^<th>Vulnerability<\/th>/                { next }                             \
-        /^<th>Link<\/th>/                         { print \"<th>Vulnerability</th>\" } \
-        /^<th>Link<\/th>/                         { next }                             \
-        /^<td>CVE-[0-9]+-[0-9]+<\/td>/            { next }                             \
-                                                  { print }"                           \
-                         "$XFM_DIR/clair_table.html" > "$XFM_DIR/clair_table_updated.html"
-
-   if [ ! -d "$RPT_DIR" ]; then
-      mkdir "$RPT_DIR"
-   fi
-   cp "$XFM_DIR/clair_table_updated.html" "$RPT_DIR/vuln_table_$REPO-$BRANCH-$VER.html"
-
-   # Add link to new vuln file in index.html:
-   if [ $REPO == "tranql-app"  -o \
-        $REPO == "tranql-base" -o \
-        $REPO == "helx-hail"   -o \
-        $REPO == "conda-layer" -o \
-        $REPO == "jdk-layer" ]; then
-      PAD="        "
-   else
-      PAD="    "
-   fi
-
-   repl="$PAD<li><a href=\"\/$REPO-develop-$ver\/vuln_table_$REPO-develop-$ver.html\" target=\"_blank\">Develop branch $ver vulnerabilities<\/a><\/li>"
-   rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
-   tmpf=index_$rnd_str.html
-
-   echo "tmpfile is $tmpf"
-
-   echo "sed\'ing $CLAIR_RPT/index.html into $CLAIR_RPT/$tmpf"
-   sed -e "/^.*$REPO-develop-VER.*$/p" \
-       -e "s|^.*$REPO-develop-VER.*$|$repl|" $CLAIR_RPT/index.html > $CLAIR_RPT/$tmpf
-
-   echo "mv ing $CLAIR_RPT/$tmpf to $CLAIR_RPT/index.html"
-   mv $CLAIR_RPT/$tmpf $CLAIR_RPT/index.html
-
-   # Clean up
-   #cd "$XFM_DIR/.."
-   #tar -czvf "$FN.tar.gz" "$FN/"
-   #mv "$FN.tar.gz" "$FN/"
-   #cd "$FN/"
-   #rm -f clair_* clean* vuln*
-   echo "Postprocessing clair output complete."
-}
-
-
-# -------------------------------------------------------------------------
-# scan_clair_v2
-# Security scans Docker images. Call from containerized Jenkins
-# Pre-requisites:
-#    - A clair server and clair db are running on the same Docker network
-#    - clair-scanner exists on Jenkins server at specified location
-# Parameters:
-# $1 - Organization or name of the DockerHub repo to scan
-# $2 - DockerHub repo to scan
 # $3 - TAG docker tag
 # Example call: scan-clair "heliumdatastage" "appstore" "1.0.13"
 # Result: 
@@ -327,30 +142,27 @@ function postprocess_clair_output() {
 #       1) JSON table of security scan information
 #       2) Text table of security scan information, free of control chars
 # -------------------------------------------------------------------------
-function scan_clair_v2 () {
+function scan_clair () {
 
-   local locl_ORG="$1"
-   local locl_REPO="$2"
-   local locl_TAG="$3"
+   local -r ORG="$1"
+   local -r REPO="$2"
+   local -r TAG="$3"
 
-   local CLAIR_HM="/var/jenkins_home/clair"
-   local CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
-   local FN="$locl_REPO-$locl_TAG"
-   local XFM_DIR="$CLAIR_XFM/$FN"
+   local -r CLAIR_HM="/var/jenkins_home/clair"
+   local -r CLAIR_XFM="$CLAIR_HM/xfm" # clair output transform dir
+   local -r FN="$REPO-$TAG"
+   local -r XFM_DIR="$CLAIR_XFM/$FN"
 
-
-   echo "scan_clair_v2"
+   echo "scan_clair"
 
    echo "FN=$FN"
    echo "XFM_DIR=$XFM_DIR"
-   echo "image=$locl_ORG/$locl_REPO:$locl_TAG"
-
    local -r CLAIR_IP=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
    echo "Clair IP = $CLAIR_IP"
    local -r ETH0_IP=$(ip -4 addr show eth0 | grep 'inet' | cut -d' ' -f6 | cut -d'/' -f1)
    echo "ETHO IP = $ETH0_IP"
-   echo "Running clair on $locl_ORG/$locl_REPO:$locl_TAG . . ."
-   docker pull "$locl_ORG/$locl_REPO:$locl_TAG"
+   echo "Running clair on $ORG/$REPO:$TAG . . ."
+   docker pull "$ORG/$REPO:$TAG"
 
    if [ ! -d "$CLAIR_XFM" ]; then
       /bin/mkdir "$CLAIR_XFM"
@@ -369,9 +181,9 @@ function scan_clair_v2 () {
       return 1
    fi
 
-   echo "Invoking clair-scanner on $locl_ORG/$locl_REPO:$locl_TAG"
+   echo "Invoking clair-scanner on $ORG/$REPO:$TAG"
    $CLAIR_HM/clair-scanner --clair=http://$CLAIR_IP:6060 --ip=$ETH0_IP -t 'High' -r \
-      "$XFM_DIR/clair_report.json" "$locl_ORG/$locl_REPO:$locl_TAG" > "$XFM_DIR/table.txt"
+      "$XFM_DIR/clair_report.json" "$ORG/$REPO:$TAG" > "$XFM_DIR/table.txt"
 
    # Stop clair server and db here
    echo "Stopping clair server and db  . . ."
@@ -382,12 +194,11 @@ function scan_clair_v2 () {
                                                         $XFM_DIR/clean_table.txt
    rm -f "$XFM_DIR/table.txt"
    echo "clair scan complete."
-   return 0
 }
 
 
 # -------------------------------------------------------------------------
-# postprocess_clair_output_v2  
+# postprocess_clair_output
 # Cleans up clair json output including creating links from urls and creates
 #    html table. Sets up an index.html and links to table from jenkins build
 #    page.
@@ -414,24 +225,24 @@ function scan_clair_v2 () {
 #    - Double lines have been removed from table styling (except for nested table)
 #    - Source clair html files are organized by directory.
 # -------------------------------------------------------------------------
-function postprocess_clair_output_v2() {
+function postprocess_clair_output () {
 
-   local -r locl_ORG=$1
-   local -r locl_REPO=$2
-   local -r locl_BRANCH=$3
-   local -r locl_VER=$4
-   local -r locl_TAG=$5
-   local -r locl_THRESHOLD=$6
+   local -r ORG=$1
+   local -r REPO=$2
+   local -r BRANCH=$3
+   local -r VER=$4
+   local -r TAG=$5
+   local -r THRESHOLD=$6
 
    JENKINS_HM="/var/jenkins_home"
    CLAIR_HM="$JENKINS_HM/clair"
    CLAIR_XFM="$CLAIR_HM/xfm"
-   FN="$locl_REPO-$locl_TAG"
+   FN="$REPO-$TAG"
    XFM_DIR="$CLAIR_XFM/$FN"
    CLAIR_RPT="$CLAIR_HM/reports"
    RPT_DIR="$CLAIR_RPT/$FN"
 
-   echo "postprocess_clair_output_v2"
+   echo "postprocess_clair_output"
    awk "/unapproved/,/]/ { next }       \ 
                          { print }" "$XFM_DIR/clair_report.json" > "$XFM_DIR/clair_report_edited.json" 
    cat "$CLAIR_HM/template_html_css_body_open.txt" > "$XFM_DIR/clair_table.html"
@@ -453,28 +264,28 @@ function postprocess_clair_output_v2() {
    if [ ! -d "$RPT_DIR" ]; then
       mkdir "$RPT_DIR"
    fi
-   cp "$XFM_DIR/clair_table_updated.html" "$RPT_DIR/vuln_table_$locl_REPO-$locl_TAG.html"
+   cp "$XFM_DIR/clair_table_updated.html" "$RPT_DIR/vuln_table_$REPO-$TAG.html"
 
    # Add link to new vuln file in index.html:
-   if [ $locl_REPO == "tranql-app"  -o \
-        $locl_REPO == "tranql-base" -o \
-        $locl_REPO == "helx-hail"   -o \
-        $locl_REPO == "conda-layer" -o \
-        $locl_REPO == "jdk-layer" ]; then
-      locl_PAD="        "
+   if [ $REPO == "tranql-app"  -o \
+        $REPO == "tranql-base" -o \
+        $REPO == "helx-hail"   -o \
+        $REPO == "conda-layer" -o \
+        $REPO == "jdk-layer" ]; then
+      PAD="        "
    else
-      locl_PAD="    "
+      PAD="    "
    fi
 
-   local -r locl_uBRANCH=`echo "${locl_BRANCH^}"`
-   local -r locl_repl="$locl_PAD<li><a href=\"\/$locl_REPO-$locl_TAG\/vuln_table_$locl_REPO-$locl_TAG.html\" target=\"_blank\">$locl_uBRANCH branch $locl_VER<\/a><\/li>"
-   local -r locl_rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
-   local -r locl_tmpf="${locl_BRANCH}_${locl_rnd_str}.html"
-   echo "sed\'ing $CLAIR_RPT/$locl_BRANCH.html into $CLAIR_RPT/$locl_tmpf"
-   sed -e "/^.*$locl_REPO-TAG.*$/p" \
-       -e "s|^.*$locl_REPO-TAG.*$|$locl_repl|" "$CLAIR_RPT/$locl_BRANCH.html" > "$CLAIR_RPT/$locl_tmpf"
-   echo "mv ing $CLAIR_RPT/$locl_tmpf to $CLAIR_RPT/$locl_BRANCH.html"
-   mv "$CLAIR_RPT/$locl_tmpf" "$CLAIR_RPT/$locl_BRANCH.html"
+   local -r uBRANCH=`echo "${BRANCH^}"`
+   local -r repl="$PAD<li><a href=\"\/$REPO-$TAG\/vuln_table_$REPO-$TAG.html\" target=\"_blank\">$uBRANCH branch $VER<\/a><\/li>"
+   local -r rnd_str=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 5 | xargs)
+   local -r tmpf="${BRANCH}_${rnd_str}.html"
+   echo "sed\'ing $CLAIR_RPT/$BRANCH.html into $CLAIR_RPT/$tmpf"
+   sed -e "/^.*$REPO-TAG.*$/p" \
+       -e "s|^.*$REPO-TAG.*$|$repl|" "$CLAIR_RPT/$BRANCH.html" > "$CLAIR_RPT/$tmpf"
+   echo "mv ing $CLAIR_RPT/$tmpf to $CLAIR_RPT/$BRANCH.html"
+   mv "$CLAIR_RPT/$tmpf" "$CLAIR_RPT/$BRANCH.html"
 
    # Clean up
    #cd "$XFM_DIR/.."
@@ -482,5 +293,6 @@ function postprocess_clair_output_v2() {
    #mv "$FN.tar.gz" "$FN/"
    #cd "$FN/"
    #rm -f clair_* clean* vuln*
+
    echo "Postprocessing clair output complete."
 }
