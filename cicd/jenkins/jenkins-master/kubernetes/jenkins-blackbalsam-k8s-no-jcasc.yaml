@@ -163,28 +163,29 @@ data:
     yes n | cp -i /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins/;
     echo "finished initialization"
   plugins.txt: |-
-    kubernetes:1.27.11
+    kubernetes:1.27.7
     workflow-job:2.39
     workflow-aggregator:2.6
-    credentials-binding:1.23
-    git:4.4.4
-    configuration-as-code:1.43
-    kubernetes-cd:2.3.0
-    blueocean:1.24
-    active-directory:2.19
-    role-strategy:3.0
+    credentials-binding:1.24
+    git:4.5.1
+    configuration-as-code:1.46
+    kubernetes-cd:2.3.1
+    blueocean:1.24.3
+    active-directory:2.23
+    role-strategy:3.1
     ant:1.11
     antisamy-markup-formatter:2.1
     build-timeout:1.2.0
-    dashboard-view:2.13
+    dashboard-view:2.14
     docker-workflow:1.23
-    email-ext:2.77
+    email-ext:2.80
     external-monitor-job:1.7
-    github-api:1.116
+    github-api:1.117
     gradle:1.36
     icon-shim:2.0.3
     javadoc:1.6
     ldap:1.26
+#    ldap:2.2
     mapdb-api:1.0.9.0
     nodelabelparameter:1.7.2
     pam-auth:1.6
@@ -192,9 +193,9 @@ data:
     saferestart:0.3
     slack:0.40
     ssh-slaves:1.31.2
-    subversion:2.13.1
-    timestamper:1.11.5
-    token-macro:2.12
+    subversion:2.13.2
+    timestamper:1.11.8
+    token-macro:2.13
     windows-slaves:2.121.1
     ws-cleanup:0.38
 ---
