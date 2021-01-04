@@ -111,7 +111,7 @@ PV_PREFIX=${PV_PREFIX-"$NAMESPACE-"}
 DISK_PREFIX=${DISK_PREFIX-"${CLUSTER_NAME}-${PV_PREFIX}"}
 HELXPLATFORM_HOME=${HELXPLATFORM_HOME-"$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/../.."}
 HELX_DEVOPS_HOME=${HELX_DEVOPS_HOME-"${HELXPLATFORM_HOME}/devops"}
-GKE_DEPLOYMENT=${GKE_DEPLOYMENT-false}
+GKE_DEPLOYMENT=${GKE_DEPLOYMENT-true}
 SECRET_FILENAME_SUFFIX=${SECRET_FILENAME_SUFFIX-"-${CLUSTER_NAME}-${NAMESPACE}"}
 DEPLOY_LOG_DIR=${DEPLOY_LOG_DIR-"${HELXPLATFORM_HOME}"}
 DEPLOY_LOG=${DEPLOY_LOG-"${DEPLOY_LOG_DIR}/deploy-log-${CLUSTER_NAME}-${NAMESPACE}-$TIMESTAMP.txt"}
@@ -213,7 +213,6 @@ CAT_USER_STORAGE_NAME=${CAT_USER_STORAGE_NAME-"stdnfs"}
 CAT_PV_NAME=${CAT_PV_NAME-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-pv"}
 CAT_NFS_SERVER=${CAT_NFS_SERVER-"$NFSCP_SERVER"}
 CAT_NFS_PATH=${CAT_NFS_PATH-"/sfdnfs"}
-CAT_PV_STORAGECLASS=${CAT_PV_STORAGECLASS-"${PV_PREFIX}$CAT_USER_STORAGE_NAME-sc"}
 CAT_PV_STORAGE_SIZE=${CAT_PV_STORAGE_SIZE-"10Gi"} # For use with non-GKE environments.
 CAT_PVC_STORAGE=${CAT_PVC_STORAGE-"10Gi"}
 CAT_PV_ACCESSMODE=${CAT_PV_ACCESSMODE-"ReadWriteMany"}
@@ -252,7 +251,6 @@ APPSTORE_WITH_AMBASSADOR=${APPSTORE_WITH_AMBASSADOR-true}
 APPSTORE_SAML2_AUTH_ASSERTION_URL=${APPSTORE_SAML2_AUTH_ASSERTION_URL-""}
 APPSTORE_SAML2_AUTH_ENTITY_ID=${APPSTORE_SAML2_AUTH_ENTITY_ID-""}
 APPSTORE_STORAGE_CLAIMNAME=${APPSTORE_STORAGE_CLAIMNAME-""}
-APPSTORE_USERSTORAGE_CREATE=${APPSTORE_USERSTORAGE_CREATE-"false"}
 APPSTORE_ACCOUNT_DEFAULT_HTTP_PROTOCOL=${APPSTORE_ACCOUNT_DEFAULT_HTTP_PROTOCOL-"https"}
 export DICOMGH_GOOGLE_CLIENT_ID=${DICOMGH_GOOGLE_CLIENT_ID-""}
 AUTHORIZED_USERS=${AUTHORIZED_USERS-""}
@@ -304,7 +302,7 @@ NFSRODS_CONFIG_PV_STORAGECLASS=${NFSRODS_CONFIG_PV_STORAGECLASS-"${PV_PREFIX}$NF
 NFSRODS_CONFIG_PV_STORAGE_SIZE=${NFSRODS_CONFIG_PV_STORAGE_SIZE-"10Mi"}
 NFSRODS_CONFIG_PV_ACCESSMODE=${NFSRODS_CONFIG_PV_ACCESSMODE-"ReadWriteMany"}
 
-USE_NFS_PVS=${USE_NFS_PVS-true}
+USE_NFS_PVS=${USE_NFS_PVS-false}
 
 RESTARTR_DEPLOYMENT=${RESTARTR_DEPLOYMENT-false}
 RESTARTR_ROOT=${RESTARTR_ROOT-"$HELXPLATFORM_HOME/restartr"}
@@ -831,14 +829,6 @@ function deleteTycho(){
 
 function createAppStoreData(){
   echo "# creating AppStore data"
-  if [ -z "$APPSTORE_DJANGO_PASSWORD" ]
-  then
-    APPSTORE_DJANGO_PASSWORD=`random-string 20`
-    echo "APPSTORE_DJANGO_PASSWORD set to random string.  Check $DEPLOY_LOG."
-    echo "APPSTORE_DJANGO_PASSWORD set to random string." >> $DEPLOY_LOG
-    echo "DATE: `date`" >> $DEPLOY_LOG
-    echo "APPSTORE_DJANGO_PASSWORD: $APPSTORE_DJANGO_PASSWORD" >> $DEPLOY_LOG
-  fi
   if [ "$GKE_DEPLOYMENT" == true ]
   then
     createGCEDisk $APPSTORE_OAUTH_PD_NAME $APPSTORE_OAUTH_PV_STORAGE_SIZE
@@ -864,7 +854,7 @@ function deployAppStore(){
   then
     createAppStoreData
   fi
-  HELM_VALUES="userStorage.existingClaim=$APPSTORE_USERSTORAGE_CREATE"
+  HELM_VALUES="ACCOUNT_DEFAULT_HTTP_PROTOCOL=$APPSTORE_ACCOUNT_DEFAULT_HTTP_PROTOCOL"
   ## Deploy AppStore
   if [ ! -z "$APPSTORE_OAUTH_PVC" ]
   then
@@ -928,6 +918,14 @@ function deployAppStore(){
    HELM_VALUES+=",appStorage.claimName=$APPSTORE_STORAGE_CLAIMNAME"
   fi
 
+  if [ -z "$APPSTORE_DJANGO_PASSWORD" ]
+  then
+    APPSTORE_DJANGO_PASSWORD=`random-string 20`
+    echo "APPSTORE_DJANGO_PASSWORD set to random string.  Check $DEPLOY_LOG."
+    echo "APPSTORE_DJANGO_PASSWORD set to random string." >> $DEPLOY_LOG
+    echo "DATE: `date`" >> $DEPLOY_LOG
+    echo "APPSTORE_DJANGO_PASSWORD: $APPSTORE_DJANGO_PASSWORD" >> $DEPLOY_LOG
+  fi
   HELM_VALUES+=",django.APPSTORE_DJANGO_USERNAME=$APPSTORE_DJANGO_USERNAME"
   HELM_VALUES+=",django.APPSTORE_DJANGO_PASSWORD=$APPSTORE_DJANGO_PASSWORD"
   HELM_VALUES+=",django.SECRET_KEY=$SECRET_KEY"
@@ -940,7 +938,6 @@ function deployAppStore(){
   HELM_VALUES+=",django.oauth.GOOGLE_NAME=$GOOGLE_NAME"
   HELM_VALUES+=",django.oauth.GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID"
   HELM_VALUES+=",django.oauth.GOOGLE_SECRET=$GOOGLE_SECRET"
-  HELM_VALUES+=",ACCOUNT_DEFAULT_HTTP_PROTOCOL=$APPSTORE_ACCOUNT_DEFAULT_HTTP_PROTOCOL"
 
   if [ ! -z "$BRAINI_RODS" ]
   then
@@ -966,6 +963,22 @@ function deployAppStore(){
     HELM_VALUES+=",django.REMOVE_AUTHORIZED_USERS=$REMOVE_AUTHORIZED_USERS"
   fi
 
+  if [ $CREATE_STATIC_PV_STORAGE == true ]
+  then
+    if [ $GKE_DEPLOYMENT == false ]
+    then
+      HELM_VALUES+=",userStorage.createPVC=true"
+      HELM_VALUES+=",userStorage.nfs.createPV=true"
+      HELM_VALUES+=",userStorage.nfs.path=$CAT_NFS_PATH"
+      HELM_VALUES+=",userStorage.nfs.server=$CAT_NFS_SERVER"
+      HELM_VALUES+=",userStorage.storageClass=$NFS_CLNT_STORAGECLASS"
+    fi
+  fi
+  if [ $GKE_DEPLOYMENT == false ]
+  then
+    HELM_VALUES+=",userStorage.createPVC=true"
+  fi
+
   $HELM -n $NAMESPACE upgrade $APPSTORE_HELM_RELEASE \
      $CAT_HELM_DIR/charts/appstore --install $HELM_DEBUG --logtostderr --set $HELM_VALUES
   echo "# end deploying AppStore"
@@ -975,10 +988,7 @@ function deployAppStore(){
 function deleteAppStore(){
   echo "# deleting AppStore"
   $HELM -n $NAMESPACE delete $APPSTORE_HELM_RELEASE
-  if [ "$APPSTORE_OAUTH_PD_DELETE_W_APP" == true ]
-  then
-    deleteAppStoreData
-  fi
+  deleteAppStoreData
   echo "# end deleting AppStore"
 }
 
@@ -1012,54 +1022,6 @@ function deleteAppStoreData(){
     fi
   fi
   echo "# end deleting AppStore Data"
-}
-
-
-function createStdNFS(){
-  echo "# creating stdnfs"
-  if [ "$GKE_DEPLOYMENT" == true ]
-  then
-    if [ $CREATE_STATIC_PV_STORAGE == true ]
-    then
-      createNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
-          $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
-          "ReadWriteMany"
-      createNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
-          $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
-    fi
-  elif [ "$USE_NFS_PVS" == true ]
-  then
-    createNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PV_ACCESSMODE $CAT_PV_STORAGECLASS
-  else
-    createPVC $CAT_USER_STORAGE_NAME $CAT_PVC_STORAGE $CAT_PVC_ACCESSMODE $CAT_PV_STORAGECLASS
-  fi
-  echo "# stdnfs created"
-}
-
-
-function deleteStdNFS(){
-  echo "# deleting stdnfs"
-  $HELM -n $NAMESPACE delete $APPSTORE_HELM_RELEASE
-  if [ "$GKE_DEPLOYMENT" == true ]; then
-    if [ $CREATE_STATIC_PV_STORAGE == true ]
-    then
-      deleteNFSPVC $NFS_CLNT_PVC_NAME $NFS_CLNT_STORAGECLASS \
-          $NFS_CLNT_STORAGE_SIZE "ReadWriteMany"
-      deleteNFSPV $NFS_CLNT_PV_NAME $NFS_CLNT_PV_NFS_SRVR \
-          $NFS_CLNT_PV_NFS_PATH $NFS_CLNT_STORAGECLASS $NFS_CLNT_STORAGE_SIZE \
-          "ReadWriteMany"
-    fi
-  elif [ "$USE_NFS_PVS" == true ]
-  then
-    deletePVC $CAT_USER_STORAGE_NAME
-    deleteNFSPV $CAT_PV_NAME $CAT_NFS_SERVER $CAT_NFS_PATH \
-        $CAT_PV_STORAGECLASS $CAT_PV_STORAGE_SIZE $CAT_PV_ACCESSMODE
-  else
-    deletePVC $CAT_USER_STORAGE_NAME
-  fi
-  echo "# end deleting stdnfs"
 }
 
 
@@ -1514,6 +1476,24 @@ function dugStorage(){
   fi
 }
 
+
+function deleteTychoApps(){
+  if [ -z $NAMESPACE ]
+  then
+    NAMESPACE_ARG=""
+  else
+    NAMESPACE_ARG="-n $NAMESPACE"
+  fi
+
+  DEPLOY_NAMES=`kubectl $NAMESPACE_ARG get deploy -l executor=tycho | awk '{ if (NR>1) print $1 }'`
+  for DEPLOY_NAME in $DEPLOY_NAMES
+  do
+    kubectl -n $NAMESPACE delete deploy $DEPLOY_NAME
+    kubectl -n $NAMESPACE delete svc $DEPLOY_NAME
+  done
+}
+
+
 case $APPS_ACTION in
   deploy)
     kubectl create namespace $NAMESPACE
@@ -1529,7 +1509,6 @@ case $APPS_ACTION in
           deployNFSRODS
         fi
         # deployELK
-        createStdNFS
         deployCAT
         if [ "$RESTARTR_DEPLOYMENT" == true ]
         then
@@ -1588,9 +1567,6 @@ case $APPS_ACTION in
       restartr)
         restartr deploy
         ;;
-      stdnfs)
-        createStdNFS
-        ;;
       tycho)
         deployTycho
         ;;
@@ -1603,6 +1579,7 @@ case $APPS_ACTION in
   delete)
     case $APP in
       all)
+        deleteTychoApps
         deleteNextflowStorage
         deleteNginxRevProxy
         deleteAmbassador
@@ -1615,7 +1592,6 @@ case $APPS_ACTION in
           restartr delete
         fi
         deleteCAT
-        deleteStdNFS
         # deleteELK
         if [ "$NFSRODS_FOR_USER_DATA" == true ]; then
           deleteNFSRODS
@@ -1690,11 +1666,11 @@ case $APPS_ACTION in
       restartr)
         restartr delete
         ;;
-      stdnfs)
-        deleteStdNFS
-        ;;
       tycho)
         deleteTycho
+        ;;
+      tychoapps)
+        deleteTychoApps
         ;;
       *)
         print_apps_help

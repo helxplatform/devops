@@ -1,4 +1,4 @@
-{{- if eq .Values.userStorage.existingClaim true }}
+{{- if eq .Values.userStorage.createPVC true }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -12,4 +12,22 @@ spec:
     requests:
       storage: {{ .Values.userStorage.storageSize }}
   storageClassName: {{ .Values.userStorage.storageClass }}
+{{- end }}
+---
+{{- if eq .Values.userStorage.nfs.createPV true }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "appstore.name" . }}-user-storage-pv
+spec:
+  capacity:
+    storage: {{ .Values.userStorage.storageSize }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy:
+    Retain
+  storageClassName: {{ .Values.userStorage.storageClass }}
+  nfs:
+    path: {{ .Values.userStorage.nfs.path }}
+    server: {{ .Values.userStorage.nfs.server }}
 {{- end }}
