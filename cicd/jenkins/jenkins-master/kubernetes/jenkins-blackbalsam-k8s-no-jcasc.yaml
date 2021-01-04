@@ -185,7 +185,6 @@ data:
     icon-shim:2.0.3
     javadoc:1.6
     ldap:1.26
-#    ldap:2.2
     mapdb-api:1.0.9.0
     nodelabelparameter:1.7.2
     pam-auth:1.6
