@@ -1,0 +1,59 @@
+version: 0.0.1
+
+build:
+  name: dug-search-client-master
+
+app:
+  name: dug-search-client
+
+code:
+  primary_url:
+    https://github.com/helxplatform/dug-search-client.git
+  secondary_url:
+    null
+  primary_app_path:
+    "."
+  primary_requirements_path:
+    null
+  secondary_requirements_path:
+    null
+  branch:
+    master
+  prebuild:
+    default
+  build:
+    default
+  test:
+    default
+
+docker:
+  org:
+    heliumdatastage
+  primary_repo:
+    dug-search-client
+  secondary_repo:
+    null
+  docker_fn:
+    Dockerfile-prod
+  primary_docker_dir:
+    "."
+  secondary_docker_dir:
+    null
+  build_parameters:
+    null
+
+test:
+  cmd_path:
+    null
+  cmd_args:
+    null
+  datafile:
+    null
+
+clair:
+  cmd_parameters:
+    null
+  threshold:
+    null
+  whitelist:
+    null
