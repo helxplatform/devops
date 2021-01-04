@@ -1476,6 +1476,24 @@ function dugStorage(){
   fi
 }
 
+
+function deleteTychoApps(){
+  if [ -z $NAMESPACE ]
+  then
+    NAMESPACE_ARG=""
+  else
+    NAMESPACE_ARG="-n $NAMESPACE"
+  fi
+
+  DEPLOY_NAMES=`kubectl $NAMESPACE_ARG get deploy -l executor=tycho | awk '{ if (NR>1) print $1 }'`
+  for DEPLOY_NAME in $DEPLOY_NAMES
+  do
+    kubectl -n $NAMESPACE delete deploy $DEPLOY_NAME
+    kubectl -n $NAMESPACE delete svc $DEPLOY_NAME
+  done
+}
+
+
 case $APPS_ACTION in
   deploy)
     kubectl create namespace $NAMESPACE
@@ -1561,6 +1579,7 @@ case $APPS_ACTION in
   delete)
     case $APP in
       all)
+        deleteTychoApps
         deleteNextflowStorage
         deleteNginxRevProxy
         deleteAmbassador
@@ -1649,6 +1668,9 @@ case $APPS_ACTION in
         ;;
       tycho)
         deleteTycho
+        ;;
+      tychoapps)
+        deleteTychoApps
         ;;
       *)
         print_apps_help
