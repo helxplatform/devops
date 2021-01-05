@@ -2,22 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Values.web.app_name}}
-  name: {{ .Values.web.deployment_name }}
+    app: {{ .Values.dug.app_name}}
+  name: {{ .Values.dug.deployment_name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.web.app_name}}
+      app: {{ .Values.dug.app_name}}
   template:
     metadata:
       labels:
-        app: {{ .Values.web.app_name}}
+        app: {{ .Values.dug.app_name}}
     spec:
       containers:
-      - image: {{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}
-        imagePullPolicy: {{ .Values.web.image.pullPolicy }}
-        name: {{ .Values.web.app_name}}-container
+      - image: {{ .Values.dug.image.repository }}:{{ .Values.dug.image.tag }}
+        imagePullPolicy: {{ .Values.dug.image.pullPolicy }}
+        name: {{ .Values.dug.app_name}}-container
         env:
         - name: ELASTIC_API_HOST
           value: {{ .Values.elasticsearch.service_name }}
@@ -53,7 +53,7 @@ spec:
         - name: NBOOST_API_HOST
           value: {{ .Values.nboost.service_name }}
         ports:
-          - containerPort: {{ .Values.web.api_port }}
+          - containerPort: {{ .Values.dug.api_port }}
         command: ["/bin/bash", "-c", "/app/run-dug-and-crawl.sh"]
         volumeMounts:
         - name: scripts-vol
@@ -81,9 +81,9 @@ data:
           done
         }
         wait_for elasticsearch $ELASTIC_API_HOST $ELASTIC_API_PORT 401
-        python -m dug.api {{ if .Values.web.debug }}--debug{{ end }} &
-        wait_for dug {{ .Values.web.service_name }} {{ .Values.web.api_port }} 404
+        python -m dug.api {{ if .Values.dug.debug }}--debug{{ end }} &
+        wait_for dug {{ .Values.dug.service_name }} {{ .Values.dug.api_port }} 404
         cp docker/.env.template docker/.env.dev
         env >> docker/.env.dev
-        {{ .Values.web.crawl_command }}
+        {{ .Values.dug.crawl_command }}
         fg

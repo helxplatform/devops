@@ -8,6 +8,8 @@ backup-pvc-cronjob:
   enabled: false
 commonsshare:
   enabled: false
+dug:
+  enabled: false
 nfs-server:
   enabled: true
 nfsrods:
@@ -15,6 +17,4 @@ nfsrods:
 nginx:
   enabled: true
 tycho-api:
-  enabled: true
-dug:
   enabled: true
