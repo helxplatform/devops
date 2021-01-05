@@ -1,0 +1,11 @@
+apiVersion: v2
+name: dug
+description: Helm chart for dug
+# This is an application chart
+type: application
+
+# This maintains the chart version
+version: 0.1.5
+
+# Application version aligned with `dug/docker/bin/.ver`
+appVersion: 1.0.1

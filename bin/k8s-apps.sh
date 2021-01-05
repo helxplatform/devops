@@ -350,8 +350,7 @@ DUG_API=${DUG_API-false}
 # Ambassador annotations in the Dug Helm chart.
 DUG_API_WITH_NGINX=${DUG_API_WITH_NGINX-false}
 DUG_HELM_RELEASE=${DUG_HELM_RELEASE-"dug"}
-DUG_HOME=${DUG_HOME-"$HELXPLATFORM_HOME/dug"}
-DUG_HELM_DIR=${DUG_HELM_DIR-"$DUG_HOME/kubernetes/helm"}
+DUG_HELM_DIR=${DUG_HELM_DIR-"$DUG_HOME/devops/helx/charts/dug"}
 DUG_ES_NFS_SERVER=${DUG_ES_NFS_SERVER-$CAT_NFS_SERVER}
 DUG_ES_NFS_PATH=${DUG_ES_NFS_PATH-"/dug-elasticsearch"}
 if [ $CREATE_STATIC_PV_STORAGE == true ]
@@ -1315,8 +1314,6 @@ function dug(){
   if [ "$1" == "deploy" ]
   then
     echo "deploying dug"
-    # cat $DUG_HOME/kubernetes/dug-secrets-template.yaml | envsubst | kubectl apply -n $NAMESPACE -f -
-
     if [ $CREATE_STATIC_PV_STORAGE == true ]
     then
       dugStorage deploy

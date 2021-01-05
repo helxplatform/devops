@@ -16,3 +16,5 @@ nginx:
   enabled: true
 tycho-api:
   enabled: true
+dug:
+  enabled: true
