@@ -4,6 +4,12 @@
 
 replicaCount: 1
 
+image:
+  repository: heliumdatastage/appstore
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  # tag: 1.0.2
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -60,9 +66,6 @@ db:
 ambassador:
    # flag: <True or False>
    flag: true
-
-image: "heliumdatastage/appstore:1.0.2"
-# imagePullSecrets: some-secret
 
 djangoSettings: cat
 

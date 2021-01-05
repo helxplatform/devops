@@ -26,7 +26,7 @@ spec:
         - --name=tycho
         - --timeout=600
         - tycho.api:app
-        image: {{ .Values.image }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         env:
         - name: CREATE_HOME_DIRS
           value: "{{- .Values.createHomeDirs }}"
@@ -42,7 +42,7 @@ spec:
         {{- end }}
         - name: SHARED_DIR
           value: "{{ .Values.shared_dir }}"
-        imagePullPolicy: "Always"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ template "tycho-api.name" . }}
         ports:
         - containerPort: 8099

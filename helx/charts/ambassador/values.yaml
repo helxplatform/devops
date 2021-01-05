@@ -6,7 +6,8 @@ replicaCount: 1
 
 image:
   repository: quay.io/datawire/ambassador
-  tag: 1.1.1
+  # Overrides the image tag whose default is the chart appVersion.
+  # tag: 1.1.1
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
