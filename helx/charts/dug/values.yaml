@@ -1,7 +1,9 @@
 dug:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch
-    image_tag: 7.9.1
+    image:
+      repository: docker.elastic.co/elasticsearch/elasticsearch
+      tag: 7.9.1
+      pullPolicy: IfNotPresent
     app_name: elasticsearch
     pvc_name: dug-elasticsearch-pvc
     certs_secret: elastic-certificates
@@ -28,8 +30,10 @@ dug:
       initial_delay: 30
       check_interval: 10
   neo4j:
-    image: bitnami/neo4j
-    image_tag: 3.5.14
+    image:
+      repository: bitnami/neo4j
+      tag: 3.5.14
+      pullPolicy: IfNotPresent
     app_name: neo4j
     pvc_name: dug-neo4j-pvc
     service_name: neo4j
@@ -41,8 +45,10 @@ dug:
     # storage_class: standard
     db_user: neo4j
   redis:
-    image: bitnami/redis
-    image_tag: 5.0.8
+    image:
+      repository: bitnami/redis
+      tag: 5.0.8
+      pullPolicy: IfNotPresent
     app_name: redis
     pvc_name: dug-redis-pvc
     service_name: redis
@@ -51,8 +57,10 @@ dug:
     # storage_class: standard
     redis_port: 6389
   web:
-    image: heliumdatastage/dug
-    image_tag: 1.0.2
+    image:
+      repository: heliumdatastage/dug
+      tag: 1.0.2
+      pullPolicy: IfNotPresent
     app_name: dug
     service_name: dug
     deployment_name: dug
@@ -74,8 +82,10 @@ dug:
     service_name: dug-search-client
     http_port: 80
     container_port: 8080
-    image: heliumdatastage/dug-search-client
-    image_tag: 1.0.1
+    image:
+      repository: heliumdatastage/dug-search-client
+      tag: 1.0.1
+      pullPolicy: IfNotPresent
     ambassador:
       ui:
         map_name: dug-ui
@@ -84,8 +94,10 @@ dug:
     app_name: dug-nboost
     deployment_name: dug-nboost
     service_name: dug-nboost
-    image: koursaros/nboost
-    image_tag: 0.3.9-pt
+    image:
+      repository: koursaros/nboost
+      tag: 0.3.9-pt
+      pullPolicy: IfNotPresent
     api_port: 8000
     model: nboost/pt-biobert-base-msmarco
 

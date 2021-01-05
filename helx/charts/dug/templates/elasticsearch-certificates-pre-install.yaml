@@ -52,7 +52,8 @@ spec:
       serviceAccountName: {{ .Values.dug.elasticsearch.app_name }}-es-certs-pre-install-serviceaccount
       containers:
       - name: {{ .Values.dug.elasticsearch.app_name }}-elasticsearch-pre-install
-        image: {{ .Values.dug.elasticsearch.image }}:{{ .Values.dug.elasticsearch.image_tag }}
+        image: {{ .Values.dug.elasticsearch.image.repository }}:{{ .Values.dug.elasticsearch.image.tag }}
+        imagePullPolicy: {{ .Values.dug.elasticsearch.image.pullPolicy }}
         command: ["/bin/bash", "-c", "/app/create_es_certs.sh"]
         volumeMounts:
         - name: create-script-vol
@@ -93,7 +94,8 @@ spec:
       serviceAccountName: {{ .Values.dug.elasticsearch.app_name }}-es-certs-pre-install-serviceaccount
       containers:
       - name: {{ .Values.dug.elasticsearch.app_name }}-elasticsearch-post-delete
-        image: {{ .Values.dug.elasticsearch.image }}:{{ .Values.dug.elasticsearch.image_tag }}
+        image: {{ .Values.dug.elasticsearch.image.repository }}:{{ .Values.dug.elasticsearch.image.tag }}
+        imagePullPolicy: {{ .Values.dug.elasticsearch.image.pullPolicy }}
         command: ["/bin/bash", "-c", "/app/delete_es_certs_secret.sh"]
         volumeMounts:
         - name: delete-script-vol

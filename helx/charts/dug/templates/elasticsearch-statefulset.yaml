@@ -18,7 +18,7 @@ spec:
       initContainers:
         - name: sysctl
           image: bitnami/minideb:buster
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.dug.elasticsearch.image.pullPolicy }}
           command:
             - /scripts/sysctl.sh
           securityContext:
@@ -38,7 +38,8 @@ spec:
       securityContext:
         fsGroup: 1001
       containers:
-      - image: {{ .Values.dug.elasticsearch.image }}:{{ .Values.dug.elasticsearch.image_tag }}
+      - image: {{ .Values.dug.elasticsearch.image.repository }}:{{ .Values.dug.elasticsearch.image.tag }}
+        imagePullPolicy: {{ .Values.dug.elasticsearch.image.pullPolicy }}
         name: {{ .Values.dug.elasticsearch.app_name }}-container
         ports:
           - containerPort: {{ .Values.dug.elasticsearch.rest_port }}

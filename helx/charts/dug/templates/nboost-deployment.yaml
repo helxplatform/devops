@@ -15,8 +15,8 @@ spec:
         app: {{ .Values.dug.nboost.app_name }}
     spec:
       containers:
-      - image: {{ .Values.dug.nboost.image }}:{{ .Values.dug.nboost.image_tag }}
-        imagePullPolicy: Always
+      - image: {{ .Values.dug.nboost.image.repository }}:{{ .Values.dug.nboost.image.tag }}
+        imagePullPolicy: {{ .Values.dug.nboost.image.pullPolicy }}
         name: {{ .Values.dug.nboost.app_name }}-container
         ports:
           - containerPort: {{ .Values.dug.nboost.api_port }}

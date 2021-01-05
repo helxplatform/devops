@@ -1362,11 +1362,11 @@ function dug(){
     HELM_VALUES+=",dug.create_pvcs=$DUG_CREATE_PVCS"
     if [ ! -z "$DUG_WEB_IMAGE_TAG" ]
     then
-      HELM_VALUES+=",dug.web.image_tag=$DUG_WEB_IMAGE_TAG"
+      HELM_VALUES+=",dug.web.image.tag=$DUG_WEB_IMAGE_TAG"
     fi
     if [ ! -z "$DUG_SC_IMAGE_TAG" ]
     then
-      HELM_VALUES+=",dug.search_client.image_tag=$DUG_SC_IMAGE_TAG"
+      HELM_VALUES+=",dug.search_client.image.tag=$DUG_SC_IMAGE_TAG"
     fi
     if [ "$HELM_VALUES" = "" ]; then
       HELM_SET_ARG=""

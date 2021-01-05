@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: dug-test-container
-          image: {{ .Values.dug.web.image }}:{{ .Values.dug.web.image_tag }}
+          image: {{ .Values.dug.web.image.repository }}:{{ .Values.dug.web.image.tag }}
           command: ["pwd"]
           # TODO : Add command to bin/dug test here. Current bin/dug has a strict call to dev init which
           # TODO: is docker based. In this setup environment variables are already configured. So dev init should
@@ -48,4 +48,3 @@ spec:
                   name: {{ .Values.dug.secrets.name }}
                   key: REDIS_PASSWORD
       restartPolicy: Never
-

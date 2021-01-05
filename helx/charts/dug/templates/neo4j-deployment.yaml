@@ -17,7 +17,8 @@ spec:
       securityContext:
         fsGroup: 1001
       containers:
-      - image: {{ .Values.dug.neo4j.image }}:{{ .Values.dug.neo4j.image_tag }}
+      - image: {{ .Values.dug.neo4j.image.repository }}:{{ .Values.dug.neo4j.image.tag }}
+        imagePullPolicy: {{ .Values.dug.neo4j.image.pullPolicy }}
         name: {{ .Values.dug.neo4j.app_name }}-container
         env:
         - name: NEO4J_PASSWORD

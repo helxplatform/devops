@@ -15,8 +15,8 @@ spec:
         app: {{ .Values.dug.search_client.app_name }}
     spec:
       containers:
-      - image: {{ .Values.dug.search_client.image }}:{{ .Values.dug.search_client.image_tag }}
-        imagePullPolicy: Always
+      - image: {{ .Values.dug.search_client.image.repository }}:{{ .Values.dug.search_client.image.tag }}
+        imagePullPolicy: {{ .Values.dug.search_client.image.pullPolicy }}
         name: {{ .Values.dug.search_client.app_name }}-container
         ports:
           - containerPort: {{ .Values.dug.search_client.container_port }}

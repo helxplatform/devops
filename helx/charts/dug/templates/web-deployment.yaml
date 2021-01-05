@@ -15,7 +15,8 @@ spec:
         app: {{ .Values.dug.web.app_name}}
     spec:
       containers:
-      - image: {{ .Values.dug.web.image }}:{{ .Values.dug.web.image_tag }}
+      - image: {{ .Values.dug.web.image.repository }}:{{ .Values.dug.web.image.tag }}
+        imagePullPolicy: {{ .Values.dug.web.image.pullPolicy }}
         name: {{ .Values.dug.web.app_name}}-container
         env:
         - name: ELASTIC_API_HOST
