@@ -2,23 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Values.dug.nboost.app_name }}
-  name: {{ .Values.dug.nboost.deployment_name }}
+    app: {{ .Values.nboost.app_name }}
+  name: {{ .Values.nboost.deployment_name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.dug.nboost.app_name }}
+      app: {{ .Values.nboost.app_name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.dug.nboost.app_name }}
+        app: {{ .Values.nboost.app_name }}
     spec:
       containers:
-      - image: {{ .Values.dug.nboost.image.repository }}:{{ .Values.dug.nboost.image.tag }}
-        imagePullPolicy: {{ .Values.dug.nboost.image.pullPolicy }}
-        name: {{ .Values.dug.nboost.app_name }}-container
+      - image: {{ .Values.nboost.image.repository }}:{{ .Values.nboost.image.tag }}
+        imagePullPolicy: {{ .Values.nboost.image.pullPolicy }}
+        name: {{ .Values.nboost.app_name }}-container
         ports:
-          - containerPort: {{ .Values.dug.nboost.api_port }}
+          - containerPort: {{ .Values.nboost.api_port }}
         args:
-        - --model_dir={{ .Values.dug.nboost.model }}
+        - --model_dir={{ .Values.nboost.model }}

@@ -4,9 +4,9 @@ items:
 - apiVersion: v1
   kind: ConfigMap
   metadata:
-    name: {{ .Values.dug.elasticsearch.init_config_name }}
+    name: {{ .Values.elasticsearch.init_config_name }}
     labels:
-      app: {{ .Values.dug.elasticsearch.app_name }}
+      app: {{ .Values.elasticsearch.app_name }}
   data:
     sysctl.sh: |-
       #!/bin/bash
