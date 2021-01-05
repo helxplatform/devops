@@ -176,9 +176,10 @@ AMBASSADOR_RUNASGROUP=${AMBASSADOR_RUNASGROUP-""}
 AMBASSADOR_FSGROUP=${AMBASSADOR_FSGROUP-""}
 AMBASSADOR_ROLE_INGRESSES=${AMBASSADOR_ROLE_INGRESSES-""}
 USE_CLUSTER_ROLES=${USE_CLUSTER_ROLES-false}
+
 NGINX_HELM_DIR=${NGINX_HELM_DIR="$HELX_DEVOPS_HOME/helx/charts/nginx"}
 NGINX_HELM_RELEASE=${NGINX_HELM_RELEASE-"nginx-revproxy"}
-NGINX_IMAGE=${NGINX_IMAGE-""}
+NGINX_IMAGE_TAG=${NGINX_IMAGE_TAG-""}
 NGINX_SERVERNAME=${NGINX_SERVERNAME-"helx.helx-dev.renci.org"}
 NGINX_IP=${NGINX_IP-""}
 NGINX_TLS_SECRET=${NGINX_TLS_SECRET-""}
@@ -244,7 +245,7 @@ APPSTORE_OAUTH_NFS_SERVER=${APPSTORE_OAUTH_NFS_SERVER-$CAT_NFS_SERVER}
 APPSTORE_OAUTH_NFS_PATH=${APPSTORE_OAUTH_NFS_PATH-""}
 APPSTORE_OAUTH_PV_STORAGE_SIZE=${APPSTORE_OAUTH_PV_STORAGE_SIZE-"10Gi"}
 APPSTORE_OAUTH_PV_ACCESSMODE=${APPSTORE_OAUTH_PV_ACCESSMODE-"ReadWriteOnce"}
-APPSTORE_IMAGE=${APPSTORE_IMAGE-""}
+APPSTORE_IMAGE_TAG=${APPSTORE_IMAGE_TAG-""}
 APPSTORE_DJANGO_SETTINGS=${APPSTORE_DJANGO_SETTINGS-""}
 APPSTORE_IMAGE_PULL_SECRETS=${APPSTORE_IMAGE_PULL_SECRETS-""}
 APPSTORE_WITH_AMBASSADOR=${APPSTORE_WITH_AMBASSADOR-true}
@@ -258,7 +259,7 @@ REMOVE_AUTHORIZED_USERS=${REMOVE_AUTHORIZED_USERS-""}
 
 TYCHO_HELM_RELEASE=${TYCHO_HELM_RELEASE-"tycho-api"}
 TYCHO_API_SERVICE_TYPE=${TYCHO_API_SERVICE_TYPE-""}
-TYCHO_API_IMAGE=${TYCHO_API_IMAGE-""}
+TYCHO_API_IMAGE_TAG=${TYCHO_API_IMAGE_TAG-""}
 TYCHO_USE_ROLE=${TYCHO_USE_ROLE-""}
 TYCHO_STDNFS_PVC=${TYCHO_STDNFS_PVC-""}
 TYCHO_CREATE_HOME_DIRS=${TYCHO_CREATE_HOME_DIRS-""}
@@ -349,8 +350,7 @@ DUG_API=${DUG_API-false}
 # Ambassador annotations in the Dug Helm chart.
 DUG_API_WITH_NGINX=${DUG_API_WITH_NGINX-false}
 DUG_HELM_RELEASE=${DUG_HELM_RELEASE-"dug"}
-DUG_HOME=${DUG_HOME-"$HELXPLATFORM_HOME/dug"}
-DUG_HELM_DIR=${DUG_HELM_DIR-"$DUG_HOME/kubernetes/helm"}
+DUG_HELM_DIR=${DUG_HELM_DIR-"$DUG_HOME/devops/helx/charts/dug"}
 DUG_ES_NFS_SERVER=${DUG_ES_NFS_SERVER-$CAT_NFS_SERVER}
 DUG_ES_NFS_PATH=${DUG_ES_NFS_PATH-"/dug-elasticsearch"}
 if [ $CREATE_STATIC_PV_STORAGE == true ]
@@ -786,9 +786,9 @@ function deployTycho(){
   then
     HELM_VALUES+=",service.type=$TYCHO_API_SERVICE_TYPE"
   fi
-  if [ ! -z "$TYCHO_API_IMAGE" ]
+  if [ ! -z "$TYCHO_API_IMAGE_TAG" ]
   then
-    HELM_VALUES+=",image=$TYCHO_API_IMAGE"
+    HELM_VALUES+=",image.tag=$TYCHO_API_IMAGE_TAG"
   fi
   if [ ! -z "$TYCHO_STDNFS_PVC" ]
   then
@@ -869,9 +869,9 @@ function deployAppStore(){
   then
    HELM_VALUES+=",oauth.existingClaim=$APPSTORE_OAUTH_PVC_USE_EXISTING"
   fi
-  if [ ! -z "$APPSTORE_IMAGE" ]
+  if [ ! -z "$APPSTORE_IMAGE_TAG" ]
   then
-   HELM_VALUES+=",image=$APPSTORE_IMAGE"
+   HELM_VALUES+=",image.tag=$APPSTORE_IMAGE_TAG"
   fi
   if [ ! -z "$APPSTORE_IMAGE_PULL_SECRETS" ]
   then
@@ -1145,9 +1145,9 @@ function deployNginxRevProxy(){
    then
      HELM_VALUES+=",ingress.host=$NGINX_INGRESS_HOST"
    fi
-   if [ ! -z "$NGINX_IMAGE" ]
+   if [ ! -z "$NGINX_IMAGE_TAG" ]
    then
-     HELM_VALUES+=",image=\"$NGINX_IMAGE\""
+     HELM_VALUES+=",image.tag=\"$NGINX_IMAGE_TAG\""
    fi
    if [ ! -z "$NGINX_INGRESS_CLASS" ]
    then
@@ -1314,8 +1314,6 @@ function dug(){
   if [ "$1" == "deploy" ]
   then
     echo "deploying dug"
-    # cat $DUG_HOME/kubernetes/dug-secrets-template.yaml | envsubst | kubectl apply -n $NAMESPACE -f -
-
     if [ $CREATE_STATIC_PV_STORAGE == true ]
     then
       dugStorage deploy
@@ -1364,11 +1362,11 @@ function dug(){
     HELM_VALUES+=",dug.create_pvcs=$DUG_CREATE_PVCS"
     if [ ! -z "$DUG_WEB_IMAGE_TAG" ]
     then
-      HELM_VALUES+=",dug.web.image_tag=$DUG_WEB_IMAGE_TAG"
+      HELM_VALUES+=",dug.web.image.tag=$DUG_WEB_IMAGE_TAG"
     fi
     if [ ! -z "$DUG_SC_IMAGE_TAG" ]
     then
-      HELM_VALUES+=",dug.search_client.image_tag=$DUG_SC_IMAGE_TAG"
+      HELM_VALUES+=",dug.search_client.image.tag=$DUG_SC_IMAGE_TAG"
     fi
     if [ "$HELM_VALUES" = "" ]; then
       HELM_SET_ARG=""

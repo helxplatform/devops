@@ -5,8 +5,9 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: stable
+  repository: heliumdatastage/nginx
+  # Overrides the image tag whose default is the chart appVersion.
+  # tag: 1.0.0
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -43,8 +44,6 @@ varStorage:
   claimName:
   storageSize: 2Gi
   storageClass:
-
-image: heliumdatastage/nginx:1.0.0
 
 restartrApi: false
 dugApi: false
