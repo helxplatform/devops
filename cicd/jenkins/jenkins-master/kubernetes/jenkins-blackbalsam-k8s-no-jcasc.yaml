@@ -163,7 +163,7 @@ data:
     yes n | cp -i /usr/share/jenkins/ref/plugins/* /var/jenkins_plugins/;
     echo "finished initialization"
   plugins.txt: |-
-    kubernetes:1.27.7
+    kubernetes:1.28.4
     workflow-job:2.39
     workflow-aggregator:2.6
     credentials-binding:1.24

@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:lts
+FROM jenkins/jenkins:2.263.1-lts
  
 USER root
 
@@ -19,7 +19,9 @@ RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debia
     curl -L https://github.com/arminc/clair-scanner/releases/download/v12/clair-scanner_linux_amd64 -o /usr/local/bin/clair-scanner && \
 #    curl https://raw.githubusercontent.com/arminc/clair-scanner/releases/download/v12/clair-scanner_darwin_amd64 -o /usr/local/bin/clair-scanner && \
     chmod +x /usr/local/bin/clair-scanner  && \
-    ln -s /usr/local/bin/clair-scanner /usr/bin/clair-scanner
+    ln -s /usr/local/bin/clair-scanner /usr/bin/clair-scanner && \
+    curl https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64 -o /usr/local/bin/yq && \
+    chmod +x /usr/local/bin/yq
 
 RUN mkdir ruby && \
     cd ruby && \
