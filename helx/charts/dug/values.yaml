@@ -83,7 +83,7 @@ search_client:
   container_port: 8080
   image:
     repository: heliumdatastage/dug-search-client
-    tag: 1.0.1
+    tag: 1.0.0
     pullPolicy: IfNotPresent
   ambassador:
     ui:
