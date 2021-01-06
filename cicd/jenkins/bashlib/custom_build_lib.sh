@@ -56,6 +56,7 @@ function dug_client_build ()
    echo "PUBLIC_URL=/ui" > "$app1_path/.env"
    echo "CLIENT_PORT=3030" >> "$app1_path/.env"
    echo "NODE_ENV=production" >> "$app1_path/.env"
+   echo "REACT_APP_DUG_URL=https://helx.helx-dev.renci.org" >> "$app1_path/.env"
    echo "Contents of env file: " `cat "$app1_path/.env"`
 
    docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_path/$docker_fn $docker_path
