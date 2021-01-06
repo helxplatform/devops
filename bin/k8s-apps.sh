@@ -350,7 +350,7 @@ DUG_API=${DUG_API-false}
 # Ambassador annotations in the Dug Helm chart.
 DUG_API_WITH_NGINX=${DUG_API_WITH_NGINX-false}
 DUG_HELM_RELEASE=${DUG_HELM_RELEASE-"dug"}
-DUG_HELM_DIR=${DUG_HELM_DIR-"$DUG_HOME/devops/helx/charts/dug"}
+DUG_HELM_DIR=${DUG_HELM_DIR-"$HELX_DEVOPS_HOME/helx/charts/dug"}
 DUG_ES_NFS_SERVER=${DUG_ES_NFS_SERVER-$CAT_NFS_SERVER}
 DUG_ES_NFS_PATH=${DUG_ES_NFS_PATH-"/dug-elasticsearch"}
 if [ $CREATE_STATIC_PV_STORAGE == true ]
@@ -1319,54 +1319,54 @@ function dug(){
       dugStorage deploy
     fi
 
-    HELM_VALUES="dug.neo4j.pvc_name=$DUG_NEO4J_PVC"
-    HELM_VALUES+=",dug.redis.pvc_name=$DUG_REDIS_PVC"
-    HELM_VALUES+=",dug.elasticsearch.app_name=$DUG_ES_APP_NAME"
-    HELM_VALUES+=",dug.neo4j.app_name=$DUG_NEO4J_APP_NAME"
-    HELM_VALUES+=",dug.redis.app_name=$DUG_REDIS_APP_NAME"
-    HELM_VALUES+=",dug.web.app_name=$DUG_WEB_APP_NAME"
-    HELM_VALUES+=",dug.search_client.app_name=$DUG_SC_APP_NAME"
-    HELM_VALUES+=",dug.nboost.app_name=$DUG_NBOOST_APP_NAME"
-    HELM_VALUES+=",dug.elasticsearch.deployment_name=$DUG_ES_APP_NAME"
-    HELM_VALUES+=",dug.neo4j.deployment_name=$DUG_NEO4J_APP_NAME"
-    HELM_VALUES+=",dug.redis.deployment_name=$DUG_REDIS_APP_NAME"
-    HELM_VALUES+=",dug.web.deployment_name=$DUG_WEB_APP_NAME"
-    HELM_VALUES+=",dug.search_client.deployment_name=$DUG_SC_APP_NAME"
-    HELM_VALUES+=",dug.nboost.deployment_name=$DUG_NBOOST_APP_NAME"
-    HELM_VALUES+=",dug.elasticsearch.service_name=$DUG_ES_APP_NAME"
-    HELM_VALUES+=",dug.neo4j.service_name=$DUG_NEO4J_APP_NAME"
-    HELM_VALUES+=",dug.redis.service_name=$DUG_REDIS_APP_NAME"
-    HELM_VALUES+=",dug.web.service_name=$DUG_WEB_APP_NAME"
-    HELM_VALUES+=",dug.search_client.service_name=$DUG_SC_APP_NAME"
-    HELM_VALUES+=",dug.nboost.service_name=$DUG_NBOOST_APP_NAME"
+    HELM_VALUES="neo4j.pvc_name=$DUG_NEO4J_PVC"
+    HELM_VALUES+=",redis.pvc_name=$DUG_REDIS_PVC"
+    HELM_VALUES+=",elasticsearch.app_name=$DUG_ES_APP_NAME"
+    HELM_VALUES+=",neo4j.app_name=$DUG_NEO4J_APP_NAME"
+    HELM_VALUES+=",redis.app_name=$DUG_REDIS_APP_NAME"
+    HELM_VALUES+=",web.app_name=$DUG_WEB_APP_NAME"
+    HELM_VALUES+=",search_client.app_name=$DUG_SC_APP_NAME"
+    HELM_VALUES+=",nboost.app_name=$DUG_NBOOST_APP_NAME"
+    HELM_VALUES+=",elasticsearch.deployment_name=$DUG_ES_APP_NAME"
+    HELM_VALUES+=",neo4j.deployment_name=$DUG_NEO4J_APP_NAME"
+    HELM_VALUES+=",redis.deployment_name=$DUG_REDIS_APP_NAME"
+    HELM_VALUES+=",web.deployment_name=$DUG_WEB_APP_NAME"
+    HELM_VALUES+=",search_client.deployment_name=$DUG_SC_APP_NAME"
+    HELM_VALUES+=",nboost.deployment_name=$DUG_NBOOST_APP_NAME"
+    HELM_VALUES+=",elasticsearch.service_name=$DUG_ES_APP_NAME"
+    HELM_VALUES+=",neo4j.service_name=$DUG_NEO4J_APP_NAME"
+    HELM_VALUES+=",redis.service_name=$DUG_REDIS_APP_NAME"
+    HELM_VALUES+=",web.service_name=$DUG_WEB_APP_NAME"
+    HELM_VALUES+=",search_client.service_name=$DUG_SC_APP_NAME"
+    HELM_VALUES+=",nboost.service_name=$DUG_NBOOST_APP_NAME"
     if [ ! -z "$DUG_ES_XMX" ]
     then
-      HELM_VALUES+=",dug.elasticsearch.xmx=$DUG_ES_XMX"
+      HELM_VALUES+=",elasticsearch.xmx=$DUG_ES_XMX"
     fi
     if [ ! -z "$DUG_ES_XMS" ]
     then
-      HELM_VALUES+=",dug.elasticsearch.xms=$DUG_ES_XMS"
+      HELM_VALUES+=",elasticsearch.xms=$DUG_ES_XMS"
     fi
     if [ ! -z "DUG_ES_PV_STORAGECLASS" ]
     then
-      HELM_VALUES+=",dug.elasticsearch.storage_class=$DUG_ES_PV_STORAGECLASS"
+      HELM_VALUES+=",elasticsearch.storage_class=$DUG_ES_PV_STORAGECLASS"
     fi
     if [ ! -z "DUG_NEO4J_PV_STORAGECLASS" ]
     then
-      HELM_VALUES+=",dug.neo4j.storage_class=$DUG_NEO4J_PV_STORAGECLASS"
+      HELM_VALUES+=",neo4j.storage_class=$DUG_NEO4J_PV_STORAGECLASS"
     fi
     if [ ! -z "DUG_REDIS_PV_STORAGECLASS" ]
     then
-      HELM_VALUES+=",dug.redis.storage_class=$DUG_REDIS_PV_STORAGECLASS"
+      HELM_VALUES+=",redis.storage_class=$DUG_REDIS_PV_STORAGECLASS"
     fi
-    HELM_VALUES+=",dug.create_pvcs=$DUG_CREATE_PVCS"
+    HELM_VALUES+=",create_pvcs=$DUG_CREATE_PVCS"
     if [ ! -z "$DUG_WEB_IMAGE_TAG" ]
     then
-      HELM_VALUES+=",dug.web.image.tag=$DUG_WEB_IMAGE_TAG"
+      HELM_VALUES+=",web.image.tag=$DUG_WEB_IMAGE_TAG"
     fi
     if [ ! -z "$DUG_SC_IMAGE_TAG" ]
     then
-      HELM_VALUES+=",dug.search_client.image.tag=$DUG_SC_IMAGE_TAG"
+      HELM_VALUES+=",search_client.image.tag=$DUG_SC_IMAGE_TAG"
     fi
     if [ "$HELM_VALUES" = "" ]; then
       HELM_SET_ARG=""

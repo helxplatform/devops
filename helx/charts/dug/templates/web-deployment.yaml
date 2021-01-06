@@ -2,58 +2,58 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Values.dug.web.app_name}}
-  name: {{ .Values.dug.web.deployment_name }}
+    app: {{ .Values.dug.app_name}}
+  name: {{ .Values.dug.deployment_name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.dug.web.app_name}}
+      app: {{ .Values.dug.app_name}}
   template:
     metadata:
       labels:
-        app: {{ .Values.dug.web.app_name}}
+        app: {{ .Values.dug.app_name}}
     spec:
       containers:
-      - image: {{ .Values.dug.web.image.repository }}:{{ .Values.dug.web.image.tag }}
-        imagePullPolicy: {{ .Values.dug.web.image.pullPolicy }}
-        name: {{ .Values.dug.web.app_name}}-container
+      - image: {{ .Values.dug.image.repository }}:{{ .Values.dug.image.tag }}
+        imagePullPolicy: {{ .Values.dug.image.pullPolicy }}
+        name: {{ .Values.dug.app_name}}-container
         env:
         - name: ELASTIC_API_HOST
-          value: {{ .Values.dug.elasticsearch.service_name }}
+          value: {{ .Values.elasticsearch.service_name }}
         - name: ELASTIC_API_PORT
-          value: {{ .Values.dug.elasticsearch.rest_port | quote }}
+          value: {{ .Values.elasticsearch.rest_port | quote }}
         - name: ELASTIC_USER
-          value: {{ .Values.dug.elasticsearch.db_user }}
+          value: {{ .Values.elasticsearch.db_user }}
         - name: ELASTIC_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.dug.secrets.name }}
+              name: {{ .Values.secrets.name }}
               key: ELASTIC_PASSWORD
         - name: NEO4J_HOST
-          value: {{ .Values.dug.neo4j.service_name }}
+          value: {{ .Values.neo4j.service_name }}
         - name: NEO4J_PORT
-          value: {{ .Values.dug.neo4j.http_port | quote }}
+          value: {{ .Values.neo4j.http_port | quote }}
         - name: NEO4J_USER
-          value: {{ .Values.dug.neo4j.db_user }}
+          value: {{ .Values.neo4j.db_user }}
         - name: NEO4J_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.dug.secrets.name }}
+              name: {{ .Values.secrets.name }}
               key: NEO4J_PASSWORD
         - name: REDIS_HOST
-          value: {{ .Values.dug.redis.service_name }}
+          value: {{ .Values.redis.service_name }}
         - name: REDIS_PORT
-          value: {{ .Values.dug.redis.redis_port | quote }}
+          value: {{ .Values.redis.redis_port | quote }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.dug.secrets.name }}
+              name: {{ .Values.secrets.name }}
               key: REDIS_PASSWORD
         - name: NBOOST_API_HOST
-          value: {{ .Values.dug.nboost.service_name }}
+          value: {{ .Values.nboost.service_name }}
         ports:
-          - containerPort: {{ .Values.dug.web.api_port }}
+          - containerPort: {{ .Values.dug.api_port }}
         command: ["/bin/bash", "-c", "/app/run-dug-and-crawl.sh"]
         volumeMounts:
         - name: scripts-vol
@@ -81,9 +81,9 @@ data:
           done
         }
         wait_for elasticsearch $ELASTIC_API_HOST $ELASTIC_API_PORT 401
-        python -m dug.api {{ if .Values.dug.web.debug }}--debug{{ end }} &
-        wait_for dug {{ .Values.dug.web.service_name }} {{ .Values.dug.web.api_port }} 404
+        python -m dug.api {{ if .Values.dug.debug }}--debug{{ end }} &
+        wait_for dug {{ .Values.dug.service_name }} {{ .Values.dug.api_port }} 404
         cp docker/.env.template docker/.env.dev
         env >> docker/.env.dev
-        {{ .Values.dug.web.crawl_command }}
+        {{ .Values.dug.crawl_command }}
         fg
