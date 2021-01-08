@@ -1,7 +1,7 @@
 #!/bin/bash                                                                                                                                            
 function get_project() {
    # returns bdc, braini, or scidas
-   arr_clstr=(${$Cluster//-/ })
+   arr_clstr=(${Cluster//-/ })
    if [ "${arrclstr[0]}" == "helx" ]; then ${arrclstr[0]}="bdc"; fi
    echo ${arrclstr[0]}
 }
