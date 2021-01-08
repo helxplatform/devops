@@ -2,7 +2,7 @@
 function get_project() {
    # bdc, braini, or scidas
    arrIN=(${Cluster//-/ })
-   if [ "${arrIN[0]}" == "helx" ]; then ${arrIN[0]}="bdc"; fi
+   if [ "${arrIN[0]}" == "helx" ]; then arrIN[0]="bdc"; fi
    echo ${arrIN[0]}
 }
 
@@ -31,7 +31,8 @@ function deploy_app_list () {
    namespaces[braini-dev]="braini-dev"
    namespaces[braini-prod]="braini"
    namespaces[scidas-prod]="default"
-   local -r nspc=namespaces[$Cluster]
+
+   local -r nspc=${namespaces[$Cluster]}
 
    for ea_app in $(echo $App | tr "," " ")
    do
