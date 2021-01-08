@@ -54,6 +54,8 @@ function deploy_all () {
    local -r TYCHO_VER_FILE="$JENKINS_HOME/jobs/tycho/version/$BRANCH/ver"
 
    echo "Enter ${FUNCNAME[0]}"
+   pwd
+   ls -l
    cd "$CLONE_HOME/bin/"
    pwd
    ls -l
@@ -77,12 +79,21 @@ function deploy () {
 
 function pre_deploy() {
    echo "Enter ${FUNCNAME[0]}"
-   project=get_project
-   clstr_type=get_clstr_type
+   project=`get_project`
+   clstr_type=`get_clstr_type`
    echo "project=[$project], clstr_type=[$clstr_type]"
    echo "Deploying $applist apps to $Cluster which is a $project cluster for $clstr_type code."
    export PATH=$HOME/helm/linux-amd64:$HOME/kubectl:$HOME/bin:$PATH
    export KUBECONFIG=/var/jenkins_home/deployment-secrets/$project/$clstr_type-kubeconfig
+
+   if [ -d $CLONE_HOME ]
+   then
+      chmod -R 755 $CLONE_HOME
+      # Directory exists, remove it so git clone will work . . .
+      echo "Removing existing devops directory for git clone."
+      rm -rf $CLONE_HOME
+   fi
+   git clone https://github.com/helxplatform/devops.git
    echo "Exit ${FUNCNAME[0]}"
 }
 
