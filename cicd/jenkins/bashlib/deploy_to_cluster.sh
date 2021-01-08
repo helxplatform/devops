@@ -1,14 +1,16 @@
 #!/bin/bash                                                                                                                                            
 function get_project() {
+   local -r clster=$1
    # returns bdc, braini, or scidas
-   arr_clstr=(${Cluster//-/ })
+   arr_clstr=(${clster//-/ })
    if [ "${arrclstr[0]}" == "helx" ]; then ${arrclstr[0]}="bdc"; fi
    echo ${arrclstr[0]}
 }
 
 function get_clstr_type() {
+   local -r clstr=$1
    # returns dev, val, or prod
-   arr_clstr=(${Cluster//-/ })
+   arr_clstr=(${clster//-/ })
    echo ${arrclstr[1]}
 }
 
@@ -22,11 +24,7 @@ function read_version () {
 }
 
 function deploy_app_list () {
-   local -r applist=$1
-   local -r brn=$2
-   local -r clstr=$3
-
-   echo "Enter ${FUNCNAME[0]}: applist=[$applist], branch=[$brn], cluster=[$clstr]"
+   echo "Enter ${FUNCNAME[0]}: Applist=[$App], Branch=[$Branch], Cluster=[$Cluster]"
 
    declare -A namespaces
    namespaces[helx-dev]="helx-dev"
@@ -35,25 +33,24 @@ function deploy_app_list () {
    namespaces[braini-dev]="braini-dev"
    namespaces[braini-prod]="braini"
    namespaces[scidas-prod]="default"
+   local -r nspc=namespaces[$Cluster]
 
-   for ea_app in $(echo $applist | tr "," " ")
+   for ea_app in $(echo $App | tr "," " ")
    do
       echo "Deploying $ea_app"
-      echo "helm -n namespaces[$clstr] delete $ea_app"
+      echo "helm -n $nspc delete $ea_app"
       echo "sleep 3"
       # TODO: come up with way to generalize --set tycho.image.tag=tycho_version
-      echo "helm -n $spce install $ea_app $CLONE_HOME/helx/charts/$ea_app --set tycho.image.tag=$TYCHO_VERSION"
+      echo "helm -n $nspc install $ea_app $CLONE_HOME/helx/charts/$ea_app --set tycho.image.tag=$TYCHO_VERSION"
    done
    echo "Exit ${FUNCNAME[0]}"
 }
 
 function deploy_all () {
-   local -r BRANCH=$1
-   local -r CLONE_HOME="$WORKSPACE/devops"
-   local -r APPSTORE_VER_FILE="$JENKINS_HOME/jobs/appstore/version/$BRANCH/ver"
-   local -r TYCHO_VER_FILE="$JENKINS_HOME/jobs/tycho/version/$BRANCH/ver"
-
    echo "Enter ${FUNCNAME[0]}"
+
+   local -r APPSTORE_VER_FILE="$JENKINS_HOME/jobs/appstore/version/$Branch/ver"
+   local -r TYCHO_VER_FILE="$JENKINS_HOME/jobs/tycho/version/$Branch/ver"
    pwd
    ls -l
    cd "$CLONE_HOME/bin/"
@@ -67,17 +64,16 @@ function deploy_all () {
 }
 
 function deploy () {
-
    echo "Enter ${FUNCNAME[0]}"
    if [ "$App" == "all" ]; then
-      deploy_all $BRANCH_NAME
+      deploy_all
    else
       deploy_app_list $App $Branch $Cluster
    fi
    echo "Exit ${FUNCNAME[0]}"
 }
 
-function pre_deploy() {
+function pre_deploy () {
    echo "Enter ${FUNCNAME[0]}"
    project=`get_project`
    clstr_type=`get_clstr_type`
@@ -97,5 +93,19 @@ function pre_deploy() {
    echo "Exit ${FUNCNAME[0]}"
 }
 
+function init () {
+   echo "Enter ${FUNCNAME[0]}"
+   # GLOBALS
+   App=$1
+   Branch=$2
+   Cluster=$3
+   HOME="/var/jenkins_home"
+   PATH="$HOME/helm/linux-amd64:$HOME/kubectl:$HOME/bin:$PATH"
+   WORKSPACE="$HOME/workspace/deploy-to-cluster"
+   CLONE_HOME="$WORKSPACE/devops"
+   echo "Exit ${FUNCNAME[0]}"
+}
+
+init $1 $2 $3
 pre_deploy
 deploy
