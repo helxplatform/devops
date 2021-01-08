@@ -1,16 +1,14 @@
 #!/bin/bash                                                                                                                                            
 function get_project() {
-   local -r clster=$1
    # returns bdc, braini, or scidas
-   arr_clstr=(${clster//-/ })
+   arr_clstr=(${$Cluster//-/ })
    if [ "${arrclstr[0]}" == "helx" ]; then ${arrclstr[0]}="bdc"; fi
    echo ${arrclstr[0]}
 }
 
 function get_clstr_type() {
-   local -r clstr=$1
    # returns dev, val, or prod
-   arr_clstr=(${clster//-/ })
+   arr_clstr=(${Cluster//-/ })
    echo ${arrclstr[1]}
 }
 
@@ -51,6 +49,9 @@ function deploy_all () {
 
    local -r APPSTORE_VER_FILE="$JENKINS_HOME/jobs/appstore/version/$Branch/ver"
    local -r TYCHO_VER_FILE="$JENKINS_HOME/jobs/tycho/version/$Branch/ver"
+   echo "APPSTORE_VER_FILE=[$APPSTORE_VER_FILE]"
+   echo "TYCHO_VER_FILE=[$TYCHO_VER_FILE]"
+
    pwd
    ls -l
    cd "$CLONE_HOME/bin/"
@@ -75,6 +76,7 @@ function deploy () {
 
 function pre_deploy () {
    echo "Enter ${FUNCNAME[0]}"
+   echo "${FUNCNAME[0]}: Cluster=[$Cluster]"
    project=`get_project`
    clstr_type=`get_clstr_type`
    echo "project=[$project], clstr_type=[$clstr_type]"
@@ -99,6 +101,8 @@ function init () {
    App=$1
    Branch=$2
    Cluster=$3
+
+   echo "${FUNCNAME[0]}: App=[$1] Branch=[$2] Cluster=[$3]"
    HOME="/var/jenkins_home"
    PATH="$HOME/helm/linux-amd64:$HOME/kubectl:$HOME/bin:$PATH"
    WORKSPACE="$HOME/workspace/deploy-to-cluster"
