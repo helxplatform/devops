@@ -14,6 +14,10 @@ spec:
       labels:
         app: {{ .Values.search_client.app_name }}
     spec:
+      {{- with .Values.search_client.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - image: {{ .Values.search_client.image.repository }}:{{ .Values.search_client.image.tag }}
         imagePullPolicy: {{ .Values.search_client.image.pullPolicy }}

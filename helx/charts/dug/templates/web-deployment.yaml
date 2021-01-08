@@ -14,6 +14,10 @@ spec:
       labels:
         app: {{ .Values.dug.app_name}}
     spec:
+      {{- with .Values.dug.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - image: {{ .Values.dug.image.repository }}:{{ .Values.dug.image.tag }}
         imagePullPolicy: {{ .Values.dug.image.pullPolicy }}
