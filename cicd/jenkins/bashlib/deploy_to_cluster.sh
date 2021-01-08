@@ -1,15 +1,15 @@
 #!/bin/bash                                                                                                                                            
 function get_project() {
-   # returns bdc, braini, or scidas
-   arr_clstr=(${Cluster//-/ })
-   if [ "${arrclstr[0]}" == "helx" ]; then ${arrclstr[0]}="bdc"; fi
-   echo ${arrclstr[0]}
+   # bdc, braini, or scidas
+   arrIN=(${Cluster//-/ })
+   if [ "${arrIN[0]}" == "helx" ]; then ${arrIN[0]}="bdc"; fi
+   echo ${arrIN[0]}
 }
 
 function get_clstr_type() {
-   # returns dev, val, or prod
-   arr_clstr=(${Cluster//-/ })
-   echo ${arrclstr[1]}
+   # dev, val, or prod
+   arrIN=(${Cluster//-/ })
+   echo ${arrIN[1]}
 }
 
 function read_version () {
