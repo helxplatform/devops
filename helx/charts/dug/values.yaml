@@ -74,6 +74,8 @@ dug:
       map_name: dug-search-kg
       prefix: /search_kg
   crawl_command: bin/dug crawl_by_tag --crawl-file data/topmed_variables_v1.0.csv
+  # Add any extra environment variables not already defined in the chart.
+  extraEnv: {}
 secrets:
   name: dug-secrets
 search_client:
@@ -91,6 +93,8 @@ search_client:
     ui:
       map_name: dug-ui
       prefix: /ui
+  # Add any extra environment variables not already defined in the chart.
+  extraEnv: {}
 nboost:
   app_name: dug-nboost
   deployment_name: dug-nboost

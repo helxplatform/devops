@@ -239,6 +239,10 @@ spec:
             secretKeyRef:
               key: EMAIL_HOST_PASSWORD
               name: csappstore-secret
+        {{- range $key, $value := .Values.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
         ports:
         - containerPort: 8000
       {{- if .Values.oauth.existingClaim }}

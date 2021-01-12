@@ -59,6 +59,11 @@ spec:
         ports:
           - containerPort: {{ .Values.dug.api_port }}
         command: ["/bin/bash", "-c", "/app/run-dug-and-crawl.sh"]
+        env:
+          {{- range $key, $value := .Values.dug.extraEnv }}
+          - name: {{ $key }}
+            value: {{ $value }}
+          {{- end }}
         volumeMounts:
         - name: scripts-vol
           mountPath: /app
