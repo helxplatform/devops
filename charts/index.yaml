@@ -3,7 +3,7 @@ entries:
   HeLx:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-01-11T18:50:08.023041-05:00"
+    created: "2021-01-11T19:08:08.912141-05:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -33,10 +33,10 @@ entries:
       name: tycho-api
       repository: ""
     description: A Helm chart for Kubernetes
-    digest: 94f7d303bcaa3d089b0e6cdaa85278a14dcae570adb28eec5c613b3c309a4202
+    digest: 8190f5bd8e9a1b3b7c8ace7aacff5e97d0ce93f16c924350e2c0b3da59dd3947
     name: HeLx
     type: application
     urls:
     - https://helxplatform.github.io/devops/charts/HeLx-0.2.5.tgz
     version: 0.2.5
-generated: "2021-01-11T18:50:08.016956-05:00"
+generated: "2021-01-11T19:08:08.908826-05:00"
