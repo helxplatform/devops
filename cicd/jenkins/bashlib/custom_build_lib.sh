@@ -32,3 +32,32 @@ function cloudtopsdk_build ()
 
    docker build --no-cache -f ./$docker_fn -t $org/$repo:$tag1 -t $org/$repo:$tag2 .
 }
+
+
+function dug_client_build ()
+{
+   local -r org=$1
+   local -r repo=$2
+   local -r branch=$3
+   shift 3
+   local build_args=$1
+   local -r tag1=$2
+   local -r tag2=$3
+   local -r app1_path=$4
+   local docker_path=$5
+   local docker_fn=$6
+
+   echo "${FUNCNAME[0]} $org $repo $branch $build_args $tag1 $tag2 $app1_path $docker_path $docker_fn"
+   echo "${FUNCNAME[0]}: Building app . . ."
+   if [ "$build_args" ==  "null" ]; then unset build_args; fi
+   if [ "$docker_fn" == "null" ]; then docker_fn="Dockerfile"; fi
+   if [ "$app1_path" != "." ]; then cd $app1_path; fi
+
+   echo "PUBLIC_URL=/ui" > "$app1_path/.env"
+   echo "CLIENT_PORT=3030" >> "$app1_path/.env"
+   echo "NODE_ENV=production" >> "$app1_path/.env"
+   echo "REACT_APP_DUG_URL=https://helx.helx-dev.renci.org" >> "$app1_path/.env"
+   echo "Contents of env file: " `cat "$app1_path/.env"`
+
+   docker build --no-cache $build_args -t $org/$repo:$tag1 -t $org/$repo:$tag2 -f $docker_path/$docker_fn $docker_path
+}
