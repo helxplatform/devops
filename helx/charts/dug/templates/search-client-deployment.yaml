@@ -20,3 +20,8 @@ spec:
         name: {{ .Values.search_client.app_name }}-container
         ports:
           - containerPort: {{ .Values.search_client.container_port }}
+        env:
+          {{- range $key, $value := .Values.search_client.extraEnv }}
+          - name: {{ $key }}
+            value: {{ $value }}
+          {{- end }}

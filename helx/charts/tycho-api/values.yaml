@@ -48,3 +48,6 @@ runAsRoot: true
 parent_dir: "/home"
 subpath_dir: null
 shared_dir: "shared"
+
+# Add any extra environment variables not already defined in the chart.
+extraEnv: {}

@@ -130,3 +130,6 @@ oauth:
   existingClaim: false
   claimName: appstore-oauth-pvc
   storageClass:
+
+# Add any extra environment variables not already defined in the chart.
+extraEnv: {}
