@@ -1,0 +1,42 @@
+apiVersion: v1
+entries:
+  helx:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2021-01-11T20:07:40.119917-05:00"
+    dependencies:
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: ""
+    - condition: appstore.enabled
+      name: appstore
+      repository: ""
+    - condition: backup-pvc-cronjob.enabled
+      name: backup-pvc-cronjob
+      repository: ""
+    - condition: commonsshare.enabled
+      name: commonsshare
+      repository: ""
+    - condition: dug.enabled
+      name: dug
+      repository: ""
+    - condition: nfs-server.enabled
+      name: nfs-server
+      repository: ""
+    - condition: nfsrods.enabled
+      name: nfsrods
+      repository: ""
+    - condition: nginx.enabled
+      name: nginx
+      repository: ""
+    - condition: tycho-api.enabled
+      name: tycho-api
+      repository: ""
+    description: A Helm chart for Kubernetes
+    digest: bbb4a31b706eb80035554ccbec5785881035afc620f67a238914d2405880e4bc
+    name: helx
+    type: application
+    urls:
+    - https://helxplatform.github.io/devops/charts/helx-0.2.6.tgz
+    version: 0.2.6
+generated: "2021-01-11T20:07:40.111598-05:00"
