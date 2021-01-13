@@ -3,7 +3,7 @@ entries:
   ambassador:
   - apiVersion: v1
     appVersion: 1.1.1
-    created: "2021-01-12T13:43:49.05724-05:00"
+    created: "2021-01-12T22:52:53.812779-05:00"
     description: A Helm chart for Kubernetes
     digest: 0b9c00aa87a11e8b95837315512466ee29e21b139dbb908b1145cbcff948c666
     name: ambassador
@@ -13,7 +13,7 @@ entries:
   appstore:
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-01-12T13:43:49.059685-05:00"
+    created: "2021-01-12T22:52:53.814048-05:00"
     description: A Helm chart for Kubernetes
     digest: 9a2bf6569bb2e7fdc0d5265e0c71f36c6bd2e0c697ca669cf0de205312026d3b
     name: appstore
@@ -23,7 +23,7 @@ entries:
     version: 0.1.6
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-01-12T13:43:49.058332-05:00"
+    created: "2021-01-12T22:52:53.813411-05:00"
     description: A Helm chart for Kubernetes
     digest: abb5e5573cb3621565470f32142905b263721e12e288137b03614dc99c01ab43
     name: appstore
@@ -34,7 +34,7 @@ entries:
   backup-pvc-cronjob:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2021-01-12T13:43:49.060234-05:00"
+    created: "2021-01-12T22:52:53.814373-05:00"
     description: A Helm chart for Kubernetes
     digest: a3e4f2a4432c71b024f0d224e23323e76d0f55d76a5bf38fffcc5a213deeeaca
     name: backup-pvc-cronjob
@@ -45,7 +45,17 @@ entries:
   dug:
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-01-12T13:43:49.062273-05:00"
+    created: "2021-01-12T22:52:53.8166-05:00"
+    description: Helm chart for dug
+    digest: b745a01f3dd1b7c7c489bd4563ac0f8cb553f6ab554216d3780786dd3ab5bbce
+    name: dug
+    type: application
+    urls:
+    - https://helxplatform.github.io/devops/charts/dug-0.2.4.tgz
+    version: 0.2.4
+  - apiVersion: v2
+    appVersion: 1.0.2
+    created: "2021-01-12T22:52:53.815792-05:00"
     description: Helm chart for dug
     digest: 7634b696743e704d4400a70ab2e405bd6ee87329ced02833b674f245272df770
     name: dug
@@ -55,7 +65,7 @@ entries:
     version: 0.2.3
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-01-12T13:43:49.061428-05:00"
+    created: "2021-01-12T22:52:53.815056-05:00"
     description: Helm chart for dug
     digest: ee2d1d87f78e9f4185a4f8813ae61d470b1986687a9f3b4e46f7c3e45e26f3a6
     name: dug
@@ -66,7 +76,45 @@ entries:
   helx:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-01-12T13:43:49.071387-05:00"
+    created: "2021-01-12T22:52:53.828352-05:00"
+    dependencies:
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: ""
+    - condition: appstore.enabled
+      name: appstore
+      repository: ""
+    - condition: backup-pvc-cronjob.enabled
+      name: backup-pvc-cronjob
+      repository: ""
+    - condition: commonsshare.enabled
+      name: commonsshare
+      repository: ""
+    - condition: dug.enabled
+      name: dug
+      repository: ""
+    - condition: nfs-server.enabled
+      name: nfs-server
+      repository: ""
+    - condition: nfsrods.enabled
+      name: nfsrods
+      repository: ""
+    - condition: nginx.enabled
+      name: nginx
+      repository: ""
+    - condition: tycho-api.enabled
+      name: tycho-api
+      repository: ""
+    description: A Helm chart for Kubernetes
+    digest: 564d847042553619fc1f9ce27999da37981575991101c0fe9c896e99913c7ec5
+    name: helx
+    type: application
+    urls:
+    - https://helxplatform.github.io/devops/charts/helx-0.2.8.tgz
+    version: 0.2.8
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2021-01-12T22:52:53.823876-05:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -104,7 +152,7 @@ entries:
     version: 0.2.7
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-01-12T13:43:49.06777-05:00"
+    created: "2021-01-12T22:52:53.820362-05:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -143,7 +191,7 @@ entries:
   nfs-server:
   - apiVersion: v2
     appVersion: "0.8"
-    created: "2021-01-12T13:43:49.072031-05:00"
+    created: "2021-01-12T22:52:53.828779-05:00"
     description: Creates an NFS server that can be used for PVCs.
     digest: 3da240f5b70d1daa0e35a8045f32055a86fff2a78ce1ec1c6297f58a6cf109ac
     name: nfs-server
@@ -154,7 +202,7 @@ entries:
   nfsrods:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-01-12T13:43:49.072554-05:00"
+    created: "2021-01-12T22:52:53.829141-05:00"
     description: A Helm chart for Kubernetes
     digest: b8306c8ddbaf9c726c9ee1db658a78de180b20c6421e2729250112128d64ea3e
     name: nfsrods
@@ -165,7 +213,7 @@ entries:
   nginx:
   - apiVersion: v1
     appVersion: 1.0.0
-    created: "2021-01-12T13:43:49.073055-05:00"
+    created: "2021-01-12T22:52:53.829512-05:00"
     description: A Helm chart for Kubernetes
     digest: 9c5f4e86818bc1bd3630131b049c45a487848cd56b5da86f6780ef7b5f7083fe
     name: nginx
@@ -175,7 +223,7 @@ entries:
   tycho-api:
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-01-12T13:43:49.07399-05:00"
+    created: "2021-01-12T22:52:53.830235-05:00"
     description: A Helm chart for Kubernetes
     digest: 98eca65de0a5d42f6f6ddc6557b0f3ef06aeca8b601d5d7f0b43f5740554d4d8
     name: tycho-api
@@ -185,7 +233,7 @@ entries:
     version: 0.1.6
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-01-12T13:43:49.073555-05:00"
+    created: "2021-01-12T22:52:53.829871-05:00"
     description: A Helm chart for Kubernetes
     digest: aa4d2366914d00c03f7aca9002ab9506a7fd3f8d9993d2cfcd950dc1967c5528
     name: tycho-api
@@ -193,4 +241,4 @@ entries:
     urls:
     - https://helxplatform.github.io/devops/charts/tycho-api-0.1.5.tgz
     version: 0.1.5
-generated: "2021-01-12T13:43:49.056345-05:00"
+generated: "2021-01-12T22:52:53.812346-05:00"
