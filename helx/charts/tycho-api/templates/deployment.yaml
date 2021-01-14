@@ -2,23 +2,26 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
+  name: {{ include "tycho-api.fullname" . }}
   labels:
-    service: {{ template "tycho-api.name" . }}
-    app: {{ template "tycho-api.name" . }}
-  name: {{ template "tycho-api.name" . }}
+    {{- include "tycho-api.labels" . | nindent 4 }}
 spec:
+{{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+{{- end }}
   selector:
     matchLabels:
-      service: {{ template "tycho-api.name" . }}
-      app: {{ template "tycho-api.name" . }}
+      {{- include "tycho-api.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       labels:
-        service: {{ template "tycho-api.name" . }}
-        app: {{ template "tycho-api.name" . }}
+        {{- include "tycho-api.selectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: tycho-api-sa
+      serviceAccountName: {{ include "tycho-api.fullname" . }}-sa
       containers:
       - command:
         - /usr/local/bin/gunicorn
@@ -47,7 +50,7 @@ spec:
           value: {{ $value }}
         {{- end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        name: {{ template "tycho-api.name" . }}
+        name: {{ .Chart.Name }}
         ports:
         - containerPort: 8099
           protocol: TCP

@@ -122,3 +122,6 @@ oauth:
 
 # Add any extra environment variables not already defined in the chart.
 extraEnv: {}
+
+global:
+  tycho_api_service_name: tycho-api

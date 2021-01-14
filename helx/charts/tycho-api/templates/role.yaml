@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: tycho-api-sa
+  name: {{ include "tycho-api.fullname" . }}-sa
 ---
 {{- if .Values.useRole }}
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ template "tycho-api.name" . }}-access
+  name: {{ include "tycho-api.fullname" . }}-role
 rules:
 - apiGroups:
   - ""
@@ -88,14 +88,14 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ template "tycho-api.name" . }}-access
+  name: {{ include "tycho-api.fullname" . }}-rolebinding
 subjects:
 - kind: ServiceAccount
-  name: tycho-api-sa
+  name: {{ include "tycho-api.fullname" . }}-sa
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
-  name: {{ template "tycho-api.name" . }}-access
+  name: {{ include "tycho-api.fullname" . }}-role
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
 ---

@@ -1,19 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
+  name: {{ .Values.global.tycho_api_service_name }}
   labels:
-    service: {{ template "tycho-api.name" . }}
-    app: {{ template "tycho-api.name" . }}
-  name: {{ template "tycho-api.name" . }}
+    {{- include "tycho-api.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   {{- if .Values.service.ip_none }}
   clusterIP: None
   {{- end }}
   selector:
-    app: {{ template "tycho-api.name" . }}
-    service: {{ template "tycho-api.name" . }}
+    {{- include "tycho-api.selectorLabels" . | nindent 4 }}
   ports:
   - name: http
     port: 8099
