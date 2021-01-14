@@ -4,7 +4,7 @@ apiVersion: v1
 metadata:
   name: {{ .Values.oauth.claimName }}
   labels:
-    app: cs-{{ template "appstore.name" . }}
+    {{- include "appstore.labels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteOnce

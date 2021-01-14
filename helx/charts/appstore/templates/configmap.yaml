@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-  name: csappstore-env
+  name: {{ include "appstore.fullname" . }}-env
 data:
   # /usr/src/inst-mgmt is default location if db is created in the container.
   # OAUTH_DB_DIR: /usr/src/inst-mgmt

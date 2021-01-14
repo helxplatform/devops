@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: cs-{{ template "appstore.name" . }}
+  name: {{ include "appstore.fullname" . }}
   labels:
-    app: cs-{{ template "appstore.name" . }}
+    {{- include "appstore.labels" . | nindent 4 }}
   {{- if .Values.ambassador.flag }}
   annotations:
     getambassador.io/config: |
@@ -12,7 +12,7 @@ metadata:
       kind:  Mapping
       name:  appstore-mapping
       prefix: /
-      service: cs-appstore:8000
+      service: {{ include "appstore.fullname" . }}:8000
       timeout_ms: 300000
       idle_timeout_ms: 500000
       connect_timeout_ms: 500000
@@ -26,4 +26,4 @@ spec:
     port: 8000
     targetPort: 8000
   selector:
-    app: cs-{{ template "appstore.name" . }}
+    {{- include "appstore.selectorLabels" . | nindent 6 }}
