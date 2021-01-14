@@ -30,6 +30,8 @@ spec:
           value: "FLUSHDB,FLUSHALL"
         - name: REDIS_PORT
           value: {{ .Values.redis.redis_port | quote }}
+        resources:
+          {{- toYaml .Values.redis.resources | nindent 10 }}
         volumeMounts:
         - mountPath: /bitnami/redis/data
           name: redis

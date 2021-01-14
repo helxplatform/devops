@@ -23,6 +23,8 @@ spec:
             - /scripts/sysctl.sh
           securityContext:
             privileged: true
+          resources:
+            {{- toYaml .Values.elasticsearch.init.resources | nindent 12 }}
           volumeMounts:
             - name: elasticsearch-initcontainer-volume
               mountPath: /scripts/sysctl.sh
@@ -49,6 +51,8 @@ spec:
             port: {{ .Values.elasticsearch.nodes_com_port }}
           initialDelaySeconds: {{ .Values.elasticsearch.liveness.initial_delay }}
           periodSeconds: {{ .Values.elasticsearch.liveness.check_interval }}
+        resources:
+          {{- toYaml .Values.elasticsearch.resources | nindent 10 }}
         volumeMounts:
         - name: {{ .Values.elasticsearch.app_name }}-data
           mountPath: /usr/share/elasticsearch/data

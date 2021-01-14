@@ -24,6 +24,14 @@ service:
   serverName: _
   # nodePort: 31337
 
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 32Mi
+
 # Set the DEV_PHASE.dev True, if Appstore/Tycho running locally. Else, set it to False
 DEV_PHASE:
   dev: False

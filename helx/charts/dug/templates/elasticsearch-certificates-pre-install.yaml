@@ -55,6 +55,8 @@ spec:
         image: {{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}
         imagePullPolicy: {{ .Values.elasticsearch.image.pullPolicy }}
         command: ["/bin/bash", "-c", "/app/create_es_certs.sh"]
+        resources:
+          {{- toYaml .Values.elasticsearch.pre_install.resources | nindent 10 }}
         volumeMounts:
         - name: create-script-vol
           mountPath: /app
@@ -97,6 +99,8 @@ spec:
         image: {{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}
         imagePullPolicy: {{ .Values.elasticsearch.image.pullPolicy }}
         command: ["/bin/bash", "-c", "/app/delete_es_certs_secret.sh"]
+        resources:
+          {{- toYaml .Values.elasticsearch.pre_install.resources | nindent 10 }}
         volumeMounts:
         - name: delete-script-vol
           mountPath: /app

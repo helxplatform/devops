@@ -5,7 +5,7 @@ apiVersion: v1
 metadata:
   name: {{ .Values.varStorage.claimName }}
   labels:
-    app: nginx-revproxy
+    app: {{- include "nginx.selectorLabels" . | nindent 6 }}
 spec:
   accessModes:
     - ReadWriteMany

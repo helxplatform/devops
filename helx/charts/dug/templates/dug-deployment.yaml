@@ -63,6 +63,8 @@ spec:
         ports:
           - containerPort: {{ .Values.dug.api_port }}
         command: ["/bin/bash", "-c", "/app/run-dug-and-crawl.sh"]
+        resources:
+          {{- toYaml .Values.dug.resources | nindent 10 }}
         volumeMounts:
         - name: scripts-vol
           mountPath: /app
@@ -94,4 +96,4 @@ data:
         cp docker/.env.template docker/.env.dev
         env >> docker/.env.dev
         {{ .Values.dug.crawl_command }}
-        fg
+        fg || exit 1

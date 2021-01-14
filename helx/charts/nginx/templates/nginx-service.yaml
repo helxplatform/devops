@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-revproxy
+  name: {{ include "nginx.fullname" . }}
 spec:
   type: {{ .Values.service.type }}
   loadBalancerIP: {{ .Values.service.IP }}
@@ -20,4 +20,4 @@ spec:
     protocol: TCP
   {{- end }}
   selector:
-    app: nginx-revproxy
+    {{- include "nginx.selectorLabels" . | nindent 4 }}

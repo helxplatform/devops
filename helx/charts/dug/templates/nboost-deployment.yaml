@@ -22,3 +22,5 @@ spec:
           - containerPort: {{ .Values.nboost.api_port }}
         args:
         - --model_dir={{ .Values.nboost.model }}
+        resources:
+          {{- toYaml .Values.nboost.resources | nindent 10 }}

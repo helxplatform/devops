@@ -28,6 +28,29 @@ elasticsearch:
   liveness:
     initial_delay: 30
     check_interval: 10
+  resources:
+    limits:
+      cpu: 1
+      memory: 3Gi
+    requests:
+      cpu: 50m
+      memory: 2304Mi
+  init:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+  pre_install:
+    resources:
+      limits:
+        cpu: 1
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
 neo4j:
   image:
     repository: bitnami/neo4j
@@ -43,6 +66,13 @@ neo4j:
   storage_size: 1G
   # storage_class: standard
   db_user: neo4j
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
 redis:
   image:
     repository: bitnami/redis
@@ -55,6 +85,13 @@ redis:
   storage_size: 5G
   # storage_class: standard
   redis_port: 6389
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
 dug:
   image:
     repository: heliumdatastage/dug
@@ -76,6 +113,13 @@ dug:
   crawl_command: bin/dug crawl_by_tag --crawl-file data/topmed_variables_v1.0.csv
   # Add any extra environment variables not already defined in the chart.
   extraEnv: {}
+  resources:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
 secrets:
   name: dug-secrets
 search_client:
@@ -95,6 +139,13 @@ search_client:
       prefix: /ui
   # Add any extra environment variables not already defined in the chart.
   extraEnv: {}
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
 nboost:
   app_name: dug-nboost
   deployment_name: dug-nboost
@@ -105,5 +156,12 @@ nboost:
     pullPolicy: IfNotPresent
   api_port: 8000
   model: nboost/pt-biobert-base-msmarco
+  resources:
+    limits:
+      cpu: 200m
+      memory: 2Gi
+    requests:
+      cpu: 50m
+      memory: 128Mi
 
 create_pvcs: true

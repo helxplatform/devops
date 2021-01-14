@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-revproxy
+  name: {{ include "nginx.fullname" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx-revproxy
+      {{- include "nginx.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: nginx-revproxy
+        {{- include "nginx.labels" . | nindent 8 }}
     spec:
       containers:
       - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -21,6 +21,8 @@ spec:
         {{- if .Values.SSL }}
         - containerPort: {{ .Values.service.httpsTargetPort }}
         {{- end }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: ambassador-nginx-conf
           mountPath: /etc/nginx/conf.d

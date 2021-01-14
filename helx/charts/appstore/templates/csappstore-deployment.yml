@@ -10,6 +10,10 @@ spec:
       app: cs-{{ template "appstore.name" . }}
   template:
     metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       labels:
         app: cs-{{ template "appstore.name" . }}
     spec:
@@ -28,6 +32,8 @@ spec:
         args: ["bin/appstore updatedb {{ .Values.djangoSettings }} && bin/appstore createsuperuser && bin/appstore manageauthorizedusers {{ .Values.djangoSettings }} && bin/appstore run {{ .Values.djangoSettings }}"]
         # For debugging when things go wrong.
         # args: ["while true; do date; sleep 5; done"]
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
         env:
         - name: DEBUG
           valueFrom:
