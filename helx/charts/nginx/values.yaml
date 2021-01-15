@@ -58,3 +58,9 @@ dugApi: false
 
 # For TACC, set this to true and specify the hostname
 http_host: false
+
+global:
+  ambassador_service_name: ambassador
+  dug_web_service_name: dug-web
+  dug_search_client_service_name: dug-search-client
+  restartr_api_service_name: restartr-api-service

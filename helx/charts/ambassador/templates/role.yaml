@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: ambassador
+  name: {{ include "ambassador.fullname" . }}-role
   namespace: {{ .Release.Namespace }}
 rules:
 # Works with PRP cluster.

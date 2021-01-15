@@ -35,7 +35,10 @@ securityContext:
 resources:
   limits:
     cpu: 100m
-    memory: 200Mi
+    memory: 150Mi
   requests:
     cpu: 50m
-    memory: 100Mi
+    memory: 75Mi
+
+global:
+  ambassador_service_name: ambassador

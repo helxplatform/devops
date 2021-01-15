@@ -1,53 +1,20 @@
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    service: ambassador-admin
-  name: ambassador-admin
-spec:
-  type: {{ .Values.adminservice.type }}
-  ports:
-  - name: ambassador-admin
-    port: 8877
-    targetPort: 8877
-  selector:
-    service: ambassador
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ambassador
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: RoleBinding
-metadata:
-  name: ambassador
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: ambassador
-subjects:
-- kind: ServiceAccount
-  name: ambassador
-  namespace: {{ .Release.Namespace }}
----
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ambassador
+  name: {{ include "ambassador.fullname" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: ambassador
+      {{- include "ambassador.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
         consul.hashicorp.com/connect-inject: 'false'
         sidecar.istio.io/inject: 'false'
       labels:
-        service: ambassador
+        {{- include "ambassador.selectorLabels" . | nindent 8 }}
     spec:
       affinity:
         podAntiAffinity:
@@ -55,7 +22,7 @@ spec:
           - podAffinityTerm:
               labelSelector:
                 matchLabels:
-                  service: ambassador
+                  {{- include "ambassador.selectorLabels" . | nindent 18 }}
               topologyKey: kubernetes.io/hostname
             weight: 100
       containers:
@@ -74,7 +41,7 @@ spec:
             port: 8877
           initialDelaySeconds: 30
           periodSeconds: 3
-        name: ambassador
+        name: {{ .Chart.Name }}
         ports:
         - containerPort: 8080
           name: http
@@ -89,12 +56,7 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 3
         resources:
-          limits:
-            cpu: 1
-            memory: 512Mi
-          requests:
-            cpu: 200m
-            memory: 150Mi
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - mountPath: /tmp/ambassador-pod-info
           name: ambassador-pod-info
@@ -111,7 +73,7 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         {{- end }}
       {{- end }}
-      serviceAccountName: ambassador
+      serviceAccountName: {{ include "ambassador.fullname" . }}-sa
       volumes:
       - downwardAPI:
           items:
