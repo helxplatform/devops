@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ .Values.elasticsearch.app_name }}-es-certs-pre-install-serviceaccount
+  name: {{ include "dug.elasticsearch.fullname" . }}-pre-install-sa
   annotations:
     "helm.sh/hook": pre-install,post-delete
     "helm.sh/hook-weight": "1"
@@ -10,7 +10,7 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Values.elasticsearch.app_name }}-create-list-secrets-role
+  name: {{ include "dug.elasticsearch.fullname" . }}-secrets-role
   annotations:
     "helm.sh/hook": pre-install,post-delete
     "helm.sh/hook-weight": "2"
@@ -26,22 +26,22 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ .Values.elasticsearch.app_name }}-create-list-secrets-rolebinding
+  name: {{ include "dug.elasticsearch.fullname" . }}-secrets-rolebinding
   annotations:
     "helm.sh/hook": pre-install,post-delete
     "helm.sh/hook-weight": "3"
 roleRef:
   kind: Role
-  name: {{ .Values.elasticsearch.app_name }}-create-list-secrets-role
+  name: {{ include "dug.elasticsearch.fullname" . }}-secrets-role
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: {{ .Values.elasticsearch.app_name }}-es-certs-pre-install-serviceaccount
+  name: {{ include "dug.elasticsearch.fullname" . }}-pre-install-sa
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Values.elasticsearch.app_name }}-es-certs-pre-install
+  name: {{ include "dug.elasticsearch.fullname" . }}-pre-install
   annotations:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "10"
@@ -49,7 +49,7 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: {{ .Values.elasticsearch.app_name }}-es-certs-pre-install-serviceaccount
+      serviceAccountName: {{ include "dug.elasticsearch.fullname" . }}-pre-install-sa
       containers:
       - name: {{ .Values.elasticsearch.app_name }}-elasticsearch-pre-install
         image: {{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}
@@ -85,7 +85,7 @@ data:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Values.elasticsearch.app_name }}-es-certs-pre-install
+  name: {{ include "dug.elasticsearch.fullname" . }}-pre-install
   annotations:
     "helm.sh/hook": post-delete
     "helm.sh/hook-weight": "10"
@@ -93,7 +93,7 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: {{ .Values.elasticsearch.app_name }}-es-certs-pre-install-serviceaccount
+      serviceAccountName: {{ include "dug.elasticsearch.fullname" . }}-pre-install-sa
       containers:
       - name: {{ .Values.elasticsearch.app_name }}-elasticsearch-post-delete
         image: {{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}

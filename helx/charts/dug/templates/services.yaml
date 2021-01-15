@@ -69,10 +69,10 @@ items:
         ---
         apiVersion: ambassador/v1
         kind: Mapping
-        name: {{ .Values.dug.ambassador.search.map_name }}
-        prefix: {{ .Values.dug.ambassador.search.prefix }}
-        service: {{ .Values.dug.service_name }}:{{ .Values.dug.api_port }}
-        rewrite: {{ .Values.dug.ambassador.search.prefix }}
+        name: {{ .Values.web.ambassador.search.map_name }}
+        prefix: {{ .Values.web.ambassador.search.prefix }}
+        service: {{ .Values.web.service_name }}:{{ .Values.web.api_port }}
+        rewrite: {{ .Values.web.ambassador.search.prefix }}
         cors:
           origins: "*"
           methods: POST, OPTIONS
@@ -81,26 +81,26 @@ items:
         ---
         apiVersion: ambassador/v1
         kind: Mapping
-        name: {{ .Values.dug.ambassador.search_kg.map_name }}
-        prefix: {{ .Values.dug.ambassador.search_kg.prefix }}
-        service: {{ .Values.dug.service_name }}:{{ .Values.dug.api_port }}
-        rewrite: {{ .Values.dug.ambassador.search_kg.prefix }}
+        name: {{ .Values.web.ambassador.search_kg.map_name }}
+        prefix: {{ .Values.web.ambassador.search_kg.prefix }}
+        service: {{ .Values.web.service_name }}:{{ .Values.web.api_port }}
+        rewrite: {{ .Values.web.ambassador.search_kg.prefix }}
         cors:
           origins: "*"
           methods: POST, OPTIONS
           headers:
             - Content-Type
     labels:
-      app: {{ .Values.dug.app_name }}
-    name: {{ .Values.dug.service_name }}
+      app: {{ .Values.web.app_name }}
+    name: {{ .Values.web.service_name }}
   spec:
     ports:
       - name: api-port
         protocol: TCP
-        port: {{ .Values.dug.api_port }}
-        targetPort: {{ .Values.dug.api_port }}
+        port: {{ .Values.web.api_port }}
+        targetPort: {{ .Values.web.api_port }}
     selector:
-      app: {{ .Values.dug.app_name }}
+      app: {{ .Values.web.app_name }}
     type: NodePort
   # dug-search-client
 - apiVersion: v1

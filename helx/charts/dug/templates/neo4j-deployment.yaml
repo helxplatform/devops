@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: {{ .Values.neo4j.app_name }}
-  name: {{ .Values.neo4j.deployment_name }}
+  name: {{ include "dug.neo4j.fullname" . }}
 spec:
   replicas: 1
   selector:
@@ -19,7 +19,7 @@ spec:
       containers:
       - image: {{ .Values.neo4j.image.repository }}:{{ .Values.neo4j.image.tag }}
         imagePullPolicy: {{ .Values.neo4j.image.pullPolicy }}
-        name: {{ .Values.neo4j.app_name }}-container
+        name: {{ include "dug.neo4j.fullname" . }}-container
         env:
         - name: NEO4J_PASSWORD
           valueFrom:

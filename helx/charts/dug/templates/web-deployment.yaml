@@ -2,26 +2,26 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Values.dug.app_name}}
-  name: {{ .Values.dug.deployment_name }}
+    app: {{ .Values.web.app_name}}
+  name: {{ include "dug.web.fullname" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.dug.app_name}}
+      app: {{ .Values.web.app_name}}
   template:
     metadata:
       labels:
-        app: {{ .Values.dug.app_name}}
+        app: {{ .Values.web.app_name}}
     spec:
-      {{- with .Values.dug.imagePullSecrets }}
+      {{- with .Values.web.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-      - image: {{ .Values.dug.image.repository }}:{{ .Values.dug.image.tag }}
-        imagePullPolicy: {{ .Values.dug.image.pullPolicy }}
-        name: {{ .Values.dug.app_name}}-container
+      - image: {{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}
+        imagePullPolicy: {{ .Values.web.image.pullPolicy }}
+        name: {{ include "dug.web.fullname" . }}-container
         env:
         - name: ELASTIC_API_HOST
           value: {{ .Values.elasticsearch.service_name }}
@@ -56,44 +56,20 @@ spec:
               key: REDIS_PASSWORD
         - name: NBOOST_API_HOST
           value: {{ .Values.nboost.service_name }}
-        {{- range $key, $value := .Values.dug.extraEnv }}
+        {{- range $key, $value := .Values.web.extraEnv }}
         - name: {{ $key }}
           value: {{ $value }}
         {{- end }}
         ports:
-          - containerPort: {{ .Values.dug.api_port }}
+          - containerPort: {{ .Values.web.api_port }}
         command: ["/bin/bash", "-c", "/app/run-dug-and-crawl.sh"]
         resources:
-          {{- toYaml .Values.dug.resources | nindent 10 }}
+          {{- toYaml .Values.web.resources | nindent 10 }}
         volumeMounts:
         - name: scripts-vol
           mountPath: /app
       volumes:
         - name: scripts-vol
           configMap:
-            name: dug-scripts-configmap
+            name: web-scripts-configmap
             defaultMode: 0775
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: dug-scripts-configmap
-data:
-  run-dug-and-crawl.sh: |
-        set -m
-        wait_for()
-        {
-          echo -n "waiting for $1"
-          while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' $2:$3)" != "$4" ]]
-          do
-            printf '.'
-            sleep 5
-          done
-        }
-        wait_for elasticsearch $ELASTIC_API_HOST $ELASTIC_API_PORT 401
-        python -m dug.api {{ if .Values.dug.debug }}--debug{{ end }} &
-        wait_for dug {{ .Values.dug.service_name }} {{ .Values.dug.api_port }} 404
-        cp docker/.env.template docker/.env.dev
-        env >> docker/.env.dev
-        {{ .Values.dug.crawl_command }}
-        fg || exit 1

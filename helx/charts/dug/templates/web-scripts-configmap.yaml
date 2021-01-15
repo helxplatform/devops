@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-scripts-configmap
+data:
+  run-dug-and-crawl.sh: |
+        set -m
+        wait_for()
+        {
+          echo -n "waiting for $1"
+          while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' $2:$3)" != "$4" ]]
+          do
+            printf '.'
+            sleep 5
+          done
+        }
+        wait_for elasticsearch $ELASTIC_API_HOST $ELASTIC_API_PORT 401
+        python -m dug.api {{ if .Values.web.debug }}--debug{{ end }} &
+        wait_for dug {{ .Values.web.service_name }} {{ .Values.web.api_port }} 404
+        cp docker/.env.template docker/.env.dev
+        env >> docker/.env.dev
+        {{ .Values.web.crawl_command }}
+        fg || exit 1

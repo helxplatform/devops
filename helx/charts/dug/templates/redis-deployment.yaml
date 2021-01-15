@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: {{ .Values.redis.app_name }}
-  name: {{ .Values.redis.deployment_name }}
+  name: {{ include "dug.redis.fullname" . }}
 spec:
   replicas: 1
   selector:
@@ -19,7 +19,7 @@ spec:
       containers:
       - image: {{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}
         imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
-        name: {{ .Values.redis.app_name }}-container
+        name: {{ include "dug.redis.fullname" . }}-container
         env:
         - name: REDIS_PASSWORD
           valueFrom:
