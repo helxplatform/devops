@@ -16,7 +16,7 @@ data:
         }
         wait_for elasticsearch $ELASTIC_API_HOST $ELASTIC_API_PORT 401
         python -m dug.api {{ if .Values.web.debug }}--debug{{ end }} &
-        wait_for dug {{ .Values.web.service_name }} {{ .Values.web.api_port }} 404
+        wait_for dug {{ .Values.web.service.name }} {{ .Values.web.api_port }} 404
         cp docker/.env.template docker/.env.dev
         env >> docker/.env.dev
         {{ .Values.web.crawl_command }}
