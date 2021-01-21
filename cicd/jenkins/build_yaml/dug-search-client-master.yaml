@@ -34,7 +34,7 @@ docker:
   secondary_repo:
     null
   docker_fn:
-    Dockerfile-prod
+    null
   primary_docker_dir:
     "."
   secondary_docker_dir:
