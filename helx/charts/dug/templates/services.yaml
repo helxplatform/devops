@@ -6,7 +6,7 @@ items:
   metadata:
     labels:
       app: {{ .Values.elasticsearch.app_name }}
-    name: {{ .Values.elasticsearch.service_name }}
+    name: {{ .Values.elasticsearch.service.name }}
   spec:
     ports:
       - name: elastic-rest-port
@@ -27,7 +27,7 @@ items:
   metadata:
     labels:
       app: {{ .Values.neo4j.app_name }}
-    name: {{ .Values.neo4j.service_name }}
+    name: {{ .Values.neo4j.service.name }}
   spec:
     ports:
       - name: neo4j-http-port
@@ -51,7 +51,7 @@ items:
   metadata:
     labels:
       app: {{ .Values.redis.app_name }}
-    name: {{ .Values.redis.service_name }}
+    name: {{ .Values.redis.service.name }}
   spec:
     ports:
       - name: redis-port
@@ -71,7 +71,7 @@ items:
         kind: Mapping
         name: {{ .Values.web.ambassador.search.map_name }}
         prefix: {{ .Values.web.ambassador.search.prefix }}
-        service: {{ .Values.web.service_name }}:{{ .Values.web.api_port }}
+        service: {{ .Values.web.service.name }}:{{ .Values.web.api_port }}
         rewrite: {{ .Values.web.ambassador.search.prefix }}
         cors:
           origins: "*"
@@ -83,7 +83,7 @@ items:
         kind: Mapping
         name: {{ .Values.web.ambassador.search_kg.map_name }}
         prefix: {{ .Values.web.ambassador.search_kg.prefix }}
-        service: {{ .Values.web.service_name }}:{{ .Values.web.api_port }}
+        service: {{ .Values.web.service.name }}:{{ .Values.web.api_port }}
         rewrite: {{ .Values.web.ambassador.search_kg.prefix }}
         cors:
           origins: "*"
@@ -92,7 +92,7 @@ items:
             - Content-Type
     labels:
       app: {{ .Values.web.app_name }}
-    name: {{ .Values.web.service_name }}
+    name: {{ .Values.web.service.name }}
   spec:
     ports:
       - name: api-port
@@ -101,7 +101,7 @@ items:
         targetPort: {{ .Values.web.api_port }}
     selector:
       app: {{ .Values.web.app_name }}
-    type: NodePort
+    type: {{ .Values.web.service.type }}
   # dug-search-client
 - apiVersion: v1
   kind: Service
@@ -113,10 +113,10 @@ items:
         kind: Mapping
         name: {{ .Values.search_client.ambassador.ui.map_name }}
         prefix: {{ .Values.search_client.ambassador.ui.prefix }}
-        service: {{ .Values.search_client.service_name }}:{{ .Values.search_client.http_port }}
+        service: {{ .Values.search_client.service.name }}:{{ .Values.search_client.http_port }}
     labels:
       app: {{ .Values.search_client.app_name }}
-    name: {{ .Values.search_client.service_name }}
+    name: {{ .Values.search_client.service.name }}
   spec:
     ports:
       - name: search-client-port
@@ -132,7 +132,7 @@ items:
   metadata:
     labels:
       app: {{ .Values.nboost.app_name }}
-    name: {{ .Values.nboost.service_name }}
+    name: {{ .Values.nboost.service.name }}
   spec:
     ports:
       - name: dug-nboost-port

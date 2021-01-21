@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dug-search-client-env-configmap
+data:
+  .env: |
+      REACT_APP_DUG_URL={{ .Values.search_client.DUG_URL }}
+      PUBLIC_URL={{ .Values.search_client.ambassador.ui.prefix }}

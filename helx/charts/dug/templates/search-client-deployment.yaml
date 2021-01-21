@@ -31,3 +31,12 @@ spec:
           {{- end }}
         resources:
           {{- toYaml .Values.search_client.resources | nindent 10 }}
+        volumeMounts:
+        - name: env-vol
+          mountPath: /src/.env
+          subPath: .env
+      volumes:
+        - name: env-vol
+          configMap:
+            name: dug-search-client-env-configmap
+            defaultMode: 0644

@@ -5,7 +5,7 @@ metadata:
     app: {{ .Values.elasticsearch.app_name }}
   name: {{ include "dug.elasticsearch.fullname" . }}
 spec:
-  serviceName: {{ .Values.elasticsearch.service_name }}
+  serviceName: {{ .Values.elasticsearch.service.name }}
   replicas: {{ .Values.elasticsearch.replica_count }}
   selector:
     matchLabels:
@@ -86,7 +86,7 @@ spec:
         - name: cluster.initial_master_nodes
           value: {{ include "dug.elasticsearch.fullname" . }}-0
         - name: discovery.seed_hosts
-          value: {{ .Values.elasticsearch.service_name }}
+          value: {{ .Values.elasticsearch.service.name }}
         - name: network.host
           value: "0.0.0.0"
         {{- range $role, $enabled := .Values.elasticsearch.roles }}

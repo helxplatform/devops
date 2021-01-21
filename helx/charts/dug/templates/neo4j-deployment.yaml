@@ -27,7 +27,7 @@ spec:
               name: {{ .Values.secrets.name }}
               key: NEO4J_PASSWORD
         - name: NEO4J_HOST
-          value: {{ .Values.neo4j.service_name }}
+          value: {{ .Values.neo4j.service.name }}
         resources:
           {{- toYaml .Values.neo4j.resources | nindent 10 }}
         volumeMounts:

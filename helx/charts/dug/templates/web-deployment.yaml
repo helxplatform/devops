@@ -24,7 +24,7 @@ spec:
         name: {{ include "dug.web.fullname" . }}-container
         env:
         - name: ELASTIC_API_HOST
-          value: {{ .Values.elasticsearch.service_name }}
+          value: {{ .Values.elasticsearch.service.name }}
         - name: ELASTIC_API_PORT
           value: {{ .Values.elasticsearch.rest_port | quote }}
         - name: ELASTIC_USER
@@ -35,7 +35,7 @@ spec:
               name: {{ .Values.secrets.name }}
               key: ELASTIC_PASSWORD
         - name: NEO4J_HOST
-          value: {{ .Values.neo4j.service_name }}
+          value: {{ .Values.neo4j.service.name }}
         - name: NEO4J_PORT
           value: {{ .Values.neo4j.http_port | quote }}
         - name: NEO4J_USER
@@ -46,7 +46,7 @@ spec:
               name: {{ .Values.secrets.name }}
               key: NEO4J_PASSWORD
         - name: REDIS_HOST
-          value: {{ .Values.redis.service_name }}
+          value: {{ .Values.redis.service.name }}
         - name: REDIS_PORT
           value: {{ .Values.redis.redis_port | quote }}
         - name: REDIS_PASSWORD
@@ -55,7 +55,7 @@ spec:
               name: {{ .Values.secrets.name }}
               key: REDIS_PASSWORD
         - name: NBOOST_API_HOST
-          value: {{ .Values.nboost.service_name }}
+          value: {{ .Values.nboost.service.name }}
         {{- range $key, $value := .Values.web.extraEnv }}
         - name: {{ $key }}
           value: {{ $value }}
