@@ -10,6 +10,8 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+podAnnotations: {}
+
 app:
   name: tycho-api
 
@@ -25,10 +27,17 @@ service:
 resources:
   limits:
      cpu: 100m
-     memory: 128Mi
+     memory: 256Mi
   requests:
-     cpu: 100m
+     cpu: 50m
      memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 # Set either useClusterRole or useRole to true.
 useClusterRole: false
@@ -48,3 +57,9 @@ runAsRoot: true
 parent_dir: "/home"
 subpath_dir: null
 shared_dir: "shared"
+
+# Add any extra environment variables not already defined in the chart.
+extraEnv: {}
+
+global:
+  tycho_api_service_name: tycho-api

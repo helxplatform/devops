@@ -1,17 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cs-{{ template "appstore.name" . }}
+  name: {{ include "appstore.fullname" . }}
   labels:
-    app: cs-{{ template "appstore.name" . }}
+    {{- include "appstore.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: cs-{{ template "appstore.name" . }}
+      {{- include "appstore.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       labels:
-        app: cs-{{ template "appstore.name" . }}
+        {{- include "appstore.selectorLabels" . | nindent 8 }}
     spec:
       initContainers:
       {{- if .Values.securityContext }}
@@ -21,149 +25,151 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
       containers:
-      - name: cs-{{ .Values.db.name }}
+      - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ['/bin/bash', '-c']
         args: ["bin/appstore updatedb {{ .Values.djangoSettings }} && bin/appstore createsuperuser && bin/appstore manageauthorizedusers {{ .Values.djangoSettings }} && bin/appstore run {{ .Values.djangoSettings }}"]
         # For debugging when things go wrong.
         # args: ["while true; do date; sleep 5; done"]
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
         env:
         - name: DEBUG
           valueFrom:
             configMapKeyRef:
               key: DEBUG
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: DJANGO_SETTINGS_MODULE
           valueFrom:
             configMapKeyRef:
               key: DJANGO_SETTINGS_MODULE
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: ALLOW_DJANGO_LOGIN
           valueFrom:
             configMapKeyRef:
               key: ALLOW_DJANGO_LOGIN
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: ALLOW_SAML_LOGIN
           valueFrom:
             configMapKeyRef:
               key: ALLOW_SAML_LOGIN
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: SAML2_AUTH_ASSERTION_URL
           valueFrom:
             configMapKeyRef:
               key: SAML2_AUTH_ASSERTION_URL
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: SAML2_AUTH_ENTITY_ID
           valueFrom:
             configMapKeyRef:
               key: SAML2_AUTH_ENTITY_ID
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: OAUTH_DB_DIR
           valueFrom:
             configMapKeyRef:
               key: OAUTH_DB_DIR
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: OAUTH_DB_FILE
           valueFrom:
             configMapKeyRef:
               key: OAUTH_DB_FILE
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: ACCOUNT_DEFAULT_HTTP_PROTOCOL
           valueFrom:
             configMapKeyRef:
               key: ACCOUNT_DEFAULT_HTTP_PROTOCOL
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: TYCHO_URL
           valueFrom:
             configMapKeyRef:
               key: TYCHO_URL
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: DEV_PHASE
           valueFrom:
             configMapKeyRef:
               key: DEV_PHASE
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: BRAINI_PORT
           valueFrom:
             configMapKeyRef:
               key: BRAINI_PORT
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: NRC_PORT
           valueFrom:
             configMapKeyRef:
               key: NRC_PORT
-              name: csappstore-env
+              name: {{ include "appstore.fullname" . }}-env
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
               key: APPSTORE_SECRET_KEY
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: APPSTORE_DJANGO_USERNAME
           valueFrom:
             secretKeyRef:
               key: APPSTORE_DJANGO_USERNAME
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: APPSTORE_DJANGO_PASSWORD
           valueFrom:
             secretKeyRef:
               key: APPSTORE_DJANGO_PASSWORD
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         {{ if .Values.django.DOCKSTORE_APPS_BRANCH }}
         - name: DOCKSTORE_APPS_BRANCH
           valueFrom:
             secretKeyRef:
               key: DOCKSTORE_APPS_BRANCH
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         {{- end }}
         {{ if .Values.django.REMOVE_AUTHORIZED_USERS }}
         - name: REMOVE_AUTHORIZED_USERS
           valueFrom:
             secretKeyRef:
               key: REMOVE_AUTHORIZED_USERS
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         {{- end }}
         {{ if .Values.django.AUTHORIZED_USERS }}
         - name: AUTHORIZED_USERS
           valueFrom:
             secretKeyRef:
               key: AUTHORIZED_USERS
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         {{- end }}
         - name: OAUTH_PROVIDERS
           valueFrom:
             secretKeyRef:
               key: OAUTH_PROVIDERS
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         {{ if .Values.django.oauth.GITHUB_NAME }}
         - name: GITHUB_NAME
           valueFrom:
             secretKeyRef:
               key: GITHUB_NAME
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: GITHUB_CLIENT_ID
           valueFrom:
             secretKeyRef:
               key: GITHUB_CLIENT_ID
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: GITHUB_SECRET
           valueFrom:
             secretKeyRef:
               key: GITHUB_SECRET
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
           {{ if .Values.django.oauth.GITHUB_KEY }}
         - name: GITHUB_KEY
           valueFrom:
             secretKeyRef:
               key: GITHUB_KEY
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
           {{- end }}
           {{ if .Values.django.oauth.GITHUB_SITES }}
         - name: GITHUB_SITES
           valueFrom:
             secretKeyRef:
               key: GITHUB_SITES
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
           {{- end }}
         {{- end }}
         {{ if .Values.django.oauth.GOOGLE_NAME }}
@@ -171,30 +177,30 @@ spec:
           valueFrom:
             secretKeyRef:
               key: GOOGLE_NAME
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: GOOGLE_CLIENT_ID
           valueFrom:
             secretKeyRef:
               key: GOOGLE_CLIENT_ID
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: GOOGLE_SECRET
           valueFrom:
             secretKeyRef:
               key: GOOGLE_SECRET
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
           {{ if .Values.django.oauth.GOOGLE_KEY }}
         - name: GOOGLE_KEY
           valueFrom:
             secretKeyRef:
               key: GOOGLE_KEY
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
           {{- end }}
           {{ if .Values.django.oauth.GOOGLE_SITES }}
         - name: GOOGLE_SITES
           valueFrom:
             secretKeyRef:
               key: GOOGLE_SITES
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
           {{- end }}
         {{- end }}
         {{- if .Values.irods.enabled }}
@@ -202,43 +208,47 @@ spec:
           valueFrom:
             secretKeyRef:
               key: BRAINI_RODS
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: NRC_MICROSCOPY_IRODS
           valueFrom:
             secretKeyRef:
               key: NRC_MICROSCOPY_IRODS
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: RODS_USERNAME
           valueFrom:
             secretKeyRef:
               key: RODS_USERNAME
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: RODS_PASSWORD
           valueFrom:
             secretKeyRef:
               key: RODS_PASSWORD
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: IROD_COLLECTIONS
           valueFrom:
             secretKeyRef:
               key: IROD_COLLECTIONS
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: IROD_ZONE
           valueFrom:
             secretKeyRef:
               key: IROD_ZONE
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         {{- end }}
         - name: EMAIL_HOST_USER
           valueFrom:
             secretKeyRef:
               key: EMAIL_HOST_USER
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
         - name: EMAIL_HOST_PASSWORD
           valueFrom:
             secretKeyRef:
               key: EMAIL_HOST_PASSWORD
-              name: csappstore-secret
+              name: {{ include "appstore.fullname" . }}-secret
+        {{- range $key, $value := .Values.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
         ports:
         - containerPort: 8000
       {{- if .Values.oauth.existingClaim }}

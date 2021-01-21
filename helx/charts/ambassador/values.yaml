@@ -31,3 +31,14 @@ securityContext:
   runAsUser: 8888
   # runAsGroup: 8888
   # fsGroup: 8888
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 150Mi
+  requests:
+    cpu: 50m
+    memory: 75Mi
+
+global:
+  ambassador_service_name: ambassador

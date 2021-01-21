@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: {{ .Values.search_client.app_name }}
-  name: {{ .Values.search_client.deployment_name }}
+  name: {{ include "dug.search_client.fullname" . }}
 spec:
   replicas: 1
   selector:
@@ -14,9 +14,20 @@ spec:
       labels:
         app: {{ .Values.search_client.app_name }}
     spec:
+      {{- with .Values.search_client.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - image: {{ .Values.search_client.image.repository }}:{{ .Values.search_client.image.tag }}
         imagePullPolicy: {{ .Values.search_client.image.pullPolicy }}
-        name: {{ .Values.search_client.app_name }}-container
+        name: {{ include "dug.search_client.fullname" . }}-container
         ports:
           - containerPort: {{ .Values.search_client.container_port }}
+        env:
+          {{- range $key, $value := .Values.search_client.extraEnv }}
+          - name: {{ $key }}
+            value: {{ $value }}
+          {{- end }}
+        resources:
+          {{- toYaml .Values.search_client.resources | nindent 10 }}

@@ -3,13 +3,11 @@ elasticsearch:
     repository: docker.elastic.co/elasticsearch/elasticsearch
     tag: 7.9.1
     pullPolicy: IfNotPresent
-  app_name: dug-elasticsearch
+  app_name: elasticsearch
   pvc_name: dug-elasticsearch-pvc
   certs_secret: elastic-certificates
   create_certs_secret: true
   service_name: dug-elasticsearch
-  statefulset_name: dug-elasticsearch
-  initial_master_name: dug-elasticsearch-0
   rest_port: 9200
   nodes_com_port: 9300
   storage_size: 5Gi
@@ -28,41 +26,76 @@ elasticsearch:
   liveness:
     initial_delay: 30
     check_interval: 10
+  resources:
+    limits:
+      cpu: 1
+      memory: 3Gi
+    requests:
+      cpu: 50m
+      memory: 2304Mi
+  init:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+  pre_install:
+    resources:
+      limits:
+        cpu: 1
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
 neo4j:
   image:
     repository: bitnami/neo4j
     tag: 3.5.14
     pullPolicy: IfNotPresent
-  app_name: dug-neo4j
+  app_name: neo4j
   pvc_name: dug-neo4j-pvc
   service_name: dug-neo4j
-  deployment_name: dug-neo4j
   http_port: 7474
   https_port: 7473
   bolt_port: 7687
   storage_size: 1G
   # storage_class: standard
   db_user: neo4j
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
 redis:
   image:
     repository: bitnami/redis
     tag: 5.0.8
     pullPolicy: IfNotPresent
-  app_name: dug-redis
+  app_name: redis
   pvc_name: dug-redis-pvc
   service_name: dug-redis
-  deployment_name: dug-redis
   storage_size: 5G
   # storage_class: standard
   redis_port: 6389
-dug:
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+web:
   image:
     repository: heliumdatastage/dug
     tag: 1.0.2
     pullPolicy: IfNotPresent
-  app_name: dug-web
+  imagePullSecrets: []
+  app_name: web
   service_name: dug-web
-  deployment_name: dug-web
   api_port: 5551
   debug: false
   ambassador:
@@ -73,11 +106,19 @@ dug:
       map_name: dug-search-kg
       prefix: /search_kg
   crawl_command: bin/dug crawl_by_tag --crawl-file data/topmed_variables_v1.0.csv
+  # Add any extra environment variables not already defined in the chart.
+  extraEnv: {}
+  resources:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
 secrets:
   name: dug-secrets
 search_client:
-  app_name: dug-search-client
-  deployment_name: dug-search-client
+  app_name: search-client
   service_name: dug-search-client
   http_port: 80
   container_port: 8080
@@ -85,13 +126,22 @@ search_client:
     repository: heliumdatastage/dug-search-client
     tag: 1.0.0
     pullPolicy: IfNotPresent
+  imagePullSecrets: []
   ambassador:
     ui:
       map_name: dug-ui
       prefix: /ui
+  # Add any extra environment variables not already defined in the chart.
+  extraEnv: {}
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
 nboost:
-  app_name: dug-nboost
-  deployment_name: dug-nboost
+  app_name: nboost
   service_name: dug-nboost
   image:
     repository: koursaros/nboost
@@ -99,5 +149,12 @@ nboost:
     pullPolicy: IfNotPresent
   api_port: 8000
   model: nboost/pt-biobert-base-msmarco
+  resources:
+    limits:
+      cpu: 200m
+      memory: 2Gi
+    requests:
+      cpu: 50m
+      memory: 128Mi
 
 create_pvcs: true

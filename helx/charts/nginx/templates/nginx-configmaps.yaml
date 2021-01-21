@@ -36,7 +36,7 @@ data:
                          proxy_set_header Authorization $access_token;
                          add_header Authorization $access_token;
                          {{- end }}
-                         proxy_pass http://ambassador:80$request_uri;
+                         proxy_pass http://{{ .Values.global.ambassador_service_name }}:80$request_uri;
                          proxy_pass_request_headers      on;
                          # for guacamole
                          proxy_buffering off;
@@ -48,7 +48,7 @@ data:
                 location = /auth {
                          client_max_body_size 2000M;
                          proxy_http_version 1.1;
-                         proxy_pass http://ambassador:80/auth/;
+                         proxy_pass http://{{ .Values.global.ambassador_service_name }}:80/auth/;
                          proxy_read_timeout 3600;
                          proxy_pass_request_body off;
                          proxy_set_header        Content-Length "";
@@ -68,7 +68,7 @@ data:
                          proxy_send_timeout      60s;
                          proxy_read_timeout 60s;
                          proxy_http_version 1.1;
-                         proxy_pass http://ambassador:80;
+                         proxy_pass http://{{ .Values.global.ambassador_service_name }}:80;
                          proxy_set_header requestUri $request_uri;
                 }
 
@@ -78,7 +78,7 @@ data:
                         proxy_set_header X-Real-IP $remote_addr;
                         proxy_set_header X-Scheme $scheme;
                         proxy_http_version 1.1;
-                        proxy_pass http://restartr-api-service:5552/$1;
+                        proxy_pass http://{{ .Values.global.restartr_api_service_name }}:5552/$1;
                         proxy_set_header requestUri $request_uri;
 
                 }
@@ -89,7 +89,7 @@ data:
                          proxy_set_header X-Real-IP $remote_addr;
                          proxy_set_header X-Scheme $scheme;
                          proxy_http_version 1.1;
-                         proxy_pass http://restartr-api-service:5552/;
+                         proxy_pass http://{{ .Values.global.restartr_api_service_name }}:5552/;
                          proxy_set_header requestUri $request_uri;
                          #proxy_intercept_errors on;
                          #error_page 404 = @fallback;
@@ -100,7 +100,7 @@ data:
                          proxy_set_header X-Real-IP $remote_addr;
                          proxy_set_header X-Scheme $scheme;
                          proxy_http_version 1.1;
-                         proxy_pass http://restartr-api-service:5552$request_uri;
+                         proxy_pass http://{{ .Values.global.restartr_api_service_name }}:5552$request_uri;
                          proxy_set_header requestUri $request_uri;
                          #proxy_intercept_errors on;
                          #error_page 404 = @fallback;
@@ -121,8 +121,8 @@ data:
                          proxy_set_header Host $http_host;
                          proxy_set_header X-Real-IP $remote_addr;
                          proxy_set_header X-Scheme $scheme;
-                         # proxy_pass http://dug-web:5551$request_uri;
-                         proxy_pass http://dug-web:5551/;
+                         # proxy_pass http://{{ .Values.global.dug_web_service_name }}:5551$request_uri;
+                         proxy_pass http://{{ .Values.global.dug_web_service_name }}:5551/;
                          proxy_set_header requestUri $request_uri;
                          # proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
                          # proxy_set_header X-Forwarded-Host $host;
@@ -138,7 +138,7 @@ data:
                          proxy_set_header Host $http_host;
                          proxy_set_header X-Real-IP $remote_addr;
                          proxy_set_header X-Scheme $scheme;
-                         proxy_pass http://dug-search-client:80;
+                         proxy_pass http://{{ .Values.global.dug_search_client_service_name }}:80;
                          proxy_set_header requestUri $request_uri;
                          # proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
                          # proxy_set_header X-Forwarded-Host $host;

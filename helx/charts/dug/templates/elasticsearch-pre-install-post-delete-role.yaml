@@ -1,0 +1,17 @@
+{{- if .Values.elasticsearch.create_certs_secret -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "dug.elasticsearch.fullname" . }}-secrets-role
+  annotations:
+    "helm.sh/hook": pre-install,post-delete
+    "helm.sh/hook-weight": "2"
+rules:
+- apiGroups:
+  - ''
+  resources:
+    - secrets
+  verbs:
+    - create
+    - delete
+{{- end }}

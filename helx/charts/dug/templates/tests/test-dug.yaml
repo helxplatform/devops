@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: dug-test-container
-          image: {{ .Values.dug.image.repository }}:{{ .Values.dug.image.tag }}
+          image: {{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}
           command: ["pwd"]
           # TODO : Add command to bin/dug test here. Current bin/dug has a strict call to dev init which
           # TODO: is docker based. In this setup environment variables are already configured. So dev init should

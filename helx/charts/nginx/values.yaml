@@ -24,6 +24,14 @@ service:
   serverName: _
   # nodePort: 31337
 
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 32Mi
+
 # Set the DEV_PHASE.dev True, if Appstore/Tycho running locally. Else, set it to False
 DEV_PHASE:
   dev: False
@@ -50,3 +58,9 @@ dugApi: false
 
 # For TACC, set this to true and specify the hostname
 http_host: false
+
+global:
+  ambassador_service_name: ambassador
+  dug_web_service_name: dug-web
+  dug_search_client_service_name: dug-search-client
+  restartr_api_service_name: restartr-api-service

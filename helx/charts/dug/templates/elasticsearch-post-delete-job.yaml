@@ -1,0 +1,30 @@
+{{- if .Values.elasticsearch.create_certs_secret -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "dug.elasticsearch.fullname" . }}-pre-install
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ include "dug.elasticsearch.fullname" . }}-pre-install-sa
+      containers:
+      - name: {{ .Values.elasticsearch.app_name }}-elasticsearch-post-delete
+        image: {{ .Values.elasticsearch.image.repository }}:{{ .Values.elasticsearch.image.tag }}
+        imagePullPolicy: {{ .Values.elasticsearch.image.pullPolicy }}
+        command: ["/bin/bash", "-c", "/app/delete_es_certs_secret.sh"]
+        resources:
+          {{- toYaml .Values.elasticsearch.pre_install.resources | nindent 10 }}
+        volumeMounts:
+        - name: delete-script-vol
+          mountPath: /app
+      volumes:
+        - name: delete-script-vol
+          configMap:
+            name: delete-script-configmap
+            defaultMode: 0775
+      restartPolicy: Never
+{{- end }}
