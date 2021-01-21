@@ -130,13 +130,14 @@ search_client:
   container_port: 8080
   image:
     repository: heliumdatastage/dug-search-client
-    tag: 1.0.0
+    tag: 1.0.6
     pullPolicy: IfNotPresent
   imagePullSecrets: []
   ambassador:
     ui:
       map_name: dug-ui
       prefix: /ui
+  DUG_URL:
   # Add any extra environment variables not already defined in the chart.
   extraEnv: {}
   resources:
