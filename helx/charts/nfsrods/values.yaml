@@ -49,6 +49,15 @@ affinity: {}
 
 config:
   claimName: nfsrods-config-pvc
-  storageClass: nfsrods-config-sc
+  storageClass:
 
 runArgs: "/usr/sbin/useradd -m -u 1000 -s /bin/bash rods; ./start.sh"
+
+sharedStorage:
+  createPVC: true
+  createPV: true
+  PVCName: nfsrods
+  storageSize: 100Gi
+  storageClass: nfsrods-sc
+  nfs:
+    path: /

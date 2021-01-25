@@ -1,0 +1,33 @@
+{{- if eq .Values.sharedStorage.createPVC true }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.sharedStorage.PVCName }}
+  labels:
+    {{- include "nfsrods.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.sharedStorage.storageSize }}
+  storageClassName: {{ .Values.sharedStorage.storageClass }}
+{{- end }}
+---
+{{- if eq .Values.sharedStorage.createPV true }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "nfsrods.fullname" . }}-pv
+spec:
+  capacity:
+    storage: {{ .Values.sharedStorage.storageSize }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy:
+    Retain
+  storageClassName: {{ .Values.sharedStorage.storageClass }}
+  nfs:
+    path: {{ .Values.sharedStorage.nfs.path }}
+    server: {{ .Values.service.ip }}
+{{- end }}
