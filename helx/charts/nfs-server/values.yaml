@@ -65,5 +65,7 @@ stdnfs:
   pvStorage: 10Gi
   pvcStorage: 10Gi
   pvName: stdnfs-pv
-  pvcName: stdnfs
   storageClassName: stdnfs-sc
+
+global:
+  stdnfsPvc: stdnfs

@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ .Values.userStorage.claimName }}
+  name: {{ .Values.global.stdnfsPvc }}
   labels:
     {{- include "appstore.labels" . | nindent 4 }}
 spec:

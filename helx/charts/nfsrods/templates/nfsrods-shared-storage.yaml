@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ .Values.sharedStorage.PVCName }}
+  name: {{ .Values.global.stdnfsPvc }}
   labels:
     {{- include "nfsrods.labels" . | nindent 4 }}
 spec:

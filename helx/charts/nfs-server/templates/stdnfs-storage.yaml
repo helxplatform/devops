@@ -19,7 +19,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.stdnfs.pvcName }}
+  name: {{ .Values.global.stdnfsPvc }}
 spec:
   accessModes:
   - ReadWriteMany

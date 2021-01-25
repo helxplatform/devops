@@ -25,3 +25,4 @@ global:
   dug_web_service_name: helx-dug-web
   dug_search_client_service_name: helx-dug-search-client
   restartr_api_service_name: helx-restartr-api-service
+  stdnfsPvc: stdnfs

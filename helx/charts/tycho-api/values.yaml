@@ -46,8 +46,6 @@ useRole: true
 # Set to true, when using blackbalsam.
 useSparkServiceAccount: true
 
-# Specify a PV to use as HeLx's stdnfs.
-stdnfsPvc: stdnfs
 # Create Home directories
 createHomeDirs: true
 
@@ -63,3 +61,5 @@ extraEnv: {}
 
 global:
   tycho_api_service_name: tycho-api
+  # Specify a PV to use as HeLx's stdnfs.
+  stdnfsPvc: stdnfs

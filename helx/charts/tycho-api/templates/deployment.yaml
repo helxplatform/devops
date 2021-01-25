@@ -34,7 +34,7 @@ spec:
         - name: CREATE_HOME_DIRS
           value: "{{- .Values.createHomeDirs }}"
         - name: STDNFS_PVC
-          value: "{{ .Values.stdnfsPvc }}"
+          value: "{{ .Values.global.stdnfsPvc }}"
         - name: RUNASROOT
           value: "{{ .Values.runAsRoot }}"
         - name: PARENT_DIR

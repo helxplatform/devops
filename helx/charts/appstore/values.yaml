@@ -107,7 +107,6 @@ appStorage:
 
 userStorage:
   createPVC: false
-  claimName: stdnfs
   storageSize: 10Gi
   storageClass:
   nfs:
@@ -125,3 +124,4 @@ extraEnv: {}
 
 global:
   tycho_api_service_name: tycho-api
+  stdnfsPvc: stdnfs

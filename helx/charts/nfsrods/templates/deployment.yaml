@@ -28,9 +28,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh", "-c"]
           args: ["{{ .Values.runArgs }}"]
-          volumeMounts:
-            - name: nfsrods-config-vol
-              mountPath: /nfsrods_config
           ports:
             - name: nfs
               containerPort: 2049
@@ -49,10 +46,29 @@ spec:
           #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - name: exports-vol
+            mountPath: /nfsrods_config/exports
+            subPath: exports
+          - name: log4j-properties-vol
+            mountPath: /nfsrods_config/log4j.properties
+            subPath: log4j.properties
+          - name: server-json-vol
+            mountPath: /nfsrods_config/server.json
+            subPath: server.json
       volumes:
-        - name: nfsrods-config-vol
-          persistentVolumeClaim:
-            claimName: {{ .Values.config.claimName }}
+        - name: exports-vol
+          configMap:
+            name: configs-configmap
+            defaultMode: 0644
+        - name: log4j-properties-vol
+          configMap:
+            name: configs-configmap
+            defaultMode: 0644
+        - name: server-json-vol
+          configMap:
+            name: configs-configmap
+            defaultMode: 0644
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
