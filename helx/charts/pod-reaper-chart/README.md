@@ -43,4 +43,6 @@ reapers:
  
  ## Install using Helm
  
- helm install <any-name> pod-reaper-chart/ -n <namespace>
+ ```
+ helm install any-name pod-reaper-chart/ -n namespace
+```
