@@ -25,6 +25,8 @@ spec:
         - name: {{ $.Chart.Name }}
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
           env:
+            - name: NAMESPACE
+              value: "{{$.Release.Namespace}}"
           {{- range $envkey, $envvalue := $v }}
           {{- if $envvalue }}
             - name: {{ upper $envkey}}

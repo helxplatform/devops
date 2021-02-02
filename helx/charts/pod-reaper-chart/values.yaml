@@ -10,7 +10,6 @@ image:
 #
 reapers: 
   short-running-apps:
-    namespace: ""
     grace_period: 10m
     schedule: "@every 1m"
     run_duration: "0s"
@@ -21,7 +20,6 @@ reapers:
     log_format: "Logrus"
     max_duration: "1h"
   long-running-apps:
-    namespace: ""
     grace_period: 10m
     schedule: "@every 1m"
     run_duration: "0s"
