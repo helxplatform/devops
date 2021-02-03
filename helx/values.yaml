@@ -18,7 +18,7 @@ nginx:
   enabled: true
 tycho-api:
   enabled: true
-pod-reaper-chart:
+pod-reaper:
   enabled: true
 
 global:
