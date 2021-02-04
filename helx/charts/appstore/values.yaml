@@ -129,3 +129,23 @@ global:
 # Set either useClusterRole or useRole to true.
 useClusterRole: false
 useRole: true
+
+# Set to true, when using blackbalsam.
+useSparkServiceAccount: true
+
+# Create Home directories
+createHomeDirs: true
+
+runAsRoot: true
+
+# Variables for default volumes.
+parent_dir: "/home"
+subpath_dir: null
+shared_dir: "shared"
+
+# Add any extra environment variables not already defined in the chart.
+extraEnv: {}
+
+global:
+  # Specify a PV to use as HeLx's stdnfs.
+  stdnfsPvc: stdnfs
