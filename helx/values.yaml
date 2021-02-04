@@ -17,7 +17,7 @@ nfsrods:
 nginx:
   enabled: true
 tycho-api:
-  enabled: false
+  enabled: true
 
 global:
   tycho_api_service_name: helx-tycho-api
