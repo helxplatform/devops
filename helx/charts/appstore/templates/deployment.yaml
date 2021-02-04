@@ -17,6 +17,7 @@ spec:
       labels:
         {{- include "appstore.selectorLabels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "appstore.fullname" . }}-sa
       initContainers:
       {{- if .Values.securityContext }}
       securityContext:

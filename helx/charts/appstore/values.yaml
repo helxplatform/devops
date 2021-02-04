@@ -125,3 +125,7 @@ extraEnv: {}
 global:
   tycho_api_service_name: tycho-api
   stdnfsPvc: stdnfs
+
+# Set either useClusterRole or useRole to true.
+useClusterRole: false
+useRole: true
