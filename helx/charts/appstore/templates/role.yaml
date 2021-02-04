@@ -1,0 +1,118 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "appstore.fullname" . }}-sa
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "appstore.fullname" . }}-role
+rules:
+- apiGroups:
+  - ""
+  attributeRestrictions: null
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+    - configmaps
+    - pods
+    - secrets
+    - services
+    - persistentvolumeclaims
+  verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+  - "apps"
+  resources:
+    - deployments
+    - deployments/scale
+    - replicasets
+    - replicasets/scale
+  verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+  - extensions
+  attributeRestrictions: null
+  resources:
+    - deployments
+    - deployments/scale
+    - ingresses
+    - replicasets
+    - replicasets/scale
+  verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+  - extensions
+  - networking.k8s.io
+  attributeRestrictions: null
+  resources:
+  - networkpolicies
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "appstore.fullname" . }}-rolebinding
+subjects:
+- kind: ServiceAccount
+  name: {{ include "appstore.fullname" . }}-sa
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ include "appstore.fullname" . }}-role
+  apiGroup: rbac.authorization.k8s.io
+---
+{{- if .Values.useSparkServiceAccount }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spark
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: spark-role
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: spark
+  namespace: {{ .Release.Namespace }}
+{{- end }}
