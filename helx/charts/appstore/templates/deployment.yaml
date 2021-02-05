@@ -81,11 +81,6 @@ spec:
             configMapKeyRef:
               key: ACCOUNT_DEFAULT_HTTP_PROTOCOL
               name: {{ include "appstore.fullname" . }}-env
-        - name: TYCHO_URL
-          valueFrom:
-            configMapKeyRef:
-              key: TYCHO_URL
-              name: {{ include "appstore.fullname" . }}-env
         - name: DEV_PHASE
           valueFrom:
             configMapKeyRef:
