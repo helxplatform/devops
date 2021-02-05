@@ -17,6 +17,7 @@ spec:
       labels:
         {{- include "appstore.selectorLabels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "appstore.fullname" . }}-sa
       initContainers:
       {{- if .Values.securityContext }}
       securityContext:
@@ -245,6 +246,24 @@ spec:
             secretKeyRef:
               key: EMAIL_HOST_PASSWORD
               name: {{ include "appstore.fullname" . }}-secret
+        {{- range $key, $value := .Values.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
+        - name: CREATE_HOME_DIRS
+          value: "{{- .Values.createHomeDirs }}"
+        - name: STDNFS_PVC
+          value: "{{ .Values.global.stdnfsPvc }}"
+        - name: RUNASROOT
+          value: "{{ .Values.runAsRoot }}"
+        - name: PARENT_DIR
+          value: "{{ .Values.parent_dir }}"
+        {{- if .Values.subpath_dir }}
+        - name: SUBPATH_DIR
+          value: "{{ .Values.subpath_dir }}"
+        {{- end }}
+        - name: SHARED_DIR
+          value: "{{ .Values.shared_dir }}"
         {{- range $key, $value := .Values.extraEnv }}
         - name: {{ $key }}
           value: {{ $value }}
