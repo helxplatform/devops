@@ -54,7 +54,6 @@ varStorage:
   storageClass:
 
 restartrApi: false
-dugApi: false
 
 # For TACC, set this to true and specify the hostname
 http_host: false
