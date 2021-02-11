@@ -17,6 +17,8 @@ nfsrods:
 nginx:
   enabled: true
 tycho-api:
+  enabled: false
+pod-reaper:
   enabled: true
 roger:
   enabled: true

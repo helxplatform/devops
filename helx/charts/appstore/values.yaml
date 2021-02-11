@@ -123,5 +123,17 @@ oauth:
 extraEnv: {}
 
 global:
-  tycho_api_service_name: tycho-api
   stdnfsPvc: stdnfs
+
+# Set to true, when using blackbalsam.
+useSparkServiceAccount: true
+
+# Create Home directories
+createHomeDirs: true
+
+runAsRoot: true
+
+# Variables for default volumes.
+parent_dir: "/home"
+subpath_dir: null
+shared_dir: "shared"
