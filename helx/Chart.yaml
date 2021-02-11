@@ -39,3 +39,5 @@ dependencies:
     condition: nginx.enabled
   - name: tycho-api
     condition: tycho-api.enabled
+  - name: roger
+    condition: roger.enabled
