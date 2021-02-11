@@ -1,0 +1,44 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ include "roger.fullname" . }}-airflow-ui-svc
+  labels:
+    app: airflow
+    component: web
+    release: {{ .Release.Name }}
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: {{ .Values.web.ambassador.airflowUI.map_name }}
+      prefix: {{ .Values.web.ambassador.airflowUI.prefix }}
+      service: {{ include "roger.fullname" . }}-airflow-ui-svc:8080
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: {{ .Values.web.ambassador.airflowUI.map_name }}-2
+      prefix: /static
+      service: {{ include "roger.fullname" . }}-airflow-ui-svc:8080
+      rewrite: /static
+      timeout_ms: 6000
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: {{ .Values.web.ambassador.airflowUI.map_name }}-3
+      prefix: /admin
+      service: {{ include "roger.fullname" . }}-airflow-ui-svc:8080
+      rewrite: /admin
+      timeout_ms: 6000
+spec:
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: airflow
+    component: web
+    release: {{ .Release.Name }}
+  type: ClusterIP
+
