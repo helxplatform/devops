@@ -1,0 +1,19 @@
+{{- if eq .Values.userStorage.nfs.createPV true }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "appstore.fullname" . }}-user-storage-pv
+spec:
+  capacity:
+    storage: {{ .Values.userStorage.storageSize }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy:
+    Retain
+  {{ if .Values.userStorage.storageClass }}
+  storageClassName: {{ .Values.userStorage.storageClass }}
+  {{- end }}
+  nfs:
+    path: {{ .Values.userStorage.nfs.path }}
+    server: {{ .Values.userStorage.nfs.server }}
+{{- end }}
