@@ -14,22 +14,8 @@ metadata:
       name: {{ .Values.web.ambassador.airflowUI.map_name }}
       prefix: {{ .Values.web.ambassador.airflowUI.prefix }}
       service: {{ include "roger.fullname" . }}-airflow-ui-svc:8080
-      ---
-      apiVersion: ambassador/v1
-      kind: Mapping
-      name: {{ .Values.web.ambassador.airflowUI.map_name }}-2
-      prefix: /static
-      service: {{ include "roger.fullname" . }}-airflow-ui-svc:8080
-      rewrite: /static
-      timeout_ms: 6000
-      ---
-      apiVersion: ambassador/v1
-      kind: Mapping
-      name: {{ .Values.web.ambassador.airflowUI.map_name }}-3
-      prefix: /admin
-      service: {{ include "roger.fullname" . }}-airflow-ui-svc:8080
-      rewrite: /admin
-      timeout_ms: 6000
+      rewrite: {{ .Values.web.ambassador.airflowUI.prefix }}
+
 spec:
   ports:
     - name: web

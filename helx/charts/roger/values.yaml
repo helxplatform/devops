@@ -69,10 +69,9 @@ airflow:
       # DAGS
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
 
-      AIRFLOW_BASE_URL: ""
-
       ## Disable noisy "Handling signal: ttou" Gunicorn log messages
       GUNICORN_CMD_ARGS: "--log-level WARNING"
+      AIRFLOW__WEBSERVER__BASE_URL: "http://localhost:8080/airflow"
 
     extraPipPackages:
       - Babel==2.8.0
@@ -125,7 +124,8 @@ airflow:
   workers:
     ## the number of workers Pods to run
     ##
-    replicas: 1
+    ### Kubernetes executor doesn't need worker
+    replicas: 0
 
   ###################################
   # Airflow - DAGs Configs
