@@ -47,10 +47,6 @@ airflow:
     #  executor: CeleryExecutor
     executor: KubernetesExecutor
 
-    ## the fernet key used to encrypt the connections in the database
-    ##
-    fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
-
     ## environment variables for the web/scheduler/worker Pods (for airflow configs)
     ##
     config:
@@ -99,6 +95,16 @@ airflow:
     extraVolumes:
       - name: roger-data
         emptyDir: {}
+
+    configSecretsName: airflow-config-secrets
+
+    extraEnv:
+      - name: AIRFLOW__CORE__FERNET_KEY
+        valueFrom:
+          secretKeyRef:
+            # Same as airflow.configSecretsName
+            name: airflow-config-secrets
+            key: fernet-key
 
 
 
