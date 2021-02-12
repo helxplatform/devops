@@ -111,4 +111,20 @@ data:
                 #}
                 {{- end }}
 
+                # Makes /airflow/ accessible if not authenticated
+                location /airflow/ {
+                         proxy_http_version 1.1;
+                         {{- if .Values.DEV_PHASE.dev }}
+                         {{- else }}
+                         auth_request /auth;
+                         auth_request_set $remoteUser $upstream_http_remote_user;
+                         proxy_set_header REMOTE_USER $remoteUser;
+                         add_header REMOTE_USER $remoteUser;
+                         auth_request_set $access_token $upstream_http_access_token;
+                         proxy_set_header Authorization $access_token;
+                         add_header Authorization $access_token;
+                         {{- end }}
+                         proxy_pass http://{{ .Values.global.ambassador_service_name }}:80$request_uri;
+                         proxy_pass_request_headers  on;
+                }
         }
