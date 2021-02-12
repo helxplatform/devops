@@ -11,23 +11,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.userStorage.storageSize }}
+  {{ if .Values.userStorage.storageClass }}
   storageClassName: {{ .Values.userStorage.storageClass }}
-{{- end }}
----
-{{- if eq .Values.userStorage.nfs.createPV true }}
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: {{ include "appstore.fullname" . }}-user-storage-pv
-spec:
-  capacity:
-    storage: {{ .Values.userStorage.storageSize }}
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy:
-    Retain
-  storageClassName: {{ .Values.userStorage.storageClass }}
-  nfs:
-    path: {{ .Values.userStorage.nfs.path }}
-    server: {{ .Values.userStorage.nfs.server }}
+  {{- end }}
 {{- end }}
