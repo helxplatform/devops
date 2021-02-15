@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "roger.fullname" . }}-tranql-service
+  labels:
+    {{- include "roger.labels" . | nindent 4 }}
+  annotations:
+    getambassador.io/config: |
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: {{ .Values.web.ambassador.tranql.map_name }}
+      prefix: {{ .Values.web.ambassador.tranql.prefix }}
+      service: {{ include "roger.fullname" . }}-tranql-service:{{ .Values.tranql.port }}
+      rewrite: {{ .Values.web.ambassador.tranql.prefix }}
+      cors:
+        origins: "*"
+        methods: POST, OPTIONS
+        headers:
+          - Content-Type
+      timeout_ms: 0
+spec:
+  type: {{ .Values.tranql.service.type }}
+  ports:
+    - port: {{ .Values.tranql.port }}
+      targetPort: {{ .Values.tranql.port }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "roger.selectorLabels" . | nindent 4 }}
+    service-type: web-server

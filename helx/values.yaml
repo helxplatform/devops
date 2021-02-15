@@ -20,6 +20,8 @@ tycho-api:
   enabled: false
 pod-reaper:
   enabled: true
+roger:
+  enabled: true
 
 global:
   tycho_api_service_name: helx-tycho-api
