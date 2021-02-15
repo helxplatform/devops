@@ -193,6 +193,12 @@ airflow:
   redis:
     enabled: false
 
+  # airflow.airflow.config.AIRFLOW__WEBSERVER__BASE_URL path suffix
+  ingress:
+    web:
+      # This should be equivalent to
+      path: /airflow
+
 
 
 tranql:
