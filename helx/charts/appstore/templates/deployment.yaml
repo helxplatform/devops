@@ -100,72 +100,72 @@ spec:
           valueFrom:
             secretKeyRef:
               key: APPSTORE_SECRET_KEY
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: APPSTORE_DJANGO_USERNAME
           valueFrom:
             secretKeyRef:
               key: APPSTORE_DJANGO_USERNAME
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: APPSTORE_DJANGO_PASSWORD
           valueFrom:
             secretKeyRef:
               key: APPSTORE_DJANGO_PASSWORD
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         {{ if .Values.django.DOCKSTORE_APPS_BRANCH }}
         - name: DOCKSTORE_APPS_BRANCH
           valueFrom:
             secretKeyRef:
               key: DOCKSTORE_APPS_BRANCH
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         {{- end }}
         {{ if .Values.django.REMOVE_AUTHORIZED_USERS }}
         - name: REMOVE_AUTHORIZED_USERS
           valueFrom:
             secretKeyRef:
               key: REMOVE_AUTHORIZED_USERS
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         {{- end }}
         {{ if .Values.django.AUTHORIZED_USERS }}
         - name: AUTHORIZED_USERS
           valueFrom:
             secretKeyRef:
               key: AUTHORIZED_USERS
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         {{- end }}
         - name: OAUTH_PROVIDERS
           valueFrom:
             secretKeyRef:
               key: OAUTH_PROVIDERS
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         {{ if .Values.django.oauth.GITHUB_NAME }}
         - name: GITHUB_NAME
           valueFrom:
             secretKeyRef:
               key: GITHUB_NAME
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: GITHUB_CLIENT_ID
           valueFrom:
             secretKeyRef:
               key: GITHUB_CLIENT_ID
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: GITHUB_SECRET
           valueFrom:
             secretKeyRef:
               key: GITHUB_SECRET
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
           {{ if .Values.django.oauth.GITHUB_KEY }}
         - name: GITHUB_KEY
           valueFrom:
             secretKeyRef:
               key: GITHUB_KEY
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
           {{- end }}
           {{ if .Values.django.oauth.GITHUB_SITES }}
         - name: GITHUB_SITES
           valueFrom:
             secretKeyRef:
               key: GITHUB_SITES
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
           {{- end }}
         {{- end }}
         {{ if .Values.django.oauth.GOOGLE_NAME }}
@@ -173,30 +173,30 @@ spec:
           valueFrom:
             secretKeyRef:
               key: GOOGLE_NAME
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: GOOGLE_CLIENT_ID
           valueFrom:
             secretKeyRef:
               key: GOOGLE_CLIENT_ID
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: GOOGLE_SECRET
           valueFrom:
             secretKeyRef:
               key: GOOGLE_SECRET
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
           {{ if .Values.django.oauth.GOOGLE_KEY }}
         - name: GOOGLE_KEY
           valueFrom:
             secretKeyRef:
               key: GOOGLE_KEY
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
           {{- end }}
           {{ if .Values.django.oauth.GOOGLE_SITES }}
         - name: GOOGLE_SITES
           valueFrom:
             secretKeyRef:
               key: GOOGLE_SITES
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
           {{- end }}
         {{- end }}
         {{- if .Values.irods.enabled }}
@@ -204,43 +204,43 @@ spec:
           valueFrom:
             secretKeyRef:
               key: BRAINI_RODS
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: NRC_MICROSCOPY_IRODS
           valueFrom:
             secretKeyRef:
               key: NRC_MICROSCOPY_IRODS
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: RODS_USERNAME
           valueFrom:
             secretKeyRef:
               key: RODS_USERNAME
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: RODS_PASSWORD
           valueFrom:
             secretKeyRef:
               key: RODS_PASSWORD
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: IROD_COLLECTIONS
           valueFrom:
             secretKeyRef:
               key: IROD_COLLECTIONS
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: IROD_ZONE
           valueFrom:
             secretKeyRef:
               key: IROD_ZONE
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         {{- end }}
         - name: EMAIL_HOST_USER
           valueFrom:
             secretKeyRef:
               key: EMAIL_HOST_USER
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         - name: EMAIL_HOST_PASSWORD
           valueFrom:
             secretKeyRef:
               key: EMAIL_HOST_PASSWORD
-              name: {{ include "appstore.fullname" . }}-secret
+              name: {{ include "appstore.fullname" . }}
         {{- range $key, $value := .Values.extraEnv }}
         - name: {{ $key }}
           value: {{ $value }}
