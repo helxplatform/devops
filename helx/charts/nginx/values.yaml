@@ -41,11 +41,12 @@ DEV_PHASE:
 # SSL:
 #   nginxTLSSecret: nginx-tls-secret
 
-# ingress:
-#   host: example.com
-#   # ToDo: Make this cleaner.
-#   class: traefik
-#   traefikRouterTls: ""
+ingress:
+  create: false
+  host: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: : ""
+    # traefik.ingress.kubernetes.io/router.tls: ""
 
 varStorage:
   existingClaim: false
