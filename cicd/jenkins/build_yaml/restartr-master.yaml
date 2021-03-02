@@ -28,7 +28,7 @@ code:
 
 docker:
   org:
-    heliumdatastage
+    helxplatform
   primary_repo:
     restartr
   secondary_repo:
@@ -49,11 +49,3 @@ test:
     null
   datafile:
     data/a.json
-
-clair:
-  cmd_parameters:
-    null
-  threshold:
-    null
-  whitelist:
-    null

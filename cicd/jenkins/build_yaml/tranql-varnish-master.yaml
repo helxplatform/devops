@@ -29,7 +29,7 @@ code:
 
 docker:
   org:
-    renciorg
+    helxplatform
   primary_repo:
     tranql-varnish
   secondary_repo:
@@ -51,10 +51,3 @@ test:
   datafile:
     null
 
-clair:
-  cmd_args:
-    null
-  threshold:
-    null
-  whitelist:
-    null

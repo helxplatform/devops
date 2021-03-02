@@ -1,16 +1,16 @@
-version: 
+version:
   0.0.1
 
 build:
-  name: appstore-master  
+  name: appstore-master
 
 app:
   name: appstore
 
 code:
-  primary_url: 
+  primary_url:
     https://github.com/helxplatform/appstore.git
-  secondary_url: 
+  secondary_url:
     https://github.com/helxplatform/tycho.git
   primary_app_path:
     "./appstore"
@@ -28,9 +28,9 @@ code:
     default
 
 docker:
-  org: 
-    heliumdatastage
-  primary_repo: 
+  org:
+    helxplatform
+  primary_repo:
     appstore
   secondary_repo:
     tycho
@@ -44,18 +44,11 @@ docker:
     null
 
 test:
-  cmd_path: 
+  cmd_path:
     "bin/appstore"
-  cmd_args: 
+  cmd_args:
     "tests braini"
   datafile:
     null
 
-clair:
-  cmd_args:
-    null
-  threshold:
-    null
-  whitelist:
-    null
 
