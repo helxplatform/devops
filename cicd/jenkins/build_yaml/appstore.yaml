@@ -29,7 +29,7 @@ code:
 
 docker:
   org:
-    heliumdatastage
+    helxplatform
   primary_repo:
     appstore
   secondary_repo:
@@ -49,12 +49,4 @@ test:
   cmd_args:
     "tests braini"
   datafile:
-    null
-
-clair:
-  cmd_args:
-    null
-  threshold:
-    null
-  whitelist:
     null
