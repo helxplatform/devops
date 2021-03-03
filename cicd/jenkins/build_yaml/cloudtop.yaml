@@ -46,6 +46,6 @@ test:
   cmd_path:
     "pytest"
   cmd_args:
-    "-q -s --image heliumdatastage/cloudtop:TAG1 --user howard --passwd test"
+    "-q -s --image helxplatform/cloudtop:TAG1 --user howard --passwd test"
   datafile:
     null
