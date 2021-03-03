@@ -1,21 +1,17 @@
-{{- if .Values.ingress }}
+{{- if .Values.ingress.create }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ include "nginx.fullname" . }}
+{{- with .Values.ingress.annotations }}
   annotations:
-  {{- if .Values.ingress.class }}
-    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
-    {{- if .Values.ingress.traefikRouterTls }}
-    traefik.ingress.kubernetes.io/router.tls: {{ .Values.ingress.traefikRouterTls }}
-    {{- end }}
-  {{- else }}
-    []
-  {{- end }}
+    {{- toYaml . | nindent 4 }}
+{{- end }}
 spec:
   tls:
     - hosts:
       - {{ .Values.ingress.host }}
+      secretName: {{ .Values.SSL.nginxTLSSecret }}
   rules:
   - host: {{ .Values.ingress.host }}
     http:
