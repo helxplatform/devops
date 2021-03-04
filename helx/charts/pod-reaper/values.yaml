@@ -3,12 +3,12 @@
 # Declare variables to be passed into your templates.
 image:
   repository: helxplatform/pod-reaper
-  tag: 1.1.0
+  tag: 1.1.1
 
 # A set of named reapers
 # Example config:
 #
-reapers: 
+reapers:
   short-running-apps:
     grace_period: 10m
     schedule: "@every 1m"

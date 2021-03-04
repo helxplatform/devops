@@ -6,8 +6,6 @@ appstore:
   enabled: true
 backup-pvc-cronjob:
   enabled: false
-commonsshare:
-  enabled: false
 dug:
   enabled: false
 nfs-server:
