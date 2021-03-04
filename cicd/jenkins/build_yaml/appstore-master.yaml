@@ -11,13 +11,13 @@ code:
   primary_url:
     https://github.com/helxplatform/appstore.git
   secondary_url:
-    https://github.com/helxplatform/tycho.git
+    null
   primary_app_path:
     "./appstore"
   primary_requirements_path:
     ./requirements.txt
   secondary_requirements_path:
-    ./tycho/requirements.txt
+    null
   branch:
     master
   prebuild:
@@ -33,7 +33,7 @@ docker:
   primary_repo:
     appstore
   secondary_repo:
-    tycho
+    null
   docker_fn:
     null
   primary_docker_dir:
@@ -50,5 +50,3 @@ test:
     "tests braini"
   datafile:
     null
-
-
