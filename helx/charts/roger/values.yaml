@@ -42,8 +42,8 @@ airflow:
     ## the airflow executor type to use
     ##
     image:
-      repository: helxplatform/airflow-task
-      tag: "0.0.8"
+      repository: helxplatform/airflow
+      tag: "develop-v0.0.3"
     #  executor: CeleryExecutor
     executor: KubernetesExecutor
 
@@ -64,8 +64,8 @@ airflow:
       AIRFLOW__KUBERNETES__GIT_SYNC_DEST: "roger"
       AIRFLOW__KUBERNETES__DAGS_VOLUME_SUBPATH: "roger"
       AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "FALSE"
-      AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: "helxplatform/airflow-task"
-      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "0.0.8"
+      AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: "helxplatform/airflow"
+      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "develop-v0.0.3"
       # DAGS
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
 
