@@ -70,21 +70,6 @@ helm -n $NAMESPACE --create-namespace install helx helxplatform/helx --values va
 
 You can view the README.md files for each subchart to see the variables that exist.
 
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-|  | ambassador |  |
-|  | appstore |  |
-|  | backup-pvc-cronjob |  |
-|  | dug |  |
-|  | nfs-server |  |
-|  | nfsrods |  |
-|  | nginx |  |
-|  | pod-reaper |  |
-|  | roger |  |
-|  | tycho-api |  |
-
 ## Values
 
 | Key | Type | Default | Description |
