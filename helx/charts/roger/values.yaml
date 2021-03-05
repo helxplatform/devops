@@ -42,8 +42,8 @@ airflow:
     ## the airflow executor type to use
     ##
     image:
-      repository: helxplatform/airflow-task
-      tag: "0.0.8"
+      repository: helxplatform/airflow
+      tag: "develop-v0.0.3"
     #  executor: CeleryExecutor
     executor: KubernetesExecutor
 
@@ -59,13 +59,13 @@ airflow:
       # https://airflow.apache.org/docs/apache-airflow/1.10.12/configurations-ref.html#git-ssh-key-secret-name
 #      AIRFLOW__KUBERNETES__GIT_SSH_KEY_SECRET_NAME: "airflow-secrets"
       # @TODO change this to master.
-      AIRFLOW__KUBERNETES__GIT_BRANCH: "indexing-and-integration"
+      AIRFLOW__KUBERNETES__GIT_BRANCH: "develop"
       AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT: "/opt/airflow/dags"
       AIRFLOW__KUBERNETES__GIT_SYNC_DEST: "roger"
       AIRFLOW__KUBERNETES__DAGS_VOLUME_SUBPATH: "roger"
-      AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "FALSE"
-      AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: "helxplatform/airflow-task"
-      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "0.0.8"
+      AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
+      AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: "helxplatform/airflow"
+      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "develop-v0.0.3"
       # DAGS
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
 
