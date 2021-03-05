@@ -5,11 +5,14 @@
 replicaCount: 1
 
 image:
+  # -- repository where image is located
   repository: helxplatform/appstore
+  # -- pull policy
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   # tag: 1.0.2
 
+# -- credentials for a private repo
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -17,9 +20,9 @@ fullnameOverride: ""
 podAnnotations: {}
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- specifies whether a service account should be created
   create: true
-  # The name of the service account to use.
+  # -- The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
 
@@ -41,7 +44,7 @@ resources:
     cpu: 50m
     memory: 64Mi
 
-# Choose http or https for the protocol that is used by external users to access
+# -- Choose http or https for the protocol that is used by external users to access
 # the appstore web service.
 ACCOUNT_DEFAULT_HTTP_PROTOCOL: http
 
@@ -55,24 +58,30 @@ db:
   name: appstore
 
 ambassador:
-   # flag: <True or False>
+   # -- register appstore with ambassador flag: <True or False>
    flag: true
 
+# -- set the theme for appstore (cat, braini, restartr, scidas)
 djangoSettings: cat
 
 django:
+  # -- user emails for oauth providers
   AUTHORIZED_USERS: ""
+  # -- user emails to remove from an already-existing database
   REMOVE_AUTHORIZED_USERS: ""
-  # Defaults to "master". Specify "develop" to switch.
+  # -- Defaults to "master". Specify "develop" to switch.
   DOCKSTORE_APPS_BRANCH: "master"
   ###################################################
   APPSTORE_DJANGO_USERNAME: "admin"
   APPSTORE_DJANGO_PASSWORD: ""
+  # -- show Django log in fields (true | false)
   ALLOW_DJANGO_LOGIN: ""
+  # -- show SAML log in fields (true | false)
   ALLOW_SAML_LOGIN: ""
   EMAIL_HOST_USER: ""
   EMAIL_HOST_PASSWORD: ""
   oauth:
+    # -- oauth providers separated by commas (google, github)
     OAUTH_PROVIDERS: ""
     GITHUB_NAME: ""
     GITHUB_KEY: ""
@@ -88,6 +97,7 @@ django:
     ASSERTION_URL: ""
     ENTITY_ID: ""
 irods:
+  # -- enable irods support (true | false)
   enabled: false
   BRAINI_RODS: ""
   NRC_MICROSCOPY_IRODS: ""
@@ -106,6 +116,8 @@ appStorage:
   storageClass:
 
 userStorage:
+  # -- Create a PVC for user's files.  If false then the PVC needs to be created
+  # outside of the appstore chart.
   createPVC: false
   storageSize: 10Gi
   storageClass:
@@ -123,17 +135,21 @@ oauth:
 extraEnv: {}
 
 global:
+  # -- the name of the PVC to use for user's files
   stdnfsPvc: stdnfs
 
-# Set to true, when using blackbalsam.
+# -- Set to true, when using blackbalsam.
 useSparkServiceAccount: true
 
-# Create Home directories
+# -- Create Home directories for users
 createHomeDirs: true
 
 runAsRoot: true
 
-# Variables for default volumes.
+# -- directory that will be used to mount user's home directories in
 parent_dir: "/home"
+# -- Name of directory to use for a user's home directory.  If null then the
+# user's username will be used.
 subpath_dir: null
+# -- name of directory to use for shared data
 shared_dir: "shared"
