@@ -28,7 +28,7 @@ code:
 
 docker:
   org:
-    heliumdatastage
+    helxplatform
   primary_repo:
     cloudtop-imagej
   secondary_repo:
@@ -48,12 +48,4 @@ test:
   cmd_args:
     null
   datafile:
-    null
-
-clair:
-  cmd_parameters:
-    null
-  threshold:
-    null
-  whitelist:
     null

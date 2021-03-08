@@ -7,13 +7,13 @@
 # Based on stable/jenkins 2.4.0, reverse-engineered by helm template
 # command and combined with our values.html values.
 #
-# To recreate from scratch or upgrade this file to new jenkins helm 
+# To recreate from scratch or upgrade this file to new jenkins helm
 # version::
 #
 # mmkdir <dir>
 # cd <dir>
 # helm fetch --untar --untardir . 'stable/jenkins' --version=2.4.0
-# cd .. 
+# cd ..
 # helm template --name-template=custom <dir> -n jenkins
 # <edit in values.html values>
 #
@@ -168,7 +168,7 @@ data:
     workflow-aggregator:2.6
     credentials-binding:1.24
     git:4.5.1
-    configuration-as-code:1.46
+    configuration-as-code:1.47
     kubernetes-cd:2.3.1
     blueocean:1.24.3
     active-directory:2.23
@@ -180,7 +180,7 @@ data:
     docker-workflow:1.23
     email-ext:2.80
     external-monitor-job:1.7
-    github-api:1.117
+    github-api:1.122
     gradle:1.36
     icon-shim:2.0.3
     javadoc:1.6
@@ -270,7 +270,7 @@ spec:
   ports:
     - port: 50000
       targetPort: 50000
-      
+
       name: slavelistener
   selector:
     "app.kubernetes.io/component": "jenkins-master"
@@ -336,7 +336,7 @@ spec:
       serviceAccountName: "custom-jenkins"
       initContainers:
         - name: "copy-default-config"
-          image: "heliumdatastage/jenkins-master:v0.0.18"
+          image: "heliumdatastage/jenkins-master:v0.0.19"
           imagePullPolicy: "Always"
           command: [ "sh", "/var/jenkins_config/apply_config.sh" ]
           env:
@@ -372,7 +372,7 @@ spec:
               name: plugin-dir
       containers:
         - name: jenkins
-          image: "heliumdatastage/jenkins-master:v0.0.18"
+          image: "heliumdatastage/jenkins-master:v0.0.19"
           imagePullPolicy: "Always"
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin", "--httpPort=8080", "-v /var/run/docker.sock:/var/run/docker.sock"]
           env:
@@ -383,7 +383,7 @@ spec:
             - name: JAVA_OPTS
               value: >
                 -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/New_York -Dhudson.model.DirectoryBrowserSupport.CSP=
-                
+
             - name: JENKINS_OPTS
               value: ""
             - name: JENKINS_SLAVE_AGENT_PORT

@@ -1,25 +1,24 @@
-version:
-  0.0.1
+version: 0.0.1
 
 build:
-  name: appstore
+  name: rstudio-server-master
 
 app:
-  name: appstore
+  name: rstudio-server
 
 code:
   primary_url:
-    https://github.com/helxplatform/appstore.git
+    https://github.com/helxplatform/rstudio-server.git
   secondary_url:
     null
   primary_app_path:
-    "./appstore"
+    "."
   primary_requirements_path:
-    ./requirements.txt
+    null
   secondary_requirements_path:
     null
   branch:
-    develop
+    master
   prebuild:
     default
   build:
@@ -31,7 +30,7 @@ docker:
   org:
     helxplatform
   primary_repo:
-    appstore
+    rstudio-server
   secondary_repo:
     null
   docker_fn:
@@ -40,13 +39,13 @@ docker:
     "."
   secondary_docker_dir:
     null
-  build_args:
+  build_parameters:
     null
 
 test:
   cmd_path:
-    "bin/appstore"
+    null
   cmd_args:
-    "tests braini"
+    null
   datafile:
     null
