@@ -1,6 +1,6 @@
 apiVersion: v2
 name: helx
-description: A Helm chart for Kubernetes
+description: A Helm chart for deploying HeLx to Kubernetes.
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -14,11 +14,11 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.2.18
+version: 0.3.11
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.0.0
+appVersion: 1.3.4
 
 dependencies:
   - name: ambassador
@@ -27,8 +27,6 @@ dependencies:
     condition: appstore.enabled
   - name: backup-pvc-cronjob
     condition: backup-pvc-cronjob.enabled
-  - name: commonsshare
-    condition: commonsshare.enabled
   - name: dug
     condition: dug.enabled
   - name: nfs-server
@@ -37,5 +35,9 @@ dependencies:
     condition: nfsrods.enabled
   - name: nginx
     condition: nginx.enabled
+  - name: pod-reaper
+    condition: pod-reaper.enabled
+  - name: roger
+    condition: roger.enabled
   - name: tycho-api
     condition: tycho-api.enabled

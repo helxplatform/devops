@@ -11,5 +11,7 @@ spec:
   resources:
     requests:
       storage: 100Mi
+  {{ if .Values.oauth.storageClass }}
   storageClassName: {{ .Values.oauth.storageClass }}
+  {{- end }}
 {{- end }}

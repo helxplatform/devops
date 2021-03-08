@@ -13,7 +13,6 @@ data:
   OAUTH_DB_DIR: /var/lib/sqlite3
   OAUTH_DB_FILE: DATABASE.sqlite3
   ACCOUNT_DEFAULT_HTTP_PROTOCOL: "{{ .Values.ACCOUNT_DEFAULT_HTTP_PROTOCOL }}"
-  TYCHO_URL: http://{{ .Values.global.tycho_api_service_name }}:8099
   DEV_PHASE: prod
   # Just adding these ports temporarily until they have a default value in the code.
   BRAINI_PORT: "1247"

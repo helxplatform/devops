@@ -1,0 +1,38 @@
+# Default values for chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: helxplatform/pod-reaper
+  tag: 1.1.1
+
+# A set of named reapers
+# Example config:
+#
+reapers:
+  short-running-apps:
+    grace_period: 10m
+    schedule: "@every 1m"
+    run_duration: "0s"
+    require_label_key: "app-name"
+    require_label_values: "jupyter-ds,imagej,napari,cloud-top,dicom-cloudtop,dicom-gh,blackbalsam,gsforge"
+    dry_run: "false"
+    log_level: "Info"
+    log_format: "Logrus"
+    max_duration: "1h"
+  long-running-apps:
+    grace_period: 10m
+    schedule: "@every 1m"
+    run_duration: "0s"
+    require_label_key: "app-name"
+    require_label_values: "nextflow"
+    dry_run: "false"
+    log_level: "Info"
+    log_format: "Logrus"
+    max_duration: "5h"
+resources:
+  limits:
+    cpu: 30m
+    memory: 30Mi
+  requests:
+    cpu: 20m
+    memory: 20Mi

@@ -1,0 +1,199 @@
+redis:
+  image:
+    repository: redislabs/redisgraph
+    tag: 2.2.13
+  redis:
+    command: "redis-server"
+  clusterDomain: "blackbalsam-cluster"
+  cluster:
+    slaveCount: 1
+  usePassword: false
+  master:
+    command: ""
+    readinessProbe:
+      enabled: false
+    livenessProbe:
+      enabled: false
+    extraFlags:
+      - "--loadmodule /usr/lib/redis/modules/redisgraph.so"
+  slave:
+    command: ""
+    readinessProbe:
+      enabled: false
+    livenessProbe:
+      enabled: false
+    extraFlags:
+      - "--loadmodule /usr/lib/redis/modules/redisgraph.so"
+
+
+airflow:
+  #
+  # NOTE:
+  # - This is intended to be a `custom-values.yaml` starting point for non-production deployment (like minikube)
+
+  # External Dependencies:
+  # - A PUBLIC git repo for DAGs: ssh://git@repo.example.com:my-airflow-dags.git
+  #
+
+  ###################################
+  # Airflow - Common Configs
+  ###################################
+  airflow:
+    ## the airflow executor type to use
+    ##
+    image:
+      repository: helxplatform/airflow
+      tag: "develop-v0.0.3"
+    #  executor: CeleryExecutor
+    executor: KubernetesExecutor
+
+    ## environment variables for the web/scheduler/worker Pods (for airflow configs)
+    ##
+    config:
+      # Security
+      AIRFLOW__CORE__SECURE_MODE: "True"
+      AIRFLOW__API__AUTH_BACKEND: "airflow.api.auth.backend.deny_all"
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "False"
+      AIRFLOW__WEBSERVER__RBAC: "False"
+      AIRFLOW__KUBERNETES__GIT_REPO: "https://git@github.com/helxplatform/roger.git"
+      # https://airflow.apache.org/docs/apache-airflow/1.10.12/configurations-ref.html#git-ssh-key-secret-name
+#      AIRFLOW__KUBERNETES__GIT_SSH_KEY_SECRET_NAME: "airflow-secrets"
+      # @TODO change this to master.
+      AIRFLOW__KUBERNETES__GIT_BRANCH: "develop"
+      AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT: "/opt/airflow/dags"
+      AIRFLOW__KUBERNETES__GIT_SYNC_DEST: "roger"
+      AIRFLOW__KUBERNETES__DAGS_VOLUME_SUBPATH: "roger"
+      AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
+      AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: "helxplatform/airflow"
+      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "develop-v0.0.3"
+      # DAGS
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+
+      ## Disable noisy "Handling signal: ttou" Gunicorn log messages
+      GUNICORN_CMD_ARGS: "--log-level WARNING"
+      AIRFLOW__WEBSERVER__BASE_URL: "http://localhost:8080/airflow"
+
+
+    ###################################
+    # Volumes
+    ###################################
+    extraVolumeMounts:
+      - name: roger-data
+        mountPath: /dags/roger/data
+
+    ## extra volumes for the web/scheduler/worker Pods
+
+    extraVolumes:
+      - name: roger-data
+        emptyDir: {}
+
+    configSecretsName: airflow-config-secrets
+
+    extraEnv:
+      - name: AIRFLOW__CORE__FERNET_KEY
+        valueFrom:
+          secretKeyRef:
+            # Same as airflow.configSecretsName
+            name: airflow-config-secrets
+            key: fernet-key
+
+
+
+  ###################################
+  # Airflow - WebUI Configs
+  ###################################
+
+  web:
+    ## configs for the Service of the web Pods
+    ##
+    service:
+      type: ClusterIP
+
+
+  ###################################
+  # Airflow - Worker Configs
+  ###################################
+  workers:
+    ## the number of workers Pods to run
+    ##
+    ### Kubernetes executor doesn't need worker
+    replicas: 0
+
+  ###################################
+  # Airflow - DAGs Configs
+  ###################################
+  dags:
+    ## configs for the DAG git repository & sync container
+    ##
+    git:
+      ## url of the git repository
+      url: "https://git@github.com/helxplatform/roger.git"
+
+      ## the branch/tag/sha1 which we clone
+      ##
+      ref: indexing-and-integration
+
+
+      ## the host name of the git repo
+      ##
+      ## NOTE:
+      ## - this is ONLY REQUIRED for SSH git repos
+      ##
+      ## EXAMPLE:
+      ##   repoHost: "github.com"
+      ##
+      repoHost: "github.com"
+
+      ## the port of the git repo
+      ## NOTE:
+      ## - this is ONLY REQUIRED for SSH git repos
+      ##
+
+      ## configs for the git-sync container
+      gitSync:
+        ## enable the git-sync sidecar container
+        enabled: true
+        ## the git sync interval in seconds
+        refreshTime: 60
+    installRequirments: true
+
+  ###################################
+  # Database - PostgreSQL Chart
+  ###################################
+  postgresql:
+    enabled: true
+
+  ###################################
+  # Database - Redis Chart
+  ###################################
+  redis:
+    enabled: false
+
+  # airflow.airflow.config.AIRFLOW__WEBSERVER__BASE_URL path suffix
+  ingress:
+    web:
+      # This should be equivalent to
+      path: /airflow
+
+
+
+tranql:
+  image: renciorg/tranql-app
+  imageTag: develop-test
+  replicas: 1
+  port: 8081
+  gunicorn:
+    workerCount: 4
+    workerTimeout: 300
+  service:
+    type: ClusterIP
+
+
+web:
+  ambassador:
+    tranql:
+      prefix: /tranql
+      map_name: tranql-amb
+    airflowUI:
+      prefix: /airflow
+      map_name: airflow-ui-amb
