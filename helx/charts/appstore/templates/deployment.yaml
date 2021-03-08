@@ -284,9 +284,9 @@ spec:
             subPath: log
           {{- end}}
       {{- end }}
-      {{- if .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.imagePullSecrets }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always
       {{- if .Values.oauth.claimName }}
