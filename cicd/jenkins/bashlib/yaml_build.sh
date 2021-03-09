@@ -5,6 +5,11 @@ PREBUILD=0
 BUILD=1
 UNIT_TEST=2
 
+PROJECT=$1
+JENKINS_HOME="/var/jenkins_home"
+WKSPC="$JENKINS_HOME/workspace/$PROJECT"
+JOBS="$JENKINS_HOME/jobs/$PROJECT"
+
 
 # --- GET_TAGS ---
 # parameters:
@@ -119,14 +124,19 @@ function prebuild ()
    local -r version_file=$4
    local -r build_args=$5
 
- #  echo "prebuild: $org $repo $branch $version_file $build_args"
+   if [ ! -e $version_file ]; then
+      mkdir $JOBS/version
+      mkdir $JOBS/version/$branch
+      echo "0.0.0" > $JOBS/version/$branch/ver
+   fi
+
    incr_version $version_file
-    rc=$?
-    case $rc in
+   rc=$?
+   case $rc in
         0) ;;
         255) echo "${FUNCNAME[0]}: Failed to increment version. Exiting."; exit $rc;;
         *) echo "${FUNCNAME[0]}: Unknown error"; exit $rc;;
-    esac
+   esac
 
    local ver=$(get_version $version_file)
    echo "$ver" >&2
@@ -256,7 +266,7 @@ function security_scan ()
 }
 
 
-# --- CLEANUP --- 
+# --- CLEANUP ---
 function cleanup ()
 {
    local org=$1
@@ -267,7 +277,7 @@ function cleanup ()
    docker images -a | grep "$org/$repo" | awk '{print $3}' | xargs docker rmi -f || true
 }
 
-# --- BUILD_APP --- 
+# --- BUILD_APP ---
 function build_app ()
 {
    local -r project=$1
@@ -301,7 +311,7 @@ function build_app ()
 
    echo "${FUNCNAME[0]} starting."
 
-   # Read YAML into arrays for processing 
+   # Read YAML into arrays for processing
    echo "${FUNCNAME[0]}: Reading yaml file . . ."
    local code_array=(`yq read -X $project.yaml 'code.*'`)
    local docker_array=(`yq read -X $project.yaml 'docker.*'`)
@@ -334,11 +344,10 @@ function build_app ()
    local -r DATAFILE=$(yq read "$project.yaml" 'test.datafile')
 
    # Derived constants from yaml + givens
-   local -r JENKINS_HOME="/var/jenkins_home"
-   local -r WS="$JENKINS_HOME/workspace/$project/${docker_array[$DOCKER_PRI_REPO]}"
+   local -r WS="$WKSPC/${docker_array[$DOCKER_PRI_REPO]}"
    local -r REPO2_APPDIR=${docker_array[$DOCKER_PRI_REPO]}
    local -r REPO2_APP_HOME="$WS/$REPO2_APPDIR"
-   local -r VERSION_FILE="$JENKINS_HOME/jobs/$project/version/$BRANCH/ver"
+   local -r VERSION_FILE="$JOBS/version/$BRANCH/ver"
 
    echo "${FUNCNAME[0]}: Invoking check_prereqs"
    check_prereqs
@@ -353,9 +362,9 @@ function build_app ()
 
    # The init function checks the app's yaml to see if it requires a custom
    #   function for any of the above three functions. If so, it updates
-   #   func_array with the name of the custom function. 
+   #   func_array with the name of the custom function.
    # The resulting function set is then invoked from the array below.
-   # This provides a _very_ weak form of polymorphism akin to function 
+   # This provides a _very_ weak form of polymorphism akin to function
    #   pointers in C which reduces the amount of "hooking" that has to occur
    #   in the default functions and hopefully increases maintainability.
    # For simplicity, the custom functions must use the same parameter list as
@@ -416,5 +425,4 @@ function build_app ()
    echo "${FUNCNAME[0]}: Done."
 }
 
-build_project=$1
-build_app $build_project
+build_app $PROJECT
