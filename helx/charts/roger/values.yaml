@@ -147,7 +147,7 @@ airflow:
 
       ## the branch/tag/sha1 which we clone
       ##
-      ref: indexing-and-integration
+      ref: develop
 
 
       ## the host name of the git repo
