@@ -14,7 +14,7 @@ metadata:
       name: {{ .Values.web.ambassador.airflowUI.map_name }}
       prefix: {{ .Values.web.ambassador.airflowUI.prefix }}
       service: {{ include "roger.fullname" . }}-airflow-ui-svc:8080
-      rewrite: {{ .Values.web.ambassador.airflowUI.prefix }}
+      rewrite: {{ .Values.web.ambassador.airflowUI.rewrite }}
 
 spec:
   ports:
