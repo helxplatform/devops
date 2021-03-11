@@ -112,7 +112,7 @@ data:
                 {{- end }}
 
                 # Makes /airflow/ accessible if not authenticated
-                location /airflow/ {
+                location /airflow {
                          proxy_http_version 1.1;
                          {{- if .Values.DEV_PHASE.dev }}
                          {{- else }}
@@ -124,6 +124,7 @@ data:
                          proxy_set_header Authorization $access_token;
                          add_header Authorization $access_token;
                          {{- end }}
+                         proxy_set_header Host $http_host;
                          proxy_pass http://{{ .Values.global.ambassador_service_name }}:80$request_uri;
                          proxy_pass_request_headers  on;
                 }
