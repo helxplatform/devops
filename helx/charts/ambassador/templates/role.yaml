@@ -4,29 +4,6 @@ metadata:
   name: {{ include "ambassador.fullname" . }}-role
   namespace: {{ .Release.Namespace }}
 rules:
-# Works with PRP cluster.
 - apiGroups: [""]
-  resources: [ "endpoints", "namespaces", "secrets", "services" ]
+  resources: [ "services" ]
   verbs: ["get", "list", "watch"]
-
-{{- if .Values.roleIngresses }}
-- apiGroups: [ "extensions", "networking.k8s.io" ]
-  resources: [ "ingresses" ]
-  verbs: ["get", "list", "watch"]
-{{- end }}
-
-{{- if not .Values.prp.deployment }}
-# Does not work with PRP.
-- apiGroups: [ "getambassador.io" ]
-  resources: [ "*" ]
-  verbs: ["get", "list", "watch"]
-- apiGroups: [ "networking.internal.knative.dev" ]
-  resources: [ "clusteringresses", "ingresses" ]
-  verbs: ["get", "list", "watch"]
-- apiGroups: [ "networking.internal.knative.dev" ]
-  resources: [ "ingresses/status", "clusteringresses/status" ]
-  verbs: ["update"]
-- apiGroups: [ "extensions", "networking.k8s.io" ]
-  resources: [ "ingresses/status" ]
-  verbs: ["update"]
-{{- end }}

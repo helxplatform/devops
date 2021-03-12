@@ -21,12 +21,6 @@ service:
 adminservice:
   type: ClusterIP
 
-prp:
-   # PRP cluster deployment: <True or False>
-   deployment: false
-
-roleIngresses: true
-
 securityContext:
   runAsUser: 8888
   # runAsGroup: 8888
@@ -35,7 +29,7 @@ securityContext:
 resources:
   limits:
     cpu: 200m
-    memory: 150Mi
+    memory: 300Mi
   requests:
     cpu: 50m
     memory: 75Mi
