@@ -8,10 +8,12 @@ metadata:
     {{- toYaml . | nindent 4 }}
 {{- end }}
 spec:
+  {{ if .Values.SSL }}
   tls:
     - hosts:
       - {{ .Values.ingress.host }}
       secretName: {{ .Values.SSL.nginxTLSSecret }}
+  {{- end }}
   rules:
   - host: {{ .Values.ingress.host }}
     http:
