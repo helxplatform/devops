@@ -94,7 +94,7 @@ redis:
 web:
   image:
     repository: helxplatform/dug
-    tag: 1.0.8
+    tag: 1.0.9
     pullPolicy: IfNotPresent
   imagePullSecrets: []
   app_name: web
@@ -110,7 +110,7 @@ web:
     search_kg:
       map_name: dug-search-kg
       prefix: /search_kg
-  crawl_command: bin/dug crawl_by_tag --crawl-file data/topmed_variables_v1.0.csv
+  crawl_command: bin/dug crawl_by_concept --crawl-file data/topmed_variables_v1.0.csv
   # Add any extra environment variables not already defined in the chart.
   extraEnv: {}
   resources:
@@ -129,8 +129,10 @@ search_client:
   http_port: 80
   container_port: 8080
   image:
-    repository: helxplatform/dug-search-client
-    tag: 1.0.8
+    # repository: helxplatform/dug-search-client
+    # tag: 1.0.8
+    repository: heliumdatastage/dug-search-client
+    tag: ed954d7-prod
     pullPolicy: IfNotPresent
   imagePullSecrets: []
   ambassador:
