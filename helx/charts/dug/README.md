@@ -1,6 +1,6 @@
 # dug
 
-![Version: 0.2.11](https://img.shields.io/badge/Version-0.2.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.3](https://img.shields.io/badge/AppVersion-1.0.3-informational?style=flat-square)
+![Version: 0.2.12](https://img.shields.io/badge/Version-0.2.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.4](https://img.shields.io/badge/AppVersion-1.0.4-informational?style=flat-square)
 
 Helm chart for dug
 
@@ -89,8 +89,8 @@ Helm chart for dug
 | search_client.extraEnv | object | `{}` |  |
 | search_client.http_port | int | `80` |  |
 | search_client.image.pullPolicy | string | `"IfNotPresent"` |  |
-| search_client.image.repository | string | `"heliumdatastage/dug-search-client"` |  |
-| search_client.image.tag | string | `"ed954d7-prod"` |  |
+| search_client.image.repository | string | `"helxplatform/dug-search-client"` |  |
+| search_client.image.tag | string | `"1.0.9"` |  |
 | search_client.imagePullSecrets | list | `[]` |  |
 | search_client.resources.limits.cpu | string | `"200m"` |  |
 | search_client.resources.limits.memory | string | `"256Mi"` |  |

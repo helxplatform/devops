@@ -129,10 +129,8 @@ search_client:
   http_port: 80
   container_port: 8080
   image:
-    # repository: helxplatform/dug-search-client
-    # tag: 1.0.8
-    repository: heliumdatastage/dug-search-client
-    tag: ed954d7-prod
+    repository: helxplatform/dug-search-client
+    tag: 1.0.9
     pullPolicy: IfNotPresent
   imagePullSecrets: []
   ambassador:
