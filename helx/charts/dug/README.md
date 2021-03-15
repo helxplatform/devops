@@ -1,6 +1,6 @@
 # dug
 
-![Version: 0.2.10](https://img.shields.io/badge/Version-0.2.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.2](https://img.shields.io/badge/AppVersion-1.0.2-informational?style=flat-square)
+![Version: 0.2.12](https://img.shields.io/badge/Version-0.2.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.4](https://img.shields.io/badge/AppVersion-1.0.4-informational?style=flat-square)
 
 Helm chart for dug
 
@@ -90,7 +90,7 @@ Helm chart for dug
 | search_client.http_port | int | `80` |  |
 | search_client.image.pullPolicy | string | `"IfNotPresent"` |  |
 | search_client.image.repository | string | `"helxplatform/dug-search-client"` |  |
-| search_client.image.tag | string | `"1.0.8"` |  |
+| search_client.image.tag | string | `"1.0.9"` |  |
 | search_client.imagePullSecrets | list | `[]` |  |
 | search_client.resources.limits.cpu | string | `"200m"` |  |
 | search_client.resources.limits.memory | string | `"256Mi"` |  |
@@ -104,12 +104,12 @@ Helm chart for dug
 | web.ambassador.search_kg.prefix | string | `"/search_kg"` |  |
 | web.api_port | int | `5551` |  |
 | web.app_name | string | `"web"` |  |
-| web.crawl_command | string | `"bin/dug crawl_by_tag --crawl-file data/topmed_variables_v1.0.csv"` |  |
+| web.crawl_command | string | `"bin/dug crawl_by_concept --crawl-file data/topmed_variables_v1.0.csv"` |  |
 | web.debug | bool | `false` |  |
 | web.extraEnv | object | `{}` |  |
 | web.image.pullPolicy | string | `"IfNotPresent"` |  |
 | web.image.repository | string | `"helxplatform/dug"` |  |
-| web.image.tag | string | `"1.0.8"` |  |
+| web.image.tag | string | `"1.0.9"` |  |
 | web.imagePullSecrets | list | `[]` |  |
 | web.resources.limits.cpu | string | `"250m"` |  |
 | web.resources.limits.memory | string | `"256Mi"` |  |

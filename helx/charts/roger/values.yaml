@@ -212,4 +212,5 @@ web:
       map_name: tranql-amb
     airflowUI:
       prefix: /airflow
+      rewrite: /airflow/
       map_name: airflow-ui-amb
