@@ -65,8 +65,8 @@ data:
       DATABASE_HOST="{{ .Release.Name }}-postgresql"
       DATABASE_PORT="5432"
       {{- else }}
-      DATABASE_HOST="{{ .Values.externalDatabase.host }}"
-      DATABASE_PORT="{{ .Values.externalDatabase.port }}"
+      DATABASE_HOST="{{ .Values.airflow.externalDatabase.host }}"
+      DATABASE_PORT="{{ .Values.airflow.externalDatabase.port }}"
     {{- end }}
     pg_uri=$PG_URL
     pg_host=$PG_HOST
