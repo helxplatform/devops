@@ -7,12 +7,12 @@ DJANGO_ADMIN_PASSWORD=`kubectl -n {{ .Release.Namespace }} get secret {{ .Releas
 {{- if eq .Values.nginx.service.serverName "_" }}
 HELX_IP=`kubectl -n {{ .Release.Namespace }} get svc {{ .Release.Name }}-nginx -o jsonpath="{.status.loadBalancer.ingress[*].ip}"` && \
 printf "\nDjango admin username: $DJANGO_ADMIN_USERNAME\n" && \
-printf "Django admin password: $DJANGO_ADMIN_PASSWORD\n" && \
+printf '%s\n' "Django admin password: $DJANGO_ADMIN_PASSWORD" && \
 printf "Django admin URL     : {{ .Values.appstore.ACCOUNT_DEFAULT_HTTP_PROTOCOL }}://$HELX_IP/admin\n" && \
 printf "HeLx URL             : {{ .Values.appstore.ACCOUNT_DEFAULT_HTTP_PROTOCOL }}://$HELX_IP\n\n"
 {{- else }}
 printf "\nDjango admin username: $DJANGO_ADMIN_USERNAME\n" && \
-printf "Django admin password: $DJANGO_ADMIN_PASSWORD\n" && \
+printf '%s\n' "Django admin password: $DJANGO_ADMIN_PASSWORD" && \
 printf "Django admin URL     : {{ .Values.appstore.ACCOUNT_DEFAULT_HTTP_PROTOCOL }}://{{ .Values.nginx.service.serverName }}/admin\n" && \
 printf "HeLx URL             : {{ .Values.appstore.ACCOUNT_DEFAULT_HTTP_PROTOCOL }}://{{ .Values.nginx.service.serverName }}\n\n"
 {{- end }}
