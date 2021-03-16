@@ -1,31 +1,38 @@
 # Parent chart for HeLx.
 
 ambassador:
+  # -- enable/disable deployment of Ambassador
   enabled: true
 appstore:
+  # -- enable/disable deployment of appstore
   enabled: true
 backup-pvc-cronjob:
-  enabled: false
-commonsshare:
+  # -- enable/disable deployment of backup-pvc-cronjob
   enabled: false
 dug:
-  enabled: true
-nfs-server:
+  # -- enable/disable deployment of dug
   enabled: false
+nfs-server:
+  # -- enable/disable deployment of nfs-server
+  enabled: true
 nfsrods:
+  # -- enable/disable deployment of nfsrods
   enabled: false
 nginx:
+  # -- enable/disable deployment of nginx
   enabled: true
 tycho-api:
+  # -- enable/disable deployment of tycho-api
   enabled: false
 pod-reaper:
+  # -- enable/disable deployment of pod-reaper
   enabled: true
 roger:
-  enabled: true
+  # -- enable/disable deployment of roger
+  enabled: false
 
 global:
   tycho_api_service_name: helx-tycho-api
-  # ambassador_service_name: helx-ambassador
   dug_web_service_name: helx-dug-web
   dug_search_client_service_name: helx-dug-search-client
   restartr_api_service_name: helx-restartr-api-service
