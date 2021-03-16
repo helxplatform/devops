@@ -13,6 +13,15 @@ spec:
           configMap:
             name: airflow-webserver-config
             defaultMode: 0777
+      initContainers:
+        - name: test-postgres
+          image: postgres:13.2
+          volumeMounts:
+            - name: airflow-webserver-config
+              subPath: postgres_hang.sh
+              mountPath: /var/postgres_hang.sh
+          command:
+            - '/var/postgres_hang.sh'
       containers:
         - name: init-db
           image: {{ .Values.airflow.airflow.image.repository}}:{{ .Values.airflow.airflow.image.tag }}
