@@ -57,8 +57,24 @@ data:
   users_create.sh: |-
     #! /bin/sh
     echo "Creating User $ADMIN_USER_NAME"
-    sleep_time=45s
-    echo "Sleeping for ${sleep_time} till postgres is live"
-    sleep $sleep_time
     res=$(airflow users create --username $ADMIN_USER_NAME --password $ADMIN_PASSWORD --firstname admin --lastname admin --email admin@example.com --role 'Admin')
     exit 0
+  postgres_hang.sh: |-
+    #!/bin/sh
+    {{- if .Values.airflow.postgresql.enabled }}
+      DATABASE_HOST="{{ .Release.Name }}-postgresql"
+      DATABASE_PORT="5432"
+      {{- else }}
+      DATABASE_HOST="{{ .Values.airflow.externalDatabase.host }}"
+      DATABASE_PORT="{{ .Values.airflow.externalDatabase.port }}"
+    {{- end }}
+    pg_uri=$PG_URL
+    pg_host=$PG_HOST
+    pg_user=postgres
+    # make sure pg is ready to accept connections
+    until pg_isready -h $DATABASE_HOST -p $DATABASE_PORT
+    do
+      echo "Waiting for postgres at: $DATABASE_HOST"
+      sleep 2;
+    done
+    echo "postgres is live"
