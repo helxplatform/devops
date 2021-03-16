@@ -108,8 +108,6 @@ airflow:
         subPath: webserver_config.py
 
     extraEnv:
-      - name: ADMIN_REMOTE_USER_NAME
-        value: admin
       - name: AIRFLOW__CORE__FERNET_KEY
         valueFrom:
           secretKeyRef:
