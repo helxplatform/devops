@@ -57,5 +57,8 @@ data:
   users_create.sh: |-
     #! /bin/sh
     echo "Creating User $ADMIN_USER_NAME"
+    sleep_time=45s
+    echo "Sleeping for ${sleep_time} till postgres is live"
+    sleep $sleep_time
     res=$(airflow users create --username $ADMIN_USER_NAME --password $ADMIN_PASSWORD --firstname admin --lastname admin --email admin@example.com --role 'Admin')
     exit 0
