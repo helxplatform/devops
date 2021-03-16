@@ -22,6 +22,6 @@
   DJANGO_ADMIN_PASSWORD=`kubectl -n {{ .Release.Namespace }} get secret {{ include "appstore.fullname" . }} -o jsonpath="{.data.APPSTORE_DJANGO_PASSWORD}" | base64 --decode` && \
 
   printf "\nDjango admin username: $DJANGO_ADMIN_USERNAME\n" && \
-  printf "Django admin password: $DJANGO_ADMIN_PASSWORD\n\n"
+  printf '%s\n\n' "Django admin password: $DJANGO_ADMIN_PASSWORD"
 
   #

@@ -1,6 +1,6 @@
 # roger
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.3](https://img.shields.io/badge/AppVersion-1.0.3-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.3](https://img.shields.io/badge/AppVersion-1.0.3-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -28,11 +28,18 @@ A Helm chart for Kubernetes
 | airflow.airflow.config.AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY | string | `"helxplatform/airflow"` |  |
 | airflow.airflow.config.AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG | string | `"develop-v0.0.3"` |  |
 | airflow.airflow.config.AIRFLOW__WEBSERVER__BASE_URL | string | `"http://localhost:8080/airflow"` |  |
+| airflow.airflow.config.AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX | string | `"True"` |  |
 | airflow.airflow.config.AIRFLOW__WEBSERVER__EXPOSE_CONFIG | string | `"False"` |  |
-| airflow.airflow.config.AIRFLOW__WEBSERVER__RBAC | string | `"False"` |  |
+| airflow.airflow.config.AIRFLOW__WEBSERVER__EXPOSE_HOSTNAME | string | `"False"` |  |
+| airflow.airflow.config.AIRFLOW__WEBSERVER__RBAC | string | `"True"` |  |
 | airflow.airflow.config.GUNICORN_CMD_ARGS | string | `"--log-level WARNING"` |  |
 | airflow.airflow.configSecretsName | string | `"airflow-config-secrets"` |  |
 | airflow.airflow.executor | string | `"KubernetesExecutor"` |  |
+| airflow.airflow.extraConfigmapMounts[0].configMap | string | `"airflow-webserver-config"` |  |
+| airflow.airflow.extraConfigmapMounts[0].mountPath | string | `"/opt/airflow/webserver_config.py"` |  |
+| airflow.airflow.extraConfigmapMounts[0].name | string | `"airlflow-webserver-config"` |  |
+| airflow.airflow.extraConfigmapMounts[0].readOnly | bool | `true` |  |
+| airflow.airflow.extraConfigmapMounts[0].subPath | string | `"webserver_config.py"` |  |
 | airflow.airflow.extraEnv[0].name | string | `"AIRFLOW__CORE__FERNET_KEY"` |  |
 | airflow.airflow.extraEnv[0].valueFrom.secretKeyRef.key | string | `"fernet-key"` |  |
 | airflow.airflow.extraEnv[0].valueFrom.secretKeyRef.name | string | `"airflow-config-secrets"` |  |
@@ -58,6 +65,7 @@ A Helm chart for Kubernetes
 | airflow.dags.installRequirments | bool | `true` |  |
 | airflow.ingress.web.path | string | `"/airflow"` |  |
 | airflow.postgresql.enabled | bool | `true` |  |
+| airflow.pvcSize | string | `"5Gi"` |  |
 | airflow.redis.enabled | bool | `false` |  |
 | airflow.web.service.type | string | `"ClusterIP"` |  |
 | airflow.workers.replicas | int | `0` |  |
