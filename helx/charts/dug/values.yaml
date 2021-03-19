@@ -110,7 +110,7 @@ web:
     search_kg:
       map_name: dug-search-kg
       prefix: /search_kg
-  crawl_command: bin/dug crawl_by_concept --crawl-file data/topmed_variables_v1.0.csv
+  crawl_command: tar -xf data/bdc_dbgap_data_dicts.tar.gz -C ./data && find ./data/ -type f -name '._*' -exec rm {} \; && cp ./data/topmed_variables_v1.0.csv ./data/topmed_tags_v1.0.json ./data/bdc_dbgap_data_dicts/ && bin/dug crawl_dir data/bdc_dbgap_data_dicts
   # Add any extra environment variables not already defined in the chart.
   extraEnv: {}
   resources:
