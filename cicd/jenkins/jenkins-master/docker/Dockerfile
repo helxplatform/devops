@@ -4,18 +4,95 @@ USER root
 
 RUN echo "deb http://ftp.debian.org/debian stable main contrib non-free" > /etc/apt/sources.list && \
     apt-get update -qq && \
-    apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common gir1.2-glib-2.0 gir1.2-packagekitglib-1.0 python-apt-common python3 python3-venv python3-dbus python3-gi python python-pip python3-software-properties python3-pip python3-wheel python3-setuptools ruby ruby-bundler sudo less vim-tiny gettext-base jq
+    apt-get install -qqy apt-transport-https ca-certificates curl gcc gnupg2 \
+    gir1.2-glib-2.0 gir1.2-packagekitglib-1.0 gettext-base	jq less make\
+    netbase python-apt-common ruby ruby-bundler software-properties-common sudo \
+    tzdata vim-tiny wget
 
-RUN pip  install --upgrade pip wheel setuptools && \
-    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+# Setup python stdlib dependencies and install
+ENV PYTHON_INSTALL_VERSION 3.9.2
+RUN set -ex \
+    && apt-get update && apt-get install -y --no-install-recommends \
+        dpkg-dev \
+        libbluetooth-dev \
+        libbz2-dev \
+        libc6-dev \
+        libexpat1-dev \
+        libffi-dev \
+        libgdbm-dev \
+        liblzma-dev \
+        libncursesw5-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        tk-dev \
+        uuid-dev \
+        xz-utils \
+        zlib1g-dev \
+    && wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_INSTALL_VERSION%%[a-z]*}/Python-$PYTHON_INSTALL_VERSION.tar.xz" \
+    && mkdir -p /usr/src/python \
+    && tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
+    && rm python.tar.xz \
+    && cd /usr/src/python \
+    && gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
+    && ./configure \
+        --build="$gnuArch" \
+        --enable-loadable-sqlite-extensions \
+        --enable-optimizations \
+        --enable-option-checking=fatal \
+        --enable-shared \
+        --with-system-expat \
+        --with-system-ffi \
+        --without-ensurepip \
+    && make -j "$(nproc)" \
+        LDFLAGS="-Wl,--strip-all" \
+    && make install \
+    && rm -rf /usr/src/python \
+    && find /usr/local -depth \
+        \( \
+            \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
+            -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name '*.a' \) \) \
+        \) -exec rm -rf '{}' + \
+    && ldconfig \
+    && python3 --version
 
-RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
-    apt-get update  -qq && \
-    apt-cache madison docker-ce && \
-    apt-get install docker-ce=5:19.03.12~3-0~debian-stretch docker-ce-cli=5:19.03.12~3-0~debian-stretch containerd.io -y && \
+# make some useful symlinks that are expected to exist
+RUN cd /usr/local/bin \
+    && ln -s idle3 idle \
+    && ln -s pydoc3 pydoc \
+    && ln -s python3 python \
+    && ln -s python3-config python-config
+
+# Install pip
+RUN set -ex; \
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py; \
+    python3 get-pip.py --no-cache-dir ; \
+    pip --version; \
+    find /usr/local -depth \
+        \( \
+            \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
+            -o \
+            \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+        \) -exec rm -rf '{}' +; \
+    rm -f get-pip.py;
+
+RUN python -m pip install -U pip; \
+    pip install setuptools wheel;
+
+RUN set -ex; \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg; \
+    echo \
+    "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null; \
+    apt-get update -qq && \
+    apt-get install docker-ce=5:19.03.12~3-0~debian-stretch docker-ce-cli=5:19.03.12~3-0~debian-stretch containerd.io -y;
+
+RUN set -ex; \
     curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Linux-x86_64" -o /usr/local/bin/docker-compose && \
     chmod +x /usr/local/bin/docker-compose && \
-    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose && \
+    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose;
+
+RUN set -ex; \
     curl -L https://github.com/arminc/clair-scanner/releases/download/v12/clair-scanner_linux_amd64 -o /usr/local/bin/clair-scanner && \
     chmod +x /usr/local/bin/clair-scanner  && \
     ln -s /usr/local/bin/clair-scanner /usr/bin/clair-scanner && \
@@ -29,6 +106,11 @@ RUN mkdir ruby && \
     cd rubygems-3.1.4 && \
     ruby setup.rb && \
     gem install json2table
+
+# Cleanup and remove some data we don't need anymore.
+RUN set -ex; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    rm -rf /var/lib/apt/lists/*;
 
 ENV USER jenkins
 ENV UID 1000
