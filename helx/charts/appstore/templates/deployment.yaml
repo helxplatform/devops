@@ -51,6 +51,11 @@ spec:
             configMapKeyRef:
               key: ALLOW_DJANGO_LOGIN
               name: {{ include "appstore.fullname" . }}-env
+        - name: WHITELIST_REDIRECT
+          valueFrom:
+            configMapKeyRef:
+              key: WHITELIST_REDIRECT
+              name: {{ include "appstore.fullname" . }}-env
         - name: ALLOW_SAML_LOGIN
           valueFrom:
             configMapKeyRef:
