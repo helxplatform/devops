@@ -29,6 +29,14 @@ dependencies:
     condition: backup-pvc-cronjob.enabled
   - name: dug
     condition: dug.enabled
+  - name: cost-analyzer
+    condition: cost-analyzer.enabled
+    repository: https://kubecost.github.io/cost-analyzer/
+    version: 1.76.0
+  - name: loki-stack
+    condition: loki-stack.enabled
+    repository: https://grafana.github.io/helm-charts
+    version: 2.3.1
   - name: nfs-server
     condition: nfs-server.enabled
   - name: nfsrods
