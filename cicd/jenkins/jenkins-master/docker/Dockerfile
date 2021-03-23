@@ -48,7 +48,6 @@ RUN wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_INSTALL_VE
         --enable-shared \
         --with-system-expat \
         --with-system-ffi \
-        --without-ensurepip \
     && make -j "$(nproc)" \
         LDFLAGS="-Wl,--strip-all" \
     && make install \
