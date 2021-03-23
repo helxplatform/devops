@@ -14,7 +14,7 @@ reapers:
     schedule: "@every 1m"
     run_duration: "0s"
     require_label_key: "app-name"
-    require_label_values: "jupyter-ds,imagej,napari,cloud-top,dicom-cloudtop,dicom-gh,blackbalsam,gsforge"
+    require_label_values: "blackbalsam,cloud-top,dicom-cloudtop,dicom-gh,filebrowser,gsforge,imagej,jupyter-ds,napari"
     dry_run: "false"
     log_level: "Info"
     log_format: "Logrus"

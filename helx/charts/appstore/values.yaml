@@ -82,6 +82,7 @@ django:
   EMAIL_HOST_PASSWORD: ""
   # -- redirect unauthorized users of return a 403
   WHITELIST_REDIRECT: "true"
+  IMAGE_DOWNLOAD_URL: ""
   oauth:
     # -- oauth providers separated by commas (google, github)
     OAUTH_PROVIDERS: ""

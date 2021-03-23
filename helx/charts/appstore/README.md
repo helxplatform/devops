@@ -1,6 +1,6 @@
 # appstore
 
-![Version: 0.1.21](https://img.shields.io/badge/Version-0.1.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.14](https://img.shields.io/badge/AppVersion-1.0.14-informational?style=flat-square)
+![Version: 0.1.22](https://img.shields.io/badge/Version-0.1.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.15](https://img.shields.io/badge/AppVersion-1.0.15-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -26,6 +26,7 @@ A Helm chart for Kubernetes
 | django.DOCKSTORE_APPS_BRANCH | string | `"master"` | Defaults to "master". Specify "develop" to switch. |
 | django.EMAIL_HOST_PASSWORD | string | `""` |  |
 | django.EMAIL_HOST_USER | string | `""` |  |
+| django.IMAGE_DOWNLOAD_URL | string | `""` |  |
 | django.REMOVE_AUTHORIZED_USERS | string | `""` | user emails to remove from an already-existing database |
 | django.WHITELIST_REDIRECT | string | `"true"` | redirect unauthorized users of return a 403 |
 | django.oauth.GITHUB_CLIENT_ID | string | `""` |  |

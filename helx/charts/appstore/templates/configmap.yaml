@@ -22,3 +22,4 @@ data:
   WHITELIST_REDIRECT: "{{ .Values.django.WHITELIST_REDIRECT }}"
   SAML2_AUTH_ASSERTION_URL: "{{ .Values.django.saml2auth.ASSERTION_URL }}"
   SAML2_AUTH_ENTITY_ID: "{{ .Values.django.saml2auth.ENTITY_ID }}"
+  IMAGE_DOWNLOAD_URL: "{{ .Values.django.IMAGE_DOWNLOAD_URL }}"
