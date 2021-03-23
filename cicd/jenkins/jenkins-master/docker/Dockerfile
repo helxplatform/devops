@@ -1,16 +1,18 @@
-FROM jenkins/jenkins:2.263.3-lts
+FROM jenkins/jenkins:2.277.1-lts
 
 USER root
 
+# We have to downgrade libssl to u4 from u5 due to libssl-dev depending on u5
+# Will want to track this and remove in the future.
 RUN echo "deb http://ftp.debian.org/debian stable main contrib non-free" > /etc/apt/sources.list && \
     apt-get update -qq && \
+    apt-get install -qqy --allow-downgrades --reinstall libssl1.1=1.1.1d-0+deb10u4 && \
     apt-get install -qqy apt-transport-https ca-certificates curl gcc gnupg2 \
     gir1.2-glib-2.0 gir1.2-packagekitglib-1.0 gettext-base	jq less make\
     netbase python-apt-common ruby ruby-bundler software-properties-common sudo \
     tzdata vim-tiny wget
 
-# Setup python stdlib dependencies and install
-ENV PYTHON_INSTALL_VERSION 3.9.2
+# Setup python stdlib dependencies
 RUN set -ex \
     && apt-get update && apt-get install -y --no-install-recommends \
         dpkg-dev \
@@ -28,8 +30,11 @@ RUN set -ex \
         tk-dev \
         uuid-dev \
         xz-utils \
-        zlib1g-dev \
-    && wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_INSTALL_VERSION%%[a-z]*}/Python-$PYTHON_INSTALL_VERSION.tar.xz" \
+        zlib1g-dev;
+
+# Install python3.x
+ENV PYTHON_INSTALL_VERSION 3.9.2
+RUN wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_INSTALL_VERSION%%[a-z]*}/Python-$PYTHON_INSTALL_VERSION.tar.xz" \
     && mkdir -p /usr/src/python \
     && tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
     && rm python.tar.xz \
@@ -85,7 +90,7 @@ RUN set -ex; \
     "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
     $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null; \
     apt-get update -qq && \
-    apt-get install docker-ce=5:19.03.12~3-0~debian-stretch docker-ce-cli=5:19.03.12~3-0~debian-stretch containerd.io -y;
+    apt-get install docker-ce=5:19.03.12~3-0~debian-buster docker-ce-cli=5:19.03.12~3-0~debian-buster containerd.io -y;
 
 RUN set -ex; \
     curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Linux-x86_64" -o /usr/local/bin/docker-compose && \
