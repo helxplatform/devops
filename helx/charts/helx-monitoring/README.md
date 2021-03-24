@@ -1,8 +1,39 @@
 # helx-monitoring
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
-
 Monitoring tools to use alongside HeLx
+
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+
+## Configuring helx-monitoring
+
+This is a chart for deploying [loki-stack](https://github.com/grafana/helm-charts/tree/main/charts/loki-stack) and [kubecost](https://github.com/kubecost/cost-analyzer-helm-chart).  Currently it needs to be installed separately from the rest of HeLx.
+
+## Install using Helm
+
+```
+helm repo add helxplatform https://helxplatform.github.io/devops/charts
+helm repo update
+helm upgrade --install loki-stack helxplatform/helx-monitoring -n loki-stack --create-namespace --set loki-stack.enabled=true
+helm upgrade --install kubecost helxplatform/helx-monitoring -n kubecost --create-namespace --set cost-analyzer.enabled=true
+```
+## Use Port Forwarding to View the Web UI
+```
+# port forward for kubecost
+kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 9090
+# use web browser and go to http://localhost:9090
+
+# get loki-stack user/password
+kubectl -n loki-stack get secret loki-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+kubectl -n loki-stack get secret loki-stack-grafana -o jsonpath="{.data.admin-user}" | base64 -d ; echo
+# port forward for loki-stack
+kubectl port-forward --namespace loki-stack svc/loki-stack-grafana 3000:80
+```
+
+# To Delete helx-monitoring
+```
+helm -n kubecost delete kubecost
+helm -n loki-stack delete loki
+```
 
 ## Requirements
 
@@ -17,7 +48,7 @@ Monitoring tools to use alongside HeLx
 |-----|------|---------|-------------|
 | cost-analyzer.enabled | bool | `false` |  |
 | cost-analyzer.global.prometheus.enabled | bool | `false` |  |
-| cost-analyzer.global.prometheus.fqdn | string | `"http://loki-prometheus-server.default.svc"` |  |
+| cost-analyzer.global.prometheus.fqdn | string | `"http://loki-stack-prometheus-server.loki-stack.svc"` |  |
 | cost-analyzer.kubecostToken | string | `"your-token-goes-here"` |  |
 | loki-stack.enabled | bool | `false` |  |
 | loki-stack.grafana.enabled | bool | `true` |  |

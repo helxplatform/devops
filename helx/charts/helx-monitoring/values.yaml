@@ -5,7 +5,7 @@ cost-analyzer:
   global:
     prometheus:
       enabled: false # If false, Prometheus will not be installed -- only actively supported on paid Kubecost plans
-      fqdn: http://loki-prometheus-server.default.svc #example fqdn. Ignored if enabled: true
+      fqdn: http://loki-stack-prometheus-server.loki-stack.svc #example fqdn. Ignored if enabled: true
   kubecostToken: "your-token-goes-here"
 loki-stack:
   enabled: false
