@@ -2,7 +2,7 @@
 
 Monitoring tools to use alongside HeLx
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 ## Configuring helx-monitoring
 
@@ -32,7 +32,7 @@ kubectl port-forward --namespace loki-stack svc/loki-stack-grafana 3000:80
 # To Delete helx-monitoring
 ```
 helm -n kubecost delete kubecost
-helm -n loki-stack delete loki
+helm -n loki-stack delete loki-stack
 ```
 
 ## Requirements

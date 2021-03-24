@@ -2,7 +2,7 @@ apiVersion: v2
 name: helx-monitoring
 description: Monitoring tools to use alongside HeLx
 type: application
-version: 0.1.1
+version: 0.1.2
 dependencies:
   - name: cost-analyzer
     condition: cost-analyzer.enabled
