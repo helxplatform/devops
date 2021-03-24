@@ -14,30 +14,43 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.3.11
+version: 0.4.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.3.4
+appVersion: 1.3.12
 
 dependencies:
   - name: ambassador
     condition: ambassador.enabled
+    version: 0.1.5
   - name: appstore
     condition: appstore.enabled
+    version: 0.1.23
   - name: backup-pvc-cronjob
     condition: backup-pvc-cronjob.enabled
+    version: 0.1.0
   - name: dug
     condition: dug.enabled
+    version: 0.2.14
+  - name: helx-monitoring
+    condition: helx-monitoring.enabled
+    version: 0.1.0
   - name: nfs-server
     condition: nfs-server.enabled
+    version: 0.2.3
   - name: nfsrods
     condition: nfsrods.enabled
+    version: 0.1.5
   - name: nginx
     condition: nginx.enabled
+    version: 0.2.3
   - name: pod-reaper
     condition: pod-reaper.enabled
+    version: 0.1.2
   - name: roger
     condition: roger.enabled
+    version: 0.1.8
   - name: tycho-api
     condition: tycho-api.enabled
+    version: 0.1.12

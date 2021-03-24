@@ -1,6 +1,6 @@
 # appstore
 
-![Version: 0.1.18](https://img.shields.io/badge/Version-0.1.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.12](https://img.shields.io/badge/AppVersion-1.0.12-informational?style=flat-square)
+![Version: 0.1.23](https://img.shields.io/badge/Version-0.1.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.16](https://img.shields.io/badge/AppVersion-1.0.16-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -26,7 +26,9 @@ A Helm chart for Kubernetes
 | django.DOCKSTORE_APPS_BRANCH | string | `"master"` | Defaults to "master". Specify "develop" to switch. |
 | django.EMAIL_HOST_PASSWORD | string | `""` |  |
 | django.EMAIL_HOST_USER | string | `""` |  |
+| django.IMAGE_DOWNLOAD_URL | string | `""` |  |
 | django.REMOVE_AUTHORIZED_USERS | string | `""` | user emails to remove from an already-existing database |
+| django.WHITELIST_REDIRECT | string | `"true"` | redirect unauthorized users of return a 403 |
 | django.oauth.GITHUB_CLIENT_ID | string | `""` |  |
 | django.oauth.GITHUB_KEY | string | `""` |  |
 | django.oauth.GITHUB_NAME | string | `""` |  |

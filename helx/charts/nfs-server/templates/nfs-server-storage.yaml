@@ -1,4 +1,5 @@
 {{- if not .Values.storage.gcePersistentDiskPdName }}
+{{- if not (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( .Values.storage.claimName )) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -12,4 +13,5 @@ spec:
     requests:
       storage: {{ .Values.storage.pvcStorage }}
   storageClassName: {{ .Values.storage.storageClassName }}
+{{- end }}
 {{- end }}

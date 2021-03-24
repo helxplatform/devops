@@ -1,13 +1,13 @@
 redis:
   image:
     repository: redislabs/redisgraph
-    tag: 2.2.13
+    tag: 2.2.14
   redis:
     command: "redis-server"
   clusterDomain: "blackbalsam-cluster"
   cluster:
     slaveCount: 1
-  usePassword: false
+  usePassword: true
   master:
     command: ""
     readinessProbe:
@@ -24,9 +24,17 @@ redis:
       enabled: false
     extraFlags:
       - "--loadmodule /usr/lib/redis/modules/redisgraph.so"
+  existingSecret: roger-redis-secret
+  existingSecretPasswordKey: redis-password
+
+elasticSearch:
+  host: dug-elasticsearch
+  port: 9200
 
 
 airflow:
+  # size of roger-data-pvc for storing files used by pipelines
+  pvcSize: 5Gi
   #
   # NOTE:
   # - This is intended to be a `custom-values.yaml` starting point for non-production deployment (like minikube)
@@ -43,7 +51,7 @@ airflow:
     ##
     image:
       repository: helxplatform/airflow
-      tag: "develop-v0.0.3"
+      tag: "develop-v0.0.5"
     #  executor: CeleryExecutor
     executor: KubernetesExecutor
 
@@ -54,7 +62,9 @@ airflow:
       AIRFLOW__CORE__SECURE_MODE: "True"
       AIRFLOW__API__AUTH_BACKEND: "airflow.api.auth.backend.deny_all"
       AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "False"
-      AIRFLOW__WEBSERVER__RBAC: "False"
+      AIRFLOW__WEBSERVER__RBAC: "True"
+      AIRFLOW__WEBSERVER__EXPOSE_HOSTNAME: "False"
+      AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX: "True"
       AIRFLOW__KUBERNETES__GIT_REPO: "https://git@github.com/helxplatform/roger.git"
       # https://airflow.apache.org/docs/apache-airflow/1.10.12/configurations-ref.html#git-ssh-key-secret-name
 #      AIRFLOW__KUBERNETES__GIT_SSH_KEY_SECRET_NAME: "airflow-secrets"
@@ -65,14 +75,14 @@ airflow:
       AIRFLOW__KUBERNETES__DAGS_VOLUME_SUBPATH: "roger"
       AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
       AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: "helxplatform/airflow"
-      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "develop-v0.0.3"
+      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "develop-v0.0.5"
       # DAGS
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
 
       ## Disable noisy "Handling signal: ttou" Gunicorn log messages
       GUNICORN_CMD_ARGS: "--log-level WARNING"
       AIRFLOW__WEBSERVER__BASE_URL: "http://localhost:8080/airflow"
-
+      AIRFLOW__KUBERNETES__ENV_FROM_CONFIGMAP_REF: "airflow-env-config"
 
     ###################################
     # Volumes
@@ -89,6 +99,14 @@ airflow:
 
     configSecretsName: airflow-config-secrets
 
+    # https://github.com/airflow-helm/charts/tree/main/charts/airflow#docs-airflow---configmaps
+    extraConfigmapMounts:
+      - name: airlflow-webserver-config
+        mountPath: /opt/airflow/webserver_config.py
+        configMap: airflow-webserver-config
+        readOnly: true
+        subPath: webserver_config.py
+
     extraEnv:
       - name: AIRFLOW__CORE__FERNET_KEY
         valueFrom:
@@ -97,7 +115,17 @@ airflow:
             name: airflow-config-secrets
             key: fernet-key
 
-
+      # This are going to be used to compute env for worker pods.
+      - name: ELASTIC_SEARCH_PASSWORD_SECRET
+        value: dug-secrets
+      - name: ELASTIC_SEARCH_PASSWORD_SECRET_KEY
+        value: ELASTIC_PASSWORD
+      - name: REDIS_PASSWORD_SECRET
+        # Same as redis.existingSecret
+        value: roger-redis-secret
+      - name: REDIS_PASSWORD_SECRET_KEY
+        # same as redis.existingSecretKey
+        value: redis-password
 
   ###################################
   # Airflow - WebUI Configs
@@ -131,7 +159,7 @@ airflow:
 
       ## the branch/tag/sha1 which we clone
       ##
-      ref: indexing-and-integration
+      ref: develop
 
 
       ## the host name of the git repo
@@ -196,4 +224,5 @@ web:
       map_name: tranql-amb
     airflowUI:
       prefix: /airflow
+      rewrite: /airflow/
       map_name: airflow-ui-amb

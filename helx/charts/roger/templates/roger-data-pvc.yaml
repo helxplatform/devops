@@ -1,0 +1,16 @@
+{{- if not (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( "roger-data-pvc" )) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: roger-data-pvc
+  # Prevents deletion on helm uninstall.
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  storageClassName:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.airflow.pvcSize }}
+{{ end }}

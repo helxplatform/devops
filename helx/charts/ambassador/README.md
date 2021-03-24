@@ -1,6 +1,6 @@
 # ambassador
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![AppVersion: 1.1.1](https://img.shields.io/badge/AppVersion-1.1.1-informational?style=flat-square)
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![AppVersion: 1.12.0](https://img.shields.io/badge/AppVersion-1.12.0-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -12,16 +12,14 @@ A Helm chart for Kubernetes
 | fullnameOverride | string | `""` |  |
 | global.ambassador_service_name | string | `"ambassador"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.repository | string | `"quay.io/datawire/ambassador"` |  |
+| image.repository | string | `"docker.io/datawire/ambassador"` |  |
 | imagePullSecrets | list | `[]` |  |
 | nameOverride | string | `""` |  |
-| prp.deployment | bool | `false` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"200m"` |  |
-| resources.limits.memory | string | `"150Mi"` |  |
+| resources.limits.memory | string | `"300Mi"` |  |
 | resources.requests.cpu | string | `"50m"` |  |
 | resources.requests.memory | string | `"75Mi"` |  |
-| roleIngresses | bool | `true` |  |
 | securityContext.runAsUser | int | `8888` |  |
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |

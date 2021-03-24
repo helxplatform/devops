@@ -94,7 +94,7 @@ redis:
 web:
   image:
     repository: helxplatform/dug
-    tag: 1.0.8
+    tag: 1.0.9
     pullPolicy: IfNotPresent
   imagePullSecrets: []
   app_name: web
@@ -110,7 +110,7 @@ web:
     search_kg:
       map_name: dug-search-kg
       prefix: /search_kg
-  crawl_command: bin/dug crawl_by_tag --crawl-file data/topmed_variables_v1.0.csv
+  crawl_command: tar -xf data/bdc_dbgap_data_dicts.tar.gz -C ./data && find ./data/ -type f -name '._*' -exec rm {} \; && cp ./data/topmed_variables_v1.0.csv ./data/topmed_tags_v1.0.json ./data/bdc_dbgap_data_dicts/ && bin/dug crawl_dir data/bdc_dbgap_data_dicts
   # Add any extra environment variables not already defined in the chart.
   extraEnv: {}
   resources:
@@ -130,7 +130,7 @@ search_client:
   container_port: 8080
   image:
     repository: helxplatform/dug-search-client
-    tag: 1.0.8
+    tag: 1.0.9
     pullPolicy: IfNotPresent
   imagePullSecrets: []
   ambassador:
@@ -143,7 +143,7 @@ search_client:
   resources:
     limits:
       cpu: 200m
-      memory: 256Mi
+      memory: 320Mi
     requests:
       cpu: 50m
       memory: 64Mi
