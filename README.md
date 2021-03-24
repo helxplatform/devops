@@ -30,6 +30,7 @@ helm install helx helxplatform/helx
 ```
 
 For more detailed information on the charts see the [documentation](helx).
+For information on using the helx-monitoring chart see it's [documentation](helx/charts/helx-monitoring).
 
 ## HeLx Deployment to GKE Cluster Using Centos 8
 
