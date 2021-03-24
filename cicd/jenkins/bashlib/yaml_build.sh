@@ -199,7 +199,8 @@ function unit_test ()
    if [ $cmd_path != "null" ]; then
       pwd
       ls -l
-      /usr/local/bin/python3 -m venv venv && \
+      /usr/bin/python3 -m venv venv && \
+#      /usr/local/bin/python3 -m venv venv && \
       source venv/bin/activate && \
       pip install --no-cache-dir -r $repo1_req_path --upgrade pip
 
