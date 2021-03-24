@@ -3,7 +3,7 @@ entries:
   ambassador:
   - apiVersion: v1
     appVersion: 1.12.0
-    created: "2021-03-23T17:29:30.290292-04:00"
+    created: "2021-03-24T11:08:19.023958-04:00"
     description: A Helm chart for Kubernetes
     digest: 4da0600b0a1866c0cc16a382803bb5f0285bb5a103773039ac8e1d81b4dab3e8
     name: ambassador
@@ -12,7 +12,7 @@ entries:
     version: 0.1.5
   - apiVersion: v1
     appVersion: 1.1.1
-    created: "2021-03-23T17:29:30.28952-04:00"
+    created: "2021-03-24T11:08:19.023368-04:00"
     description: A Helm chart for Kubernetes
     digest: 9ae55e1fc771f926ce76b0013139fc280a02369874d71636671794af4d222984
     name: ambassador
@@ -21,7 +21,7 @@ entries:
     version: 0.1.4
   - apiVersion: v1
     appVersion: 1.1.1
-    created: "2021-03-23T17:29:30.2886-04:00"
+    created: "2021-03-24T11:08:19.022744-04:00"
     description: A Helm chart for Kubernetes
     digest: 42c7aa386afcb7780c71e067b86da1a5cb83e1aa0222ed18c9895f6f8d57ee75
     name: ambassador
@@ -30,7 +30,7 @@ entries:
     version: 0.1.3
   - apiVersion: v1
     appVersion: 1.1.1
-    created: "2021-03-23T17:29:30.28799-04:00"
+    created: "2021-03-24T11:08:19.021897-04:00"
     description: A Helm chart for Kubernetes
     digest: bbbeea03857ddaf7cba8d9b1fb5e44942c48de0ab98311307cc7ac5c0f53ce83
     name: ambassador
@@ -39,7 +39,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: 1.1.1
-    created: "2021-03-23T17:29:30.287147-04:00"
+    created: "2021-03-24T11:08:19.021033-04:00"
     description: A Helm chart for Kubernetes
     digest: 0b9c00aa87a11e8b95837315512466ee29e21b139dbb908b1145cbcff948c666
     name: ambassador
@@ -49,7 +49,7 @@ entries:
   appstore:
   - apiVersion: v2
     appVersion: 1.0.16
-    created: "2021-03-23T17:29:30.29481-04:00"
+    created: "2021-03-24T11:08:19.029211-04:00"
     description: A Helm chart for Kubernetes
     digest: 10cb4dccd93233e46b8a8d0e7424b8fedb3984d02d98dcff3b3b18e73386c44d
     name: appstore
@@ -59,7 +59,7 @@ entries:
     version: 0.1.23
   - apiVersion: v2
     appVersion: 1.0.14
-    created: "2021-03-23T17:29:30.293938-04:00"
+    created: "2021-03-24T11:08:19.028007-04:00"
     description: A Helm chart for Kubernetes
     digest: 7397289b672ed075116210025c69d1a597ab4e99b76f760cbd3f0185dde36782
     name: appstore
@@ -69,7 +69,7 @@ entries:
     version: 0.1.20
   - apiVersion: v2
     appVersion: 1.0.12
-    created: "2021-03-23T17:29:30.292717-04:00"
+    created: "2021-03-24T11:08:19.027011-04:00"
     description: A Helm chart for Kubernetes
     digest: 36040cc9af33adfa9fede91a71863858cfe8ff9e137bd63778eab13847c6a75d
     name: appstore
@@ -79,7 +79,7 @@ entries:
     version: 0.1.18
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.291347-04:00"
+    created: "2021-03-24T11:08:19.025133-04:00"
     description: A Helm chart for Kubernetes
     digest: 67e1a1477e45790bcfd49c6fafc90b1705687ba66eb46ee7f2fc7eeebc6d72bd
     name: appstore
@@ -89,7 +89,7 @@ entries:
     version: 0.1.10
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.29955-04:00"
+    created: "2021-03-24T11:08:19.03239-04:00"
     description: A Helm chart for Kubernetes
     digest: 3d908cff9760f7f3a69d269e8af31fc4c633e93411d9304bf835d9fb1f6323a5
     name: appstore
@@ -99,7 +99,7 @@ entries:
     version: 0.1.9
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.297913-04:00"
+    created: "2021-03-24T11:08:19.031584-04:00"
     description: A Helm chart for Kubernetes
     digest: 8d721efb24e10cd2b778c4ecb941a1d48ab45299cf527c0d23c9ec6c937c29f3
     name: appstore
@@ -109,7 +109,7 @@ entries:
     version: 0.1.7
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.296813-04:00"
+    created: "2021-03-24T11:08:19.030731-04:00"
     description: A Helm chart for Kubernetes
     digest: 9a2bf6569bb2e7fdc0d5265e0c71f36c6bd2e0c697ca669cf0de205312026d3b
     name: appstore
@@ -119,7 +119,7 @@ entries:
     version: 0.1.6
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.295824-04:00"
+    created: "2021-03-24T11:08:19.029968-04:00"
     description: A Helm chart for Kubernetes
     digest: abb5e5573cb3621565470f32142905b263721e12e288137b03614dc99c01ab43
     name: appstore
@@ -130,7 +130,7 @@ entries:
   backup-pvc-cronjob:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2021-03-23T17:29:30.300107-04:00"
+    created: "2021-03-24T11:08:19.032804-04:00"
     description: A Helm chart for Kubernetes
     digest: a3e4f2a4432c71b024f0d224e23323e76d0f55d76a5bf38fffcc5a213deeeaca
     name: backup-pvc-cronjob
@@ -141,7 +141,7 @@ entries:
   dug:
   - apiVersion: v2
     appVersion: 1.0.4
-    created: "2021-03-23T17:29:30.307075-04:00"
+    created: "2021-03-24T11:08:19.038593-04:00"
     description: Helm chart for dug
     digest: 49c4b8ca4cdf1e5114655f4cb5965e4757ef30a8fcc6dff768891948a4b4e479
     name: dug
@@ -151,7 +151,7 @@ entries:
     version: 0.2.14
   - apiVersion: v2
     appVersion: 1.0.4
-    created: "2021-03-23T17:29:30.305348-04:00"
+    created: "2021-03-24T11:08:19.036416-04:00"
     description: Helm chart for dug
     digest: 30bdc1e05488d41738100a7d52509adff18f4a56b30aa8c2ba377af2588d8d35
     name: dug
@@ -161,7 +161,7 @@ entries:
     version: 0.2.13
   - apiVersion: v2
     appVersion: 1.0.4
-    created: "2021-03-23T17:29:30.303664-04:00"
+    created: "2021-03-24T11:08:19.035136-04:00"
     description: Helm chart for dug
     digest: 5055d5181412a033be0b9c290e0c16fb10027d176280d9091734879d53cc554f
     name: dug
@@ -171,7 +171,7 @@ entries:
     version: 0.2.12
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.301847-04:00"
+    created: "2021-03-24T11:08:19.033957-04:00"
     description: Helm chart for dug
     digest: 074f75e62524b83da102f1681412d985a0d67cab5cca38b31290b0ecc653d190
     name: dug
@@ -181,7 +181,7 @@ entries:
     version: 0.2.10
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.314609-04:00"
+    created: "2021-03-24T11:08:19.044861-04:00"
     description: Helm chart for dug
     digest: b57582f508302d36081fa7baff36fe90d7f9a8d81a5664854b6a4587e9b8953d
     name: dug
@@ -191,7 +191,7 @@ entries:
     version: 0.2.9
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.313081-04:00"
+    created: "2021-03-24T11:08:19.043617-04:00"
     description: Helm chart for dug
     digest: f732fcca007daefe38081516b09c400693197312b9a7e8f9bca81c898964dcec
     name: dug
@@ -201,7 +201,7 @@ entries:
     version: 0.2.7
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.311568-04:00"
+    created: "2021-03-24T11:08:19.042372-04:00"
     description: Helm chart for dug
     digest: 9c7847838f5871917a7330b620c7f5bf7f9b2092c625ad6485d3688e8e7dbddf
     name: dug
@@ -211,7 +211,7 @@ entries:
     version: 0.2.5
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.310324-04:00"
+    created: "2021-03-24T11:08:19.04124-04:00"
     description: Helm chart for dug
     digest: b745a01f3dd1b7c7c489bd4563ac0f8cb553f6ab554216d3780786dd3ab5bbce
     name: dug
@@ -221,7 +221,7 @@ entries:
     version: 0.2.4
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.309193-04:00"
+    created: "2021-03-24T11:08:19.040334-04:00"
     description: Helm chart for dug
     digest: 7634b696743e704d4400a70ab2e405bd6ee87329ced02833b674f245272df770
     name: dug
@@ -231,7 +231,7 @@ entries:
     version: 0.2.3
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.30811-04:00"
+    created: "2021-03-24T11:08:19.039491-04:00"
     description: Helm chart for dug
     digest: ee2d1d87f78e9f4185a4f8813ae61d470b1986687a9f3b4e46f7c3e45e26f3a6
     name: dug
@@ -242,7 +242,62 @@ entries:
   helx:
   - apiVersion: v2
     appVersion: 1.3.12
-    created: "2021-03-23T17:29:30.457512-04:00"
+    created: "2021-03-24T11:08:19.222869-04:00"
+    dependencies:
+    - condition: ambassador.enabled
+      name: ambassador
+      repository: ""
+      version: 0.1.5
+    - condition: appstore.enabled
+      name: appstore
+      repository: ""
+      version: 0.1.23
+    - condition: backup-pvc-cronjob.enabled
+      name: backup-pvc-cronjob
+      repository: ""
+      version: 0.1.0
+    - condition: dug.enabled
+      name: dug
+      repository: ""
+      version: 0.2.14
+    - condition: helx-monitoring.enabled
+      name: helx-monitoring
+      repository: ""
+      version: 0.1.0
+    - condition: nfs-server.enabled
+      name: nfs-server
+      repository: ""
+      version: 0.2.3
+    - condition: nfsrods.enabled
+      name: nfsrods
+      repository: ""
+      version: 0.1.5
+    - condition: nginx.enabled
+      name: nginx
+      repository: ""
+      version: 0.2.3
+    - condition: pod-reaper.enabled
+      name: pod-reaper
+      repository: ""
+      version: 0.1.2
+    - condition: roger.enabled
+      name: roger
+      repository: ""
+      version: 0.1.8
+    - condition: tycho-api.enabled
+      name: tycho-api
+      repository: ""
+      version: 0.1.12
+    description: A Helm chart for deploying HeLx to Kubernetes.
+    digest: 6df2e46c56e64b77814ab9d1599a668571b2ced7b74f74c7a973908839d4d76f
+    name: helx
+    type: application
+    urls:
+    - https://helxplatform.github.io/devops/charts/helx-0.4.1.tgz
+    version: 0.4.1
+  - apiVersion: v2
+    appVersion: 1.3.12
+    created: "2021-03-24T11:08:19.188547-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -297,7 +352,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 1.3.8
-    created: "2021-03-23T17:29:30.425339-04:00"
+    created: "2021-03-24T11:08:19.154604-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -338,7 +393,7 @@ entries:
     version: 0.3.21
   - apiVersion: v2
     appVersion: 1.3.8
-    created: "2021-03-23T17:29:30.411666-04:00"
+    created: "2021-03-24T11:08:19.140212-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -379,7 +434,7 @@ entries:
     version: 0.3.20
   - apiVersion: v2
     appVersion: 1.3.8
-    created: "2021-03-23T17:29:30.397278-04:00"
+    created: "2021-03-24T11:08:19.125748-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -420,7 +475,7 @@ entries:
     version: 0.3.19
   - apiVersion: v2
     appVersion: 1.3.8
-    created: "2021-03-23T17:29:30.382634-04:00"
+    created: "2021-03-24T11:08:19.110544-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -461,7 +516,7 @@ entries:
     version: 0.3.18
   - apiVersion: v2
     appVersion: 1.3.7
-    created: "2021-03-23T17:29:30.366783-04:00"
+    created: "2021-03-24T11:08:19.09555-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -502,7 +557,7 @@ entries:
     version: 0.3.16
   - apiVersion: v2
     appVersion: 1.3.4
-    created: "2021-03-23T17:29:30.361574-04:00"
+    created: "2021-03-24T11:08:19.089463-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -543,7 +598,7 @@ entries:
     version: 0.3.11
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.330077-04:00"
+    created: "2021-03-24T11:08:19.061125-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -581,7 +636,7 @@ entries:
     version: 0.2.18
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.326321-04:00"
+    created: "2021-03-24T11:08:19.05661-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -619,7 +674,7 @@ entries:
     version: 0.2.16
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.322059-04:00"
+    created: "2021-03-24T11:08:19.053015-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -657,7 +712,7 @@ entries:
     version: 0.2.15
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.318446-04:00"
+    created: "2021-03-24T11:08:19.049022-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -695,7 +750,7 @@ entries:
     version: 0.2.13
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.346009-04:00"
+    created: "2021-03-24T11:08:19.075488-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -733,7 +788,7 @@ entries:
     version: 0.2.9
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.342214-04:00"
+    created: "2021-03-24T11:08:19.072138-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -771,7 +826,7 @@ entries:
     version: 0.2.8
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.337857-04:00"
+    created: "2021-03-24T11:08:19.067964-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -809,7 +864,7 @@ entries:
     version: 0.2.7
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.333476-04:00"
+    created: "2021-03-24T11:08:19.064352-04:00"
     dependencies:
     - condition: ambassador.enabled
       name: ambassador
@@ -845,10 +900,29 @@ entries:
     urls:
     - https://helxplatform.github.io/devops/charts/helx-0.2.6.tgz
     version: 0.2.6
+  helx-monitoring:
+  - apiVersion: v2
+    created: "2021-03-24T11:08:19.242456-04:00"
+    dependencies:
+    - condition: cost-analyzer.enabled
+      name: cost-analyzer
+      repository: https://kubecost.github.io/cost-analyzer/
+      version: 1.76.0
+    - condition: loki-stack.enabled
+      name: loki-stack
+      repository: https://grafana.github.io/helm-charts
+      version: 2.3.1
+    description: Monitoring tools to use alongside HeLx
+    digest: d3057c7baf3131b46c2efba7c07426d9f75e6312b73eb73e521d38d5e5ccb93e
+    name: helx-monitoring
+    type: application
+    urls:
+    - https://helxplatform.github.io/devops/charts/helx-monitoring-0.1.0.tgz
+    version: 0.1.0
   nfs-server:
   - apiVersion: v2
     appVersion: "0.8"
-    created: "2021-03-23T17:29:30.462722-04:00"
+    created: "2021-03-24T11:08:19.247446-04:00"
     description: Creates an NFS server that can be used for PVCs.
     digest: 8a93ec86059b667ebc67fa720a30c0cb441387a1dbdb39240ae28a7ed6581866
     name: nfs-server
@@ -858,7 +932,7 @@ entries:
     version: 0.2.3
   - apiVersion: v2
     appVersion: "0.8"
-    created: "2021-03-23T17:29:30.461514-04:00"
+    created: "2021-03-24T11:08:19.245858-04:00"
     description: Creates an NFS server that can be used for PVCs.
     digest: 7b8913b36c4ec52aa52d9ef3d38dacf43790e1515f098049adf28facfeedf3aa
     name: nfs-server
@@ -868,7 +942,7 @@ entries:
     version: 0.2.2
   - apiVersion: v2
     appVersion: "0.8"
-    created: "2021-03-23T17:29:30.460219-04:00"
+    created: "2021-03-24T11:08:19.244609-04:00"
     description: Creates an NFS server that can be used for PVCs.
     digest: c74fee541cb7750b2e7a927e044310711979ff43a08510e51004efd4e23973bb
     name: nfs-server
@@ -878,7 +952,7 @@ entries:
     version: 0.2.1
   - apiVersion: v2
     appVersion: "0.8"
-    created: "2021-03-23T17:29:30.459086-04:00"
+    created: "2021-03-24T11:08:19.243851-04:00"
     description: Creates an NFS server that can be used for PVCs.
     digest: 3da240f5b70d1daa0e35a8045f32055a86fff2a78ce1ec1c6297f58a6cf109ac
     name: nfs-server
@@ -889,7 +963,7 @@ entries:
   nfsrods:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.464445-04:00"
+    created: "2021-03-24T11:08:19.248837-04:00"
     description: A standalone NFSv4.1 server (via nfs4j) with a Virtual File System implementation supporting the iRODS Data Management Platform.
     digest: 511de0e1d5caa62d833ef843c377657ea9876f3ec1b5e65eca6d90e9c38f29f7
     name: nfsrods
@@ -899,7 +973,7 @@ entries:
     version: 0.1.5
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.463461-04:00"
+    created: "2021-03-24T11:08:19.248005-04:00"
     description: A Helm chart for Kubernetes
     digest: aafd68ffcfa53d50f07e250e8247540e025fcab1b0c6a23bd08166bb85c867f9
     name: nfsrods
@@ -910,7 +984,7 @@ entries:
   nginx:
   - apiVersion: v1
     appVersion: 1.0.3
-    created: "2021-03-23T17:29:30.46982-04:00"
+    created: "2021-03-24T11:08:19.252697-04:00"
     description: A Helm chart for Kubernetes
     digest: 7b8f2e287a4536ba85d6915c34f718868b447b72915f8881d66b9ea52023eb24
     name: nginx
@@ -919,7 +993,7 @@ entries:
     version: 0.2.3
   - apiVersion: v1
     appVersion: 1.0.3
-    created: "2021-03-23T17:29:30.468675-04:00"
+    created: "2021-03-24T11:08:19.25172-04:00"
     description: A Helm chart for Kubernetes
     digest: b449ecf16bb296bdb8e84341147317ce32c61e991a66a7ebd5af42565494fe17
     name: nginx
@@ -928,7 +1002,7 @@ entries:
     version: 0.2.2
   - apiVersion: v1
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.467759-04:00"
+    created: "2021-03-24T11:08:19.250736-04:00"
     description: A Helm chart for Kubernetes
     digest: 2f34793848d6906a157f363f207e06f2a732da2762f263e04f9d50bdf7bf0343
     name: nginx
@@ -937,7 +1011,7 @@ entries:
     version: 0.1.7
   - apiVersion: v1
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.466961-04:00"
+    created: "2021-03-24T11:08:19.249821-04:00"
     description: A Helm chart for Kubernetes
     digest: 54a8a4ca07bb8b30e9af033faf6f90cec00b62a28565bdbd625e82d01e883a60
     name: nginx
@@ -946,7 +1020,7 @@ entries:
     version: 0.1.6
   - apiVersion: v1
     appVersion: 1.0.0
-    created: "2021-03-23T17:29:30.465253-04:00"
+    created: "2021-03-24T11:08:19.249285-04:00"
     description: A Helm chart for Kubernetes
     digest: 9c5f4e86818bc1bd3630131b049c45a487848cd56b5da86f6780ef7b5f7083fe
     name: nginx
@@ -956,7 +1030,7 @@ entries:
   pod-reaper:
   - apiVersion: v1
     appVersion: 1.1.0
-    created: "2021-03-23T17:29:30.470871-04:00"
+    created: "2021-03-24T11:08:19.254047-04:00"
     description: A Helm chart for pod-reaper
     digest: 89a27988739d067ae2c6717d362a18336a5de121952fbd0542cfc1b509355080
     home: https://github.com/target/pod-reaper
@@ -966,7 +1040,7 @@ entries:
     version: 0.1.2
   - apiVersion: v1
     appVersion: 1.1.0
-    created: "2021-03-23T17:29:30.470458-04:00"
+    created: "2021-03-24T11:08:19.253275-04:00"
     description: A Helm chart for pod-reaper
     digest: b9c53d3a363aa125b03c7badbd3df40dd2c9537e515b30dad4bbefccec20768a
     home: https://github.com/target/pod-reaper
@@ -977,7 +1051,7 @@ entries:
   roger:
   - apiVersion: v2
     appVersion: 1.0.4
-    created: "2021-03-23T17:29:30.503541-04:00"
+    created: "2021-03-24T11:08:19.286638-04:00"
     dependencies:
     - name: airflow
       repository: https://airflow-helm.github.io/charts
@@ -994,7 +1068,7 @@ entries:
     version: 0.1.8
   - apiVersion: v2
     appVersion: 1.0.3
-    created: "2021-03-23T17:29:30.494018-04:00"
+    created: "2021-03-24T11:08:19.275665-04:00"
     dependencies:
     - name: airflow
       repository: https://airflow-helm.github.io/charts
@@ -1011,7 +1085,7 @@ entries:
     version: 0.1.6
   - apiVersion: v2
     appVersion: 1.0.3
-    created: "2021-03-23T17:29:30.482699-04:00"
+    created: "2021-03-24T11:08:19.265125-04:00"
     dependencies:
     - name: airflow
       repository: https://airflow-helm.github.io/charts
@@ -1029,7 +1103,7 @@ entries:
   tycho-api:
   - apiVersion: v2
     appVersion: 1.0.26
-    created: "2021-03-23T17:29:30.504852-04:00"
+    created: "2021-03-24T11:08:19.288057-04:00"
     description: A Helm chart for Kubernetes
     digest: 0782574b74c87d2a61274805f9e08820086f5e71ee0d460336b19e08e1daedd4
     name: tycho-api
@@ -1039,7 +1113,7 @@ entries:
     version: 0.1.12
   - apiVersion: v2
     appVersion: develop-v0.0.53
-    created: "2021-03-23T17:29:30.504307-04:00"
+    created: "2021-03-24T11:08:19.28735-04:00"
     description: A Helm chart for Kubernetes
     digest: 5cedb762ccd97656ad99a6d6ab9dea75bd1fa8a915847aeb68267c4c9fba508c
     name: tycho-api
@@ -1049,7 +1123,7 @@ entries:
     version: 0.1.11
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.507275-04:00"
+    created: "2021-03-24T11:08:19.29071-04:00"
     description: A Helm chart for Kubernetes
     digest: 4b48b749389f7f4d1d0a41969959885bd958d870cfdd9b4eb94f0eabe86f2bc2
     name: tycho-api
@@ -1059,7 +1133,7 @@ entries:
     version: 0.1.9
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.506713-04:00"
+    created: "2021-03-24T11:08:19.290192-04:00"
     description: A Helm chart for Kubernetes
     digest: d7ee15b095a274493b4192271ad91f50abee43aa67f1dcee041e170aa372a095
     name: tycho-api
@@ -1069,7 +1143,7 @@ entries:
     version: 0.1.8
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.506188-04:00"
+    created: "2021-03-24T11:08:19.289663-04:00"
     description: A Helm chart for Kubernetes
     digest: c1ffd3174b21af041a3a5438bdd72ac6c7b9250887177a0385e7752e578a3d8b
     name: tycho-api
@@ -1079,7 +1153,7 @@ entries:
     version: 0.1.7
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.505747-04:00"
+    created: "2021-03-24T11:08:19.289206-04:00"
     description: A Helm chart for Kubernetes
     digest: 98eca65de0a5d42f6f6ddc6557b0f3ef06aeca8b601d5d7f0b43f5740554d4d8
     name: tycho-api
@@ -1089,7 +1163,7 @@ entries:
     version: 0.1.6
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2021-03-23T17:29:30.505316-04:00"
+    created: "2021-03-24T11:08:19.288683-04:00"
     description: A Helm chart for Kubernetes
     digest: aa4d2366914d00c03f7aca9002ab9506a7fd3f8d9993d2cfcd950dc1967c5528
     name: tycho-api
@@ -1097,4 +1171,4 @@ entries:
     urls:
     - https://helxplatform.github.io/devops/charts/tycho-api-0.1.5.tgz
     version: 0.1.5
-generated: "2021-03-23T17:29:30.286247-04:00"
+generated: "2021-03-24T11:08:19.020026-04:00"
