@@ -31,7 +31,7 @@ kubectl port-forward --namespace loki-stack svc/loki-stack-grafana 3000:80
 # To Delete helx-monitoring
 ```
 helm -n kubecost delete kubecost
-helm -n loki-stack delete loki
+helm -n loki-stack delete loki-stack
 ```
 
 {{ template "chart.requirementsSection" . }}
