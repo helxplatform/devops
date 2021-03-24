@@ -200,6 +200,7 @@ function unit_test ()
       pwd
       ls -l
       /usr/bin/python3 -m venv venv && \
+#      /usr/local/bin/python3 -m venv venv && \
       source venv/bin/activate && \
       pip install --no-cache-dir -r $repo1_req_path --upgrade pip
 
