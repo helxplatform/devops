@@ -42,6 +42,14 @@ docker:
   build_parameters:
     null
 
+test:
+  cmd_path:
+    null
+  cmd_args:
+    null
+  datafile:
+    null
+
 udf:
   cmd_path:
     npm
