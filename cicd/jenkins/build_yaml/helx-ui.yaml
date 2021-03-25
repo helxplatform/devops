@@ -42,10 +42,8 @@ docker:
   build_parameters:
     null
 
-test:
+udf:
   cmd_path:
     npm
   cmd_args:
     test
-  datafile:
-    null

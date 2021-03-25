@@ -4,6 +4,7 @@ set -ex
 PREBUILD=0
 BUILD=1
 UNIT_TEST=2
+UDF=3
 
 PROJECT=$1
 JENKINS_HOME="/var/jenkins_home"
@@ -278,6 +279,31 @@ function cleanup ()
    docker images -a | grep "$org/$repo" | awk '{print $3}' | xargs docker rmi -f || true
 }
 
+
+# --- GENERIC ---
+function udf ()
+{
+   local -r org=$1
+   local -r repo=$2
+   local -r repo_url=$3
+   local -r branch=$4
+   local -r ver=$5
+   local -r tag=$6
+   local -r cmd_path=$7
+   local -r cmd_args=$8
+
+   echo -n "${FUNCNAME[0]} $org $repo $repo_url"
+   echo "$branch $ver $tag $cmd_path $cmd_args"
+   echo "${FUNCNAME[0]}: Executing user defined function. . ."
+
+   if [ "$cmd_path" != "null" ]; then
+      echo "${FUNCNAME[0]}: Invoking user defined function [$cmd_path] with args [$cmd_args]"
+      $cmd_path "$cmd_args"
+   else
+      true
+   fi
+}
+
 # --- BUILD_APP ---
 function build_app ()
 {
@@ -306,6 +332,8 @@ function build_app ()
    local -r TEST_CMD_ARGS=1
    local -r TEST_DATAFILE=2
 
+   local -r GENERIC_UDF_PATH=0
+
    local -r CLAIR_CMD_ARGS=0  # For future use
    local -r CLAIR_THRESHOLD=1 # ""
    local -r CLAIR_WHITELIST=2 # ""
@@ -317,6 +345,7 @@ function build_app ()
    local code_array=(`yq read -X $project.yaml 'code.*'`)
    local docker_array=(`yq read -X $project.yaml 'docker.*'`)
    local test_array=(`yq read -X $project.yaml 'test.*'`)
+   local udf_array=(`yq read -X $project.yaml 'udf.*'`)
 
    # yaml constants
    local -r ORG=${docker_array[$DOCKER_ORG]}
@@ -344,6 +373,9 @@ function build_app ()
    local -r CMD_ARGS=$(yq read "$project.yaml" 'test.cmd_args')
    local -r DATAFILE=$(yq read "$project.yaml" 'test.datafile')
 
+   local -r UDF_CMD_PATH=${udf_array[$GENERIC_UDF_PATH]}
+   local -r UDF_CMD_ARGS=$(yq read "$project.yaml" 'udf.cmd_args')
+
    # Derived constants from yaml + givens
    local -r WS="$WKSPC/${docker_array[$DOCKER_PRI_REPO]}"
    local -r REPO2_APPDIR=${docker_array[$DOCKER_PRI_REPO]}
@@ -359,7 +391,7 @@ function build_app ()
    fi
 
    # Init function array to the default build/test functions.
-   func_array=(prebuild build unit_test)
+   func_array=(prebuild build unit_test udf)
 
    # The init function checks the app's yaml to see if it requires a custom
    #   function for any of the above three functions. If so, it updates
@@ -409,6 +441,15 @@ function build_app ()
    then
       echo "${FUNCNAME[0]}: Unit tests failed, not pushing to DockerHub. Exiting." >&2
       exit 5
+   fi
+
+   # Invoke generic command:
+   echo -n "${FUNCNAME[0]}: Invoking ${func_array[$UDF]} $ORG $REPO1 $REPO1_URL $BRANCH $VER $TAG1 $UDF_CMD_PATH $UDF_CMD_ARGS"
+   ${func_array[$UDF]} "$ORG" "$REPO1" "$REPO1_URL" "$BRANCH" "$VER" "$TAG1" "$UDF_CMD_PATH" "$UDF_CMD_ARGS"
+   if [ $? -ne 0 ]
+   then
+      echo "${FUNCNAME[0]}: User defined function failed, not pushing to DockerHub. Exiting." >&2
+      exit 6
    fi
 
    # Push to DockerHub
