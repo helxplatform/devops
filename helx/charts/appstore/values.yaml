@@ -39,10 +39,10 @@ service:
 resources:
   limits:
     cpu: 400m
-    memory: 512Mi
+    memory: 625Mi
   requests:
-    cpu: 50m
-    memory: 64Mi
+    cpu: 100m
+    memory: 300Mi
 
 # -- Choose http or https for the protocol that is used by external users to access
 # the appstore web service.

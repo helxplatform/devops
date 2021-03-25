@@ -1,6 +1,6 @@
 # ambassador
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![AppVersion: 1.12.0](https://img.shields.io/badge/AppVersion-1.12.0-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![AppVersion: 1.12.0](https://img.shields.io/badge/AppVersion-1.12.0-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -16,10 +16,10 @@ A Helm chart for Kubernetes
 | imagePullSecrets | list | `[]` |  |
 | nameOverride | string | `""` |  |
 | replicaCount | int | `1` |  |
-| resources.limits.cpu | string | `"200m"` |  |
+| resources.limits.cpu | string | `"250m"` |  |
 | resources.limits.memory | string | `"300Mi"` |  |
-| resources.requests.cpu | string | `"50m"` |  |
-| resources.requests.memory | string | `"75Mi"` |  |
+| resources.requests.cpu | string | `"150m"` |  |
+| resources.requests.memory | string | `"130Mi"` |  |
 | securityContext.runAsUser | int | `8888` |  |
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
