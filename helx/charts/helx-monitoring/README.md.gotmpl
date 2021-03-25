@@ -5,7 +5,7 @@
 
 ## Configuring helx-monitoring
 
-This is a chart for deploying [loki-stack](https://github.com/grafana/helm-charts/tree/main/charts/loki-stack) and [kubecost](https://github.com/kubecost/cost-analyzer-helm-chart).  Currently it needs to be installed separately from the rest of HeLx.
+This is a chart for deploying [loki-stack](https://github.com/grafana/helm-charts/tree/main/charts/loki-stack) and [kubecost](https://github.com/kubecost/cost-analyzer-helm-chart).  Currently it needs to be installed separately from the rest of HeLx.  The loki-stack chart needs to be installed in the loki-stack namespace and the kubecost chart needs to be installed in the kubecost namespace.  If the namespaces are changed then the service names in the chart values will also need to be changed.
 
 ## Install using Helm
 
@@ -26,9 +26,10 @@ kubectl -n loki-stack get secret loki-stack-grafana -o jsonpath="{.data.admin-pa
 kubectl -n loki-stack get secret loki-stack-grafana -o jsonpath="{.data.admin-user}" | base64 -d ; echo
 # port forward for loki-stack
 kubectl port-forward --namespace loki-stack svc/loki-stack-grafana 3000:80
+# use web browser and go to http://localhost:3000
 ```
 
-# To Delete helx-monitoring
+## To Delete helx-monitoring
 ```
 helm -n kubecost delete kubecost
 helm -n loki-stack delete loki-stack

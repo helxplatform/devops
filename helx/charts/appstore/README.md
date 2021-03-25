@@ -1,6 +1,6 @@
 # appstore
 
-![Version: 0.1.23](https://img.shields.io/badge/Version-0.1.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.16](https://img.shields.io/badge/AppVersion-1.0.16-informational?style=flat-square)
+![Version: 0.1.24](https://img.shields.io/badge/Version-0.1.24-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.16](https://img.shields.io/badge/AppVersion-1.0.16-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -65,9 +65,9 @@ A Helm chart for Kubernetes
 | podAnnotations | object | `{}` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"400m"` |  |
-| resources.limits.memory | string | `"512Mi"` |  |
-| resources.requests.cpu | string | `"50m"` |  |
-| resources.requests.memory | string | `"64Mi"` |  |
+| resources.limits.memory | string | `"625Mi"` |  |
+| resources.requests.cpu | string | `"100m"` |  |
+| resources.requests.memory | string | `"300Mi"` |  |
 | runAsRoot | bool | `true` |  |
 | service.name | string | `"http"` |  |
 | service.port | int | `80` |  |
