@@ -50,7 +50,7 @@ dependencies:
     version: 0.1.2
   - name: roger
     condition: roger.enabled
-    version: 0.1.8
+    version: 0.1.9
   - name: tycho-api
     condition: tycho-api.enabled
     version: 0.1.12
