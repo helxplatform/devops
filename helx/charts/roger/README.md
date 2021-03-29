@@ -1,6 +1,6 @@
 # roger
 
-![Version: 0.1.8](https://img.shields.io/badge/Version-0.1.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.4](https://img.shields.io/badge/AppVersion-1.0.4-informational?style=flat-square)
+![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.5](https://img.shields.io/badge/AppVersion-1.0.5-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -26,7 +26,7 @@ A Helm chart for Kubernetes
 | airflow.airflow.config.AIRFLOW__KUBERNETES__GIT_REPO | string | `"https://git@github.com/helxplatform/roger.git"` |  |
 | airflow.airflow.config.AIRFLOW__KUBERNETES__GIT_SYNC_DEST | string | `"roger"` |  |
 | airflow.airflow.config.AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY | string | `"helxplatform/airflow"` |  |
-| airflow.airflow.config.AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG | string | `"develop-v0.0.5"` |  |
+| airflow.airflow.config.AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG | string | `"develop-v0.0.11"` |  |
 | airflow.airflow.config.AIRFLOW__WEBSERVER__BASE_URL | string | `"http://localhost:8080/airflow"` |  |
 | airflow.airflow.config.AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX | string | `"True"` |  |
 | airflow.airflow.config.AIRFLOW__WEBSERVER__EXPOSE_CONFIG | string | `"False"` |  |
@@ -56,7 +56,7 @@ A Helm chart for Kubernetes
 | airflow.airflow.extraVolumes[0].emptyDir | object | `{}` |  |
 | airflow.airflow.extraVolumes[0].name | string | `"roger-data"` |  |
 | airflow.airflow.image.repository | string | `"helxplatform/airflow"` |  |
-| airflow.airflow.image.tag | string | `"develop-v0.0.5"` |  |
+| airflow.airflow.image.tag | string | `"develop-v0.0.11"` |  |
 | airflow.dags.git.gitSync.enabled | bool | `true` |  |
 | airflow.dags.git.gitSync.refreshTime | int | `60` |  |
 | airflow.dags.git.ref | string | `"develop"` |  |
@@ -90,7 +90,7 @@ A Helm chart for Kubernetes
 | tranql.gunicorn.workerCount | int | `4` |  |
 | tranql.gunicorn.workerTimeout | int | `300` |  |
 | tranql.image | string | `"renciorg/tranql-app"` |  |
-| tranql.imageTag | string | `"develop-test"` |  |
+| tranql.imageTag | float | `0.35` |  |
 | tranql.port | int | `8081` |  |
 | tranql.replicas | int | `1` |  |
 | tranql.service.type | string | `"ClusterIP"` |  |
