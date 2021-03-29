@@ -51,6 +51,11 @@ spec:
             configMapKeyRef:
               key: ALLOW_DJANGO_LOGIN
               name: {{ include "appstore.fullname" . }}-env
+        - name: WHITELIST_REDIRECT
+          valueFrom:
+            configMapKeyRef:
+              key: WHITELIST_REDIRECT
+              name: {{ include "appstore.fullname" . }}-env
         - name: ALLOW_SAML_LOGIN
           valueFrom:
             configMapKeyRef:
@@ -263,6 +268,11 @@ spec:
         - name: {{ $key }}
           value: {{ $value }}
         {{- end }}
+        - name: IMAGE_DOWNLOAD_URL
+          valueFrom:
+            configMapKeyRef:
+              key: IMAGE_DOWNLOAD_URL
+              name: {{ include "appstore.fullname" . }}-env
         ports:
         - containerPort: 8000
       {{- if .Values.oauth.existingClaim }}

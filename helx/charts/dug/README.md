@@ -1,6 +1,6 @@
 # dug
 
-![Version: 0.2.13](https://img.shields.io/badge/Version-0.2.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.4](https://img.shields.io/badge/AppVersion-1.0.4-informational?style=flat-square)
+![Version: 0.2.14](https://img.shields.io/badge/Version-0.2.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.4](https://img.shields.io/badge/AppVersion-1.0.4-informational?style=flat-square)
 
 Helm chart for dug
 
@@ -104,7 +104,7 @@ Helm chart for dug
 | web.ambassador.search_kg.prefix | string | `"/search_kg"` |  |
 | web.api_port | int | `5551` |  |
 | web.app_name | string | `"web"` |  |
-| web.crawl_command | string | `"bin/dug crawl_by_concept --crawl-file data/topmed_variables_v1.0.csv"` |  |
+| web.crawl_command | string | `"tar -xf data/bdc_dbgap_data_dicts.tar.gz -C ./data && find ./data/ -type f -name '._*' -exec rm {} \\; && cp ./data/topmed_variables_v1.0.csv ./data/topmed_tags_v1.0.json ./data/bdc_dbgap_data_dicts/ && bin/dug crawl_dir data/bdc_dbgap_data_dicts"` |  |
 | web.debug | bool | `false` |  |
 | web.extraEnv | object | `{}` |  |
 | web.image.pullPolicy | string | `"IfNotPresent"` |  |

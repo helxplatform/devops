@@ -47,6 +47,11 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: : ""
     # traefik.ingress.kubernetes.io/router.tls: ""
+  spec:
+    tls: {}
+      # - hosts:
+      #   - helx.sample.com
+      #   secretName: sample-tls-secret
 
 varStorage:
   existingClaim: false
