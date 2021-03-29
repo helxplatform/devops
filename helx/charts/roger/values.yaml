@@ -51,7 +51,7 @@ airflow:
     ##
     image:
       repository: helxplatform/airflow
-      tag: "develop-v0.0.5"
+      tag: "develop-v0.0.11"
     #  executor: CeleryExecutor
     executor: KubernetesExecutor
 
@@ -75,7 +75,7 @@ airflow:
       AIRFLOW__KUBERNETES__DAGS_VOLUME_SUBPATH: "roger"
       AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
       AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: "helxplatform/airflow"
-      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "develop-v0.0.5"
+      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "develop-v0.0.11"
       # DAGS
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
 
@@ -207,7 +207,7 @@ airflow:
 
 tranql:
   image: renciorg/tranql-app
-  imageTag: develop-test
+  imageTag: 0.35
   replicas: 1
   port: 8081
   gunicorn:
