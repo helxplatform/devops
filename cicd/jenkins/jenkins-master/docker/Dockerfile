@@ -22,6 +22,9 @@ RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debia
     curl -L https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64 -o /usr/local/bin/yq && \
     chmod +x /usr/local/bin/yq
 
+RUN curl -fsSL https://deb.nodesource.com/setup_10.x | bash - && \
+    apt-get install -y nodejs
+
 RUN mkdir ruby && \
     cd ruby && \
     curl https://rubygems.org/rubygems/rubygems-3.1.4.tgz -o rubygems-3.1.4.tgz && \
