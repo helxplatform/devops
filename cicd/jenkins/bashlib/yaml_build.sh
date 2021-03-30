@@ -64,7 +64,7 @@ function init_build ()
    local -r req_build=$2
    local -r req_test=$3
    local -r req_udf=$4
-   local -n func_arr=${4}
+   local -n func_arr=${5}
 
    echo "${FUNCNAME[0]} $req_prebuild $req_build $req_test $req_udf ${func_arr[@]}"
    echo "${FUNCNAME[0]}: Initializing build . . ."
