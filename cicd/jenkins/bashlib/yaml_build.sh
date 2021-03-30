@@ -63,13 +63,14 @@ function init_build ()
    local -r req_prebuild=$1
    local -r req_build=$2
    local -r req_test=$3
+   local -r req_udf=$4
    local -n func_arr=${4}
 
-   echo "${FUNCNAME[0]} $req_prebuild $req_build $req_test ${func_arr[@]}"
+   echo "${FUNCNAME[0]} $req_prebuild $req_build $req_test $req_udf ${func_arr[@]}"
    echo "${FUNCNAME[0]}: Initializing build . . ."
    echo "${FUNCNAME[0]}: Setting up functions array . . ."
-   request_arr=($req_prebuild $req_build $req_test)
-   for index in {0..2}; do
+   request_arr=($req_prebuild $req_build $req_test $req_udf)
+   for index in {0..3}; do
       if [ ${request_arr[$index]} != "default" ]; then
          unset func_arr[$index]
          func_arr[$index]=${request_arr[$index]}
@@ -296,7 +297,7 @@ function udf ()
    echo "$branch $ver $tag $cmd_path $cmd_args"
    echo "${FUNCNAME[0]}: Executing user defined function. . ."
 
-   if [ "$cmd_path" != "null" ]; then
+   if [ ! -z "$cmd_path" -a "$cmd_path" != "null" ]; then
       echo "${FUNCNAME[0]}: Invoking user defined function [$cmd_path] with args [$cmd_args]"
       $cmd_path "$cmd_args"
    else
@@ -360,6 +361,7 @@ function build_app ()
    local -r REQ_PREBUILD_FUNC=${code_array[$CODE_PREBUILD]}
    local -r REQ_BUILD_FUNC=${code_array[$CODE_BUILD]}
    local -r REQ_TEST_FUNC=${code_array[$CODE_TEST]}
+   local -r REQ_UDF_FUNC=$(yq read "$project.yaml" "--defaultValue"  "default" 'code.udf')
 
    local -r REPO1_REQ_PATH=${code_array[$CODE_PRI_REQ_PATH]}
    local -r REPO2_REQ_PATH=${code_array[$CODE_SEC_REQ_PATH]}
@@ -402,9 +404,9 @@ function build_app ()
    #   in the default functions and hopefully increases maintainability.
    # For simplicity, the custom functions must use the same parameter list as
    #   the default functions.
-   echo "${FUNCNAME[0]}: Requested build/test functions: $REQ_PREBUILD_FUNC, $REQ_BUILD_FUNC, $REQ_TEST_FUNC"
-   echo "${FUNCNAME[0]}: Invoking init_build $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_array"
-   init_build $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC func_array
+   echo "${FUNCNAME[0]}: Requested build/test functions: $REQ_PREBUILD_FUNC, $REQ_BUILD_FUNC, $REQ_TEST_FUNC, $REQ_UDF_FUNC"
+   echo "${FUNCNAME[0]}: Invoking init_build $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC $REQ_UDF_FUNC func_array"
+   init_build $REQ_PREBUILD_FUNC $REQ_BUILD_FUNC $REQ_TEST_FUNC $REQ_UDF_FUNC func_array
    echo "Post-init_build function array: ${func_array[@]}"
 
    # Invoke prebuild:
