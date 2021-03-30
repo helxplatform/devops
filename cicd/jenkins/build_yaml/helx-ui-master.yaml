@@ -52,6 +52,6 @@ test:
 
 udf:
   cmd_path:
-    npm
+    make
   cmd_args:
-    test
+    ci
