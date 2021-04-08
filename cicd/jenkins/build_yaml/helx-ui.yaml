@@ -40,7 +40,7 @@ docker:
   secondary_docker_dir:
     null
   build_parameters:
-    null
+    "--pull"
 
 test:
   cmd_path:
