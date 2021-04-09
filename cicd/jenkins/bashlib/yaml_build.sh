@@ -369,7 +369,7 @@ function build_app ()
    local -r DOCKER_FN=${docker_array[$DOCKER_DF_FN]}
    local -r DOCKER_DIR1=${docker_array[$DOCKER_PRI_D_DIR]}
    local -r DOCKER_DIR2=${docker_array[$DOCKER_SEC_D_DIR]}
-   local -r BUILD_ARGS=$(yq read "$project.yaml" 'docker.build_parameters')
+   local -r BUILD_ARGS=$(yq read "$project.yaml" 'docker.build_args')
 
    local -r CMD_PATH=${test_array[$TEST_CMD_PATH]}
    local -r CMD_ARGS=$(yq read "$project.yaml" 'test.cmd_args')
