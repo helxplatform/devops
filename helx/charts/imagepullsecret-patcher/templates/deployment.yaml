@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "imagepullsecret-patcher.fullname" . }}
+  labels:
+    {{- include "imagepullsecret-patcher.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "imagepullsecret-patcher.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "imagepullsecret-patcher.selectorLabels" . | nindent 8 }}
+    spec:
+      automountServiceAccountToken: true
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "imagepullsecret-patcher.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: CONFIG_FORCE
+              value: "{{ .Values.config.force }}"
+            - name: CONFIG_DEBUG
+              value: "{{ .Values.config.debug }}"
+            - name: CONFIG_MANAGEDONLY
+              value: "{{ .Values.config.managedonly }}"
+            - name: CONFIG_RUNONCE
+              value: "{{ .Values.config.runonce }}"
+            - name: CONFIG_SERVICEACCOUNTS
+              value: "{{ .Values.config.serviceaccounts }}"
+            - name: CONFIG_ALLSERVICEACCOUNT
+              value: "{{ .Values.config.allserviceaccount }}"
+            - name: CONFIG_DOCKERCONFIGJSON
+              value: "{{ .Values.config.dockerconfigjson }}"
+            - name: CONFIG_DOCKERCONFIGJSONPATH
+              value: "{{ .Values.config.dockerconfigjsonpath }}"
+            - name: CONFIG_SECRETNAME
+              value: "{{ .Values.config.secretname }}"
+            - name: CONFIG_EXCLUDED_NAMESPACES
+              value: "{{ .Values.config.excludednamespaces }}"
+            - name: CONFIG_LOOP_DURATION
+              value: "{{ .Values.config.loopduration }}"
+          volumeMounts:
+            - name: src-dockerconfigjson
+              mountPath: "/app/secrets"
+              readOnly: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: src-dockerconfigjson
+          secret:
+            secretName: image-pull-secret
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -2,7 +2,7 @@
 
 A Helm chart for deploying HeLx to Kubernetes.
 
-![Version: 0.4.6](https://img.shields.io/badge/Version-0.4.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.3.14](https://img.shields.io/badge/AppVersion-1.3.14-informational?style=flat-square)
+![Version: 0.4.7](https://img.shields.io/badge/Version-0.4.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.3.15](https://img.shields.io/badge/AppVersion-1.3.15-informational?style=flat-square)
 
 HeLx puts the most advanced analytical scientific models at investigator’s finger tips using equally advanced cloud native, container orchestrated, distributed computing systems. HeLx can be applied in many domains. Its ability to empower researchers to leverage advanced analytical tools without installation or other infrastructure concerns has broad reaching benefits.
 
@@ -84,6 +84,7 @@ You can view the README.md files for each subchart to see the variables that exi
 | global.stdnfsPvc | string | `"stdnfs"` |  |
 | global.tycho_api_service_name | string | `"helx-tycho-api"` |  |
 | helx-monitoring.enabled | bool | `false` | enable/disable deployment of loki-stack and cost-analyzer |
+| imagepullsecret-patcher.enabled | bool | `false` | enable/disable deployment of imagepullsecret-patcher |
 | nfs-server.enabled | bool | `true` | enable/disable deployment of nfs-server |
 | nfsrods.enabled | bool | `false` | enable/disable deployment of nfsrods |
 | nginx.enabled | bool | `true` | enable/disable deployment of nginx |

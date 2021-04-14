@@ -1,0 +1,90 @@
+# Default values for imagepullsecret-patcher.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: helxplatform/imagepullsecret-patcher
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  # tag: 0.0.1
+
+imagePullSecrets: []
+#   - name: registry-auth-secret
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources:
+  limits:
+    cpu: 0.2
+    memory: 30Mi
+  requests:
+    cpu: 0.1
+    memory: 15Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  # -- overwrite secrets when they do not match
+  force: true
+  # -- show DEBUG logs
+  debug: false
+  # -- only modify secrets which were created by imagepullsecret
+  managedonly: false
+  # -- run the update loop once, allowing for cronjob scheduling if desired
+  runonce: false
+  # -- comma-separated list of serviceaccounts to patch
+  serviceaccounts: default
+  # -- if true, list and patch all service accounts and the -servicesaccounts
+  # argument is ignored
+  allserviceaccount: false
+  # -- json credential for authenicating container registry
+  dockerconfigjson: ""
+  # -- path for of mounted json credentials for dynamic secret management
+  dockerconfigjsonpath: "/app/secrets/.dockerconfigjson"
+  # -- name of managed secrets
+  secretname: "image-pull-secret"
+  # -- comma-separated namespaces excluded from processing
+  excludednamespaces: ""
+  # -- duration string which defines how often namespaces are checked, see
+  # https://golang.org/pkg/time/#ParseDuration for more examples
+  loopduration: "10s"
+
+# Add credentials for registry login that will be put into all namespaces here.
+imageCredentials:
+  # -- default image registry
+  registry: https://index.docker.io/v1/
+  # -- username for registry
+  username:
+  # -- password for registry
+  password:
+  # -- email for registry
+  email:

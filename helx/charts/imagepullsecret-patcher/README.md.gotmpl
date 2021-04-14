@@ -1,0 +1,29 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+{{ template "chart.versionBadge" .  }}{{ template "chart.typeBadge" .  }}{{ template "chart.appVersionBadge" .  }}
+
+Original code from https://github.com/titansoft-pte-ltd/imagepullsecret-patcher.
+A blog post about their work: https://medium.com/titansoft-engineering/kubernetes-cluster-wide-access-to-private-container-registry-with-imagepullsecret-patcher-b8b8fb79f7e5
+
+## Installation and configuration
+
+### Install with Helm
+```
+helm repo add helxplatform https://helxplatform.github.io/devops/charts
+helm inspect values helxplatform/imagepullsecret-patcher > my-values.yaml
+# Add credentials in imageCredentials section in my-values.yaml
+helm install imagepullsecret-patcher helxplatform/imagepullsecret-patcher --values my-values.yaml
+```
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+And here are the annotations available:
+
+| Annotation                                        | Object    | Description                                                                                                       |
+| ------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
+| k8s.titansoft.com/imagepullsecret-patcher-exclude | namespace | If a namespace has this annotation with a value set to "true", it will be excluded from processing by imagepullsecret-patcher. |
+
+{{ template "helm-docs.versionFooter" . }}
