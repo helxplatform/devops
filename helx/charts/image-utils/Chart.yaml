@@ -2,9 +2,13 @@ apiVersion: v2
 name: image-utils
 description: Tools to help with help with management of images in the cluster.
 type: application
-version: 0.0.1
+version: 0.0.2
 dependencies:
   - name: imagepullsecret-patcher
     condition: imagepullsecret-patcher.enabled
     repository: https://helxplatform.github.io/imagepullsecret-patcher/charts
     version: 0.1.4
+  - name: imagepuller
+    condition: imagepuller.enabled
+    repository: https://helxplatform.github.io/kube-imagepuller/charts
+    version: 0.1.1
