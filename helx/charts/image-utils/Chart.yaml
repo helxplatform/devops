@@ -1,0 +1,10 @@
+apiVersion: v2
+name: image-utils
+description: Tools to help with help with management of images in the cluster.
+type: application
+version: 0.0.1
+dependencies:
+  - name: imagepullsecret-patcher
+    condition: imagepullsecret-patcher.enabled
+    repository: https://helxplatform.github.io/imagepullsecret-patcher/charts
+    version: 0.1.4
