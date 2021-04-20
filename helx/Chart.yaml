@@ -14,7 +14,7 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.4.6
+version: 0.4.7
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
@@ -53,7 +53,7 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
   - name: roger
     condition: roger.enabled
-    version: 0.1.9
+    version: 0.1.10
   - name: tycho-api
     condition: tycho-api.enabled
     version: 0.1.12
