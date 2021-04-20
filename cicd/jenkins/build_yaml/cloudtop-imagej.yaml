@@ -39,7 +39,7 @@ docker:
     example/imagej
   secondary_docker_dir:
     null
-  build_parameters:
+  build_args:
     imagej.yml "latest"
 
 test:

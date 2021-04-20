@@ -39,7 +39,7 @@ docker:
     "docker/jupyter-spark"
   secondary_docker_dir:
     null
-  build_parameters:
+  build_args:
     null
 
 test:
