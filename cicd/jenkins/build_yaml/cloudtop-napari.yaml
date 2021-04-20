@@ -39,7 +39,7 @@ docker:
     example/napari
   secondary_docker_dir:
     null
-  build_parameters:
+  build_args:
     napari.yml "latest"
 
 test:
