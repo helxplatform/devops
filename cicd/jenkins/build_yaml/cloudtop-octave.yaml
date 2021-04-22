@@ -12,7 +12,7 @@ code:
   secondary_url:
     null
   primary_app_path:
-    example/napari
+    example/gnu-octave
   primary_requirements_path:
     null
   secondary_requirements_path:
