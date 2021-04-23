@@ -15,6 +15,10 @@ dug:
 helx-monitoring:
   # -- enable/disable deployment of loki-stack and cost-analyzer
   enabled: false
+image-utils:
+  # -- enable/disable deployment of image-utils (imagepullsecret-patcher and
+  # imagepuller)
+  enabled: false
 nfs-server:
   # -- enable/disable deployment of nfs-server
   enabled: true

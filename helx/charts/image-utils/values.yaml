@@ -1,0 +1,4 @@
+imagepullsecret-patcher:
+  enabled: false
+imagepuller:
+  enabled: false
