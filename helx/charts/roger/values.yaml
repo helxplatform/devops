@@ -1,36 +1,7 @@
-redis:
-  image:
-    repository: redislabs/redisgraph
-    tag: 2.2.14
-  redis:
-    command: "redis-server"
-  clusterDomain: "blackbalsam-cluster"
-  cluster:
-    slaveCount: 1
-  usePassword: true
-  master:
-    command: ""
-    readinessProbe:
-      enabled: false
-    livenessProbe:
-      enabled: false
-    extraFlags:
-      - "--loadmodule /usr/lib/redis/modules/redisgraph.so"
-  slave:
-    command: ""
-    readinessProbe:
-      enabled: false
-    livenessProbe:
-      enabled: false
-    extraFlags:
-      - "--loadmodule /usr/lib/redis/modules/redisgraph.so"
-  existingSecret: roger-redis-secret
-  existingSecretPasswordKey: redis-password
 
 elasticSearch:
   host: dug-elasticsearch
   port: 9200
-
 
 airflow:
   # size of roger-data-pvc for storing files used by pipelines
@@ -122,7 +93,7 @@ airflow:
         value: ELASTIC_PASSWORD
       - name: REDIS_PASSWORD_SECRET
         # Same as redis.existingSecret
-        value: roger-redis-secret
+        value: redis-secret
       - name: REDIS_PASSWORD_SECRET_KEY
         # same as redis.existingSecretKey
         value: redis-password
@@ -203,8 +174,6 @@ airflow:
       # This should be equivalent to
       path: /airflow
 
-
-
 tranql:
   image: renciorg/tranql-app
   imageTag: 0.35
@@ -215,7 +184,6 @@ tranql:
     workerTimeout: 300
   service:
     type: ClusterIP
-
 
 web:
   ambassador:

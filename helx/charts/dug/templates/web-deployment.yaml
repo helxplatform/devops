@@ -46,14 +46,14 @@ spec:
               name: {{ .Values.secrets.name }}
               key: NEO4J_PASSWORD
         - name: REDIS_HOST
-          value: {{ .Values.redis.service.name }}
+          value: {{ .Release.Name }}-redis-master
         - name: REDIS_PORT
-          value: {{ .Values.redis.redis_port | quote }}
+          value: "6379"
         - name: REDIS_PASSWORD
           valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name }}
-              key: REDIS_PASSWORD
+              secretKeyRef:
+                name: "{{ .Values.global.redis.existingSecret }}"
+                key: "{{ .Values.global.redis.existingSecretPasswordKey }}"
         - name: NBOOST_API_HOST
           value: {{ .Values.nboost.service.name }}
         {{- range $key, $value := .Values.web.extraEnv }}

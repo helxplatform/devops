@@ -16,20 +16,5 @@ items:
     {{- if .Values.neo4j.storage_class }}
     storageClassName: {{ .Values.neo4j.storage_class }}
     {{- end }}
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    labels:
-      app: {{ .Values.redis.app_name }}
-    name: {{ .Values.redis.pvc_name }}
-  spec:
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: {{ .Values.redis.storage_size }}
-    {{- if .Values.redis.storage_class }}
-    storageClassName: {{ .Values.redis.storage_class }}
-    {{- end }}
 kind: List
 {{ end }}
