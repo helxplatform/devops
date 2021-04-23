@@ -51,7 +51,7 @@ airflow:
     ##
     image:
       repository: helxplatform/airflow
-      tag: "develop-v0.0.11"
+      tag: "0.1.0"
     #  executor: CeleryExecutor
     executor: KubernetesExecutor
 
@@ -69,13 +69,13 @@ airflow:
       # https://airflow.apache.org/docs/apache-airflow/1.10.12/configurations-ref.html#git-ssh-key-secret-name
 #      AIRFLOW__KUBERNETES__GIT_SSH_KEY_SECRET_NAME: "airflow-secrets"
       # @TODO change this to master.
-      AIRFLOW__KUBERNETES__GIT_BRANCH: "develop"
+      AIRFLOW__KUBERNETES__GIT_BRANCH: "release/0.1.0"
       AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT: "/opt/airflow/dags"
       AIRFLOW__KUBERNETES__GIT_SYNC_DEST: "roger"
       AIRFLOW__KUBERNETES__DAGS_VOLUME_SUBPATH: "roger"
       AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
       AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: "helxplatform/airflow"
-      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "develop-v0.0.11"
+      AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: "0.1.0"
       # DAGS
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
 
@@ -159,7 +159,7 @@ airflow:
 
       ## the branch/tag/sha1 which we clone
       ##
-      ref: develop
+      ref: release/0.1.0
 
 
       ## the host name of the git repo
@@ -207,7 +207,7 @@ airflow:
 
 tranql:
   image: renciorg/tranql-app
-  imageTag: 0.35
+  imageTag: 0.38
   replicas: 1
   port: 8081
   gunicorn:
