@@ -24,7 +24,7 @@ redis:
       enabled: false
     extraFlags:
       - "--loadmodule /usr/lib/redis/modules/redisgraph.so"
-  existingSecret: roger-redis-secret
+  existingSecret: redis-secret
   existingSecretPasswordKey: redis-password
 
 elasticSearch:
@@ -122,7 +122,7 @@ airflow:
         value: ELASTIC_PASSWORD
       - name: REDIS_PASSWORD_SECRET
         # Same as redis.existingSecret
-        value: roger-redis-secret
+        value: redis-secret
       - name: REDIS_PASSWORD_SECRET_KEY
         # same as redis.existingSecretKey
         value: redis-password

@@ -77,6 +77,7 @@ redis:
     repository: bitnami/redis
     tag: 5.0.8
     pullPolicy: IfNotPresent
+  existingSecret: redis-secret
   app_name: redis
   pvc_name: dug-redis-pvc
   service:
