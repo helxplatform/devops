@@ -51,9 +51,12 @@ dependencies:
   - name: pod-reaper
     condition: pod-reaper.enabled
     version: 0.1.2
+  - name: redis
+    version: 12.7.4
+    repository: "https://charts.bitnami.com/bitnami"
   - name: roger
     condition: roger.enabled
-    version: 0.1.9
+    version: 0.1.10
   - name: tycho-api
     condition: tycho-api.enabled
     version: 0.1.12

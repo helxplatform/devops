@@ -50,8 +50,8 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: "{{ .Values.redis.existingSecret }}"
-                key: "{{ .Values.redis.existingSecretPasswordKey }}"
+                name: "{{ .Values.global.redis.existingSecret }}"
+                key: "{{ .Values.global.redis.existingSecretPasswordKey }}"
         volumeMounts:
           - name: logs
             mountPath: /var/nfs
