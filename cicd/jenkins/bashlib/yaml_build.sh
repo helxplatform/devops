@@ -202,9 +202,12 @@ function unit_test ()
       pwd
       ls -l
       /usr/bin/python3 -m venv venv && \
-#      /usr/local/bin/python3 -m venv venv && \
       source venv/bin/activate && \
-      pip install --no-cache-dir -r $repo1_req_path --upgrade pip
+      # upgrade pip independently to prevent potential version errors i.e.
+      # If you are using an outdated pip version, it is possible a prebuilt wheel is available for this package but
+      # pip is not able to install from it.
+      pip install --upgrade pip && \
+      pip install --no-cache-dir -r $repo1_req_path
 
       # Handle case of supplemental repo needed for testing
       if [ -n "$repo2" ] && \
