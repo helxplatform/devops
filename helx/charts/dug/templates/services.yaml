@@ -45,22 +45,6 @@ items:
     selector:
       app: {{ .Values.neo4j.app_name }}
     type: ClusterIP
-  # Redis
-- apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
-      app: {{ .Values.redis.app_name }}
-    name: {{ .Values.redis.service.name }}
-  spec:
-    ports:
-      - name: redis-port
-        protocol: TCP
-        port: {{ .Values.redis.redis_port }}
-        targetPort: {{ .Values.redis.redis_port }}
-    selector:
-      app: {{ .Values.redis.app_name }}
-    type: ClusterIP
 - apiVersion: v1
   kind: Service
   metadata:
