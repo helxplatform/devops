@@ -73,24 +73,7 @@ neo4j:
       cpu: 50m
       memory: 64Mi
 redis:
-  image:
-    repository: bitnami/redis
-    tag: 5.0.8
-    pullPolicy: IfNotPresent
-  app_name: redis
-  pvc_name: dug-redis-pvc
-  service:
-    name: dug-redis
-  storage_size: 5G
-  # storage_class: standard
-  redis_port: 6389
-  resources:
-    limits:
-      cpu: 200m
-      memory: 256Mi
-    requests:
-      cpu: 50m
-      memory: 64Mi
+  existingSecret: redis-secret
 web:
   image:
     repository: helxplatform/dug

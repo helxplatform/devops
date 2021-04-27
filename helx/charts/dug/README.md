@@ -1,6 +1,6 @@
 # dug
 
-![Version: 0.2.14](https://img.shields.io/badge/Version-0.2.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.4](https://img.shields.io/badge/AppVersion-1.0.4-informational?style=flat-square)
+![Version: 0.2.15](https://img.shields.io/badge/Version-0.2.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.4](https://img.shields.io/badge/AppVersion-1.0.4-informational?style=flat-square)
 
 Helm chart for dug
 
@@ -69,18 +69,7 @@ Helm chart for dug
 | neo4j.resources.requests.memory | string | `"64Mi"` |  |
 | neo4j.service.name | string | `"dug-neo4j"` |  |
 | neo4j.storage_size | string | `"1G"` |  |
-| redis.app_name | string | `"redis"` |  |
-| redis.image.pullPolicy | string | `"IfNotPresent"` |  |
-| redis.image.repository | string | `"bitnami/redis"` |  |
-| redis.image.tag | string | `"5.0.8"` |  |
-| redis.pvc_name | string | `"dug-redis-pvc"` |  |
-| redis.redis_port | int | `6389` |  |
-| redis.resources.limits.cpu | string | `"200m"` |  |
-| redis.resources.limits.memory | string | `"256Mi"` |  |
-| redis.resources.requests.cpu | string | `"50m"` |  |
-| redis.resources.requests.memory | string | `"64Mi"` |  |
-| redis.service.name | string | `"dug-redis"` |  |
-| redis.storage_size | string | `"5G"` |  |
+| redis.existingSecret | string | `"redis-secret"` |  |
 | search_client.DUG_URL | string | `nil` |  |
 | search_client.ambassador.ui.map_name | string | `"dug-ui"` |  |
 | search_client.ambassador.ui.prefix | string | `"/ui"` |  |
