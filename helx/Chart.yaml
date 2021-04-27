@@ -26,13 +26,13 @@ dependencies:
     version: 0.1.6
   - name: appstore
     condition: appstore.enabled
-    version: 0.1.25
+    version: 0.1.26
   - name: backup-pvc-cronjob
     condition: backup-pvc-cronjob.enabled
     version: 0.1.0
   - name: dug
     condition: dug.enabled
-    version: 0.2.14
+    version: 0.2.15
   - name: helx-monitoring
     condition: helx-monitoring.enabled
     version: 0.1.4
@@ -56,7 +56,7 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
   - name: roger
     condition: roger.enabled
-    version: 0.1.10
+    version: 0.1.11
   - name: tycho-api
     condition: tycho-api.enabled
     version: 0.1.12
