@@ -30,7 +30,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ['/bin/bash', '-c']
-        args: ["make appstore.start brand={{ .Values.djangoSettings }}"]
+        args: ["bin/appstore updatedb {{ .Values.djangoSettings }} && bin/appstore createsuperuser && bin/appstore manageauthorizedusers {{ .Values.djangoSettings }} && bin/appstore run {{ .Values.djangoSettings }}"]
         # For debugging when things go wrong.
         # args: ["while true; do date; sleep 5; done"]
         resources:
