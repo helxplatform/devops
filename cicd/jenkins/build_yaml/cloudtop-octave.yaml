@@ -1,10 +1,10 @@
 version: 0.0.1
 
 build:
-  name: cloudtop-imagej
+  name: cloudtop-octave
 
 app:
-  name: cloudtop-imagej
+  name: cloudtop-octave
 
 code:
   primary_url:
@@ -12,7 +12,7 @@ code:
   secondary_url:
     null
   primary_app_path:
-    example/imagej
+    example/gnu-octave
   primary_requirements_path:
     null
   secondary_requirements_path:
@@ -30,17 +30,17 @@ docker:
   org:
     helxplatform
   primary_repo:
-    cloudtop-imagej
+    cloudtop-octave
   secondary_repo:
     null
   docker_fn:
-    Docker.imagej
+    Docker.gnu-octave
   primary_docker_dir:
-    example/imagej
+    example/gnu-octave
   secondary_docker_dir:
     null
   build_args:
-    imagej.yml "latest"
+    gnu-octave.yml "latest"
 
 test:
   cmd_path:

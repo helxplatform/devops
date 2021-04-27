@@ -13,7 +13,7 @@ code:
   secondary_url:
     null
   primary_app_path:
-    "./appstore"
+    "."
   primary_requirements_path:
     ./requirements.txt
   secondary_requirements_path:
@@ -41,12 +41,12 @@ docker:
   secondary_docker_dir:
     null
   build_args:
-    null
+    "--pull"
 
 test:
   cmd_path:
-    "bin/appstore"
+    "make"
   cmd_args:
-    "tests braini"
+    "install test"
   datafile:
     null

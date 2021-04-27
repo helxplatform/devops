@@ -39,8 +39,8 @@ docker:
     "."
   secondary_docker_dir:
     null
-  build_parameters:
-    null
+  build_args:
+    "--pull"
 
 test:
   cmd_path:
@@ -52,6 +52,6 @@ test:
 
 udf:
   cmd_path:
-    npm
+    make
   cmd_args:
-    test
+    ci
