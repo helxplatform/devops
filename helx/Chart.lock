@@ -4,13 +4,13 @@ dependencies:
   version: 0.1.6
 - name: appstore
   repository: ""
-  version: 0.1.26
+  version: 0.1.27
 - name: backup-pvc-cronjob
   repository: ""
   version: 0.1.0
 - name: dug
   repository: ""
-  version: 0.2.15
+  version: 0.2.16
 - name: helx-monitoring
   repository: ""
   version: 0.1.4
@@ -38,5 +38,5 @@ dependencies:
 - name: tycho-api
   repository: ""
   version: 0.1.12
-digest: sha256:9e4e3468815c3e683220062971669e7df900ff52da3daaca37919b664e87b9e4
-generated: "2021-04-27T14:11:53.372917-04:00"
+digest: sha256:9c834d47144acd3a4d569e858c9a12a2ac9ed160fad84ddf080db7c7b87505be
+generated: "2021-04-27T21:23:08.611219-04:00"
