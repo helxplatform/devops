@@ -63,6 +63,8 @@ ambassador:
 
 # -- set the theme for appstore (cat, braini, restartr, scidas)
 djangoSettings: cat
+# Allow for a custom entrypoint command via the values file, make sure the djangoSettings and brand in entry are the same.
+appstoreEntrypointArgs: "bin/appstore updatedb cat && bin/appstore createsuperuser && bin/appstore manageauthorizedusers cat && bin/appstore run cat"
 
 django:
   # -- user emails for oauth providers
