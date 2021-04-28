@@ -1,6 +1,6 @@
 # appstore
 
-![Version: 0.1.27](https://img.shields.io/badge/Version-0.1.27-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.18](https://img.shields.io/badge/AppVersion-1.0.18-informational?style=flat-square)
+![Version: 0.1.28](https://img.shields.io/badge/Version-0.1.28-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.18](https://img.shields.io/badge/AppVersion-1.0.18-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -16,6 +16,7 @@ A Helm chart for Kubernetes
 | appStorage.storageClass | string | `nil` |  |
 | appStorage.storageSize | string | `"2Gi"` |  |
 | apps.DICOMGH_GOOGLE_CLIENT_ID | string | `""` |  |
+| appstoreEntrypointArgs | string | `"bin/appstore updatedb cat && bin/appstore createsuperuser && bin/appstore manageauthorizedusers cat && bin/appstore run cat"` |  |
 | createHomeDirs | bool | `true` | Create Home directories for users |
 | db.name | string | `"appstore"` |  |
 | django.ALLOW_DJANGO_LOGIN | string | `""` | show Django log in fields (true | false) |
