@@ -40,7 +40,7 @@ docker:
   secondary_docker_dir:
     null
   build_args:
-    --build-arg CLOUDTOP_TAG=latest
+    --build-arg CLOUDTOP_TAG=develop-latest
 
 test:
   cmd_path:
