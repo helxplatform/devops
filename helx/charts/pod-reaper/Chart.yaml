@@ -3,4 +3,4 @@ description: A Helm chart for pod-reaper
 name: pod-reaper
 home: https://github.com/target/pod-reaper
 version: 0.1.3
-appVersion: 1.1.1
+appVersion: 1.1.0
