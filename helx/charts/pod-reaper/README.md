@@ -68,7 +68,7 @@ reapers:
 | reapers.short-running-apps.log_level | string | `"Info"` |  |
 | reapers.short-running-apps.max_duration | string | `"1h"` |  |
 | reapers.short-running-apps.require_label_key | string | `"app-name"` |  |
-| reapers.short-running-apps.require_label_values | string | `"blackbalsam,cloud-top,dicom-cloudtop,dicom-gh,filebrowser,gsforge,imagej,jupyter-ds,napari"` |  |
+| reapers.short-running-apps.require_label_values | string | `"blackbalsam,cloud-top,dicom-cloudtop,dicom-gh,filebrowser,gsforge,imagej,jupyter-ds,napari,octave"` |  |
 | reapers.short-running-apps.run_duration | string | `"0s"` |  |
 | reapers.short-running-apps.schedule | string | `"@every 1m"` |  |
 | resources.limits.cpu | string | `"30m"` |  |
