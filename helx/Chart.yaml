@@ -33,6 +33,10 @@ dependencies:
   - name: dug
     condition: dug.enabled
     version: 0.2.16
+  - name: helx-search
+    condition: helx-search.enabled
+    version: 0.1.0
+    repository: "https://cschreep.github.io/charts/"
   - name: helx-monitoring
     condition: helx-monitoring.enabled
     version: 0.1.4
@@ -54,6 +58,7 @@ dependencies:
   - name: redis
     version: 12.7.4
     repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
   - name: roger
     condition: roger.enabled
     version: 0.1.11
