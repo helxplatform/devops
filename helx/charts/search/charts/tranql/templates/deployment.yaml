@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "search.fullname" . }}-tranql-frontend
+  labels:
+    {{- include "search.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      {{- include "search.selectorLabels" . | nindent 6 }}
+      service-type: web-server
+  template:
+    metadata:
+      labels:
+        {{- include "search.selectorLabels" . | nindent 8 }}
+        service-type: web-server
+    spec:
+      volumes:
+        - name: config-yaml
+          configMap:
+            name: {{ include "search.fullname" . }}-tranql-configmap
+            defaultMode: 0777
+        - name: logs
+          emptyDir: {}
+      containers:
+      - name: {{ include "search.fullname" . }}-tranql-web-container
+        image: {{ .Values.image }}:{{ .Values.imageTag }}
+        command:
+          - "/usr/local/bin/gunicorn"
+          - "--workers={{ .Values.gunicorn.workerCount }}"
+          - "--bind=0.0.0.0:{{ .Values.port }}"
+          - "--timeout={{ .Values.gunicorn.workerTimeout }}"
+          - "--access-logfile=$(ACCESS_LOG)"
+          - "--error-logfile=$(ERROR_LOG)"
+          - "--log-level=debug"
+          - "tranql.api:app"
+        ports:
+          - containerPort: {{ .Values.port }}
+            name: http
+        env:
+          - name: APP_PORT
+            value: {{ .Values.webPort | quote }}
+          - name: ACCESS_LOG
+            value: "/var/nfs/tranql-frontend_access_log"
+          - name: ERROR_LOG
+            value: "/var/nfs/tranql-frontend_error_log"
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.redis.existingSecret }}
+                key: password
+          {{- if .Values.extraEnv }}
+          {{ toYaml .Values.extraEnv }}
+          {{- end }}
+        volumeMounts:
+          - name: logs
+            mountPath: /var/nfs
+          - name: config-yaml
+            subPath: conf.yml
+            mountPath: /tranql/tranql/conf.yml
+          - name: config-yaml
+            subPath: schema.yml
+            mountPath: /tranql/tranql/conf/schema.yaml
+        imagePullPolicy: Always
+      restartPolicy: Always

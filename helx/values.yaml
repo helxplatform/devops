@@ -12,10 +12,6 @@ backup-pvc-cronjob:
 dug:
   # -- enable/disable deployment of dug
   enabled: false
-
-helx-search:
-  enabled: false
-
 helx-monitoring:
   # -- enable/disable deployment of loki-stack and cost-analyzer
   enabled: false
@@ -38,9 +34,6 @@ tycho-api:
 pod-reaper:
   # -- enable/disable deployment of pod-reaper
   enabled: true
-redis:
-  enabled: false
-
 roger:
   enabled: false
 

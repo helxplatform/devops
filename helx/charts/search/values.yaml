@@ -1,0 +1,128 @@
+airflow:
+  enabled: true
+  airflow:
+    image:
+      repository: cschreep/airflow
+      tag: "2.0.1"
+      pullPolicy: Always
+    executor: KubernetesExecutor
+    config:
+      AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
+      AIRFLOW__CORE__LOAD_EXAMPLES: "FALSE"
+    extraVolumeMounts:
+      - name: airflow-data
+        mountPath: /opt/airflow/share/data
+    extraVolumes:
+      - name: airflow-data
+        persistentVolumeClaim:
+          claimName: search-data
+
+  dags:
+    gitSync:
+      enabled: true
+      repo: "https://github.com/helxplatform/roger.git"
+      repoSubPath: "dags"
+      branch: "master"
+      revision: "HEAD"
+      syncWait: 60
+
+  logs:
+    path: /opt/airflow/share/logs
+    persistence:
+      enabled: true
+      storageClass: "" ## WARNING: your StorageClass MUST SUPPORT `ReadWriteMany`
+      accessMode: ReadWriteMany
+      size: 1Gi
+
+  redis:
+    enabled: false
+
+  flower:
+    enabled: false
+
+  workers:
+    enabled: false
+
+search-api:
+  enabled: true
+  web:
+    deployment:
+  redis:
+    enabled: false
+  elasticsearch:
+    enabled: false
+
+elasticsearch:
+  enabled: true
+  imageTag: "7.12.0"
+  extraEnvs:
+    - name: ELASTIC_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: search-elastic-secret
+          key: password
+    - name: ELASTIC_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: search-elastic-secret
+          key: username
+
+nboost:
+  enabled: false
+
+persistence:
+  pvcSize: 1Gi
+
+redis:
+  enabled: true
+  usePassword: true
+  existingSecret: search-redis-secret
+  existingSecretPasswordKey: password
+  image:
+    repository: redislabs/redisgraph
+    tag: 2.2.14
+  redis:
+    command: "redis-server"
+  cluster:
+    slaveCount: 1
+  master:
+    resources:
+      requests:
+        memory: 8Gi
+        cpu: 200m
+    command: ""
+    readinessProbe:
+      enabled: false
+    livenessProbe:
+      enabled: false
+    extraFlags:
+      - "--loadmodule /usr/lib/redis/modules/redisgraph.so"
+    service:
+      port: 6379
+  slave:
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 200m
+    command: ""
+    readinessProbe:
+      enabled: false
+    livenessProbe:
+      enabled: false
+    extraFlags:
+      - "--loadmodule /usr/lib/redis/modules/redisgraph.so"
+    service:
+      port: 6379
+
+secrets:
+  elastic:
+    name: search-elastic-secret
+    elastic_user: elastic
+  redis:
+    name: search-redis-secret
+
+tranql:
+  enabled: true
+  annotations: {}
+  redis:
+    existingSecret: search-redis-secret
