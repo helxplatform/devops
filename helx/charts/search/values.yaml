@@ -9,6 +9,39 @@ airflow:
     config:
       AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
       AIRFLOW__CORE__LOAD_EXAMPLES: "FALSE"
+    extraEnv:
+    - name: ELASTIC_API_HOST
+      value: helx-elasticsearch-master
+    - name: ELASTIC_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: helx-elastic-secret
+          key: password
+    - name: ELASTIC_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: helx-elastic-secret
+          key: username
+    - name: REDIS_HOST
+      value: helx-redis-master
+    - name: REDIS_GRAPH
+      value: test
+    - name: REDIS_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: helx-redis-secret
+          key: password
+    - name: REDIS_PORT
+      value: "6379"
+    - name: ROGER_DATA_DIR
+      value: "/opt/airflow/share/data"
+    - name: NBOOST_API_HOST
+      value: nboost $ TODO compute this
+    - name: TRANQL_API_HOST
+      value: helx-tranql-service
+    - name: TRANQL_API_PORT
+      value: "8081"
+
     extraVolumeMounts:
       - name: airflow-data
         mountPath: /opt/airflow/share/data
@@ -16,6 +49,27 @@ airflow:
       - name: airflow-data
         persistentVolumeClaim:
           claimName: search-data
+
+  externalRedis:
+    host: helx-redis-master
+    passwordSecret: helx-redis-secret
+    passwordSecretKey: password
+
+  web:
+    service:
+      annotations:
+        getambassador.io/config: |
+          ---
+          apiVersion: ambassador/v1
+          kind: Mapping
+          name: airflow-ui-amb
+          prefix: /airflow
+          service: helx-web:8080
+          rewrite: /airflow/
+
+  ingress:
+    web:
+      path: /airflow
 
   dags:
     gitSync:
@@ -47,36 +101,107 @@ search-api:
   enabled: true
   web:
     deployment:
+      extraEnv:
+        - name: ELASTIC_API_HOST
+          value: helx-elasticsearch-master
+        - name: ELASTIC_API_PORT
+          value: "9200"
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: helx-elastic-secret
+              key: password
+        - name: ELASTIC_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: helx-elastic-secret
+              key: username
+        - name: REDIS_HOST
+          value: helx-redis-master
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: helx-redis-secret
+              key: password
+        - name: REDIS_PORT
+          value: "6379"
+        - name: NBOOST_API_HOST
+          value: nboost $ TODO compute this
+    service:
+      annotations:
+        getambassador.io/config: |
+          ---
+          apiVersion: ambassador/v1
+          kind: Mapping
+          name: search-api
+          prefix: /search
+          service: helx-search-api-webserver:5551
+          rewrite: /search
+          cors:
+            origins: "*"
+            methods: POST, OPTIONS
+            headers:
+              - Content-Type
+          ---
+          apiVersion: ambassador/v1
+          kind: Mapping
+          name: search-api-kg
+          prefix: /search_kg
+          service: helx-search-api-webserver:5551
+          rewrite: /search_kg
+          cors:
+            origins: "*"
+            methods: POST, OPTIONS
+            headers:
+              - Content-Type
+
   redis:
     enabled: false
   elasticsearch:
     enabled: false
+search-ui:
+  extraEnv:
+    - name: PUBLIC_URL
+      value: "/ui"
+  service:
+    annotations:
+      getambassador.io/config: |
+        ---
+        apiVersion: ambassador/v1
+        kind: Mapping
+        name: search-ui
+        prefix: /ui
+        service: helx-search-ui:8080
+
 
 elasticsearch:
   enabled: true
   imageTag: "7.12.0"
+  clusterName: helx-elasticsearch
+
   extraEnvs:
     - name: ELASTIC_PASSWORD
       valueFrom:
         secretKeyRef:
-          name: search-elastic-secret
+          name: helx-elastic-secret
           key: password
     - name: ELASTIC_USERNAME
       valueFrom:
         secretKeyRef:
-          name: search-elastic-secret
+          name: helx-elastic-secret
           key: username
 
 nboost:
   enabled: false
 
 persistence:
+  storageClass: ""
   pvcSize: 1Gi
 
 redis:
   enabled: true
   usePassword: true
-  existingSecret: search-redis-secret
+  existingSecret: helx-redis-secret
   existingSecretPasswordKey: password
   image:
     repository: redislabs/redisgraph
@@ -116,10 +241,13 @@ redis:
 
 secrets:
   elastic:
-    name: search-elastic-secret
-    elastic_user: elastic
+    name: helx-elastic-secret
+    user: elastic
+    userKey: username
+    passwordKey: password
   redis:
-    name: search-redis-secret
+    name: helx-redis-secret
+    passwordKey: password
 
 tranql:
   enabled: true

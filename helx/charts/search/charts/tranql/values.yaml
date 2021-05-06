@@ -7,7 +7,10 @@ gunicorn:
   workerTimeout: 300
 service:
   type: ClusterIP
-secrets:
-  name: ""
 extraEnv: []
 annotations: {}
+
+secrets:
+  redis:
+    name: helx-redis-secret
+    passwordKey: password

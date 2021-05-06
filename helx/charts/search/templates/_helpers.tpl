@@ -49,3 +49,63 @@ Selector labels
 app.kubernetes.io/name: {{ include "search.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "search.elasticsearch.fullname" -}}
+{{- $name := default "elasticsearch" .Values.elasticsearch.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "search.elasticsearch.uname" -}}
+{{- if empty .Values.elasticsearch.fullnameOverride -}}
+{{- if empty .Values.elasticsearch.nameOverride -}}
+{{ .Values.elasticsearch.clusterName }}-{{ .Values.elasticsearch.nodeGroup }}
+{{- else -}}
+{{ .Values.elasticsearch.nameOverride }}-{{ .Values.elasticsearch.nodeGroup }}
+{{- end -}}
+{{- else -}}
+{{ .Values.elasticsearch.fullnameOverride }}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Get the elasticsearch password secret.
+*/}}
+{{- define "search.elasticsearch.secretName" -}}
+{{- if .Values.elasticsearch.existingSecret -}}
+{{- printf "%s" .Values.elasticsearch.existingSecret -}}
+{{- else -}}
+{{- printf "%s" (include "search.elasticsearch.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Get the username key to be retrieved from elasticsearch secret.
+*/}}
+{{- define "search.elasticsearch.secretUsernameKey" -}}
+{{- if and .Values.elasticsearch.existingSecret .Values.elasticsearch.existingSecretUsernameKey -}}
+{{- printf "%s" .Values.elasticsearch.existingSecretUsernameKey -}}
+{{- else -}}
+{{- printf "elasticsearch-username" -}}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Get the password key to be retrieved from elasticsearch secret.
+*/}}
+{{- define "search.elasticsearch.secretPasswordKey" -}}
+{{- if and .Values.elasticsearch.existingSecret .Values.elasticsearch.existingSecretPasswordKey -}}
+{{- printf "%s" .Values.elasticsearch.existingSecretPasswordKey -}}
+{{- else -}}
+{{- printf "elasticsearch-password" -}}
+{{- end -}}
+{{- end -}}
+

@@ -31,7 +31,7 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
   - name: search-api
-    version: "0.1.0"
+    version: "0.1.1"
     condition: api.enabled
     repository: "https://cschreep.github.io/charts/"
   - name: search-ui

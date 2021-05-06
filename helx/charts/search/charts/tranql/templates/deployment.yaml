@@ -48,8 +48,8 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.redis.existingSecret }}
-                key: password
+                name: {{ .Values.secrets.redis.name }}
+                key: {{ .Values.secrets.redis.passwordKey }}
           {{- if .Values.extraEnv }}
           {{ toYaml .Values.extraEnv }}
           {{- end }}
