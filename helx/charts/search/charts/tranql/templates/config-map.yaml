@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "search.fullname" . }}-tranql-configmap
+  name: {{ include "tranql.fullname" . }}-configmap
   labels:
-    {{- include "search.labels" . | nindent 4 }}
+    {{- include "tranql.labels" . | nindent 4 }}
 data:
   conf.yml: |
     m: z
@@ -13,11 +13,16 @@ data:
     schema:
       redis:
         doc: |
-          search is a knowledge graph built by aggregeting several kgx formatted knowledge graphs from several sources.
+          tranql is a knowledge graph built by aggregeting several kgx formatted knowledge graphs from several sources.
         url: "redis:"
         redis: true
         redis_connection_params:
-          host: {{ .Release.Name }}-redis-master
-          port: "6379"
+          {{- if .Values.redis.enabled }}
+          host: {{ include "tranql.redis.fullname" . }}
+          port: {{ .Values.redis.redisPort }}
+          {{- else }}
+          host: {{ .Values.existingRedis.host }}
+          port: {{ .Values.existingRedis.port }}
+          {{- end }}
           # SET USERNAME and PASSWORD
-          # via search_USERNAME , search_PASSWORD Env vars (i.e capitialize service name)
+          # via REDIS_USERNAME , REDIS_PASSWORD Env vars (i.e capitialize service name)

@@ -10,7 +10,12 @@ service:
 extraEnv: []
 annotations: {}
 
-secrets:
-  redis:
-    name: helx-redis-secret
-    passwordKey: password
+existingRedis:
+  host: ""
+  port: ""
+  password: ""
+  secret: ""
+  secretPasswordKey: ""
+
+redis:
+  enabled: true

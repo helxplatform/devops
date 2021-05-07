@@ -37,10 +37,8 @@ airflow:
       value: "/opt/airflow/share/data"
     - name: NBOOST_API_HOST
       value: nboost $ TODO compute this
-    - name: TRANQL_API_HOST
-      value: helx-tranql-service
-    - name: TRANQL_API_PORT
-      value: "8081"
+    - name: TRANQL_ENDPOINT
+      value: http://helx-tranql:8081/tranql/query?dynamic_id_resolution=true&asynchronous=false
 
     extraVolumeMounts:
       - name: airflow-data
@@ -154,11 +152,11 @@ search-api:
             methods: POST, OPTIONS
             headers:
               - Content-Type
-
   redis:
     enabled: false
   elasticsearch:
     enabled: false
+
 search-ui:
   extraEnv:
     - name: PUBLIC_URL
@@ -251,6 +249,28 @@ secrets:
 
 tranql:
   enabled: true
-  annotations: {}
+  annotations:
+    getambassador.io/config: |
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: tranql-amb
+      prefix: /tranql
+      rewrite: /tranql
+      service: helx-tranql:8081
+      cors:
+        origins: "*"
+        methods: POST, OPTIONS
+        headers:
+          - Content-Type
+      timeout_ms: 0
+  existingRedis:
+    host: helx-redis-master
+    port: 6379
+    secret: helx-redis-secret
+    secretPasswordKey: password
+  extraEnv:
+    - name: WEB_PATH_PREFIX
+      value: "/tranql"
+
   redis:
-    existingSecret: search-redis-secret
+    enabled: false
