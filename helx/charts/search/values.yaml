@@ -3,41 +3,41 @@ airflow:
   airflow:
     image:
       repository: cschreep/airflow
-      tag: "2.0.1"
+      tag: "2.0.1-dev"
       pullPolicy: Always
     executor: KubernetesExecutor
     config:
       AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
       AIRFLOW__CORE__LOAD_EXAMPLES: "FALSE"
     extraEnv:
-    - name: ELASTIC_API_HOST
+    - name: ROGER_ELASTICSEARCH_HOST
       value: helx-elasticsearch-master
-    - name: ELASTIC_PASSWORD
+    - name: ROGER_ELASTICSEARCH_PASSWORD
       valueFrom:
         secretKeyRef:
           name: helx-elastic-secret
           key: password
-    - name: ELASTIC_USERNAME
+    - name: ROGER_ELASTICSEARCH_USERNAME
       valueFrom:
         secretKeyRef:
           name: helx-elastic-secret
           key: username
-    - name: REDIS_HOST
+    - name: ROGER_REDISGRAPH_HOST
       value: helx-redis-master
-    - name: REDIS_GRAPH
+    - name: ROGER_REDISGRAPH_GRAPH
       value: test
-    - name: REDIS_PASSWORD
+    - name: ROGER_REDISGRAPH_PASSWORD
       valueFrom:
         secretKeyRef:
           name: helx-redis-secret
           key: password
-    - name: REDIS_PORT
+    - name: ROGER_REDISGRAPH_PORT
       value: "6379"
     - name: ROGER_DATA_DIR
       value: "/opt/airflow/share/data"
-    - name: NBOOST_API_HOST
+    - name: ROGER_ELASTICSEARCH_NBOOST__HOST
       value: nboost $ TODO compute this
-    - name: TRANQL_ENDPOINT
+    - name: ROGER_INDEXING_TRANQL__ENDPOINT
       value: http://helx-tranql:8081/tranql/query?dynamic_id_resolution=true&asynchronous=false
 
     extraVolumeMounts:
