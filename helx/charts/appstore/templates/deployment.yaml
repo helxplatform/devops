@@ -46,6 +46,11 @@ spec:
             configMapKeyRef:
               key: DJANGO_SETTINGS_MODULE
               name: {{ include "appstore.fullname" . }}-env
+        - name: DJANGO_SESSION_IDLE_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SESSION_IDLE_TIMEOUT
+              name: {{ include "appstore.fullname" . }}-env
         - name: ALLOW_DJANGO_LOGIN
           valueFrom:
             configMapKeyRef:
