@@ -1,6 +1,6 @@
 # appstore
 
-![Version: 0.1.29](https://img.shields.io/badge/Version-0.1.29-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.19](https://img.shields.io/badge/AppVersion-1.0.19-informational?style=flat-square)
+![Version: 0.1.30](https://img.shields.io/badge/Version-0.1.30-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.19](https://img.shields.io/badge/AppVersion-1.0.19-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -16,7 +16,7 @@ A Helm chart for Kubernetes
 | appStorage.storageClass | string | `nil` |  |
 | appStorage.storageSize | string | `"2Gi"` |  |
 | apps.DICOMGH_GOOGLE_CLIENT_ID | string | `""` |  |
-| appstoreEntrypointArgs | string | `"bin/appstore updatedb cat && bin/appstore createsuperuser && bin/appstore manageauthorizedusers cat && bin/appstore run cat"` |  |
+| appstoreEntrypointArgs | string | `"make appstore.start brand="` | Allow for a custom entrypoint command via the values file.  The brand is set via the djangoSettings value, therefor 'brand=' needs to be at the end of this command. |
 | createHomeDirs | bool | `true` | Create Home directories for users |
 | db.name | string | `"appstore"` |  |
 | django.ALLOW_DJANGO_LOGIN | string | `""` | show Django log in fields (true | false) |
@@ -25,10 +25,11 @@ A Helm chart for Kubernetes
 | django.APPSTORE_DJANGO_USERNAME | string | `"admin"` |  |
 | django.AUTHORIZED_USERS | string | `""` | user emails for oauth providers |
 | django.DOCKSTORE_APPS_BRANCH | string | `"master"` | Defaults to "master". Specify "develop" to switch. |
-| django.EMAIL_HOST_PASSWORD | string | `""` |  |
-| django.EMAIL_HOST_USER | string | `""` |  |
-| django.IMAGE_DOWNLOAD_URL | string | `""` |  |
+| django.EMAIL_HOST_PASSWORD | string | `""` | password of account to use for outgoing emails |
+| django.EMAIL_HOST_USER | string | `""` | email of account to use for outgoing emails |
+| django.IMAGE_DOWNLOAD_URL | string | `""` | Specify URL to use for the "Image Download" link on the top part of website. |
 | django.REMOVE_AUTHORIZED_USERS | string | `""` | user emails to remove from an already-existing database |
+| django.SESSION_IDLE_TIMEOUT | int | `3600` | idle timeout for user web session |
 | django.WHITELIST_REDIRECT | string | `"true"` | redirect unauthorized users of return a 403 |
 | django.oauth.GITHUB_CLIENT_ID | string | `""` |  |
 | django.oauth.GITHUB_KEY | string | `""` |  |
