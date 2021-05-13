@@ -50,8 +50,6 @@ app.kubernetes.io/name: {{ include "search.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-
-
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -72,7 +70,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{ .Values.elasticsearch.fullnameOverride }}
 {{- end -}}
 {{- end -}}
-
 
 {{/*
 Get the elasticsearch password secret.
@@ -97,7 +94,6 @@ Get the username key to be retrieved from elasticsearch secret.
 {{- end -}}
 {{- end -}}
 
-
 {{/*
 Get the password key to be retrieved from elasticsearch secret.
 */}}
@@ -108,4 +104,3 @@ Get the password key to be retrieved from elasticsearch secret.
 {{- printf "elasticsearch-password" -}}
 {{- end -}}
 {{- end -}}
-
