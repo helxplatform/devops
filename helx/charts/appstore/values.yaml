@@ -10,7 +10,7 @@ image:
   # -- pull policy
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: develop-v1.1.77
+  tag: develop-v1.1.81
 
 # -- credentials for a private repo
 imagePullSecrets: []
@@ -66,7 +66,7 @@ djangoSettings: cat
 # -- Allow for a custom entrypoint command via the values file.  The brand is
 # set via the djangoSettings value, therefor 'brand=' needs to be at the end of
 # this command.
-appstoreEntrypointArgs: "make appstore.start brand="
+appstoreEntrypointArgs: "make appstore.start"
 
 django:
   # -- user emails for oauth providers
