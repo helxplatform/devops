@@ -16,7 +16,7 @@ A Helm chart for Kubernetes
 | appStorage.storageClass | string | `nil` |  |
 | appStorage.storageSize | string | `"2Gi"` |  |
 | apps.DICOMGH_GOOGLE_CLIENT_ID | string | `""` |  |
-| appstoreEntrypointArgs | string | `"make appstore.start"` | Allow for a custom entrypoint command via the values file.  The brand is set via the djangoSettings value, therefor 'brand=' needs to be at the end of this command. |
+| appstoreEntrypointArgs | string | `"make appstore.start"` | Allow for a custom entrypoint command via the values file. |
 | createHomeDirs | bool | `true` | Create Home directories for users |
 | db.name | string | `"appstore"` |  |
 | django.ALLOW_DJANGO_LOGIN | string | `""` | show Django log in fields (true | false) |
