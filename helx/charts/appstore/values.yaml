@@ -63,9 +63,7 @@ ambassador:
 
 # -- set the theme for appstore (cat, braini, restartr, scidas)
 djangoSettings: cat
-# -- Allow for a custom entrypoint command via the values file.  The brand is
-# set via the djangoSettings value, therefor 'brand=' needs to be at the end of
-# this command.
+# -- Allow for a custom entrypoint command via the values file.
 appstoreEntrypointArgs: "make appstore.start"
 
 django:
