@@ -41,3 +41,4 @@ dependencies:
   - name: tranql
     version: "0.1.0"
     condition: tranql.enabled
+    repository: https://yaphetkg.github.io

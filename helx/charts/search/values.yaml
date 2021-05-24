@@ -2,13 +2,15 @@ airflow:
   enabled: true
   airflow:
     image:
-      repository: cschreep/airflow
-      tag: "2.0.1-dev"
+      repository: renciorg/roger
+      tag: "0.2.dev0"
       pullPolicy: Always
     executor: KubernetesExecutor
     config:
       AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
       AIRFLOW__CORE__LOAD_EXAMPLES: "FALSE"
+      # Provide http://<URL to nginx >/<web-prefix>
+      AIRFLOW__WEBSERVER__BASE_URL: ""
     extraEnv:
     - name: ROGER_ELASTICSEARCH_HOST
       value: helx-elasticsearch-master
@@ -38,7 +40,7 @@ airflow:
     - name: ROGER_ELASTICSEARCH_NBOOST__HOST
       value: nboost $ TODO compute this
     - name: ROGER_INDEXING_TRANQL__ENDPOINT
-      value: http://helx-tranql:8081/tranql/query?dynamic_id_resolution=true&asynchronous=false
+      value: http://helx-tranql:8081/tranql/tranql/query?dynamic_id_resolution=true&asynchronous=false
     - name: AIRFLOW__CORE__FERNET_KEY
       valueFrom:
         secretKeyRef:
@@ -138,7 +140,7 @@ airflow:
       enabled: true
       repo: "https://github.com/helxplatform/roger.git"
       repoSubPath: "dags"
-      branch: "master"
+      branch: "develop"
       revision: "HEAD"
       syncWait: 60
 
@@ -265,6 +267,7 @@ redis:
   usePassword: true
   existingSecret: helx-redis-secret
   existingSecretPasswordKey: password
+  clusterDomain: "blackbalsam-cluster"
   image:
     repository: redislabs/redisgraph
     tag: 2.2.14
@@ -289,7 +292,7 @@ redis:
   slave:
     resources:
       requests:
-        memory: 2Gi
+        memory: 8Gi
         cpu: 200m
     command: ""
     readinessProbe:
@@ -328,7 +331,7 @@ tranql:
           - Content-Type
       timeout_ms: 0
   existingRedis:
-    host: helx-redis-master
+    host: helx-redis-slave
     port: 6379
     secret: helx-redis-secret
     secretPasswordKey: password

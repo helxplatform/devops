@@ -15,7 +15,7 @@ dependencies:
   repository: https://cschreep.github.io/charts/
   version: 0.1.0
 - name: tranql
-  repository: ""
+  repository: https://yaphetkg.github.io
   version: 0.1.0
-digest: sha256:aa7a3120e8883ea7110b32f50d0df1d46b3754dc36fc387b38cc47dbda9e9b0b
-generated: "2021-05-06T10:59:12.696691-04:00"
+digest: sha256:12d0b66756b88a821e9256be347e66565893aad0371fef7934216c35e0e1bbcf
+generated: "2021-05-21T12:01:34.7190038-04:00"
