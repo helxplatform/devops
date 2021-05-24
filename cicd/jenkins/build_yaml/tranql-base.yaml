@@ -41,7 +41,7 @@ docker:
   secondary_docker_dir:
     null
   build_args:
-    "BRANCH=develop"
+    " --build-arg BRANCH=develop"
 
 test:
   cmd_path:
