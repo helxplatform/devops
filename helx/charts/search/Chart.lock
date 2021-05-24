@@ -1,0 +1,21 @@
+dependencies:
+- name: airflow
+  repository: https://airflow-helm.github.io/charts
+  version: 8.0.9
+- name: elasticsearch
+  repository: https://helm.elastic.co
+  version: 7.12.0
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
+  version: 13.0.0
+- name: search-api
+  repository: https://cschreep.github.io/charts/
+  version: 0.1.1
+- name: search-ui
+  repository: https://cschreep.github.io/charts/
+  version: 0.1.0
+- name: tranql
+  repository: ""
+  version: 0.1.0
+digest: sha256:aa7a3120e8883ea7110b32f50d0df1d46b3754dc36fc387b38cc47dbda9e9b0b
+generated: "2021-05-06T10:59:12.696691-04:00"

@@ -34,37 +34,6 @@ tycho-api:
 pod-reaper:
   # -- enable/disable deployment of pod-reaper
   enabled: true
-redis:
-  image:
-    repository: redislabs/redisgraph
-    tag: 2.2.14
-  redis:
-    command: "redis-server"
-  clusterDomain: "blackbalsam-cluster"
-  cluster:
-    slaveCount: 1
-  usePassword: true
-  master:
-    service:
-      port: 6379
-    command: ""
-    readinessProbe:
-      enabled: false
-    livenessProbe:
-      enabled: false
-    extraFlags:
-      - "--loadmodule /usr/lib/redis/modules/redisgraph.so"
-  slave:
-    command: ""
-    readinessProbe:
-      enabled: false
-    livenessProbe:
-      enabled: false
-    extraFlags:
-      - "--loadmodule /usr/lib/redis/modules/redisgraph.so"
-  existingSecret: redis-secret
-  existingSecretPasswordKey: redis-password
-
 roger:
   enabled: false
 
