@@ -35,6 +35,10 @@ pod-reaper:
   # -- enable/disable deployment of pod-reaper
   enabled: true
 roger:
+  # -- enable/disable deployment of roger
+  enabled: false
+search:
+  # -- enable/disable deployment of search
   enabled: false
 
 global:
