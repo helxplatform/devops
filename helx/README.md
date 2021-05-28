@@ -91,23 +91,6 @@ You can view the README.md files for each subchart to see the variables that exi
 | nfsrods.enabled | bool | `false` | enable/disable deployment of nfsrods |
 | nginx.enabled | bool | `true` | enable/disable deployment of nginx |
 | pod-reaper.enabled | bool | `true` | enable/disable deployment of pod-reaper |
-| redis.cluster.slaveCount | int | `1` |  |
-| redis.clusterDomain | string | `"blackbalsam-cluster"` |  |
-| redis.existingSecret | string | `"redis-secret"` |  |
-| redis.existingSecretPasswordKey | string | `"redis-password"` |  |
-| redis.image.repository | string | `"redislabs/redisgraph"` |  |
-| redis.image.tag | string | `"2.2.14"` |  |
-| redis.master.command | string | `""` |  |
-| redis.master.extraFlags[0] | string | `"--loadmodule /usr/lib/redis/modules/redisgraph.so"` |  |
-| redis.master.livenessProbe.enabled | bool | `false` |  |
-| redis.master.readinessProbe.enabled | bool | `false` |  |
-| redis.master.service.port | int | `6379` |  |
-| redis.redis.command | string | `"redis-server"` |  |
-| redis.slave.command | string | `""` |  |
-| redis.slave.extraFlags[0] | string | `"--loadmodule /usr/lib/redis/modules/redisgraph.so"` |  |
-| redis.slave.livenessProbe.enabled | bool | `false` |  |
-| redis.slave.readinessProbe.enabled | bool | `false` |  |
-| redis.usePassword | bool | `true` |  |
 | roger.enabled | bool | `false` |  |
 | tycho-api.enabled | bool | `false` | enable/disable deployment of tycho-api |
 

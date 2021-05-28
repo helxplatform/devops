@@ -1,6 +1,6 @@
 # appstore
 
-![Version: 0.1.31](https://img.shields.io/badge/Version-0.1.31-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.21](https://img.shields.io/badge/AppVersion-1.0.21-informational?style=flat-square)
+![Version: 0.1.32](https://img.shields.io/badge/Version-0.1.32-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.22](https://img.shields.io/badge/AppVersion-1.0.22-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -50,7 +50,7 @@ A Helm chart for Kubernetes
 | global.stdnfsPvc | string | `"stdnfs"` | the name of the PVC to use for user's files |
 | image.pullPolicy | string | `"IfNotPresent"` | pull policy |
 | image.repository | string | `"helxplatform/appstore"` | repository where image is located |
-| image.tag | string | `"develop-v1.1.81"` |  |
+| image.tag | string | `"develop-v1.1.86"` |  |
 | imagePullSecrets | list | `[]` | credentials for a private repo |
 | irods.BRAINI_RODS | string | `""` |  |
 | irods.IROD_COLLECTIONS | string | `""` |  |
