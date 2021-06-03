@@ -28,13 +28,15 @@ nfsrods:
 nginx:
   # -- enable/disable deployment of nginx
   enabled: true
-tycho-api:
-  # -- enable/disable deployment of tycho-api
-  enabled: false
 pod-reaper:
   # -- enable/disable deployment of pod-reaper
   enabled: true
 roger:
+  enabled: false
+search:
+  enabled: false
+tycho-api:
+  # -- enable/disable deployment of tycho-api
   enabled: false
 
 global:

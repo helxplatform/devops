@@ -263,6 +263,7 @@ persistence:
 redis:
   enabled: true
   usePassword: true
+  clusterDomain: cluster.local
   existingSecret: helx-redis-secret
   existingSecretPasswordKey: password
   image:

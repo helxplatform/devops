@@ -1,6 +1,6 @@
 # search
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -91,6 +91,7 @@ A Helm chart for Kubernetes
 | persistence.pvcSize | string | `"1Gi"` |  |
 | persistence.storageClass | string | `""` |  |
 | redis.cluster.slaveCount | int | `1` |  |
+| redis.clusterDomain | string | `"cluster.local"` |  |
 | redis.enabled | bool | `true` |  |
 | redis.existingSecret | string | `"helx-redis-secret"` |  |
 | redis.existingSecretPasswordKey | string | `"password"` |  |
