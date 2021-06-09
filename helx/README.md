@@ -91,8 +91,8 @@ You can view the README.md files for each subchart to see the variables that exi
 | nfsrods.enabled | bool | `false` | enable/disable deployment of nfsrods |
 | nginx.enabled | bool | `true` | enable/disable deployment of nginx |
 | pod-reaper.enabled | bool | `true` | enable/disable deployment of pod-reaper |
-| roger.enabled | bool | `false` |  |
-| search.enabled | bool | `false` |  |
+| roger.enabled | bool | `false` | enable/disable deployment of roger |
+| search.enabled | bool | `false` | enable/disable deployment of search |
 | tycho-api.enabled | bool | `false` | enable/disable deployment of tycho-api |
 
 ----------------------------------------------

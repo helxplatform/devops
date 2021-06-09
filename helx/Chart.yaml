@@ -56,7 +56,7 @@ dependencies:
     version: 0.1.12
   - name: search
     condition: search.enabled
-    version: 0.1.1
+    version: 0.1.2
   - name: tycho-api
     condition: tycho-api.enabled
     version: 0.1.12
