@@ -140,7 +140,7 @@ airflow:
       enabled: true
       repo: "https://github.com/helxplatform/roger.git"
       repoSubPath: "dags"
-      branch: "develop"
+      branch: "master"
       revision: "HEAD"
       syncWait: 60
 
