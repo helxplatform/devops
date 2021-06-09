@@ -1,19 +1,19 @@
 # search
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
-A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airflow and Redis.
+A Helm chart for Kubernetes
 
 ## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
+|  | tranql | 0.1.0 |
 | https://airflow-helm.github.io/charts | airflow | 8.0.9 |
 | https://charts.bitnami.com/bitnami | redis | 13.0.0 |
 | https://cschreep.github.io/charts/ | search-api | 0.1.1 |
 | https://cschreep.github.io/charts/ | search-ui | 0.1.0 |
 | https://helm.elastic.co | elasticsearch | 7.12.0 |
-| https://yaphetkg.github.io | tranql | 0.1.0 |
 
 ## Values
 
@@ -21,7 +21,6 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 |-----|------|---------|-------------|
 | airflow.airflow.config.AIRFLOW__CORE__LOAD_EXAMPLES | string | `"FALSE"` |  |
 | airflow.airflow.config.AIRFLOW__KUBERNETES__DELETE_WORKER_PODS | string | `"TRUE"` |  |
-| airflow.airflow.config.AIRFLOW__WEBSERVER__BASE_URL | string | `""` |  |
 | airflow.airflow.configSecretsName | string | `"airflow-config-secrets"` |  |
 | airflow.airflow.executor | string | `"KubernetesExecutor"` |  |
 | airflow.airflow.extraEnv[0].name | string | `"ROGER_ELASTICSEARCH_HOST"` |  |
@@ -49,15 +48,15 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | airflow.airflow.extraEnv[8].name | string | `"ROGER_ELASTICSEARCH_NBOOST__HOST"` |  |
 | airflow.airflow.extraEnv[8].value | string | `"nboost $ TODO compute this"` |  |
 | airflow.airflow.extraEnv[9].name | string | `"ROGER_INDEXING_TRANQL__ENDPOINT"` |  |
-| airflow.airflow.extraEnv[9].value | string | `"http://helx-tranql:8081/tranql/tranql/query?dynamic_id_resolution=true&asynchronous=false"` |  |
+| airflow.airflow.extraEnv[9].value | string | `"http://helx-tranql:8081/tranql/query?dynamic_id_resolution=true&asynchronous=false"` |  |
 | airflow.airflow.extraVolumeMounts[0].mountPath | string | `"/opt/airflow/share/data"` |  |
 | airflow.airflow.extraVolumeMounts[0].name | string | `"airflow-data"` |  |
 | airflow.airflow.extraVolumes[0].name | string | `"airflow-data"` |  |
 | airflow.airflow.extraVolumes[0].persistentVolumeClaim.claimName | string | `"search-data"` |  |
 | airflow.airflow.image.pullPolicy | string | `"Always"` |  |
-| airflow.airflow.image.repository | string | `"renciorg/roger"` |  |
-| airflow.airflow.image.tag | string | `"0.2.dev0"` |  |
-| airflow.dags.gitSync.branch | string | `"develop"` |  |
+| airflow.airflow.image.repository | string | `"cschreep/airflow"` |  |
+| airflow.airflow.image.tag | string | `"2.0.1-dev"` |  |
+| airflow.dags.gitSync.branch | string | `"master"` |  |
 | airflow.dags.gitSync.enabled | bool | `true` |  |
 | airflow.dags.gitSync.repo | string | `"https://github.com/helxplatform/roger.git"` |  |
 | airflow.dags.gitSync.repoSubPath | string | `"dags"` |  |
@@ -92,7 +91,7 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | persistence.pvcSize | string | `"1Gi"` |  |
 | persistence.storageClass | string | `""` |  |
 | redis.cluster.slaveCount | int | `1` |  |
-| redis.clusterDomain | string | `"blackbalsam-cluster"` |  |
+| redis.clusterDomain | string | `"cluster.local"` |  |
 | redis.enabled | bool | `true` |  |
 | redis.existingSecret | string | `"helx-redis-secret"` |  |
 | redis.existingSecretPasswordKey | string | `"password"` |  |
@@ -111,7 +110,7 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | redis.slave.livenessProbe.enabled | bool | `false` |  |
 | redis.slave.readinessProbe.enabled | bool | `false` |  |
 | redis.slave.resources.requests.cpu | string | `"200m"` |  |
-| redis.slave.resources.requests.memory | string | `"8Gi"` |  |
+| redis.slave.resources.requests.memory | string | `"2Gi"` |  |
 | redis.slave.service.port | int | `6379` |  |
 | redis.usePassword | bool | `true` |  |
 | search-api.elasticsearch.enabled | bool | `false` |  |
@@ -148,7 +147,7 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | secrets.redis.passwordKey | string | `"password"` |  |
 | tranql.annotations."getambassador.io/config" | string | `"apiVersion: ambassador/v1\nkind: Mapping\nname: tranql-amb\nprefix: /tranql\nrewrite: /tranql\nservice: helx-tranql:8081\ncors:\n  origins: \"*\"\n  methods: POST, OPTIONS\n  headers:\n    - Content-Type\ntimeout_ms: 0\n"` |  |
 | tranql.enabled | bool | `true` |  |
-| tranql.existingRedis.host | string | `"helx-redis-slave"` |  |
+| tranql.existingRedis.host | string | `"helx-redis-master"` |  |
 | tranql.existingRedis.port | int | `6379` |  |
 | tranql.existingRedis.secret | string | `"helx-redis-secret"` |  |
 | tranql.existingRedis.secretPasswordKey | string | `"password"` |  |

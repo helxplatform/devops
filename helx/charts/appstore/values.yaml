@@ -10,7 +10,7 @@ image:
   # -- pull policy
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: develop-v1.1.81
+  tag: develop-v1.1.87
 
 # -- credentials for a private repo
 imagePullSecrets: []
