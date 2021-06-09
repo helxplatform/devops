@@ -268,7 +268,6 @@ redis:
   clusterDomain: cluster.local
   existingSecret: helx-redis-secret
   existingSecretPasswordKey: password
-  clusterDomain: "blackbalsam-cluster"
   image:
     repository: redislabs/redisgraph
     tag: 2.2.14

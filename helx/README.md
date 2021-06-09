@@ -2,7 +2,7 @@
 
 A Helm chart for deploying HeLx to Kubernetes.
 
-![Version: 0.8.8](https://img.shields.io/badge/Version-0.8.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.9](https://img.shields.io/badge/AppVersion-1.4.9-informational?style=flat-square)
+![Version: 0.8.9](https://img.shields.io/badge/Version-0.8.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.10](https://img.shields.io/badge/AppVersion-1.4.10-informational?style=flat-square)
 
 HeLx puts the most advanced analytical scientific models at investigator’s finger tips using equally advanced cloud native, container orchestrated, distributed computing systems. HeLx can be applied in many domains. Its ability to empower researchers to leverage advanced analytical tools without installation or other infrastructure concerns has broad reaching benefits.
 
@@ -91,8 +91,8 @@ You can view the README.md files for each subchart to see the variables that exi
 | nfsrods.enabled | bool | `false` | enable/disable deployment of nfsrods |
 | nginx.enabled | bool | `true` | enable/disable deployment of nginx |
 | pod-reaper.enabled | bool | `true` | enable/disable deployment of pod-reaper |
-| roger.enabled | bool | `false` |  |
-| search.enabled | bool | `false` |  |
+| roger.enabled | bool | `false` | enable/disable deployment of roger |
+| search.enabled | bool | `false` | enable/disable deployment of search |
 | tycho-api.enabled | bool | `false` | enable/disable deployment of tycho-api |
 
 ----------------------------------------------

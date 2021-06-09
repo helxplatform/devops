@@ -1,6 +1,6 @@
 apiVersion: v2
 name: search
-description: A Helm chart for Kubernetes
+description: A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airflow and Redis.
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -15,7 +15,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.1
+version: 0.1.2
 
 dependencies:
   - name: airflow
@@ -39,5 +39,6 @@ dependencies:
     condition: search-ui.enabled
     repository: "https://cschreep.github.io/charts/"
   - name: tranql
-    version: "0.1.0"
+    version: "0.1.1"
     condition: tranql.enabled
+    repository: "https://yaphetkg.github.io"

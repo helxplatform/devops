@@ -37,8 +37,6 @@ roger:
 search:
   # -- enable/disable deployment of search
   enabled: false
-search:
-  enabled: false
 tycho-api:
   # -- enable/disable deployment of tycho-api
   enabled: false
