@@ -39,6 +39,6 @@ dependencies:
     condition: search-ui.enabled
     repository: "https://cschreep.github.io/charts/"
   - name: tranql
-    version: "0.1.0"
+    version: "0.1.1"
     condition: tranql.enabled
     repository: https://yaphetkg.github.io

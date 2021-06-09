@@ -2,7 +2,7 @@ airflow:
   enabled: true
   airflow:
     image:
-      repository: renciorg/roger
+      repository: helxplatform/roger
       tag: "0.2.dev0"
       pullPolicy: Always
     executor: KubernetesExecutor
