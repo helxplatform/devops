@@ -6,4 +6,4 @@ dependencies:
   repository: https://helxplatform.github.io/kube-imagepuller/charts
   version: 0.2.0
 digest: sha256:1d50650c5a382445d28981c1473f085328df11ac868eecdc8bb49c87885abe68
-generated: "2021-04-27T14:09:03.101345-04:00"
+generated: "2021-05-12T18:06:16.602052-04:00"

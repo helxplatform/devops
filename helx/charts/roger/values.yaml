@@ -175,8 +175,8 @@ airflow:
       path: /airflow
 
 tranql:
-  image: renciorg/tranql-app
-  imageTag: 0.38
+  image: helxplatform/tranql-app
+  imageTag: develop-0.0.56
   replicas: 1
   port: 8081
   gunicorn:

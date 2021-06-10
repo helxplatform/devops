@@ -1,0 +1,16 @@
+{{- if not (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( "search-data" )) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: search-data
+  # Prevents deletion on helm uninstall.
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  storageClassName: {{ .Values.persistence.storageClass }}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.persistence.pvcSize }}
+{{ end }}
