@@ -10,7 +10,7 @@ image:
   # -- pull policy
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  # tag: 1.0.2
+  tag:
 
 # -- credentials for a private repo
 imagePullSecrets: []
@@ -63,8 +63,8 @@ ambassador:
 
 # -- set the theme for appstore (cat, braini, restartr, scidas)
 djangoSettings: cat
-# Allow for a custom entrypoint command via the values file, make sure the djangoSettings and brand in entry are the same.
-appstoreEntrypointArgs: "bin/appstore updatedb cat && bin/appstore createsuperuser && bin/appstore manageauthorizedusers cat && bin/appstore run cat"
+# -- Allow for a custom entrypoint command via the values file.
+appstoreEntrypointArgs: "make appstore.start"
 
 django:
   # -- user emails for oauth providers
@@ -80,11 +80,16 @@ django:
   ALLOW_DJANGO_LOGIN: ""
   # -- show SAML log in fields (true | false)
   ALLOW_SAML_LOGIN: ""
+  # -- email of account to use for outgoing emails
   EMAIL_HOST_USER: ""
+  # -- password of account to use for outgoing emails
   EMAIL_HOST_PASSWORD: ""
   # -- redirect unauthorized users of return a 403
   WHITELIST_REDIRECT: "true"
+  # -- Specify URL to use for the "Image Download" link on the top part of website.
   IMAGE_DOWNLOAD_URL: ""
+  # -- idle timeout for user web session
+  SESSION_IDLE_TIMEOUT: 3600
   oauth:
     # -- oauth providers separated by commas (google, github)
     OAUTH_PROVIDERS: ""

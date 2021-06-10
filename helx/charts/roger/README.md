@@ -1,6 +1,6 @@
 # roger
 
-![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.5](https://img.shields.io/badge/AppVersion-1.0.5-informational?style=flat-square)
+![Version: 0.1.12](https://img.shields.io/badge/Version-0.1.12-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.6](https://img.shields.io/badge/AppVersion-1.0.6-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -72,8 +72,8 @@ A Helm chart for Kubernetes
 | elasticSearch.port | int | `9200` |  |
 | tranql.gunicorn.workerCount | int | `4` |  |
 | tranql.gunicorn.workerTimeout | int | `300` |  |
-| tranql.image | string | `"renciorg/tranql-app"` |  |
-| tranql.imageTag | float | `0.38` |  |
+| tranql.image | string | `"helxplatform/tranql-app"` |  |
+| tranql.imageTag | string | `"develop-0.0.56"` |  |
 | tranql.port | int | `8081` |  |
 | tranql.replicas | int | `1` |  |
 | tranql.service.type | string | `"ClusterIP"` |  |

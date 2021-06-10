@@ -30,9 +30,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ['/bin/bash', '-c']
-        args: ["{{ .Values.appstoreEntrypointArgs}}"]
-        # For debugging when things go wrong.
-        # args: ["while true; do date; sleep 5; done"]
+        args: ["{{ .Values.appstoreEntrypointArgs }}"]
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         env:
@@ -45,6 +43,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: DJANGO_SETTINGS_MODULE
+              name: {{ include "appstore.fullname" . }}-env
+        - name: DJANGO_SESSION_IDLE_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SESSION_IDLE_TIMEOUT
               name: {{ include "appstore.fullname" . }}-env
         - name: ALLOW_DJANGO_LOGIN
           valueFrom:
