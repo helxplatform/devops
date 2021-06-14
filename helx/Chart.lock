@@ -4,7 +4,7 @@ dependencies:
   version: 0.1.6
 - name: appstore
   repository: ""
-  version: 0.1.34
+  version: 0.1.35
 - name: backup-pvc-cronjob
   repository: ""
   version: 0.1.0
@@ -25,7 +25,7 @@ dependencies:
   version: 0.1.5
 - name: nginx
   repository: ""
-  version: 0.2.4
+  version: 0.2.5
 - name: pod-reaper
   repository: ""
   version: 0.1.3
@@ -38,5 +38,5 @@ dependencies:
 - name: tycho-api
   repository: ""
   version: 0.1.12
-digest: sha256:0ae4ea83c00945c88eeaf81954add0587e52659e935c8f14be895505aa5bd998
-generated: "2021-06-09T15:11:24.586021-04:00"
+digest: sha256:1b1284b29de0cc83fcdf74dec95bc6f561959d1ebfb0d677d19e10d6a5127531
+generated: "2021-06-14T12:35:47.578085-04:00"
