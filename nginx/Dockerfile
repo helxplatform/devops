@@ -1,4 +1,4 @@
-FROM nginx:1.21.0-alpine
+FROM nginx:1.19.6-alpine
 
 RUN chown -R 1012130000:1012130000 /var/cache/nginx && \
     chown -R 1012130000:1012130000 /var/log/nginx && \
