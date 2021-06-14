@@ -24,5 +24,3 @@ data:
   SAML2_AUTH_ENTITY_ID: "{{ .Values.django.saml2auth.ENTITY_ID }}"
   IMAGE_DOWNLOAD_URL: "{{ .Values.django.IMAGE_DOWNLOAD_URL }}"
   DJANGO_SESSION_IDLE_TIMEOUT: "{{ .Values.django.SESSION_IDLE_TIMEOUT }}"
-  TYCHO_INIT_RESOURCES_CPUS: "{{ .Values.init.resources.cpus }}"
-  TYCHO_INIT_RESOURCES_MEMORY: "{{ .Values.init.resources.memory }}"
