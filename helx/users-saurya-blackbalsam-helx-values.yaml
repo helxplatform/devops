@@ -1,0 +1,27 @@
+appstore:
+  image:
+    tag: develop-v1.1.86
+  django:
+    AUTHORIZED_USERS: "anirudhsurya94@gmail.com,ashokk@email.unc.edu,ashokohio@gmail.com,bennettc@renci.org,brightman.matthew@gmail.com,hannah.r.hiles@gmail.com,hiles@renci.org,howard@renci.org,igilani@renci.org,jeffw@renci.org,kcbradford@renci.org,mattb523@live.unc.edu,muralikarthik.k@renci.org,muralikarthik.k123@gmail.com,pjl@email.unc.edu,pjl@renci.org,pjl@unc.edu,saurya@renci.org,scox@renci.org,truthset@gmail.com"
+    EMAIL_HOST_USER: "appstore@renci.org"
+    EMAIL_HOST_PASSWORD: "neiyumadhqlllqar"
+    oauth:
+      OAUTH_PROVIDERS: "github,google"
+      GITHUB_NAME: "saurya-blackbalsam-github"
+      GITHUB_CLIENT_ID: "1101e50f9cf4797910ab"
+      GITHUB_SECRET: "bf238a91c3a04328b8a959df92afa1dd27153602"
+      GOOGLE_NAME: "saurya-blackbalsam-helx-google"
+      GOOGLE_CLIENT_ID: "799458182546-t9flkq32ui22dcoho80ci5ssvqi7gm2v.apps.googleusercontent.com"
+      GOOGLE_SECRET: "Ao_7MPl5UzyOqTwpykcVG3pA"
+  ACCOUNT_DEFAULT_HTTP_PROTOCOL: https
+  # djangoSettings: scidas
+  userStorage:
+    createPVC: true
+nfs-server:
+  enabled: false
+nginx:
+  service:
+    IP: 172.25.16.253
+    serverName: helx.saurya.blackbalsam-cluster.edc.renci.org
+  SSL:
+    nginxTLSSecret: saurya.blackbalsam-cluster.edc.renci.org-tls-secret
