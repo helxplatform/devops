@@ -17,6 +17,7 @@ A Helm chart for Kubernetes
 | http_host | bool | `false` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"helxplatform/nginx"` |  |
+| image.tag | string | `nil` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.create | bool | `false` |  |
