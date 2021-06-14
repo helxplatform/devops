@@ -14,11 +14,11 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.8.11
+version: 0.8.12
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.4.12
+appVersion: 1.4.13
 
 dependencies:
   - name: ambassador
@@ -47,7 +47,7 @@ dependencies:
     version: 0.1.5
   - name: nginx
     condition: nginx.enabled
-    version: 0.2.4
+    version: 0.2.5
   - name: pod-reaper
     condition: pod-reaper.enabled
     version: 0.1.3
