@@ -104,16 +104,6 @@ spec:
             configMapKeyRef:
               key: NRC_PORT
               name: {{ include "appstore.fullname" . }}-env
-        - name: INIT_MEMORY
-          valueFrom:
-            configMapKeyRef:
-              key: TYCHO_INIT_RESOURCES_MEMORY
-              name: {{ include "appstore.fullname" . }}-env
-        - name: INIT_CPUS
-          valueFrom:
-            configMapKeyRef:
-              key: TYCHO_INIT_RESOURCES_CPUS
-              name: {{ include "appstore.fullname" . }}-env
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
