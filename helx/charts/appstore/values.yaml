@@ -163,3 +163,9 @@ parent_dir: "/home"
 subpath_dir: null
 # -- name of directory to use for shared data
 shared_dir: "shared"
+
+# -- Resource for Tycho init container. Defaults cpus|250m memory|250Mi
+init:
+  resources:
+    cpus: 250m
+    memory: 250Mi
