@@ -1,10 +1,10 @@
 version: 0.0.1
 
 build:
-  name: cloudtop-octave
+  name: cloudtop-verdi-master
 
 app:
-  name: cloudtop-octave
+  name: cloudtop-verdi
 
 code:
   primary_url:
@@ -12,13 +12,13 @@ code:
   secondary_url:
     null
   primary_app_path:
-    apps/gnu-octave
+    apps/verdi
   primary_requirements_path:
     null
   secondary_requirements_path:
     null
   branch:
-    develop
+    master
   prebuild:
     default
   build:
@@ -30,17 +30,17 @@ docker:
   org:
     helxplatform
   primary_repo:
-    cloudtop-octave
+    cloudtop-verdi
   secondary_repo:
     null
   docker_fn:
-    Docker.gnu-octave
+    Docker.verdi
   primary_docker_dir:
-    apps/gnu-octave
+    apps/verdi
   secondary_docker_dir:
     null
   build_args:
-    gnu-octave.yml "latest"
+    verdi.yml "latest"
 
 test:
   cmd_path:
