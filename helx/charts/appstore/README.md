@@ -10,8 +10,8 @@ A Helm chart for Kubernetes
 |-----|------|---------|-------------|
 | ACCOUNT_DEFAULT_HTTP_PROTOCOL | string | `"http"` | Choose http or https for the protocol that is used by external users to access the appstore web service. |
 | affinity | object | `{}` |  |
-| ambassador.flag | bool | `true` |  |
-| ambassador.id | string | `nil` | register appstore with ambassador flag: <True or False> -- specify the id of the ambassador for Tycho-launched services. |
+| ambassador.flag | bool | `true` | register appstore with ambassador flag: <True or False> |
+| ambassador.id | string | `nil` | specify the id of the ambassador for Tycho-launched services. |
 | appStorage.claimName | string | `nil` |  |
 | appStorage.existingClaim | bool | `false` |  |
 | appStorage.storageClass | string | `nil` |  |
