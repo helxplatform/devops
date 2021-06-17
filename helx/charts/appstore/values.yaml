@@ -59,6 +59,8 @@ db:
 
 ambassador:
    # -- register appstore with ambassador flag: <True or False>
+   # -- specify the id of the ambassador for Tycho-launched services.
+   id:
    flag: true
 
 # -- set the theme for appstore (cat, braini, restartr, scidas)

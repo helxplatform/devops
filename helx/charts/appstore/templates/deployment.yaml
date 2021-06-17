@@ -129,6 +129,13 @@ spec:
             secretKeyRef:
               key: APPSTORE_DJANGO_PASSWORD
               name: {{ include "appstore.fullname" . }}
+        {{ if .Values.ambassador.id }}
+        - name: AMBASSADOR_ID
+          valueFrom:
+            secretKeyRef:
+              key: AMBASSADOR_ID
+              name: {{ include "appstore.fullname" . }}
+        {{- end }}
         {{ if .Values.django.DOCKSTORE_APPS_BRANCH }}
         - name: DOCKSTORE_APPS_BRANCH
           valueFrom:
