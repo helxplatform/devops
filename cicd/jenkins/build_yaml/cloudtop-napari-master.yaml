@@ -12,7 +12,7 @@ code:
   secondary_url:
     null
   primary_app_path:
-    example/napari
+    apps/napari
   primary_requirements_path:
     null
   secondary_requirements_path:
@@ -36,7 +36,7 @@ docker:
   docker_fn:
     Docker.napari
   primary_docker_dir:
-    example/napari
+    apps/napari
   secondary_docker_dir:
     null
   build_args:

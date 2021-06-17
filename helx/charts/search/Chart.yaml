@@ -33,12 +33,12 @@ dependencies:
   - name: search-api
     version: "0.1.1"
     condition: api.enabled
-    repository: "https://cschreep.github.io/charts/"
+    repository: "https://helx-charts.github.io/charts/"
   - name: search-ui
     version: "0.1.0"
     condition: search-ui.enabled
-    repository: "https://cschreep.github.io/charts/"
+    repository: "https://helx-charts.github.io/charts/"
   - name: tranql
-    version: "0.1.1"
+    version: "0.1.2"
     condition: tranql.enabled
     repository: "https://yaphetkg.github.io"

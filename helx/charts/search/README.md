@@ -10,10 +10,10 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 |------------|------|---------|
 | https://airflow-helm.github.io/charts | airflow | 8.0.9 |
 | https://charts.bitnami.com/bitnami | redis | 13.0.0 |
-| https://cschreep.github.io/charts/ | search-api | 0.1.1 |
-| https://cschreep.github.io/charts/ | search-ui | 0.1.0 |
 | https://helm.elastic.co | elasticsearch | 7.12.0 |
-| https://yaphetkg.github.io | tranql | 0.1.1 |
+| https://helx-charts.github.io/charts/ | search-api | 0.1.1 |
+| https://helx-charts.github.io/charts/ | search-ui | 0.1.0 |
+| https://yaphetkg.github.io | tranql | 0.1.2 |
 
 ## Values
 
@@ -93,6 +93,8 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | persistence.storageClass | string | `""` |  |
 | redis.cluster.slaveCount | int | `1` |  |
 | redis.clusterDomain | string | `"cluster.local"` |  |
+| redis.configmap | string | `"# Disables appendonly , this instance is readonly. And needs to be\n# seeded from RDB files if needed.\nappendonly no\n# Disable RDB persistence, AOF persistence already enabled.\nsave \"\""` |  |
+| redis.dumpUri | string | `"https://stars.renci.org/var/kgx_data/roger_graph.rdb"` |  |
 | redis.enabled | bool | `true` |  |
 | redis.existingSecret | string | `"helx-redis-secret"` |  |
 | redis.existingSecretPasswordKey | string | `"password"` |  |
@@ -105,6 +107,7 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | redis.master.resources.requests.cpu | string | `"200m"` |  |
 | redis.master.resources.requests.memory | string | `"8Gi"` |  |
 | redis.master.service.port | int | `6379` |  |
+| redis.persistence.existingClaim | string | `"redis-data"` |  |
 | redis.redis.command | string | `"redis-server"` |  |
 | redis.slave.command | string | `""` |  |
 | redis.slave.extraFlags[0] | string | `"--loadmodule /usr/lib/redis/modules/redisgraph.so"` |  |

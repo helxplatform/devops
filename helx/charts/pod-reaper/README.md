@@ -2,7 +2,7 @@
 
 A Helm chart for pod-reaper
 
-![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![AppVersion: 1.1.0](https://img.shields.io/badge/AppVersion-1.1.0-informational?style=flat-square)
+![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![AppVersion: 1.1.2](https://img.shields.io/badge/AppVersion-1.1.2-informational?style=flat-square)
 
 ## Configuring Pod Reaper
 
@@ -58,7 +58,7 @@ reapers:
 | reapers.long-running-apps.log_format | string | `"Logrus"` |  |
 | reapers.long-running-apps.log_level | string | `"Info"` |  |
 | reapers.long-running-apps.max_duration | string | `"5h"` |  |
-| reapers.long-running-apps.require_label_key | string | `"app-name"` |  |
+| reapers.long-running-apps.require_label_key | string | `"reaper-label"` |  |
 | reapers.long-running-apps.require_label_values | string | `"nextflow"` |  |
 | reapers.long-running-apps.run_duration | string | `"0s"` |  |
 | reapers.long-running-apps.schedule | string | `"@every 1m"` |  |
@@ -67,7 +67,7 @@ reapers:
 | reapers.short-running-apps.log_format | string | `"Logrus"` |  |
 | reapers.short-running-apps.log_level | string | `"Info"` |  |
 | reapers.short-running-apps.max_duration | string | `"1h"` |  |
-| reapers.short-running-apps.require_label_key | string | `"app-name"` |  |
+| reapers.short-running-apps.require_label_key | string | `"reaper-label"` |  |
 | reapers.short-running-apps.require_label_values | string | `"blackbalsam,cloud-top,dicom-cloudtop,dicom-gh,filebrowser,gsforge,imagej,jupyter-ds,napari,octave"` |  |
 | reapers.short-running-apps.run_duration | string | `"0s"` |  |
 | reapers.short-running-apps.schedule | string | `"@every 1m"` |  |

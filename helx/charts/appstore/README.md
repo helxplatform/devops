@@ -1,6 +1,6 @@
 # appstore
 
-![Version: 0.1.35](https://img.shields.io/badge/Version-0.1.35-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.24](https://img.shields.io/badge/AppVersion-1.0.24-informational?style=flat-square)
+![Version: 0.1.36](https://img.shields.io/badge/Version-0.1.36-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.24](https://img.shields.io/badge/AppVersion-1.0.24-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -11,6 +11,7 @@ A Helm chart for Kubernetes
 | ACCOUNT_DEFAULT_HTTP_PROTOCOL | string | `"http"` | Choose http or https for the protocol that is used by external users to access the appstore web service. |
 | affinity | object | `{}` |  |
 | ambassador.flag | bool | `true` | register appstore with ambassador flag: <True or False> |
+| ambassador.id | string | `nil` | specify the id of the ambassador for Tycho-launched services. |
 | appStorage.claimName | string | `nil` |  |
 | appStorage.existingClaim | bool | `false` |  |
 | appStorage.storageClass | string | `nil` |  |
@@ -52,7 +53,7 @@ A Helm chart for Kubernetes
 | image.repository | string | `"helxplatform/appstore"` | repository where image is located |
 | image.tag | string | `nil` |  |
 | imagePullSecrets | list | `[]` | credentials for a private repo |
-| init | object | `{"resources":{"cpus":"250m","memory":"250Mi"}}` | Resource for Tycho init container. Defaults cpus|250m and memory|250Mi |
+| init | object | `{"resources":{"cpus":"250m","memory":"250Mi"}}` | Resource for Tycho init container. Defaults cpus|250m memory|250Mi |
 | irods.BRAINI_RODS | string | `""` |  |
 | irods.IROD_COLLECTIONS | string | `""` |  |
 | irods.IROD_ZONE | string | `""` |  |
