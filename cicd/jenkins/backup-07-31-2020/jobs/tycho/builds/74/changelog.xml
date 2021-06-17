@@ -1,9 +1,0 @@
-commit 80033fc00f186b4abebbd66bca6ee4babbc8aaf0
-tree 444fe0030134b2035dd5ed5aa84102563acd34a8
-parent 5cebe022284ea9d3e339f56bc9ed7379ffc134be
-author muralikarthikk <41588376+muralikarthikk@users.noreply.github.com> 2020-07-29 12:01:01 -0400
-committer GitHub <noreply@github.com> 2020-07-29 12:01:01 -0400
-
-    Update app-registry.yaml
-
-:100644 100644 1b50c1154e3d72b132ae6f22448ff4752c531e46 2afc74f13a3e1082df6bb7105dd98f99353774dd M	tycho/conf/app-registry.yaml
