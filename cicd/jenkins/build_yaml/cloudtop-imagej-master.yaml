@@ -12,7 +12,7 @@ code:
   secondary_url:
     null
   primary_app_path:
-    example/imagej
+    apps/imagej
   primary_requirements_path:
     null
   secondary_requirements_path:
@@ -36,7 +36,7 @@ docker:
   docker_fn:
     Docker.imagej
   primary_docker_dir:
-    example/imagej
+    apps/imagej
   secondary_docker_dir:
     null
   build_args:

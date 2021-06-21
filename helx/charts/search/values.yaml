@@ -271,6 +271,15 @@ persistence:
 
 redis:
   enabled: true
+  dumpUri: "https://stars.renci.org/var/kgx_data/roger_graph.rdb"
+  configmap: |-
+    # Disables appendonly , this instance is readonly. And needs to be
+    # seeded from RDB files if needed.
+    appendonly no
+    # Disable RDB persistence, AOF persistence already enabled.
+    save ""
+  persistence:
+    existingClaim: "redis-data"
   usePassword: true
   clusterDomain: cluster.local
   existingSecret: helx-redis-secret
