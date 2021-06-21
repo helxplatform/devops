@@ -20,7 +20,7 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | airflow.airflow.config.AIRFLOW__CORE__LOAD_EXAMPLES | string | `"FALSE"` |  |
-| airflow.airflow.config.AIRFLOW__KUBERNETES__DELETE_WORKER_PODS | string | `"FALSE"` |  |
+| airflow.airflow.config.AIRFLOW__KUBERNETES__DELETE_WORKER_PODS | string | `"TRUE"` |  |
 | airflow.airflow.config.AIRFLOW__SCHEDULER__SCHEDULE_AFTER_TASK_EXECUTION | string | `"FALSE"` |  |
 | airflow.airflow.config.AIRFLOW__WEBSERVER__BASE_URL | string | `""` |  |
 | airflow.airflow.configSecretsName | string | `"airflow-config-secrets"` |  |
