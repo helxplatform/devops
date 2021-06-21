@@ -1,6 +1,6 @@
 # search
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airflow and Redis.
 
@@ -8,7 +8,7 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://airflow-helm.github.io/charts | airflow | 8.0.9 |
+| https://airflow-helm.github.io/charts | airflow | 8.1.3 |
 | https://charts.bitnami.com/bitnami | redis | 13.0.0 |
 | https://cschreep.github.io/charts/ | search-api | 0.1.1 |
 | https://cschreep.github.io/charts/ | search-ui | 0.1.0 |
@@ -20,7 +20,8 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | airflow.airflow.config.AIRFLOW__CORE__LOAD_EXAMPLES | string | `"FALSE"` |  |
-| airflow.airflow.config.AIRFLOW__KUBERNETES__DELETE_WORKER_PODS | string | `"TRUE"` |  |
+| airflow.airflow.config.AIRFLOW__KUBERNETES__DELETE_WORKER_PODS | string | `"FALSE"` |  |
+| airflow.airflow.config.AIRFLOW__SCHEDULER__SCHEDULE_AFTER_TASK_EXECUTION | string | `"FALSE"` |  |
 | airflow.airflow.config.AIRFLOW__WEBSERVER__BASE_URL | string | `""` |  |
 | airflow.airflow.configSecretsName | string | `"airflow-config-secrets"` |  |
 | airflow.airflow.executor | string | `"KubernetesExecutor"` |  |
@@ -57,6 +58,7 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | airflow.airflow.image.pullPolicy | string | `"Always"` |  |
 | airflow.airflow.image.repository | string | `"helxplatform/roger"` |  |
 | airflow.airflow.image.tag | string | `"0.2.dev0"` |  |
+| airflow.airflow.kubernetesPodTemplate.resources | object | `{}` |  |
 | airflow.dags.gitSync.branch | string | `"master"` |  |
 | airflow.dags.gitSync.enabled | bool | `true` |  |
 | airflow.dags.gitSync.repo | string | `"https://github.com/helxplatform/roger.git"` |  |
