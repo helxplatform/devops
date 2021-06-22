@@ -9,6 +9,7 @@ airflow:
     config:
       AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
       AIRFLOW__CORE__LOAD_EXAMPLES: "FALSE"
+      AIRFLOW__SCHEDULER__SCHEDULE_AFTER_TASK_EXECUTION: "FALSE"
       # Provide http://<URL to nginx >/<web-prefix>
       AIRFLOW__WEBSERVER__BASE_URL: ""
     extraEnv:
@@ -57,6 +58,12 @@ airflow:
           claimName: search-data
 
     configSecretsName: airflow-config-secrets
+
+    # Resource config for all task runner pods.
+    kubernetesPodTemplate:
+      resources: {}
+        # requests:
+          # memory: 1Gi
 
   externalRedis:
     host: helx-redis-master

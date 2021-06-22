@@ -1,7 +1,7 @@
 dependencies:
 - name: airflow
   repository: https://airflow-helm.github.io/charts
-  version: 8.0.9
+  version: 8.1.3
 - name: elasticsearch
   repository: https://helm.elastic.co
   version: 7.12.0
@@ -17,5 +17,5 @@ dependencies:
 - name: tranql
   repository: https://yaphetkg.github.io
   version: 0.1.1
-digest: sha256:89e4d0dfcdcd08fc764a62f2f2a2c09ed3ea2da4578d832afaf6203b1b369935
-generated: "2021-06-09T08:58:31.0666138-04:00"
+digest: sha256:896a221d17359dcb7512139cc1fa8bcee48433197145cf38c3fdf27f0821fc11
+generated: "2021-06-21T12:34:56.4530489-04:00"
