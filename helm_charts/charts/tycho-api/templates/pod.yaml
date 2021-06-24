@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    service: {{ template "tycho-api.name" . }}
+    app: {{ template "tycho-api.name" . }}
+  name: {{ template "tycho-api.name" . }}
+  namespace: braini
+spec:
+  containers:
+  - command:
+    - /usr/local/bin/gunicorn
+    - --workers=2
+    - --name=tycho
+    - --timeout=600
+    - tycho.api:app
+    image: heliumdatastage/tycho-api:v1.0
+    imagePullPolicy: "Always"
+    name: {{ template "tycho-api.name" . }}
+    ports:
+    - containerPort: 8099
+      protocol: TCP
+    resources:
+      requests:
+        cpu: {{ .Values.resources.requests.cpu | quote }}
+  restartPolicy: Always

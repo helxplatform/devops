@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-revproxy
+  namespace: braini
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-revproxy
+    spec:
+      containers:
+      - image: heliumdatastage/nginx:bdcat-nginx-amb-2 
+        imagePullPolicy: Always
+        name: ambassador-nginx-conf
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: ambassador-nginx-conf
+          mountPath: /etc/nginx/conf.d
+      # Load the configuration files for nginx
+      volumes:
+        - name: ambassador-nginx-conf
+          configMap:
+            name: ambassador-nginx-conf
