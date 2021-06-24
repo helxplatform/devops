@@ -14,7 +14,7 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.8.13
+version: 0.8.15
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
@@ -30,12 +30,9 @@ dependencies:
   - name: backup-pvc-cronjob
     condition: backup-pvc-cronjob.enabled
     version: 0.1.0
-  - name: dug
-    condition: dug.enabled
-    version: 0.2.16
   - name: helx-monitoring
     condition: helx-monitoring.enabled
-    version: 0.1.4
+    version: 0.1.5
   - name: image-utils
     condition: image-utils.enabled
     version: 0.1.0
@@ -51,12 +48,9 @@ dependencies:
   - name: pod-reaper
     condition: pod-reaper.enabled
     version: 0.1.4
-  - name: roger
-    condition: roger.enabled
-    version: 0.1.12
   - name: search
     condition: search.enabled
-    version: 0.1.2
+    version: 0.1.3
   - name: tycho-api
     condition: tycho-api.enabled
     version: 0.1.12

@@ -2,7 +2,7 @@ apiVersion: v2
 name: helx-monitoring
 description: Monitoring tools to use alongside HeLx
 type: application
-version: 0.1.4
+version: 0.1.5
 dependencies:
   - name: cost-analyzer
     condition: cost-analyzer.enabled
@@ -11,4 +11,4 @@ dependencies:
   - name: loki-stack
     condition: loki-stack.enabled
     repository: https://grafana.github.io/helm-charts
-    version: 2.3.1
+    version: 2.4.1
