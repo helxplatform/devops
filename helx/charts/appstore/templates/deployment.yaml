@@ -129,7 +129,7 @@ spec:
             secretKeyRef:
               key: APPSTORE_DJANGO_PASSWORD
               name: {{ include "appstore.fullname" . }}
-        {{ if .Values.ambassador.id }}
+        {{ if .Values.global.ambassador_id }}
         - name: AMBASSADOR_ID
           valueFrom:
             secretKeyRef:

@@ -2,7 +2,7 @@
 
 A Helm chart for deploying HeLx to Kubernetes.
 
-![Version: 0.8.14](https://img.shields.io/badge/Version-0.8.14-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.14](https://img.shields.io/badge/AppVersion-1.4.14-informational?style=flat-square)
+![Version: 0.8.15](https://img.shields.io/badge/Version-0.8.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.14](https://img.shields.io/badge/AppVersion-1.4.14-informational?style=flat-square)
 
 HeLx puts the most advanced analytical scientific models at investigator’s finger tips using equally advanced cloud native, container orchestrated, distributed computing systems. HeLx can be applied in many domains. Its ability to empower researchers to leverage advanced analytical tools without installation or other infrastructure concerns has broad reaching benefits.
 
@@ -77,9 +77,6 @@ You can view the README.md files for each subchart to see the variables that exi
 | ambassador.enabled | bool | `true` | enable/disable deployment of Ambassador |
 | appstore.enabled | bool | `true` | enable/disable deployment of appstore |
 | backup-pvc-cronjob.enabled | bool | `false` | enable/disable deployment of backup-pvc-cronjob |
-| dug.enabled | bool | `false` | enable/disable deployment of dug |
-| global.dug_search_client_service_name | string | `"helx-dug-search-client"` |  |
-| global.dug_web_service_name | string | `"helx-dug-web"` |  |
 | global.redis.existingSecret | string | `"redis-secret"` |  |
 | global.redis.existingSecretPasswordKey | string | `"redis-password"` |  |
 | global.restartr_api_service_name | string | `"helx-restartr-api-service"` |  |
@@ -91,7 +88,6 @@ You can view the README.md files for each subchart to see the variables that exi
 | nfsrods.enabled | bool | `false` | enable/disable deployment of nfsrods |
 | nginx.enabled | bool | `true` | enable/disable deployment of nginx |
 | pod-reaper.enabled | bool | `true` | enable/disable deployment of pod-reaper |
-| roger.enabled | bool | `false` | enable/disable deployment of roger |
 | search.enabled | bool | `false` | enable/disable deployment of search |
 | tycho-api.enabled | bool | `false` | enable/disable deployment of tycho-api |
 

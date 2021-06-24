@@ -9,13 +9,13 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 13.0.0
 - name: search-api
-  repository: https://cschreep.github.io/charts/
+  repository: https://helx-charts.github.io/charts/
   version: 0.1.1
 - name: search-ui
-  repository: https://cschreep.github.io/charts/
+  repository: https://helx-charts.github.io/charts/
   version: 0.1.0
 - name: tranql
   repository: https://yaphetkg.github.io
-  version: 0.1.1
-digest: sha256:896a221d17359dcb7512139cc1fa8bcee48433197145cf38c3fdf27f0821fc11
-generated: "2021-06-21T12:34:56.4530489-04:00"
+  version: 0.1.2
+digest: sha256:d3ebd6f93164f706611d3d385eb3a258cab66a25b34400b017cb4db97f953362
+generated: "2021-06-22T20:12:17.982844-04:00"
