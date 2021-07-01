@@ -3,7 +3,7 @@ airflow:
   airflow:
     image:
       repository: helxplatform/roger
-      tag: "0.2.dev0"
+      tag: "0.3.dev0"
       pullPolicy: Always
     executor: KubernetesExecutor
     config:
@@ -83,6 +83,7 @@ airflow:
           name: airflow-ui-amb
           prefix: /airflow
           service: helx-web:8080
+          ambassador_id: ambassador-helx
           rewrite: /airflow/
 
     webserverConfig:
@@ -208,6 +209,7 @@ search-api:
           prefix: /search
           service: helx-search-api-webserver:5551
           rewrite: /search
+          ambassador_id: ambassador-helx
           cors:
             origins: "*"
             methods: POST, OPTIONS
@@ -219,6 +221,8 @@ search-api:
           name: search-api-kg
           prefix: /search_kg
           service: helx-search-api-webserver:5551
+          ambassador_id: ambassador-helx
+          ambassador_id: ambassador-helx
           rewrite: /search_kg
           cors:
             origins: "*"
@@ -243,7 +247,7 @@ search-ui:
         name: search-ui
         prefix: /ui
         service: helx-search-ui:8080
-
+        ambassador_id: ambassador-helx
 
 elasticsearch:
   enabled: true
@@ -340,6 +344,7 @@ tranql:
       prefix: /tranql
       rewrite: /tranql
       service: helx-tranql:8081
+      ambassador_id: ambassador-helx
       cors:
         origins: "*"
         methods: POST, OPTIONS
