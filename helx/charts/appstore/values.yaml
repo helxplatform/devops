@@ -142,7 +142,12 @@ oauth:
   storageClass:
 
 # Add any extra environment variables not already defined in the chart.
-extraEnv: {}
+extraEnv:
+  # -- Enable or disable ui modules (search and workspaces): (true | false)
+  REACT_APP_WORKSPACES_ENABLED: true
+  REACT_APP_SEMANTIC_SEARCH_ENABLED: false 
+  # -- Specify url for search
+  REACT_APP_HELX_SEARCH_URL: ""
 
 global:
   # -- the name of the PVC to use for user's files
