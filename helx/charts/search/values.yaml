@@ -3,7 +3,7 @@ airflow:
   airflow:
     image:
       repository: helxplatform/roger
-      tag: "0.3.dev0"
+      tag: "0.3.0"
       pullPolicy: Always
     executor: KubernetesExecutor
     config:
@@ -148,7 +148,7 @@ airflow:
       enabled: true
       repo: "https://github.com/helxplatform/roger.git"
       repoSubPath: "dags"
-      branch: "master"
+      branch: "main"
       revision: "HEAD"
       syncWait: 60
 
