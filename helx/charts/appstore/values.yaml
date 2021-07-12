@@ -144,12 +144,6 @@ oauth:
 # Add any extra environment variables not already defined in the chart.
 extraEnv: {}
 
-global:
-  # -- the name of the PVC to use for user's files
-  stdnfsPvc: stdnfs
-  # -- specify the id of the ambassador for Tycho-launched services.
-  ambassador_id: ambassador-helx
-
 # -- Set to true, when using blackbalsam.
 useSparkServiceAccount: true
 
@@ -171,3 +165,9 @@ init:
   resources:
     cpus: 250m
     memory: 250Mi
+
+global:
+  # -- the name of the PVC to use for user's files
+  stdnfsPvc: stdnfs
+  # -- specify the id of the ambassador for Tycho-launched services.
+  ambassador_id:
