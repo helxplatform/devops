@@ -90,6 +90,8 @@ django:
   IMAGE_DOWNLOAD_URL: ""
   # -- idle timeout for user web session
   SESSION_IDLE_TIMEOUT: 3600
+  # -- list of appstore registration emails
+  RECIPIENT_EMAILS: ""
   oauth:
     # -- oauth providers separated by commas (google, github)
     OAUTH_PROVIDERS: ""

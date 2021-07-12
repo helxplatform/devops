@@ -266,6 +266,11 @@ spec:
             secretKeyRef:
               key: EMAIL_HOST_PASSWORD
               name: {{ include "appstore.fullname" . }}
+        - name: RECIPIENT_EMAILS
+          valueFrom:
+            secretKeyRef:
+              key: RECIPIENT_EMAILS
+              name: {{ include "appstore.fullname" . }}
         {{- range $key, $value := .Values.extraEnv }}
         - name: {{ $key }}
           value: {{ $value }}
