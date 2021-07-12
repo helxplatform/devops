@@ -1,6 +1,6 @@
 # search
 
-![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airflow and Redis.
 
@@ -57,9 +57,9 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | airflow.airflow.extraVolumes[0].persistentVolumeClaim.claimName | string | `"search-data"` |  |
 | airflow.airflow.image.pullPolicy | string | `"Always"` |  |
 | airflow.airflow.image.repository | string | `"helxplatform/roger"` |  |
-| airflow.airflow.image.tag | string | `"0.2.dev0"` |  |
+| airflow.airflow.image.tag | string | `"0.3.0"` |  |
 | airflow.airflow.kubernetesPodTemplate.resources | object | `{}` |  |
-| airflow.dags.gitSync.branch | string | `"master"` |  |
+| airflow.dags.gitSync.branch | string | `"main"` |  |
 | airflow.dags.gitSync.enabled | bool | `true` |  |
 | airflow.dags.gitSync.repo | string | `"https://github.com/helxplatform/roger.git"` |  |
 | airflow.dags.gitSync.repoSubPath | string | `"dags"` |  |
@@ -78,7 +78,7 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | airflow.logs.persistence.storageClass | string | `""` |  |
 | airflow.redis.enabled | bool | `false` |  |
 | airflow.web.extraPipPackages[0] | string | `"Flask-AppBuilder~=3.2.0"` |  |
-| airflow.web.service.annotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nkind: Mapping\nname: airflow-ui-amb\nprefix: /airflow\nservice: helx-web:8080\nrewrite: /airflow/\n"` |  |
+| airflow.web.service.annotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nkind: Mapping\nname: airflow-ui-amb\nprefix: /airflow\nservice: helx-web:8080\nambassador_id: ambassador-helx\nrewrite: /airflow/\n"` |  |
 | airflow.web.webserverConfig.stringOverride | string | `"import os\nfrom flask_appbuilder.security.manager import AUTH_REMOTE_USER\nfrom airflow.configuration import conf\nfrom flask import g\nfrom flask import get_flashed_messages, request, redirect, flash\nfrom flask_appbuilder import expose\nfrom flask_appbuilder._compat import as_unicode\nfrom flask_appbuilder.security.views import AuthView\nfrom flask_login import login_user, logout_user\n\nfrom airflow.www.security import AirflowSecurityManager\n\nclass CustomAuthRemoteUserView(AuthView):\n  login_template = \"\"\n\n  @expose(\"/login/\")\n  def login(self):\n      if g.user is not None and g.user.is_authenticated:\n          return redirect(self.appbuilder.get_url_for_index)\n      username = request.environ.get('HTTP_REMOTE_USER')\n      if username:\n          # https://github.com/dpgaspar/Flask-AppBuilder/blob/55b0976e1450295d5a26a06d28c5b992fb0b561e/flask_appbuilder/security/manager.py#L1201\n          user = self.appbuilder.sm.auth_user_remote_user(username)\n          if user is None:\n              flash(as_unicode(self.invalid_login_message), \"warning\")\n          else:\n              login_user(user)\n      else:\n          flash(as_unicode(self.invalid_login_message), \"warning\")\n\n      # Flush \"Access is Denied\" flash messaage\n      get_flashed_messages()\n      return redirect(self.appbuilder.get_url_for_index)\n\n  @expose(\"/logout/\")\n  def logout(self):\n      logout_user()\n      return redirect(\"/admin/logout/\")\n\nclass CustomAirflowSecurityManager(AirflowSecurityManager):\n  authremoteuserview = CustomAuthRemoteUserView\n\nSECURITY_MANAGER_CLASS = CustomAirflowSecurityManager\n\nbasedir = os.path.abspath(os.path.dirname(__file__))\n# The SQLAlchemy connection string.\nSQLALCHEMY_DATABASE_URI = conf.get('core', 'SQL_ALCHEMY_CONN')\n# Flask-WTF flag for CSRF\nWTF_CSRF_ENABLED = True\nAUTH_TYPE = AUTH_REMOTE_USER\nAUTH_USER_REGISTRATION = False  # Set to True to allow users who are not already in the DB"` |  |
 | airflow.workers.enabled | bool | `false` |  |
 | elasticsearch.clusterName | string | `"helx-elasticsearch"` |  |
@@ -95,8 +95,6 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | persistence.storageClass | string | `""` |  |
 | redis.cluster.slaveCount | int | `1` |  |
 | redis.clusterDomain | string | `"cluster.local"` |  |
-| redis.configmap | string | `"# Disables appendonly , this instance is readonly. And needs to be\n# seeded from RDB files if needed.\nappendonly no\n# Disable RDB persistence, AOF persistence already enabled.\nsave \"\""` |  |
-| redis.dumpUri | string | `"https://stars.renci.org/var/kgx_data/roger_graph.rdb"` |  |
 | redis.enabled | bool | `true` |  |
 | redis.existingSecret | string | `"helx-redis-secret"` |  |
 | redis.existingSecretPasswordKey | string | `"password"` |  |
@@ -141,17 +139,17 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | search-api.web.deployment.extraEnv[6].value | string | `"6379"` |  |
 | search-api.web.deployment.extraEnv[7].name | string | `"NBOOST_API_HOST"` |  |
 | search-api.web.deployment.extraEnv[7].value | string | `"nboost $ TODO compute this"` |  |
-| search-api.web.service.annotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nkind: Mapping\nname: search-api\nprefix: /search\nservice: helx-search-api-webserver:5551\nrewrite: /search\ncors:\n  origins: \"*\"\n  methods: POST, OPTIONS\n  headers:\n    - Content-Type\n---\napiVersion: ambassador/v1\nkind: Mapping\nname: search-api-kg\nprefix: /search_kg\nservice: helx-search-api-webserver:5551\nrewrite: /search_kg\ncors:\n  origins: \"*\"\n  methods: POST, OPTIONS\n  headers:\n    - Content-Type\n"` |  |
+| search-api.web.service.annotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nkind: Mapping\nname: search-api\nprefix: /search\nservice: helx-search-api-webserver:5551\nrewrite: /search\nambassador_id: ambassador-helx\ncors:\n  origins: \"*\"\n  methods: POST, OPTIONS\n  headers:\n    - Content-Type\n---\napiVersion: ambassador/v1\nkind: Mapping\nname: search-api-kg\nprefix: /search_kg\nservice: helx-search-api-webserver:5551\nambassador_id: ambassador-helx\nambassador_id: ambassador-helx\nrewrite: /search_kg\ncors:\n  origins: \"*\"\n  methods: POST, OPTIONS\n  headers:\n    - Content-Type\n"` |  |
 | search-ui.extraEnv[0].name | string | `"PUBLIC_URL"` |  |
 | search-ui.extraEnv[0].value | string | `"/ui"` |  |
-| search-ui.service.annotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nkind: Mapping\nname: search-ui\nprefix: /ui\nservice: helx-search-ui:8080\n"` |  |
+| search-ui.service.annotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nkind: Mapping\nname: search-ui\nprefix: /ui\nservice: helx-search-ui:8080\nambassador_id: ambassador-helx\n"` |  |
 | secrets.elastic.name | string | `"helx-elastic-secret"` |  |
 | secrets.elastic.passwordKey | string | `"password"` |  |
 | secrets.elastic.user | string | `"elastic"` |  |
 | secrets.elastic.userKey | string | `"username"` |  |
 | secrets.redis.name | string | `"helx-redis-secret"` |  |
 | secrets.redis.passwordKey | string | `"password"` |  |
-| tranql.annotations."getambassador.io/config" | string | `"apiVersion: ambassador/v1\nkind: Mapping\nname: tranql-amb\nprefix: /tranql\nrewrite: /tranql\nservice: helx-tranql:8081\ncors:\n  origins: \"*\"\n  methods: POST, OPTIONS\n  headers:\n    - Content-Type\ntimeout_ms: 0\n"` |  |
+| tranql.annotations."getambassador.io/config" | string | `"apiVersion: ambassador/v1\nkind: Mapping\nname: tranql-amb\nprefix: /tranql\nrewrite: /tranql\nservice: helx-tranql:8081\nambassador_id: ambassador-helx\ncors:\n  origins: \"*\"\n  methods: POST, OPTIONS\n  headers:\n    - Content-Type\ntimeout_ms: 0\n"` |  |
 | tranql.enabled | bool | `true` |  |
 | tranql.existingRedis.host | string | `"helx-redis-slave"` |  |
 | tranql.existingRedis.port | int | `6379` |  |
