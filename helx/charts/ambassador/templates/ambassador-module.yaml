@@ -1,3 +1,4 @@
+{{ if .Values.global.ambassador_id }}
 apiVersion: getambassador.io/v2
 kind:  Module
 metadata:
@@ -7,3 +8,4 @@ spec:
 # Use ambassador_id only if you are using multiple ambassadors in the same cluster.
 # See below for more information.
   ambassador_id: "{{ .Values.global.ambassador_id }}"
+{{- end }}

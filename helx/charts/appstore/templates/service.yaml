@@ -13,7 +13,9 @@ metadata:
       name:  appstore-mapping
       prefix: /
       service: {{ include "appstore.fullname" . }}:8000
+      {{ if .Values.global.ambassador_id }}
       ambassador_id: {{ .Values.global.ambassador_id }}
+      {{- end }}
       timeout_ms: 300000
       idle_timeout_ms: 500000
       connect_timeout_ms: 500000
