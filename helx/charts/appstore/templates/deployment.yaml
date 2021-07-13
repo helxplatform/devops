@@ -268,7 +268,7 @@ spec:
               name: {{ include "appstore.fullname" . }}
         {{- range $key, $value := .Values.extraEnv }}
         - name: {{ $key }}
-          value: {{ $value }}
+          value: {{ $value | quote }}
         {{- end }}
         - name: CREATE_HOME_DIRS
           value: "{{- .Values.createHomeDirs }}"
@@ -284,10 +284,6 @@ spec:
         {{- end }}
         - name: SHARED_DIR
           value: "{{ .Values.shared_dir }}"
-        {{- range $key, $value := .Values.extraEnv }}
-        - name: {{ $key }}
-          value: {{ $value }}
-        {{- end }}
         - name: IMAGE_DOWNLOAD_URL
           valueFrom:
             configMapKeyRef:
