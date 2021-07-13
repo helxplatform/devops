@@ -1,6 +1,6 @@
 # appstore
 
-![Version: 0.1.37](https://img.shields.io/badge/Version-0.1.37-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.26](https://img.shields.io/badge/AppVersion-1.0.26-informational?style=flat-square)
+![Version: 0.1.39](https://img.shields.io/badge/Version-0.1.39-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.26](https://img.shields.io/badge/AppVersion-1.0.26-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -10,7 +10,7 @@ A Helm chart for Kubernetes
 |-----|------|---------|-------------|
 | ACCOUNT_DEFAULT_HTTP_PROTOCOL | string | `"http"` | Choose http or https for the protocol that is used by external users to access the appstore web service. |
 | affinity | object | `{}` |  |
-| ambassador.flag | bool | `true` | specify the id of the ambassador for Tycho-launched services. id: -- register appstore with ambassador flag: <True or False> |
+| ambassador.flag | bool | `true` | register appstore with ambassador flag: <True or False> |
 | appStorage.claimName | string | `nil` |  |
 | appStorage.existingClaim | bool | `false` |  |
 | appStorage.storageClass | string | `nil` |  |
@@ -47,7 +47,7 @@ A Helm chart for Kubernetes
 | djangoSettings | string | `"cat"` | set the theme for appstore (cat, braini, restartr, scidas) |
 | extraEnv | object | `{}` |  |
 | fullnameOverride | string | `""` |  |
-| global.ambassador_id | string | `"ambassador-helx"` | specify the id of the ambassador for Tycho-launched services. |
+| global.ambassador_id | string | `nil` | specify the id of the ambassador for Tycho-launched services. |
 | global.stdnfsPvc | string | `"stdnfs"` | the name of the PVC to use for user's files |
 | image.pullPolicy | string | `"IfNotPresent"` | pull policy |
 | image.repository | string | `"helxplatform/appstore"` | repository where image is located |
