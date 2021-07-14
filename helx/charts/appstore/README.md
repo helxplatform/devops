@@ -25,7 +25,6 @@ A Helm chart for Kubernetes
 | django.APPSTORE_DJANGO_USERNAME | string | `"admin"` |  |
 | django.AUTHORIZED_USERS | string | `""` | user emails for oauth providers |
 | django.CREATE_TEST_USERS | string | `"false"` | create test users for load testing |
-| django.CREATE_TEST_VOLUME | string | `"false"` | create test volumes for appstore |
 | django.DOCKSTORE_APPS_BRANCH | string | `"master"` | Defaults to "master". Specify "develop" to switch. |
 | django.EMAIL_HOST_PASSWORD | string | `""` | password of account to use for outgoing emails |
 | django.EMAIL_HOST_USER | string | `""` | email of account to use for outgoing emails |
@@ -65,7 +64,7 @@ A Helm chart for Kubernetes
 | irods.RODS_PASSWORD | string | `""` |  |
 | irods.RODS_USERNAME | string | `""` |  |
 | irods.enabled | bool | `false` | enable irods support (true | false) |
-| loadTest | bool | `false` |  |
+| loadTest | bool | `false` | When this is true, set CREATE_TEST_USERS, TEST_USERS_PATH, TEST_USERS_SECRET under django settings. |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | oauth.claimName | string | `"appstore-oauth-pvc"` |  |

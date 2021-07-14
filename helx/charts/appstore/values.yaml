@@ -66,13 +66,12 @@ djangoSettings: cat
 # -- Allow for a custom entrypoint command via the values file.
 appstoreEntrypointArgs: "make start"
 
+# -- When this is true, set CREATE_TEST_USERS, TEST_USERS_PATH, TEST_USERS_SECRET under django settings.
 loadTest: false
 
 django:
   # -- create test users for load testing
   CREATE_TEST_USERS: "false"
-  # -- create test volumes for appstore
-  CREATE_TEST_VOLUME: "false"
   # -- parent directory where the users.txt would be mounted
   TEST_USERS_PATH: "/tmp"
   # -- secret file deployed on the cluster to fetch the test users
