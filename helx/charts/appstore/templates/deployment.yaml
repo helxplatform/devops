@@ -34,6 +34,11 @@ spec:
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         env:
+        - name: REACT_APP_HELX_SEARCH_URL
+          valueFrom:
+            configMapKeyRef:
+              key: REACT_APP_HELX_SEARCH_URL
+              name: { { include "appstore.fullname" . } }-env
         - name: REACT_APP_SEMANTIC_SEARCH_ENABLED
           valueFrom:
             configMapKeyRef:

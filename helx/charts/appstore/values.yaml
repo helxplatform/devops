@@ -75,6 +75,8 @@ helx_ui:
   REACT_APP_SEMANTIC_SEARCH_ENABLED: "true"
   # -- Enable/Disable helx-ui workspaces.
   REACT_APP_WORKSPACES_ENABLED: "true"
+  # -- Helx Search URL
+  REACT_APP_HELX_SEARCH_URL: ""
 
 django:
   # -- create test users for load testing

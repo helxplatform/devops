@@ -52,7 +52,8 @@ A Helm chart for Kubernetes
 | fullnameOverride | string | `""` |  |
 | global.ambassador_id | string | `nil` | specify the id of the ambassador for Tycho-launched services. |
 | global.stdnfsPvc | string | `"stdnfs"` | the name of the PVC to use for user's files |
-| helx_ui | object | `{"REACT_APP_SEMANTIC_SEARCH_ENABLED":"true","REACT_APP_WORKSPACES_ENABLED":"true"}` | Setting for helx-ui |
+| helx_ui | object | `{"REACT_APP_HELX_SEARCH_URL":"","REACT_APP_SEMANTIC_SEARCH_ENABLED":"true","REACT_APP_WORKSPACES_ENABLED":"true"}` | Setting for helx-ui |
+| helx_ui.REACT_APP_HELX_SEARCH_URL | string | `""` | Helx Search URL |
 | helx_ui.REACT_APP_SEMANTIC_SEARCH_ENABLED | string | `"true"` | Enable/Disable helx-ui search. |
 | helx_ui.REACT_APP_WORKSPACES_ENABLED | string | `"true"` | Enable/Disable helx-ui workspaces. |
 | image.pullPolicy | string | `"IfNotPresent"` | pull policy |
