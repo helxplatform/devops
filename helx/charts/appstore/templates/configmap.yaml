@@ -28,3 +28,5 @@ data:
   TYCHO_INIT_RESOURCES_MEMORY: "{{ .Values.init.resources.memory }}"
   CREATE_TEST_USERS: "{{ .Values.django.CREATE_TEST_USERS }}"
   TEST_USERS_PATH: "{{ .Values.django.TEST_USERS_PATH }}"
+  REACT_APP_SEMANTIC_SEARCH_ENABLED: "{{ .Values.helx_ui.REACT_APP_SEMANTIC_SEARCH_ENABLED }}"
+  REACT_APP_WORKSPACES_ENABLED: "{{ .Values.helx_ui.REACT_APP_WORKSPACES_ENABLED }}"

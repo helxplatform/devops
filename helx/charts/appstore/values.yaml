@@ -69,6 +69,13 @@ appstoreEntrypointArgs: "make start"
 # -- When this is true, set CREATE_TEST_USERS, TEST_USERS_PATH, TEST_USERS_SECRET under django settings.
 loadTest: false
 
+# -- Setting for helx-ui
+helx_ui:
+  # -- Enable/Disable helx-ui search.
+  REACT_APP_SEMANTIC_SEARCH_ENABLED: "true"
+  # -- Enable/Disable helx-ui workspaces.
+  REACT_APP_WORKSPACES_ENABLED: "true"
+
 django:
   # -- create test users for load testing
   CREATE_TEST_USERS: "false"
