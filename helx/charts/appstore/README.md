@@ -1,6 +1,6 @@
 # appstore
 
-![Version: 0.1.38](https://img.shields.io/badge/Version-0.1.38-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.26](https://img.shields.io/badge/AppVersion-1.0.26-informational?style=flat-square)
+![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.26](https://img.shields.io/badge/AppVersion-1.0.26-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -28,6 +28,7 @@ A Helm chart for Kubernetes
 | django.EMAIL_HOST_PASSWORD | string | `""` | password of account to use for outgoing emails |
 | django.EMAIL_HOST_USER | string | `""` | email of account to use for outgoing emails |
 | django.IMAGE_DOWNLOAD_URL | string | `""` | Specify URL to use for the "Image Download" link on the top part of website. |
+| django.RECIPIENT_EMAILS | string | `""` | list of appstore registration emails |
 | django.REMOVE_AUTHORIZED_USERS | string | `""` | user emails to remove from an already-existing database |
 | django.SESSION_IDLE_TIMEOUT | int | `3600` | idle timeout for user web session |
 | django.WHITELIST_REDIRECT | string | `"true"` | redirect unauthorized users of return a 403 |
