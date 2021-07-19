@@ -2,7 +2,7 @@
 
 A Helm chart for deploying HeLx to Kubernetes.
 
-![Version: 0.8.19](https://img.shields.io/badge/Version-0.8.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.16](https://img.shields.io/badge/AppVersion-1.4.16-informational?style=flat-square)
+![Version: 0.8.20](https://img.shields.io/badge/Version-0.8.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.17](https://img.shields.io/badge/AppVersion-1.4.17-informational?style=flat-square)
 
 HeLx puts the most advanced analytical scientific models at investigator’s finger tips using equally advanced cloud native, container orchestrated, distributed computing systems. HeLx can be applied in many domains. Its ability to empower researchers to leverage advanced analytical tools without installation or other infrastructure concerns has broad reaching benefits.
 
