@@ -83,7 +83,6 @@ airflow:
           name: airflow-ui-amb
           prefix: /airflow
           service: helx-web:8080
-          ambassador_id: ambassador-helx
           rewrite: /airflow/
 
     webserverConfig:
@@ -148,7 +147,7 @@ airflow:
       enabled: true
       repo: "https://github.com/helxplatform/roger.git"
       repoSubPath: "dags"
-      branch: "master"
+      branch: "main"
       revision: "HEAD"
       syncWait: 60
 
@@ -209,7 +208,6 @@ search-api:
           prefix: /search
           service: helx-search-api-webserver:5551
           rewrite: /search
-          ambassador_id: ambassador-helx
           cors:
             origins: "*"
             methods: POST, OPTIONS
@@ -221,8 +219,6 @@ search-api:
           name: search-api-kg
           prefix: /search_kg
           service: helx-search-api-webserver:5551
-          ambassador_id: ambassador-helx
-          ambassador_id: ambassador-helx
           rewrite: /search_kg
           cors:
             origins: "*"
@@ -247,7 +243,6 @@ search-ui:
         name: search-ui
         prefix: /ui
         service: helx-search-ui:8080
-        ambassador_id: ambassador-helx
 
 elasticsearch:
   enabled: true
@@ -275,13 +270,6 @@ persistence:
 
 redis:
   enabled: true
-  dumpUri: "https://stars.renci.org/var/kgx_data/roger_graph.rdb"
-  configmap: |-
-    # Disables appendonly , this instance is readonly. And needs to be
-    # seeded from RDB files if needed.
-    appendonly no
-    # Disable RDB persistence, AOF persistence already enabled.
-    save ""
   persistence:
     existingClaim: "redis-data"
   usePassword: true
@@ -344,7 +332,6 @@ tranql:
       prefix: /tranql
       rewrite: /tranql
       service: helx-tranql:8081
-      ambassador_id: ambassador-helx
       cors:
         origins: "*"
         methods: POST, OPTIONS
