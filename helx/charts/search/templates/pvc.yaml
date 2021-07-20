@@ -18,7 +18,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "redis.tplValue" (dict "value" .Values.redis.persistence.existingClaim "context" $) }}
+  name: redis-data
   annotations:
     # makes sure that pvc is created before job.
     "helm.sh/hook": pre-install

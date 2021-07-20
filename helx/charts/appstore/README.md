@@ -1,6 +1,6 @@
 # appstore
 
-![Version: 0.1.40](https://img.shields.io/badge/Version-0.1.40-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.26](https://img.shields.io/badge/AppVersion-1.0.26-informational?style=flat-square)
+![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.26](https://img.shields.io/badge/AppVersion-1.0.26-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -29,6 +29,7 @@ A Helm chart for Kubernetes
 | django.EMAIL_HOST_PASSWORD | string | `""` | password of account to use for outgoing emails |
 | django.EMAIL_HOST_USER | string | `""` | email of account to use for outgoing emails |
 | django.IMAGE_DOWNLOAD_URL | string | `""` | Specify URL to use for the "Image Download" link on the top part of website. |
+| django.RECIPIENT_EMAILS | string | `""` | list of appstore registration emails |
 | django.REMOVE_AUTHORIZED_USERS | string | `""` | user emails to remove from an already-existing database |
 | django.SESSION_IDLE_TIMEOUT | int | `3600` | idle timeout for user web session |
 | django.TEST_USERS_PATH | string | `"/tmp"` | parent directory where the users.txt would be mounted |
@@ -52,6 +53,10 @@ A Helm chart for Kubernetes
 | fullnameOverride | string | `""` |  |
 | global.ambassador_id | string | `nil` | specify the id of the ambassador for Tycho-launched services. |
 | global.stdnfsPvc | string | `"stdnfs"` | the name of the PVC to use for user's files |
+| helx_ui | object | `{"REACT_APP_HELX_SEARCH_URL":"","REACT_APP_SEMANTIC_SEARCH_ENABLED":"true","REACT_APP_WORKSPACES_ENABLED":"true"}` | Setting for helx-ui |
+| helx_ui.REACT_APP_HELX_SEARCH_URL | string | `""` | Helx Search URL |
+| helx_ui.REACT_APP_SEMANTIC_SEARCH_ENABLED | string | `"true"` | Enable/Disable helx-ui search. |
+| helx_ui.REACT_APP_WORKSPACES_ENABLED | string | `"true"` | Enable/Disable helx-ui workspaces. |
 | image.pullPolicy | string | `"IfNotPresent"` | pull policy |
 | image.repository | string | `"helxplatform/appstore"` | repository where image is located |
 | image.tag | string | `nil` |  |
