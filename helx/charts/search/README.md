@@ -1,6 +1,6 @@
 # search
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airflow and Redis.
 
@@ -13,7 +13,7 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | https://helm.elastic.co | elasticsearch | 7.12.0 |
 | https://helx-charts.github.io/charts/ | search-api | 0.1.1 |
 | https://helx-charts.github.io/charts/ | search-ui | 0.1.0 |
-| https://yaphetkg.github.io | tranql | 0.1.2 |
+| https://helx-charts.github.io/charts/ | tranql | 0.1.3 |
 
 ## Values
 
