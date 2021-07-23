@@ -1,6 +1,6 @@
 # search
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airflow and Redis.
 
@@ -90,6 +90,10 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | elasticsearch.extraEnvs[1].valueFrom.secretKeyRef.key | string | `"username"` |  |
 | elasticsearch.extraEnvs[1].valueFrom.secretKeyRef.name | string | `"helx-elastic-secret"` |  |
 | elasticsearch.imageTag | string | `"7.12.0"` |  |
+| elasticsearch.resources.limits.cpu | string | `"100m"` |  |
+| elasticsearch.resources.limits.memory | string | `"2Gi"` |  |
+| elasticsearch.resources.requests.cpu | string | `"10m"` |  |
+| elasticsearch.resources.requests.memory | string | `"2Gi"` |  |
 | nboost.enabled | bool | `false` |  |
 | persistence.pvcSize | string | `"1Gi"` |  |
 | persistence.storageClass | string | `""` |  |
@@ -139,6 +143,7 @@ A Helm chart for Helx Search components. This chart installs Dug, TranQL , Airfl
 | search-api.web.deployment.extraEnv[6].value | string | `"6379"` |  |
 | search-api.web.deployment.extraEnv[7].name | string | `"NBOOST_API_HOST"` |  |
 | search-api.web.deployment.extraEnv[7].value | string | `"nboost $ TODO compute this"` |  |
+| search-api.web.deployment.image.tag | string | `"2.3.0"` |  |
 | search-api.web.service.annotations."getambassador.io/config" | string | `"---\napiVersion: ambassador/v1\nkind: Mapping\nname: search-api\nprefix: /search\nservice: helx-search-api-webserver:5551\nrewrite: /search\ncors:\n  origins: \"*\"\n  methods: POST, OPTIONS\n  headers:\n    - Content-Type\n---\napiVersion: ambassador/v1\nkind: Mapping\nname: search-api-kg\nprefix: /search_kg\nservice: helx-search-api-webserver:5551\nrewrite: /search_kg\ncors:\n  origins: \"*\"\n  methods: POST, OPTIONS\n  headers:\n    - Content-Type\n"` |  |
 | search-ui.extraEnv[0].name | string | `"PUBLIC_URL"` |  |
 | search-ui.extraEnv[0].value | string | `"/ui"` |  |
