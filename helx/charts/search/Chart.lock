@@ -15,7 +15,7 @@ dependencies:
   repository: https://helx-charts.github.io/charts/
   version: 0.1.0
 - name: tranql
-  repository: https://yaphetkg.github.io
-  version: 0.1.2
-digest: sha256:d3ebd6f93164f706611d3d385eb3a258cab66a25b34400b017cb4db97f953362
-generated: "2021-06-22T20:12:17.982844-04:00"
+  repository: https://helx-charts.github.io/charts/
+  version: 0.1.3
+digest: sha256:e3f5352b9fcd8a3227b6d03a31b3ebcb815199d564e6d67228ba35ff174afc3c
+generated: "2021-07-22T10:31:21.2862342-04:00"
