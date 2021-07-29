@@ -59,7 +59,7 @@ spec:
             - name: REACT_APP_UI_BRAND_LOGO
               value: 'https://github.com/helxplatform/appstore/blob/develop/appstore/core/static/images/heal/logo.png?raw=true'
             - name: REACT_APP_HELX_SEARCH_URL
-              value: ''
+              value: 'http://helx.renci.org'
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
