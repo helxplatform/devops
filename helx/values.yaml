@@ -5,7 +5,7 @@ ambassador:
   enabled: true
 appstore:
   # -- enable/disable deployment of appstore
-  enabled: true
+  enabled: false
 backup-pvc-cronjob:
   # -- enable/disable deployment of backup-pvc-cronjob
   enabled: false
@@ -34,7 +34,9 @@ search:
 tycho-api:
   # -- enable/disable deployment of tycho-api
   enabled: false
-
+ui:
+  # -- enable/disable deployment of ui
+  enabled: true
 global:
   tycho_api_service_name: helx-tycho-api
   restartr_api_service_name: helx-restartr-api-service
