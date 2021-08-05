@@ -1,22 +1,39 @@
-FROM jenkins/jenkins:2.263.3-lts
+FROM jenkins/jenkins:2.263.4-lts
 
 USER root
 
-RUN echo "deb http://ftp.debian.org/debian stable main contrib non-free" > /etc/apt/sources.list && \
+# was: deb http://ftp.debian.org/debian stable main contrib non-free
+RUN echo "deb http://deb.debian.org/debian bullseye main contrib" > /etc/apt/sources.list && \
     apt-get update -qq && \
-    apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common gir1.2-glib-2.0 gir1.2-packagekitglib-1.0 python-apt-common python3 python3-venv python3-dbus python3-gi python python-pip python3-software-properties python3-pip python3-wheel python3-setuptools ruby ruby-bundler sudo less vim-tiny gettext-base jq
+    apt-get full-upgrade -qqy
 
-RUN pip  install --upgrade pip wheel setuptools && \
+RUN apt-get update -qq 
+
+# removed: python python-pip python3-pip
+RUN apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common && \
+    less vim-tiny gettext-base jq sudo && \
+    python3
+
+RUN apt-get install -qqy pip
+RUN apt-get install -qqy ruby ruby-bundler
+RUN apt-get install -qqy gir1.2-glib-2.0 gir1.2-packagekitglib-1.0
+RUN apt-get install -qqy python3-wheel python3-setuptools
+RUN apt-get install -qqy python3-venv python3-dbus python3-software-properties python-apt-common python3-gi
+
+RUN pip install --upgrade pip wheel setuptools && \
     curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
 
-RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
-    apt-get update  -qq && \
-    apt-cache madison docker-ce && \
-    apt-get install docker-ce=5:19.03.12~3-0~debian-stretch docker-ce-cli=5:19.03.12~3-0~debian-stretch containerd.io -y && \
-    curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Linux-x86_64" -o /usr/local/bin/docker-compose && \
-    chmod +x /usr/local/bin/docker-compose && \
-    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose && \
-    curl -L https://github.com/arminc/clair-scanner/releases/download/v12/clair-scanner_linux_amd64 -o /usr/local/bin/clair-scanner && \
+RUN apt-get install -qqy docker docker-compose
+
+# RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+#     apt-get update  -qq && \
+#     apt-cache madison docker-ce && \
+#     apt-get install docker-ce=5:20.10.8~3-0~debian-buster docker-ce-cli=5:20.10.8~3-0~debian-buster containerd.io -y && \
+#     curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Linux-x86_64" -o /usr/local/bin/docker-compose && \
+#     chmod +x /usr/local/bin/docker-compose && \
+#     ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose && \
+
+RUN curl -L https://github.com/arminc/clair-scanner/releases/download/v12/clair-scanner_linux_amd64 -o /usr/local/bin/clair-scanner && \
     chmod +x /usr/local/bin/clair-scanner  && \
     ln -s /usr/local/bin/clair-scanner /usr/bin/clair-scanner && \
     curl -L https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64 -o /usr/local/bin/yq && \
