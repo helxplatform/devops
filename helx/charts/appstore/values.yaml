@@ -72,11 +72,13 @@ loadTest: false
 # -- Setting for helx-ui
 helx_ui:
   # -- Enable/Disable helx-ui search.
-  REACT_APP_SEMANTIC_SEARCH_ENABLED: "true"
+  REACT_APP_SEMANTIC_SEARCH_ENABLED: "false"
   # -- Enable/Disable helx-ui workspaces.
   REACT_APP_WORKSPACES_ENABLED: "true"
   # -- Helx Search URL
-  REACT_APP_HELX_SEARCH_URL: ""
+  REACT_APP_HELX_SEARCH_URL: "https://helx.renci.org"
+
+  REACT_APP_UI_BRAND_NAME: 'eduhelx'
 
 django:
   # -- create test users for load testing
