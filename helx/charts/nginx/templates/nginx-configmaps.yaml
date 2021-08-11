@@ -4,7 +4,7 @@ metadata:
   name: ambassador-nginx-conf
 data:
   default.conf: |
-        {{- if .Values.SSL }}
+        {{- if and (.Values.SSL) (not .Values.ingress.create) }}
         server {
                 listen      {{ .Values.service.httpTargetPort }} default_server;
                 server_name {{ .Values.service.serverName }};
@@ -12,11 +12,12 @@ data:
         }
         {{- end }}
         server {
-                {{- if .Values.SSL }}
+                {{- if and (.Values.SSL) (not .Values.ingress.create) }}
                 listen               {{ .Values.service.httpsTargetPort }} ssl;
                 ssl_certificate      /etc/nginx/ssl/tls.crt;
                 ssl_certificate_key  /etc/nginx/ssl/tls.key;
                 {{- else }}
+                # When ingress.create=true, TLS termination happens in ingress-nginx before it reaches this nginx instance
                 listen               {{ .Values.service.httpTargetPort }};
                 listen               [::]:{{ .Values.service.httpTargetPort }};
                 {{- end }}

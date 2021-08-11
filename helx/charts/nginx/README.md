@@ -2,7 +2,7 @@
 
 A Helm chart for Kubernetes
 
-![Version: 0.2.6](https://img.shields.io/badge/Version-0.2.6-informational?style=flat-square) ![AppVersion: 1.0.13](https://img.shields.io/badge/AppVersion-1.0.13-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![AppVersion: 1.0.13](https://img.shields.io/badge/AppVersion-1.0.13-informational?style=flat-square)
 
 ### TLS/SSL
 
@@ -16,21 +16,20 @@ kubectl create secret tls my.domain.org-tls-secret --cert=tls.crt --key=tls.key
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| DEV_PHASE.dev | bool | `false` |  |
+| DEV_PHASE.dev | bool | `false` | Set the DEV_PHASE.dev True, if Appstore/Tycho running locally. Else, set it to False |
 | fullnameOverride | string | `""` |  |
 | global.ambassador_service_name | string | `"ambassador"` |  |
 | global.dug_search_client_service_name | string | `"dug-search-client"` |  |
 | global.dug_web_service_name | string | `"dug-web"` |  |
 | global.restartr_api_service_name | string | `"restartr-api-service"` |  |
-| http_host | bool | `false` |  |
+| http_host | bool | `false` | For TACC, set this to true and specify the hostname |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"helxplatform/nginx"` |  |
-| image.tag | string | `nil` |  |
+| image.tag | string | `nil` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
-| ingress.create | bool | `false` |  |
-| ingress.host | string | `""` |  |
-| ingress.spec.tls | object | `{}` |  |
+| ingress.create | bool | `false` | Whether to create an Ingress resource or not. New installations of helx should set this to true to avoid needing to request a static IP. |
+| ingress.tls.enabled | bool | `true` | Values inserted into the TLS block come from SSL.nginxTLSSecret and service.serverName for backward compatibility |
 | nameOverride | string | `""` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"100m"` |  |
@@ -38,13 +37,13 @@ kubectl create secret tls my.domain.org-tls-secret --cert=tls.crt --key=tls.key
 | resources.requests.cpu | string | `"50m"` |  |
 | resources.requests.memory | string | `"32Mi"` |  |
 | restartrApi | bool | `false` |  |
-| service.IP | string | `nil` |  |
+| service.IP | string | `nil` | The static IP for this service, assigned to you by cluster administrators. Ignored if ingress.create=true. |
 | service.httpPort | int | `80` |  |
 | service.httpTargetPort | int | `8080` |  |
 | service.httpsPort | int | `443` |  |
 | service.httpsTargetPort | int | `8443` |  |
 | service.serverName | string | `"_"` |  |
-| service.type | string | `"LoadBalancer"` |  |
+| service.type | string | `"LoadBalancer"` | can be LoadBalancer or ClusterIP. If ingress.create=true, this setting is ignored and defaulted to ClusterIP |
 | varStorage.claimName | string | `nil` |  |
 | varStorage.existingClaim | bool | `false` |  |
 | varStorage.storageClass | string | `nil` |  |
