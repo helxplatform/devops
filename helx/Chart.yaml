@@ -14,11 +14,11 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.8.23
+version: 0.8.24
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.4.19
+appVersion: 1.4.20
 
 dependencies:
   - name: ambassador
@@ -26,7 +26,7 @@ dependencies:
     version: 0.1.8
   - name: appstore
     condition: appstore.enabled
-    version: 0.2.0
+    version: 0.2.1
   - name: backup-pvc-cronjob
     condition: backup-pvc-cronjob.enabled
     version: 0.1.0
