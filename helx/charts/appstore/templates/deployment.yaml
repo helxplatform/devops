@@ -49,6 +49,11 @@ spec:
             configMapKeyRef:
               key: REACT_APP_WORKSPACES_ENABLED
               name: {{ include "appstore.fullname" . }}-env
+        - name: REACT_APP_UI_BRAND_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: REACT_APP_UI_BRAND_NAME
+              name: {{ include "appstore.fullname" . }}-env
         - name: CREATE_TEST_USERS
           valueFrom:
             configMapKeyRef:

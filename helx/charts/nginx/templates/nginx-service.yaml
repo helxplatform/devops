@@ -3,8 +3,12 @@ kind: Service
 metadata:
   name: {{ include "nginx.fullname" . }}
 spec:
+  {{-  if .Values.ingress.create }}
+  type: ClusterIP
+  {{- else }}
   type: {{ .Values.service.type }}
   loadBalancerIP: {{ .Values.service.IP }}
+  {{- end }}
   ports:
   - name: http
     port: {{ .Values.service.httpPort }}
