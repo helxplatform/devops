@@ -117,7 +117,7 @@ data:
                          proxy_http_version 1.1;
                          {{- if .Values.DEV_PHASE.dev }}
                          {{- else }}
-                         {{- if .Values.appstore.enabled }}
+                         {{- if .Values.airflow.authenticate }}
                          auth_request /auth;
                          auth_request_set $remoteUser $upstream_http_remote_user;
                          proxy_set_header REMOTE_USER $remoteUser;
