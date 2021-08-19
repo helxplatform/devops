@@ -44,7 +44,7 @@ dependencies:
     version: 0.1.5
   - name: nginx
     condition: nginx.enabled
-    version: 0.3.0
+    version: 0.3.1
   - name: pod-reaper
     condition: pod-reaper.enabled
     version: 0.1.4
