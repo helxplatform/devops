@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "ambassador.fullname" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "ambassador.selectorLabels" . | nindent 6 }}
