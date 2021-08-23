@@ -14,16 +14,16 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.8.25
+version: 0.8.26
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.4.20
+appVersion: 1.4.21
 
 dependencies:
   - name: ambassador
     condition: ambassador.enabled
-    version: 0.1.8
+    version: 0.1.9
   - name: appstore
     condition: appstore.enabled
     version: 0.2.1
