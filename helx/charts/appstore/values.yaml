@@ -81,8 +81,8 @@ helx_ui:
   REACT_APP_UI_BRAND_NAME: ""
 
 django:
-  # -- turn debug true/false
-  DEBUG: "true"
+  # -- set the debug value to true. defaults to false.
+  DEBUG: ""
   # -- create test users for load testing
   CREATE_TEST_USERS: "false"
   # -- parent directory where the users.txt would be mounted
