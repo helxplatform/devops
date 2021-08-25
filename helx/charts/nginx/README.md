@@ -2,7 +2,7 @@
 
 A Helm chart for Kubernetes
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![AppVersion: 1.0.13](https://img.shields.io/badge/AppVersion-1.0.13-informational?style=flat-square)
+![Version: 0.3.1](https://img.shields.io/badge/Version-0.3.1-informational?style=flat-square) ![AppVersion: 1.0.13](https://img.shields.io/badge/AppVersion-1.0.13-informational?style=flat-square)
 
 ### TLS/SSL
 
@@ -17,6 +17,7 @@ kubectl create secret tls my.domain.org-tls-secret --cert=tls.crt --key=tls.key
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | DEV_PHASE.dev | bool | `false` | Set the DEV_PHASE.dev True, if Appstore/Tycho running locally. Else, set it to False |
+| airflow.authenticate | bool | `true` |  |
 | fullnameOverride | string | `""` |  |
 | global.ambassador_service_name | string | `"ambassador"` |  |
 | global.dug_search_client_service_name | string | `"dug-search-client"` |  |
