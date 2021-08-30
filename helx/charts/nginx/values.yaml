@@ -64,6 +64,9 @@ restartrApi: false
 # -- For TACC, set this to true and specify the hostname
 http_host: false
 
+airflow:
+  authenticate: true
+
 global:
   ambassador_service_name: ambassador
   dug_web_service_name: dug-web
