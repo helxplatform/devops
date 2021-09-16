@@ -1,0 +1,29 @@
+#kind: PersistentVolume
+#apiVersion: v1
+#metadata:
+#  name: {{ .Values.db.name }}-pv-volume
+#  labels:
+#    type: local
+#    app: {{ .Values.db.name }}
+#spec:
+#  storageClassName: {{ .Values.db.name }}
+#  capacity:
+#    storage: 5Gi
+#  accessModes:
+#    - ReadWriteOnce
+#  gcePersistentDisk:
+#    pdName: {{ .Values.db.disk_name }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.db.name }}-pv-claim
+  namespace: braini
+  labels:
+    app: {{ .Values.db.name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
