@@ -39,19 +39,19 @@ dependencies:
     version: 0.1.0
   - name: nfs-server
     condition: nfs-server.enabled
-    version: 0.2.3
+    version: 0.2.4
   - name: nfsrods
     condition: nfsrods.enabled
     version: 0.1.5
   - name: nginx
     condition: nginx.enabled
-    version: 0.3.1
+    version: 0.3.2
   - name: pod-reaper
     condition: pod-reaper.enabled
-    version: 0.1.4
+    version: 0.1.5
   - name: search
     condition: search.enabled
     version: 0.1.7
   - name: tycho-api
     condition: tycho-api.enabled
-    version: 0.1.12
+    version: 0.1.13
