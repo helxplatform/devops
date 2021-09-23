@@ -7,7 +7,7 @@ dependencies:
   - name: cost-analyzer
     condition: cost-analyzer.enabled
     repository: https://kubecost.github.io/cost-analyzer/
-    version: 1.76.0
+    version: 1.86.0
   - name: loki-stack
     condition: loki-stack.enabled
     repository: https://grafana.github.io/helm-charts
