@@ -26,7 +26,6 @@ Session.vim
 .netrwhist
 
 # Chart dependencies
-**/charts/*.tgz
+**/helx/charts/*.tgz
 
 .history
-
