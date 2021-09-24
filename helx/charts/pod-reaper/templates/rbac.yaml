@@ -9,7 +9,7 @@ metadata:
 ---
 # minimal permissions required for running pod-reaper at cluster level
 kind: Role
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: pod-reaper-role
 rules:
@@ -42,7 +42,7 @@ rules:
 
 ---
 # binding the above cluster role (permissions) to the above service account
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: pod-reaper-role-binding

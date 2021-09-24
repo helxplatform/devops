@@ -1,9 +1,9 @@
 dependencies:
 - name: cost-analyzer
   repository: https://kubecost.github.io/cost-analyzer/
-  version: 1.76.0
+  version: 1.87.0
 - name: loki-stack
   repository: https://grafana.github.io/helm-charts
-  version: 2.3.1
-digest: sha256:25c4ff15cbccd4f9047a4d05e2ae09f09dbb2242fc183212c84ca0458e4ffb5e
-generated: "2021-03-23T15:29:06.406089-04:00"
+  version: 2.4.1
+digest: sha256:df5e557fecc1beb77f83a1dcd0915cb4556f2d54208d6e0a194c6584b663c76b
+generated: "2021-09-23T19:39:42.384119325Z"

@@ -14,3 +14,21 @@ spec:
     requests:
       storage: {{ .Values.persistence.pvcSize }}
 {{ end }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-data
+  annotations:
+    # makes sure that pvc is created before job.
+    "helm.sh/hook": pre-install
+    # makes sure that pvc is created before job.
+    "helm.sh/hook-weight": "-6"
+    "helm.sh/resource-policy": keep
+spec:
+  storageClassName: {{ .Values.persistence.storageClass }}
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+    - ReadWriteMany

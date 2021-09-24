@@ -3,12 +3,13 @@ airflow:
   airflow:
     image:
       repository: helxplatform/roger
-      tag: "0.2.dev0"
+      tag: "0.3.dev0"
       pullPolicy: Always
     executor: KubernetesExecutor
     config:
       AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "TRUE"
       AIRFLOW__CORE__LOAD_EXAMPLES: "FALSE"
+      AIRFLOW__SCHEDULER__SCHEDULE_AFTER_TASK_EXECUTION: "FALSE"
       # Provide http://<URL to nginx >/<web-prefix>
       AIRFLOW__WEBSERVER__BASE_URL: ""
     extraEnv:
@@ -57,6 +58,12 @@ airflow:
           claimName: search-data
 
     configSecretsName: airflow-config-secrets
+
+    # Resource config for all task runner pods.
+    kubernetesPodTemplate:
+      resources: {}
+        # requests:
+          # memory: 1Gi
 
   externalRedis:
     host: helx-redis-master
@@ -140,7 +147,7 @@ airflow:
       enabled: true
       repo: "https://github.com/helxplatform/roger.git"
       repoSubPath: "dags"
-      branch: "master"
+      branch: "main"
       revision: "HEAD"
       syncWait: 60
 
@@ -165,6 +172,8 @@ search-api:
   enabled: true
   web:
     deployment:
+      image:
+        tag: "2.3.0"
       extraEnv:
         - name: ELASTIC_API_HOST
           value: helx-elasticsearch-master
@@ -237,11 +246,17 @@ search-ui:
         prefix: /ui
         service: helx-search-ui:8080
 
-
 elasticsearch:
   enabled: true
   imageTag: "7.12.0"
   clusterName: helx-elasticsearch
+  resources:
+    requests:
+      cpu: "10m"
+      memory: "2Gi"
+    limits:
+      cpu: "100m"
+      memory: "2Gi"
 
   extraEnvs:
     - name: ELASTIC_PASSWORD
@@ -264,6 +279,8 @@ persistence:
 
 redis:
   enabled: true
+  persistence:
+    existingClaim: "redis-data"
   usePassword: true
   clusterDomain: cluster.local
   existingSecret: helx-redis-secret

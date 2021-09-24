@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: helxplatform/nginx
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- Overrides the image tag whose default is the chart appVersion.
   tag:
   pullPolicy: IfNotPresent
 
@@ -15,7 +15,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 service:
+  # -- can be LoadBalancer or ClusterIP. If ingress.create=true, this setting is ignored and defaulted to ClusterIP
   type: LoadBalancer
+  # -- The static IP for this service, assigned to you by cluster administrators. Ignored if ingress.create=true.
   IP:
   httpPort: 80
   httpTargetPort: 8080
@@ -32,8 +34,9 @@ resources:
     cpu: 50m
     memory: 32Mi
 
-# Set the DEV_PHASE.dev True, if Appstore/Tycho running locally. Else, set it to False
+
 DEV_PHASE:
+  # -- Set the DEV_PHASE.dev True, if Appstore/Tycho running locally. Else, set it to False
   dev: False
 
 # Uncomment these SSL lines and create secret to use TLS/SSL
@@ -42,16 +45,13 @@ DEV_PHASE:
 #   nginxTLSSecret: nginx-tls-secret
 
 ingress:
+  # -- Whether to create an Ingress resource or not. New installations of helx should set this to true to avoid needing to request a static IP.
   create: false
-  host: ""
   annotations: {}
     # kubernetes.io/ingress.class: : ""
-    # traefik.ingress.kubernetes.io/router.tls: ""
-  spec:
-    tls: {}
-      # - hosts:
-      #   - helx.sample.com
-      #   secretName: sample-tls-secret
+  tls:
+    # -- Values inserted into the TLS block come from SSL.nginxTLSSecret and service.serverName for backward compatibility
+    enabled: true
 
 varStorage:
   existingClaim: false
@@ -61,8 +61,11 @@ varStorage:
 
 restartrApi: false
 
-# For TACC, set this to true and specify the hostname
+# -- For TACC, set this to true and specify the hostname
 http_host: false
+
+airflow:
+  authenticate: true
 
 global:
   ambassador_service_name: ambassador

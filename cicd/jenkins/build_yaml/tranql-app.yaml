@@ -9,7 +9,7 @@ app:
 
 code:
   primary_url:
-    https://github.com/NCATS-Tangerine/tranql.git
+    https://github.com/helxplatform/tranql.git
   secondary_url:
     null
   primary_app_path:

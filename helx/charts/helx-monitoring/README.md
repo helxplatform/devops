@@ -2,7 +2,7 @@
 
 Monitoring tools to use alongside HeLx
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 ## Configuring helx-monitoring
 
@@ -40,8 +40,8 @@ helm -n loki-stack delete loki-stack
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://grafana.github.io/helm-charts | loki-stack | 2.3.1 |
-| https://kubecost.github.io/cost-analyzer/ | cost-analyzer | 1.76.0 |
+| https://grafana.github.io/helm-charts | loki-stack | 2.4.1 |
+| https://kubecost.github.io/cost-analyzer/ | cost-analyzer | 1.87.0 |
 
 ## Values
 
