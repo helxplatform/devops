@@ -1,10 +1,10 @@
 dependencies:
 - name: ambassador
   repository: ""
-  version: 0.1.9
+  version: 0.1.10
 - name: appstore
   repository: https://helx-charts.github.io/charts/
-  version: 0.3.0-dev
+  version: 0.4.0
 - name: backup-pvc-cronjob
   repository: ""
   version: 0.1.0
@@ -16,21 +16,21 @@ dependencies:
   version: 0.1.0
 - name: nfs-server
   repository: ""
-  version: 0.2.3
+  version: 0.2.4
 - name: nfsrods
   repository: ""
   version: 0.1.5
 - name: nginx
   repository: ""
-  version: 0.3.1
+  version: 0.3.2
 - name: pod-reaper
   repository: ""
-  version: 0.1.4
+  version: 0.1.5
 - name: search
   repository: ""
   version: 0.1.7
 - name: tycho-api
   repository: ""
-  version: 0.1.12
-digest: sha256:b0d05ee3a96a2e9d32cb91230f82754cadc0a368f591cc186fdf5ca93c3fb44a
-generated: "2021-09-13T16:26:42.021844-04:00"
+  version: 0.1.13
+digest: sha256:b1eefa986a1ad46a182bd01ed6d2149f17577772c23a8a22f2aec0d3b0851ac5
+generated: "2021-09-23T12:25:20.23466-04:00"
