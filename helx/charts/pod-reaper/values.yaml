@@ -13,8 +13,8 @@ reapers:
     grace_period: 10m
     schedule: "@every 1m"
     run_duration: "0s"
-    require_label_key: "app-name"
-    require_label_values: "blackbalsam,cloud-top,dicom-cloudtop,dicom-gh,filebrowser,gsforge,imagej,jupyter-ds,napari,octave"
+    require_label_key: "reaper-label"
+    require_label_values: "blackbalsam,cloud-top,dicom-cloudtop,dicom-gh,filebrowser,gsforge,imagej,jupyter-ds,napari,octave,jupyter-education"
     dry_run: "false"
     log_level: "Info"
     log_format: "Logrus"
@@ -23,7 +23,7 @@ reapers:
     grace_period: 10m
     schedule: "@every 1m"
     run_duration: "0s"
-    require_label_key: "app-name"
+    require_label_key: "reaper-label"
     require_label_values: "nextflow"
     dry_run: "false"
     log_level: "Info"

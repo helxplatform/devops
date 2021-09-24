@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: {{ .Values.web.tool.name }}
+  name: {{ .Values.web.tool.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: {{ .Values.web.tool.name }}
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: {{ .Values.web.tool.name }}
+    spec:
+      containers:
+      - args:
+        - sh
+        - -c
+        - /bin/bash /opt/solr/bin/solr -f
+        image: heliumdatastage/cs-solr
+        name: {{ .Values.web.tool.name }}
+        resources: {}
+      restartPolicy: Always
+status: {}

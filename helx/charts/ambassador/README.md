@@ -1,6 +1,6 @@
 # ambassador
 
-![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![AppVersion: 1.12.0](https://img.shields.io/badge/AppVersion-1.12.0-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![AppVersion: 1.12.0](https://img.shields.io/badge/AppVersion-1.12.0-informational?style=flat-square)
 
 A Helm chart for Kubernetes
 
@@ -10,6 +10,7 @@ A Helm chart for Kubernetes
 |-----|------|---------|-------------|
 | adminservice.type | string | `"ClusterIP"` |  |
 | fullnameOverride | string | `""` |  |
+| global.ambassador_id | string | `nil` | Specify the Ambassador ID (useful if multiple Ambassadors are deployed to the same cluster). |
 | global.ambassador_service_name | string | `"ambassador"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"docker.io/datawire/ambassador"` |  |
