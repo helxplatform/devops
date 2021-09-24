@@ -19,7 +19,10 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: {{ include "nginx.fullname" . }}
-          servicePort: {{ .Values.service.httpPort }}
+          service:
+            name: {{ include "nginx.fullname" . }}
+            port:
+              number: {{ .Values.service.httpPort }}
 {{- end }}
