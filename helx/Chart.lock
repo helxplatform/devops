@@ -10,7 +10,7 @@ dependencies:
   version: 0.1.0
 - name: helx-monitoring
   repository: ""
-  version: 0.1.5
+  version: 0.1.6
 - name: image-utils
   repository: ""
   version: 0.1.0
@@ -32,5 +32,5 @@ dependencies:
 - name: tycho-api
   repository: ""
   version: 0.1.13
-digest: sha256:b1eefa986a1ad46a182bd01ed6d2149f17577772c23a8a22f2aec0d3b0851ac5
-generated: "2021-09-23T12:25:20.23466-04:00"
+digest: sha256:179d8e3e14ad4e35e6a42838383383d53ef8bb10ad510a68b7091cb79845cd00
+generated: "2021-09-24T12:21:17.00957-04:00"
