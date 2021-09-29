@@ -14,11 +14,11 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.8.28
+version: 0.9.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.4.21
+appVersion: 1.5.0
 
 dependencies:
   - name: ambassador
@@ -26,14 +26,14 @@ dependencies:
     version: 0.1.10
   - name: appstore
     condition: appstore.enabled
-    version: 0.3.0-dev
+    version: 0.4.0
     repository: "https://helxplatform.github.io/helm-charts/"
   - name: backup-pvc-cronjob
     condition: backup-pvc-cronjob.enabled
     version: 0.1.0
   - name: helx-monitoring
     condition: helx-monitoring.enabled
-    version: 0.1.5
+    version: 0.1.6
   - name: image-utils
     condition: image-utils.enabled
     version: 0.1.0
