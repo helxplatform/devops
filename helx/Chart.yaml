@@ -27,7 +27,7 @@ dependencies:
   - name: appstore
     condition: appstore.enabled
     version: 0.4.0
-    repository: "https://helx-charts.github.io/charts/"
+    repository: "https://helxplatform.github.io/helm-charts/"
   - name: backup-pvc-cronjob
     condition: backup-pvc-cronjob.enabled
     version: 0.1.0
@@ -54,4 +54,5 @@ dependencies:
     version: 0.1.7
   - name: tycho-api
     condition: tycho-api.enabled
-    version: 0.1.13
+    version: 0.2-dev
+    repository: "https://helxplatform.github.io/helm-charts/"
