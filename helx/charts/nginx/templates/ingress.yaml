@@ -31,7 +31,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "nginx.fullname" . }}-admin
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.ingress.admin.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
