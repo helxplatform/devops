@@ -3,7 +3,7 @@ dependencies:
   repository: ""
   version: 0.1.10
 - name: appstore
-  repository: https://helx-charts.github.io/charts/
+  repository: https://helxplatform.github.io/helm-charts/
   version: 0.4.0
 - name: backup-pvc-cronjob
   repository: ""
@@ -27,10 +27,10 @@ dependencies:
   repository: ""
   version: 0.1.5
 - name: search
-  repository: ""
-  version: 0.1.7
+  repository: https://helxplatform.github.io/helm-charts/
+  version: 1.3.1
 - name: tycho-api
-  repository: ""
-  version: 0.1.13
-digest: sha256:179d8e3e14ad4e35e6a42838383383d53ef8bb10ad510a68b7091cb79845cd00
-generated: "2021-09-24T12:21:17.00957-04:00"
+  repository: https://helxplatform.github.io/helm-charts/
+  version: 0.2-dev
+digest: sha256:d19d94646246b5f68f68e5827b62ee0ba07b8345e3120e039097dbc71774977d
+generated: "2021-09-30T09:21:28.145989-04:00"
