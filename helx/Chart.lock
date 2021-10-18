@@ -16,13 +16,13 @@ dependencies:
   version: 0.1.0
 - name: nfs-server
   repository: ""
-  version: 0.2.4
+  version: 0.2.5
 - name: nfsrods
   repository: ""
   version: 0.1.5
 - name: nginx
   repository: ""
-  version: 0.3.2
+  version: 0.3.3
 - name: pod-reaper
   repository: ""
   version: 0.1.5
@@ -32,5 +32,5 @@ dependencies:
 - name: tycho-api
   repository: https://helxplatform.github.io/helm-charts/
   version: 0.2-dev
-digest: sha256:d19d94646246b5f68f68e5827b62ee0ba07b8345e3120e039097dbc71774977d
-generated: "2021-09-30T09:21:28.145989-04:00"
+digest: sha256:0f8e84fadee4d5b11b15170508a3325f89f109716118787fd16470b1c6db77be
+generated: "2021-10-18T11:50:39.836415-04:00"
