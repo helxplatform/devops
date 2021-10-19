@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+data:
+  nginx.conf: |
+    user  nginx;
+    worker_processes  1;
+
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
+
+
+    events {
+        worker_connections  {{ .Values.workerConnections }};
+    }
+
+
+    http {
+
+        ##
+        # Basic Settings
+        ##
+        sendfile on;
+        tcp_nopush on;
+        tcp_nodelay on;
+        keepalive_timeout 65;
+        types_hash_max_size 2048;
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_prefer_server_ciphers on;
+
+        log_format json '{"date_access": "$time_iso8601", '
+              '"user_id": "$http_x_userid", '
+              '"request_id": "$http_x_reqid", '
+              '"session_id": "$http_x_sessionid", '
+              '"visitor_id": "$http_x_visitorid", '
+              '"network_client_ip": "$http_x_forwarded_for", '
+              '"network_bytes_write": $body_bytes_sent, '
+              '"response_secs": $request_time, '
+              '"http_status_code": $status, '
+              '"http_request": "$request_uri", '
+              '"http_verb": "$request_method", '
+              '"http_referer": "$http_referer", '
+              '"http_useragent": "$http_user_agent", '
+              '"REMOTE_USER": $http_remote_user", '
+              '"message": "$request"'
+              '"request_uri": "$request_uri"}';
+
+        access_log /var/log/nginx/access.log json;
+        error_log /var/log/nginx/error.log;
+        gzip on;
+
+        include /etc/nginx/conf.d/*.conf;
+    }

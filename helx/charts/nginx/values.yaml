@@ -73,6 +73,12 @@ http_host: false
 airflow:
   authenticate: true
 
+workerConnections: 1024
+stubStatus:
+  enabled: false
+  localhostOnly: true
+  stubStatusLocation: "/nginx_status"
+
 global:
   ambassador_service_name: ambassador
   dug_web_service_name: dug-web

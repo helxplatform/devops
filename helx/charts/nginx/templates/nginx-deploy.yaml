@@ -26,6 +26,9 @@ spec:
         volumeMounts:
         - name: ambassador-nginx-conf
           mountPath: /etc/nginx/conf.d
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
         {{- if .Values.SSL }}
         - name: secret-volume
           mountPath: /etc/nginx/ssl
@@ -46,6 +49,9 @@ spec:
         - name: ambassador-nginx-conf
           configMap:
             name: ambassador-nginx-conf
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
         {{- if .Values.SSL }}
         - name: secret-volume
           secret:
