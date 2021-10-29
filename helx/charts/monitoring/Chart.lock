@@ -1,0 +1,18 @@
+dependencies:
+- name: cost-analyzer
+  repository: https://kubecost.github.io/cost-analyzer/
+  version: 1.87.0
+- name: kube-prometheus-stack
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 19.0.0
+- name: loki
+  repository: https://grafana.github.io/helm-charts
+  version: 2.6.0
+- name: promtail
+  repository: https://grafana.github.io/helm-charts
+  version: 3.8.1
+- name: falco
+  repository: https://falcosecurity.github.io/charts
+  version: 1.16.0
+digest: sha256:e03f43a264033db8e170057e6c2817e7861a8ca79bc0349a1872a80ec683c7ef
+generated: "2021-10-07T14:52:04.725096-04:00"

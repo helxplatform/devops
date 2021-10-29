@@ -1,0 +1,10 @@
+******WARNING******
+
+After running an upgrade, you must manually edit the monitoring-falco ConfigMap
+to fix the falcosidekick to be "http://monitoring-falcosidekick:2801"
+
+    kubectl edit configmap monitoring-falco -n monitoring
+
+This is due to a bug that has no current workaround: https://github.com/falcosecurity/charts/issues/280
+
+******WARNING******

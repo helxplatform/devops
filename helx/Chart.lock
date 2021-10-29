@@ -8,10 +8,10 @@ dependencies:
 - name: backup-pvc-cronjob
   repository: ""
   version: 0.1.0
-- name: helx-monitoring
-  repository: ""
-  version: 0.1.6
 - name: image-utils
+  repository: ""
+  version: 0.1.0
+- name: monitoring
   repository: ""
   version: 0.1.0
 - name: nfs-server
@@ -32,5 +32,5 @@ dependencies:
 - name: tycho-api
   repository: https://helxplatform.github.io/helm-charts/
   version: 0.2-dev
-digest: sha256:0f8e84fadee4d5b11b15170508a3325f89f109716118787fd16470b1c6db77be
-generated: "2021-10-18T11:50:39.836415-04:00"
+digest: sha256:9e4d082190f587b4d609da67ffba8c438f4e92d83b545e8d436b0149d4bb6635
+generated: "2021-10-28T20:55:26.482242-04:00"

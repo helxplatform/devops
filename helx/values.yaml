@@ -9,12 +9,13 @@ appstore:
 backup-pvc-cronjob:
   # -- enable/disable deployment of backup-pvc-cronjob
   enabled: false
-helx-monitoring:
-  # -- enable/disable deployment of loki-stack and cost-analyzer
-  enabled: false
 image-utils:
   # -- enable/disable deployment of image-utils (imagepullsecret-patcher and
   # imagepuller)
+  enabled: false
+monitoring:
+  # -- enable/disable deployment of Kubernetes monitoring tools
+  # (kube-prometheus-stack, cost-analyzer, loki, etc.)
   enabled: false
 nfs-server:
   # -- enable/disable deployment of nfs-server

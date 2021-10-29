@@ -1,0 +1,115 @@
+# These values are the same across all clusters. Put cluster-specific config in values/<clustername>.yaml
+# https://github.com/kubecost/cost-analyzer-helm-chart
+cost-analyzer:
+  enabled: true
+  # persistentVolume:
+  #   size: 32Gi
+  #   dbSize: 32Gi
+  #   existingClaim: cost-analyzer-pvc
+  # Since there is no auth unless we pay, don't let people edit things
+  readonly: true
+  reporting:
+    productAnalytics: false
+    logCollection: false
+    errorReporting: false
+    # MUST BE FALSE! Otherwise ALL of values.yaml (including secrets) will be shipped to the kubecost people!
+    valuesReporting: false
+  prometheus:
+    kube-state-metrics:
+      disabled: true
+      enabled: false
+      rbac:
+        create: false
+  global:
+    grafana:
+      enabled: false
+      domainName: monitoring-grafana.monitoring
+    prometheus:
+      enabled: false
+      fqdn: http://monitoring-kube-prometheus-prometheus.monitoring:9090
+    notifications:
+      alertmanager:
+        enabled: false
+        fqdn: http://monitoring-kube-prometheus-alertmanager.monitoring:9093
+
+# https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+kube-prometheus-stack:
+  prometheus-node-exporter:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+  enabled: true
+  alertmanager:
+    enabled: true
+  grafana:
+    enabled: true
+    additionalDataSources:
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://monitoring-loki.monitoring:3100
+        version: 1
+  prometheusOperator:
+    enabled: true
+  prometheus:
+    prometheusSpec:
+      # Pick up all PrometheusRules and ServiceMonitors.
+      # Technically this means multiple prom-operators may collect duplicate info,
+      # but it saves a LOT of headache due to accidentally forgetting labels.
+      ruleSelector: {}
+      ruleSelectorNilUsesHelmValues: false
+      serviceMonitorSelector: {}
+      serviceMonitorSelectorNilUsesHelmValues: false
+      resources:
+        requests:
+          cpu: 1500m
+          memory: 2000Mi
+        limits:
+          cpu: 1500m
+          memory: 2000Mi
+  # kubeEtcd:
+  #   ## If your etcd is not deployed as a pod, specify IPs it can be found on
+  #   endpoints:
+  #   - 172.25.16.x
+  #   - 172.25.16.y
+  #   - 172.25.16.z
+
+# https://github.com/grafana/helm-charts/tree/main/charts/loki
+loki:
+  enabled: true
+  replicas: 3
+  persistence:
+    enabled: true
+    accessModes:
+    - ReadWriteOnce
+    size: 10Gi
+  serviceMonitor:
+    enabled: true
+  config:
+    limits_config:
+      retention_period: 90d
+
+# https://github.com/grafana/helm-charts/tree/main/charts/promtail
+promtail:
+  enabled: true
+  rbac:
+    pspEnabled: true
+  config:
+    lokiAddress: http://monitoring-loki.monitoring:3100/loki/api/v1/push
+
+falco:
+  enabled: true
+  falcosidekick:
+    enabled: true
+    config:
+      alertmanager:
+        hostport: http://alertmanager-operated.monitoring:9093
+        minimumpriority: error
+
+# Use 'htpasswd -nBb -C 7 admin some-pass-really' to create credentials for
+# username='admin' with password of 'some-pass-really'.
+basicauth-creds:

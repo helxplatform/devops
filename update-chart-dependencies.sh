@@ -6,7 +6,7 @@ set -eo pipefail
 
 cd helx
 helm dependency update
-cd charts/helx-monitoring
+cd charts/monitoring
 helm dependency update
 cd ../image-utils
 helm dependency update
