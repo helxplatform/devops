@@ -1,0 +1,23 @@
+# Used to scrape metrics from kubecost. Kubecost itself will query these metrics from prometheus.
+# See https://docs.kubecost.com/custom-prom.html
+# and https://prometheus-operator.dev/docs/operator/api/#servicemonitorspec
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    {{- include "monitoring.labels" . | nindent 4 }}
+    release: "{{ .Release.Name }}"
+  name: "{{ .Release.Name }}-kubecost"
+spec:
+  endpoints:
+  - path: /metrics
+    port: tcp-model
+    interval: 1m
+    scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+    - monitoring
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: monitoring
+      app.kubernetes.io/name: cost-analyzer

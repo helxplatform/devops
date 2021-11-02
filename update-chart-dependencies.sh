@@ -10,4 +10,6 @@ cd charts/helx-monitoring
 helm dependency update
 cd ../image-utils
 helm dependency update
+cd ../monitoring
+helm dependency update
 cd ../../../

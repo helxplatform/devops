@@ -1,0 +1,39 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+{{ template "chart.versionBadge" .  }}{{ template "chart.typeBadge" .  }}{{ template "chart.appVersionBadge" .  }}
+
+# Monitoring
+
+This folder contains the monitoring stack for k8s clusters.
+
+The following components are all included:
+
+- https://www.kubecost.com/
+- https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md
+- https://grafana.com/docs/loki/latest/
+- https://grafana.com/docs/loki/latest/clients/promtail/
+
+
+## Installing
+
+```
+kubectl create ns monitoring
+
+helm upgrade --install -n monitoring monitoring . -f your-values.yaml
+```
+
+(replace the values file with your environment if different)
+
+## Creating a new monitored service
+
+If you want to monitor a new service, create a ServiceMonitor in the templates folder similar to one of the existing ones: https://prometheus-operator.dev/docs/operator/api/#servicemonitor
+
+After a `helm upgrade`, prometheus-operator will start scraping metrics from that service and storing them, visible in grafana. You can then create alerts based on changes in those metrics by creating an AlertmanagerConfig: https://prometheus-operator.dev/docs/operator/api/#alertmanagerconfig
+
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}
