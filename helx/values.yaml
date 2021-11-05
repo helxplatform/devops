@@ -16,6 +16,10 @@ image-utils:
   # -- enable/disable deployment of image-utils (imagepullsecret-patcher and
   # imagepuller)
   enabled: false
+monitoring:
+  # -- enable/disable deployment of monitoring (kube-prometheus-stack,
+  # cost-analyzer, etc.)
+  enabled: false
 nfs-server:
   # -- enable/disable deployment of nfs-server
   enabled: true
