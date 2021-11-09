@@ -16,7 +16,7 @@ dependencies:
   version: 0.1.0
 - name: monitoring
   repository: https://helxplatform.github.io/helm-charts/
-  version: 0.1.0
+  version: 0.2.0
 - name: nfs-server
   repository: ""
   version: 0.2.5
@@ -35,5 +35,5 @@ dependencies:
 - name: tycho-api
   repository: https://helxplatform.github.io/helm-charts/
   version: 0.2-dev
-digest: sha256:7f9ec5a58f0b037004799e80e49bec22e2805b9f4a60713e3a9ca6230f992f63
-generated: "2021-11-04T14:56:22.688311-04:00"
+digest: sha256:53cd813150366448a2a8ecb1046c47292c4a74d22177d75cec2195b36250d53f
+generated: "2021-11-09T10:38:21.587889-05:00"
