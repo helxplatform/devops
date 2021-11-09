@@ -1,0 +1,12 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+{{ template "chart.versionBadge" .  }}{{ template "chart.typeBadge" .  }}{{ template "chart.appVersionBadge" .  }}
+
+`nfsrods` works by creating a fake PersistentVolume which acts as a pointer to the `nfsrods` Service IP. When a pod mounts the `nfsrods` PersistentVolume, kubelet will send NFS commands to the service IP listed in the PersistentVolume. Since Helm ensures the `service.ip` is the same in the Service and the PersistentVolume, the NFS traffic can flow as if talking to any other external NFS server.
+
+NOTE: The PersistentVolume and Claim are set be retained if the helm chart is uninstalled. This allows for non-cluster-admins to re-deploy since they do not have the permission to create and delete PersistentVolumes.
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}
