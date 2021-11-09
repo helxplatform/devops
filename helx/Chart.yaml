@@ -46,7 +46,7 @@ dependencies:
     version: 0.2.5
   - name: nfsrods
     condition: nfsrods.enabled
-    version: 0.1.5
+    version: 0.2.0
   - name: nginx
     condition: nginx.enabled
     version: 0.3.3
