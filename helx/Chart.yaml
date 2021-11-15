@@ -39,7 +39,7 @@ dependencies:
     version: 0.1.0
   - name: monitoring
     condition: monitoring.enabled
-    version: 0.2.0
+    version: 0.2.2
     repository: "https://helxplatform.github.io/helm-charts/"
   - name: nfs-server
     condition: nfs-server.enabled
