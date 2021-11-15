@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ambassador-nginx-conf
+  name: {{ .Release.Name }}-ambassador-nginx-conf
 data:
   default.conf: |
         {{- if and (.Values.SSL) (not .Values.ingress.create) }}

@@ -48,10 +48,10 @@ spec:
       volumes:
         - name: ambassador-nginx-conf
           configMap:
-            name: ambassador-nginx-conf
+            name: {{ .Release.Name }}-ambassador-nginx-conf
         - name: nginx-conf
           configMap:
-            name: nginx-conf
+            name: {{ .Release.Name }}-nginx-conf
         {{- if .Values.SSL }}
         - name: secret-volume
           secret:
