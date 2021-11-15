@@ -31,6 +31,7 @@ service:
   nfsPort: 2049
   mountdPort: 20048
   rpcbindPort: 111
+  # -- NOTE: This IP must be a valid, unused IP in the cluster's serviceCIDR
   ip: 10.233.58.200
 
 resources:
@@ -52,7 +53,9 @@ runArgs: "/usr/sbin/useradd -m -u 1000 -s /bin/bash rods; ./start.sh"
 sharedStorage:
   createPVC: true
   createPV: true
+  # -- No data is actually stored here, just a pointer to the nfsrods service IP.
   storageSize: 100Gi
+  # -- This storageClass doesn't need to exist in the cluster since the PVC is directly selecting the PV
   storageClass: nfsrods-sc
   nfs:
     path: /

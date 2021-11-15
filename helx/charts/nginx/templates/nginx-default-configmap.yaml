@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ambassador-nginx-conf
+  name: {{ .Release.Name }}-ambassador-nginx-conf
 data:
   default.conf: |
         {{- if and (.Values.SSL) (not .Values.ingress.create) }}
@@ -131,4 +131,15 @@ data:
                          proxy_pass http://{{ .Values.global.ambassador_service_name }}:80$request_uri;
                          proxy_pass_request_headers  on;
                 }
+
+                {{- if .Values.stubStatus.enabled }}
+                location {{ .Values.stubStatus.stubStatusLocation }} {
+                  stub_status;
+                  {{- if .Values.stubStatus.localhostOnly }}
+                  allow 127.0.0.1;	# only allow requests from localhost
+                  deny all;		# deny all other hosts
+                  {{- end }}
+                }
+                {{- end }}
+
         }

@@ -52,6 +52,12 @@ ingress:
   tls:
     # -- Values inserted into the TLS block come from SSL.nginxTLSSecret and service.serverName for backward compatibility
     enabled: true
+  admin:
+    # Whether to create an additional Ingress to restrict access to /admin routes
+    enabled: false
+    annotations: {}
+      # nginx.ingress.kubernetes.io/whitelist-source-range: "172.25.0.0/16,152.54.0.0/22,152.54.8.0/23,152.54.6.0/24,152.54.4.0/23,152.54.15.132/32"
+
 
 varStorage:
   existingClaim: false
@@ -66,6 +72,12 @@ http_host: false
 
 airflow:
   authenticate: true
+
+workerConnections: 1024
+stubStatus:
+  enabled: false
+  localhostOnly: true
+  stubStatusLocation: "/nginx_status"
 
 global:
   ambassador_service_name: ambassador
