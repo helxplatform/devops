@@ -3,7 +3,7 @@ dependencies:
   repository: ""
   version: 0.1.10
 - name: appstore
-  repository: https://helx-charts.github.io/charts/
+  repository: https://helxplatform.github.io/helm-charts/
   version: 0.4.0
 - name: backup-pvc-cronjob
   repository: ""
@@ -14,23 +14,26 @@ dependencies:
 - name: image-utils
   repository: ""
   version: 0.1.0
+- name: monitoring
+  repository: https://helxplatform.github.io/helm-charts/
+  version: 0.2.2
 - name: nfs-server
   repository: ""
-  version: 0.2.4
+  version: 0.2.5
 - name: nfsrods
   repository: ""
-  version: 0.1.5
+  version: 0.2.0
 - name: nginx
   repository: ""
-  version: 0.3.2
+  version: 0.3.3
 - name: pod-reaper
   repository: ""
   version: 0.1.5
 - name: search
-  repository: ""
-  version: 0.1.7
+  repository: https://helxplatform.github.io/helm-charts/
+  version: 1.3.1
 - name: tycho-api
-  repository: ""
-  version: 0.1.13
-digest: sha256:179d8e3e14ad4e35e6a42838383383d53ef8bb10ad510a68b7091cb79845cd00
-generated: "2021-09-24T12:21:17.00957-04:00"
+  repository: https://helxplatform.github.io/helm-charts/
+  version: 0.2-dev
+digest: sha256:cd157d67d4578b838438fb18c5aa2c781d32f701eb636b01369abfd5e18a9ce1
+generated: "2021-11-15T10:45:00.059376-05:00"

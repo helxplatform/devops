@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ .Values.global.stdnfsPvc }}
+  annotations:
+    helm.sh/resource-policy: keep
   labels:
     {{- include "nfsrods.labels" . | nindent 4 }}
 spec:
@@ -19,6 +21,8 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: {{ include "nfsrods.fullname" . }}-pv
+  annotations:
+    helm.sh/resource-policy: keep
 spec:
   capacity:
     storage: {{ .Values.sharedStorage.storageSize }}

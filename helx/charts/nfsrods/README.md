@@ -1,8 +1,12 @@
 # nfsrods
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
-
 A standalone NFSv4.1 server (via nfs4j) with a Virtual File System implementation supporting the iRODS Data Management Platform.
+
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
+
+`nfsrods` works by creating a fake PersistentVolume which acts as a pointer to the `nfsrods` Service IP. When a pod mounts the `nfsrods` PersistentVolume, kubelet will send NFS commands to the service IP listed in the PersistentVolume. Since Helm ensures the `service.ip` is the same in the Service and the PersistentVolume, the NFS traffic can flow as if talking to any other external NFS server.
+
+NOTE: The PersistentVolume and Claim are set be retained if the helm chart is uninstalled. This allows for non-cluster-admins to re-deploy since they do not have the permission to create and delete PersistentVolumes.
 
 ## Values
 
@@ -36,7 +40,7 @@ A standalone NFSv4.1 server (via nfs4j) with a Virtual File System implementatio
 | server.nfs_server.port | int | `2049` |  |
 | server.nfs_server.user_access_refresh_time_in_milliseconds | int | `1000` |  |
 | server.nfs_server.user_information_refresh_time_in_milliseconds | int | `3600000` |  |
-| service.ip | string | `"10.233.58.200"` |  |
+| service.ip | string | `"10.233.58.200"` | NOTE: This IP must be a valid, unused IP in the cluster's serviceCIDR |
 | service.mountdPort | int | `20048` |  |
 | service.nfsPort | int | `2049` |  |
 | service.rpcbindPort | int | `111` |  |
@@ -44,8 +48,8 @@ A standalone NFSv4.1 server (via nfs4j) with a Virtual File System implementatio
 | sharedStorage.createPV | bool | `true` |  |
 | sharedStorage.createPVC | bool | `true` |  |
 | sharedStorage.nfs.path | string | `"/"` |  |
-| sharedStorage.storageClass | string | `"nfsrods-sc"` |  |
-| sharedStorage.storageSize | string | `"100Gi"` |  |
+| sharedStorage.storageClass | string | `"nfsrods-sc"` | This storageClass doesn't need to exist in the cluster since the PVC is directly selecting the PV |
+| sharedStorage.storageSize | string | `"100Gi"` | No data is actually stored here, just a pointer to the nfsrods service IP. |
 | tolerations | list | `[]` |  |
 
 ----------------------------------------------
