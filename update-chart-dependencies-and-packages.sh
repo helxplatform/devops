@@ -14,10 +14,7 @@ helm package helx/charts/nfs-server
 helm package helx/charts/nfsrods
 helm package helx/charts/nginx
 helm package helx/charts/pod-reaper
-helm package helx/charts/search
-helm package helx/charts/tycho-api
 helm package helx
 
 mv *.tgz docs/charts/
 helm repo index docs/charts --url https://helxplatform.github.io/devops/charts
-
