@@ -14,7 +14,7 @@ metadata:
   name: pod-reaper-role
 rules:
 - apiGroups: [""]
-  resources: ["pods"]
+  resources: ["pods","services"]
   verbs: ["list", "delete"]
 - apiGroups:
   - "apps"
