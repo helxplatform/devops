@@ -2,7 +2,7 @@
 
 A standalone NFSv4.1 server (via nfs4j) with a Virtual File System implementation supporting the iRODS Data Management Platform.
 
-![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.0.4](https://img.shields.io/badge/AppVersion-2.0.4-informational?style=flat-square)
+![Version: 2.0.1](https://img.shields.io/badge/Version-2.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.0.4](https://img.shields.io/badge/AppVersion-2.0.4-informational?style=flat-square)
 
 `nfsrods` works by creating a fake PersistentVolume which acts as a pointer to the `nfsrods` Service IP. When a pod mounts the `nfsrods` PersistentVolume, kubelet will send NFS commands to the service IP listed in the PersistentVolume. Since Helm ensures the `service.ip` is the same in the Service and the PersistentVolume, the NFS traffic can flow as if talking to any other external NFS server.
 
@@ -27,7 +27,7 @@ NOTE: The PersistentVolume and Claim are set be retained if the helm chart is un
 | resources.requests.cpu | string | `"100m"` |  |
 | resources.requests.memory | string | `"128Mi"` |  |
 | runArgs | string | `"/usr/sbin/useradd -m -u 1000 -s /bin/bash rods; ./start.sh"` |  |
-| securityContext.privileged | bool | `true` |  |
+| securityContext | object | `{}` |  |
 | server.irods_client.default_resource | string | `"rootResc"` |  |
 | server.irods_client.host | string | `"example.com"` |  |
 | server.irods_client.port | int | `1247` |  |
