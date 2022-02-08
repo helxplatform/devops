@@ -22,7 +22,7 @@ dependencies:
   version: 0.2.5
 - name: nfsrods
   repository: ""
-  version: 2.0.1
+  version: 2.0.2
 - name: nginx
   repository: ""
   version: 0.3.4
@@ -35,5 +35,5 @@ dependencies:
 - name: tycho-api
   repository: https://helxplatform.github.io/helm-charts/
   version: 0.2-dev
-digest: sha256:dccf18e14fe8fe93c5b2a942e70ac8c5d410affb7be0531907069be88f901a66
-generated: "2022-02-07T14:52:57.841379-05:00"
+digest: sha256:d4f646f8d2e5834bc331204e2a113e1c229a3be078b1510eb6c28c229dbe8886
+generated: "2022-02-08T17:18:18.087031-05:00"

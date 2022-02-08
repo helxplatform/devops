@@ -2,7 +2,7 @@
 
 A standalone NFSv4.1 server (via nfs4j) with a Virtual File System implementation supporting the iRODS Data Management Platform.
 
-![Version: 2.0.1](https://img.shields.io/badge/Version-2.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.0.4](https://img.shields.io/badge/AppVersion-2.0.4-informational?style=flat-square)
+![Version: 2.0.2](https://img.shields.io/badge/Version-2.0.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.1.0](https://img.shields.io/badge/AppVersion-2.1.0-informational?style=flat-square)
 
 `nfsrods` works by creating a fake PersistentVolume which acts as a pointer to the `nfsrods` Service IP. When a pod mounts the `nfsrods` PersistentVolume, kubelet will send NFS commands to the service IP listed in the PersistentVolume. Since Helm ensures the `service.ip` is the same in the Service and the PersistentVolume, the NFS traffic can flow as if talking to any other external NFS server.
 
@@ -28,18 +28,25 @@ NOTE: The PersistentVolume and Claim are set be retained if the helm chart is un
 | resources.requests.memory | string | `"128Mi"` |  |
 | runArgs | string | `"/usr/sbin/useradd -m -u 1000 -s /bin/bash rods; ./start.sh"` |  |
 | securityContext | object | `{}` |  |
-| server.irods_client.default_resource | string | `"rootResc"` |  |
+| server.irods_client.connection_timeout_in_seconds | int | `600` |  |
+| server.irods_client.default_resource | string | `"demoResc"` |  |
 | server.irods_client.host | string | `"example.com"` |  |
 | server.irods_client.port | int | `1247` |  |
 | server.irods_client.proxy_admin_account.password | string | `"password"` |  |
 | server.irods_client.proxy_admin_account.username | string | `"user"` |  |
 | server.irods_client.ssl_negotiation_policy | string | `"CS_NEG_REFUSE"` |  |
 | server.irods_client.zone | string | `"ExampleZone"` |  |
+| server.nfs_server.allow_overwrite_of_existing_files | bool | `true` |  |
 | server.nfs_server.file_information_refresh_time_in_milliseconds | int | `1000` |  |
 | server.nfs_server.irods_mount_point | string | `"/ExampleZone"` |  |
+| server.nfs_server.list_operation_query_results_refresh_time_in_milliseconds | int | `30000` |  |
+| server.nfs_server.object_type_refresh_time_in_milliseconds | int | `300000` |  |
 | server.nfs_server.port | int | `2049` |  |
 | server.nfs_server.user_access_refresh_time_in_milliseconds | int | `1000` |  |
-| server.nfs_server.user_information_refresh_time_in_milliseconds | int | `3600000` |  |
+| server.nfs_server.user_information_refresh_time_in_milliseconds | string | `"3600000"` |  |
+| server.nfs_server.user_permissions_refresh_time_in_milliseconds | int | `300000` |  |
+| server.nfs_server.user_type_refresh_time_in_milliseconds | int | `300000` |  |
+| server.nfs_server.using_oracle_database | bool | `false` |  |
 | service.ip | string | `"10.233.58.200"` | NOTE: This IP must be a valid, unused IP in the cluster's serviceCIDR |
 | service.mountdPort | int | `20048` |  |
 | service.nfsPort | int | `2049` |  |
