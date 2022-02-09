@@ -38,7 +38,13 @@ data:
                 "irods_mount_point": "{{ .Values.server.nfs_server.irods_mount_point }}",
                 "user_information_refresh_time_in_milliseconds": {{ .Values.server.nfs_server.user_information_refresh_time_in_milliseconds }},
                 "file_information_refresh_time_in_milliseconds": {{ .Values.server.nfs_server.file_information_refresh_time_in_milliseconds }},
-                "user_access_refresh_time_in_milliseconds": {{ .Values.server.nfs_server.user_access_refresh_time_in_milliseconds }}
+                "user_access_refresh_time_in_milliseconds": {{ .Values.server.nfs_server.user_access_refresh_time_in_milliseconds }},
+                "object_type_refresh_time_in_milliseconds": {{ .Values.server.nfs_server.object_type_refresh_time_in_milliseconds }},
+                "user_permissions_refresh_time_in_milliseconds": {{ .Values.server.nfs_server.user_permissions_refresh_time_in_milliseconds }},
+                "user_type_refresh_time_in_milliseconds": {{ .Values.server.nfs_server.user_type_refresh_time_in_milliseconds }},
+                "list_operation_query_results_refresh_time_in_milliseconds": {{ .Values.server.nfs_server.list_operation_query_results_refresh_time_in_milliseconds }},
+                "allow_overwrite_of_existing_files": {{ .Values.server.nfs_server.allow_overwrite_of_existing_files }},
+                "using_oracle_database": {{ .Values.server.nfs_server.using_oracle_database }}
             },
 
             "irods_client": {
@@ -47,6 +53,7 @@ data:
                 "port": {{ .Values.server.irods_client.port }},
                 "default_resource": "{{ .Values.server.irods_client.default_resource }}",
                 "ssl_negotiation_policy": "{{ .Values.server.irods_client.ssl_negotiation_policy }}",
+                "connection_timeout_in_seconds": {{ .Values.server.irods_client.connection_timeout_in_seconds }},
                 "proxy_admin_account": {
                     "username": "{{ .Values.server.irods_client.proxy_admin_account.username }}",
                     "password": "{{ .Values.server.irods_client.proxy_admin_account.password }}"

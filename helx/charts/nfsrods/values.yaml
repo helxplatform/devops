@@ -47,6 +47,8 @@ tolerations: []
 
 affinity: {}
 
+# runArgs: "/usr/sbin/useradd -m -u 1000 -s /bin/bash rods; ./start.sh"
+# runArgs: "/usr/sbin/useradd -m -u 1000 -s /bin/bash rods && service rpcbind start && java -Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector -jar /irods_client_nfsrods/irods-vfs-impl/target/nfsrods-2.0.4-jar-with-dependencies.jar"
 runArgs: "/usr/sbin/useradd -m -u 1000 -s /bin/bash rods; ./start.sh"
 
 sharedStorage:
@@ -63,15 +65,22 @@ server:
   nfs_server:
     port: 2049
     irods_mount_point: /ExampleZone
-    user_information_refresh_time_in_milliseconds: 3600000
+    user_information_refresh_time_in_milliseconds: "3600000"
     file_information_refresh_time_in_milliseconds: 1000
     user_access_refresh_time_in_milliseconds: 1000
+    object_type_refresh_time_in_milliseconds: 300000
+    user_permissions_refresh_time_in_milliseconds: 300000
+    user_type_refresh_time_in_milliseconds: 300000
+    list_operation_query_results_refresh_time_in_milliseconds: 30000
+    allow_overwrite_of_existing_files: true
+    using_oracle_database: false
   irods_client:
     zone: ExampleZone
     host: example.com
     port: 1247
-    default_resource: rootResc
+    default_resource: demoResc
     ssl_negotiation_policy: CS_NEG_REFUSE
+    connection_timeout_in_seconds: 600
     proxy_admin_account:
       username: user
       password: password
