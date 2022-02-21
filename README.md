@@ -1,3 +1,5 @@
+## NOTE: This documentation needs to be updated to use the new HeLx chart location at https://github.com/helxplatform/helx-chart.
+
 # HeLx
 
 HeLx puts the most advanced analytical scientific models at investigator's finger tips using equally advanced cloud native, container orchestrated, distributed computing systems. HeLx can be applied in many domains. Its ability to empower researchers to leverage advanced analytical tools without installation or other infrastructure concerns has broad reaching benefits.
