@@ -21,12 +21,12 @@ To install HeLx you will need access to a Kubernetes cluster.  This includes hav
 
 ## Basic Install Commands
 ```
-# add the helxplatform Helm repository
-helm repo add helxplatform https://helxplatform.github.io/devops/charts
+# add the helx-charts Helm repository
+helm repo add helx-charts https://helxplatform.github.io/helm-charts
 # to pull down latest chart updates
 helm repo update
 # install HeLx
-helm install helx helxplatform/helx
+helm install helx helx-charts/helx
 ```
 
 For more detailed information on the charts see the [documentation](helx).
