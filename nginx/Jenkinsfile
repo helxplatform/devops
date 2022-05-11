@@ -1,66 +1,75 @@
 pipeline {
-    agent {
-        kubernetes {
-            cloud 'kubernetes'
-            yaml '''
-              apiVersion: v1
-              kind: Pod
-              spec:
-                containers:
-                - name: agent-docker
-                  image: wateim/jenkins-agent:latest
-                  command: 
-                  - cat
-                  tty: true
-                  volumeMounts:
-                    - name: dockersock
-                      mountPath: "/var/run/docker.sock"
-                volumes:
-                - name: dockersock
-                  hostPath:
-                    path: /var/run/docker.sock 
-            '''
+  agent {
+    kubernetes {
+        label 'kaniko-build-agent'
+        yaml """
+kind: Pod
+metadata:
+  name: kaniko
+spec:
+  containers:
+  - name: jnlp
+    workingDir: /tmp/jenkins
+  - name: kaniko
+    workingDir: /tmp/jenkins
+    image: gcr.io/kaniko-project/executor:debug
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
+    volumeMounts:
+    - name: jenkins-docker-cfg
+      mountPath: /kaniko/.docker
+  volumes:
+  - name: jenkins-docker-cfg
+    projected:
+      sources:
+      - secret:
+          name: docker-credentials (1)
+          items:
+            - key: .dockerconfigjson
+              path: config.json
+"""
         }
     }
     stages {
         stage('Build') {
             environment {
+                PATH = "/busybox:/kaniko:$PATH"
                 DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
                 DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
             }
             steps {
-                container('agent-docker') {
-                    sh '''
-                    echo build
-                    cd nginx
-                    docker build -t helxplatform/nginx:$BRANCH_NAME .
-                    '''
+                container('name: 'kaniko', shell: '/busybox/sh') {
+                    sh '''#!/busybox/sh
+                        /kaniko/executor --context `pwd` --verbosity debug --destination cnbennett3/nginx:v0.0.1
+                        '''
                 }
             }
         }
-        stage('Test') {
-            steps {
-                container('agent-docker') {
-                    sh '''
-                    echo test
-                    '''
-                }
-            }
-        }
-        stage('Publish') {
-            environment {
-                DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
-                DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
-            }
-            steps {
-                container('agent-docker') {
-                    sh '''
-                    echo publish
-                    echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin $DOCKER_REGISTRY
-                    docker push helxplatform/nginx:$BRANCH_NAME
-                    '''
-                }
-            }
-        }
+        //stage('Test') {
+        //    steps {
+        //        container('agent-docker') {
+        //            sh '''
+        //            echo test
+        //            '''
+        //        }
+        //    }
+        //}
+        //stage('Publish') {
+        //    environment {
+        //        DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
+        //        DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
+        //    }
+        //    steps {
+        //        container('agent-docker') {
+        //            sh '''
+        //            echo publish
+        //            echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin $DOCKER_REGISTRY
+        //            docker push helxplatform/nginx:$BRANCH_NAME
+        //            '''
+        //        }
+        //    }
+        //}
     }
 }
