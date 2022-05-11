@@ -40,7 +40,7 @@ spec:
                 DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
             }
             steps {
-                container('name: 'kaniko', shell: '/busybox/sh') {
+                container(name: 'kaniko', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
                         /kaniko/executor --context `pwd` --verbosity debug --destination cnbennett3/nginx:v0.0.1
                         '''
