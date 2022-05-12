@@ -42,7 +42,10 @@ spec:
             steps {
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        /kaniko/executor --context `pwd` --verbosity debug --destination cnbennett3/nginx:v0.0.1
+                        pwd
+                        ls -l
+                        /kaniko/executor --dockerfile ./devops/nginx/ --context `pwd` --verbosity debug --destination cnbennett3/nginx:v0.0.1
+
                         '''
                 }
             }
