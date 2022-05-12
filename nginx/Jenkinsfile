@@ -44,7 +44,7 @@ spec:
                     sh '''#!/busybox/sh
                         pwd
                         ls -l
-                        /kaniko/executor --dockerfile ./nginx/ --context `pwd` --verbosity debug --destination cnbennett3/nginx:v0.0.1
+                        /kaniko/executor --dockerfile ./nginx/Dockerfile --context ./nginx/ --verbosity debug --destination cnbennett3/nginx:v0.0.1
 
                         '''
                 }
