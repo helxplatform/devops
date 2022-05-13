@@ -42,10 +42,10 @@ spec:
             steps {
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        /kaniko/executor --dockerfile ./nginx/Dockerfile
-                                         --context ./nginx/
-                                         --verbosity debug
-                                         --destination helxplatform/nginx:1.0.24
+                        /kaniko/executor --dockerfile ./nginx/Dockerfile \
+                                         --context ./nginx/ \
+                                         --verbosity debug \
+                                         --destination helxplatform/nginx:1.0.24 \
                                          --destination helxplatform/nginx:latest
 
                         '''
