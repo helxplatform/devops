@@ -4,6 +4,7 @@ The VM jenkins-docker-builder.edc.renci.org was created in response to RT#5278. 
 
 ## How this VM was set up
 
+* Set up the NAT Gateway for outbound internet access: https://aciswiki.edc.renci.org/index.php?title=EDC_NAT_Gateway
 * Install docker: https://docs.docker.com/engine/install/centos/
 * Enable and start docker. Add users to docker group: `usermod -aG docker <user>`
   - Allowed users: machaffe, tcheek, jeffw, bennettc
