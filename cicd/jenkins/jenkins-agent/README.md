@@ -9,7 +9,7 @@ The VM jenkins-docker-builder.edc.renci.org was created in response to RT#5278. 
 * Enable and start docker. Add users to docker group: `usermod -aG docker <user>`
   - Allowed users: machaffe, tcheek, jeffw, bennettc
 * Allow the Jenkins gid (1000) to access the docker socket: `sudo setfacl -m g:1000:rw /var/run/docker.sock`
-* Create a new agent in the Jenkins UI, copy the secret ket
+* Create a new agent in the Jenkins UI, copy the secret key
 * Run the jenkins agent (using websockets):
 
 ```
