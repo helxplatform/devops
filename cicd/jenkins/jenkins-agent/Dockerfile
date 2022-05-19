@@ -10,10 +10,7 @@ USER root
 # Note: removed libreadline-gplv2-dev and python-pip
 RUN echo "deb http://ftp.debian.org/debian stable main contrib non-free" > /etc/apt/sources.list && \
   apt-get update -qq && \
-  apt-get install -qqy curl && \
-  curl -L http://ftp.us.debian.org/debian/pool/main/o/openssl/libssl1.1_1.1.1k-1_amd64.deb -o ./libssl1.1_1.1.1k-1_amd64.deb && \
-  apt-get install --allow-downgrades -y ./libssl1.1_1.1.1k-1_amd64.deb && \
-  apt-get install -qqy acl apt-transport-https build-essential ca-certificates gettext-base \
+  apt-get install -qqy curl libssl1.1 acl apt-transport-https build-essential ca-certificates gettext-base \
     gnupg gnupg2 less libc6-dev libffi-dev libgdm-dev libncursesw5-dev libsqlite3-dev \
     libbz2-dev lsb-release make npm python-apt-common python3 python3-venv python3-dbus python3-gi \
     python python3-software-properties python3-wheel python3-setuptools ruby ruby-bundler \
@@ -50,25 +47,7 @@ RUN add-apt-repository \
   chmod +x /usr/local/bin/clair-scanner && \
   ln -s /usr/local/bin/clair-scanner /usr/bin/clair-scanner
 
-RUN curl -L https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz -o ./Python-3.9.6.tgz && \
-  tar xzf Python-3.9.6.tgz && \
-  cd Python-3.9.6 && \
-  ./configure --enable-optimizations && \
-  make altinstall && \
-  python3.9 -V && \
-  pip3.9 -V && \
-  rm /usr/bin/python3 && \
-  ln -s /usr/local/bin/python3.9 /usr/bin/python3 && \
-  rm -f /usr/bin/pip3 && \
-  ln -s /usr/local/bin/pip3.9 /usr/bin/pip3 && \
-  rm -f /usr/bin/pydoc3 && \
-  ln -s /usr/local/bin/pydoc3.9 /usr/bin/pydoc3 && \
-  rm -f /usr/bin/python3-config && \
-  ln -s /usr/local/bin/python3.9-config /usr/bin/python3-config && \
-  awk '!x{x=sub("/bin/python3","/local/bin/python3.9.6")}1' /usr/bin/lsb_release > /tmp/lsb_release.tmp && \
-  mv /tmp/lsb_release.tmp /usr/bin/lsb_release && \
-  python3 -V && \
-  pip3 -V
+RUN apt-get install python3.9
 
 # INSTALL NODE.JS:
 RUN npm cache clean --force && \
