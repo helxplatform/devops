@@ -10,29 +10,19 @@ The VM jenkins-docker-builder.edc.renci.org was created in response to RT#5278. 
 * Enable and start docker. Add users to docker group: `usermod -aG docker <user>`
   - Allowed users: machaffe, tcheek, jeffw, bennettc
 * Allow the Jenkins gid (1000) to access the docker socket: `sudo setfacl -m g:1000:rw /var/run/docker.sock`
+* Copy this readme and docker-compose.yml into `/opt/jenkins`
+* Make /opt/jenkins group-accessible via the "renci" group
 * Create a new agent in the Jenkins UI, copy the secret key
-* Run the jenkins agent (using websockets):
+* Insert the secret key into docker-compose.yml, in place of `${AGENT_SECRET}`
+* Start the agent and docuum:
 
 ```
-docker run -d --name agent -v /var/run/docker.sock:/var/run/docker.sock containers.renci.org/helxplatform/agent-docker:v0.0.16 -url https://jenkins.apps.renci.org/ -webSocket -workDir /home/jenkins/agent $AGENT_SECRET jenkins-docker-builder.edc.renci.org
+cd /opt/jenkins
+docker compose up -d
 ```
 
 The image is pushed here (manually for now): https://containers.renci.org/harbor/projects/5/repositories/agent-docker/info-tab
 
 ## Cleaning up old images
 
-Docker images accumulate over time, so we use https://github.com/stepchowfun/docuum to clean them up when they use >50GB:
-
-```
-docker run \
-  --init -d --restart=always \
-  --name docuum \
-  --volume /var/run/docker.sock:/var/run/docker.sock \
-  --volume docuum:/root \
-  stephanmisc/docuum --threshold '50 GB'
-
-```
-
-## TODO
-
-* Use systemd to start docuum and the agent automatically on startup
+Docker images accumulate over time, so we use https://github.com/stepchowfun/docuum to clean them up when they use >60GB of the 100GB disk.

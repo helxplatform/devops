@@ -1,0 +1,19 @@
+services:
+  agent:
+    image: containers.renci.org/helxplatform/agent-docker:v0.0.16
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -url https://jenkins.apps.renci.org/ -webSocket -workDir /home/jenkins/agent ${AGENT_SECRET} jenkins-docker-builder.edc.renci.org
+
+  docuum:
+    image: stephanmisc/docuum:0.21.1
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - docuum:/root
+    command: --threshold '60 GB'
+
+volumes:
+  # Stores data on how often images are used
+  docuum:
