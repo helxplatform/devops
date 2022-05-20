@@ -1,6 +1,6 @@
 # jenkins-docker-builder.edc.renci.org
 
-The VM jenkins-docker-builder.edc.renci.org was created in response to RT#5278. It runs a Jenkins agent that connects to jenkins.apps.renci.org (in Sterling) and runs jobs that cannot run inside Sterling, such as docker-compose jobs or jobs that require a lot of ephemeral-storage space.
+The VM jenkins-docker-builder.edc.renci.org was created in response to RT#5278. It runs a Jenkins agent that connects to jenkins.apps.renci.org (in Sterling) and runs jobs that cannot run inside Sterling, such as docker-compose jobs or jobs that require a lot of ephemeral-storage space. The VM ONLY runs the Jenkins Agent, not the Controller. Agents have no UI and don't do anything except run jobs that the Controller (jenkins.apps.renci.org) tells it to run.
 
 ## How this VM was set up
 
@@ -14,9 +14,13 @@ The VM jenkins-docker-builder.edc.renci.org was created in response to RT#5278. 
 * Make /opt/jenkins group-accessible via the "renci" group
 * Create a new agent in the Jenkins UI, copy the secret key
 * Insert the secret key into docker-compose.yml, in place of `${AGENT_SECRET}`
-* Start the agent and docuum:
+* Start the agent and docuum
 
+## Accessing the VM and Starting the Agent
+
+All devsecops members can access the VM with their RENCI username/password:
 ```
+ssh <renciusername>@jenkins-docker-builder.edc.renci.org
 cd /opt/jenkins
 docker compose up -d
 ```
