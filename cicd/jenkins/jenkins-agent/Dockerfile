@@ -1,4 +1,4 @@
-FROM node:latest AS node_base
+FROM node:16 AS node_base
 FROM jenkins/inbound-agent:4.13-2-jdk11
 COPY --from=node_base /opt /opt
 COPY --from=node_base /usr/local /usr/local
