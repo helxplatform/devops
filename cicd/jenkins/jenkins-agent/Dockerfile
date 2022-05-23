@@ -28,7 +28,7 @@ RUN apt-get update && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 && \
     pip install --upgrade pip && \
-    pip install pytest docker pyyaml jinja2
+    pip install pytest~=7.1 docker~=5.0 pyyaml~=6.0  jinja2~=3.1
 
 ENV USER jenkins
 ENV UID 1000
