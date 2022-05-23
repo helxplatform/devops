@@ -12,7 +12,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - docuum:/root
-    command: --threshold '60 GB'
+    command: --threshold '40 GB'
 
 volumes:
   # Stores data on how often images are used

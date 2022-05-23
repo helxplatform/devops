@@ -5,6 +5,7 @@ The VM jenkins-docker-builder.edc.renci.org was created in response to RT#5278. 
 ## How this VM was set up
 
 * Set up the NAT Gateway for outbound internet access: https://aciswiki.edc.renci.org/index.php?title=EDC_NAT_Gateway
+* Expand the /var partition up to 60GB: `lvextend -r -L +52G /dev/VGos/var && xfs_growfs /dev/mapper/VGos-var`
 * Install docker: https://docs.docker.com/engine/install/centos/
 * Configure docker to rotate container logs: https://docs.docker.com/config/containers/logging/configure/
 * Enable and start docker. Add users to docker group: `usermod -aG docker <user>`
@@ -29,4 +30,4 @@ The image is pushed here (manually for now): https://containers.renci.org/harbor
 
 ## Cleaning up old images
 
-Docker images accumulate over time, so we use https://github.com/stepchowfun/docuum to clean them up when they use >60GB of the 100GB disk.
+Docker images accumulate over time, so we use https://github.com/stepchowfun/docuum to clean them up when they use >40GB of the 60GB partition
