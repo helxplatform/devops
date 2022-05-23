@@ -10,24 +10,25 @@ ARG SUDOGID=27
 
 USER root
 
+# Remove old docker
 RUN dpkg --remove docker docker-engine docker.io containerd runc
-RUN apt-get update
-RUN apt-get -y install ca-certificates curl gnupg lsb-release
 
+RUN apt-get update && \
+    apt-get -y install ca-certificates curl gnupg lsb-release
+
+# Add new docker source
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 RUN echo  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
   $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-RUN apt-get update
-RUN apt-get -y install docker-ce docker-ce-cli containerd.io
-RUN apt-get -y install acl
 
-
-RUN apt-get -y install python3.9 python3-pip
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
-RUN update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
-
-RUN pip install --upgrade pip
-RUN pip install pytest docker pyyaml jinja2
+RUN apt-get update && \
+    apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin && \
+    apt-get -y install acl && \
+    apt-get -y install python3.9 python3-pip && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 && \
+    pip install --upgrade pip && \
+    pip install pytest docker pyyaml jinja2
 
 ENV USER jenkins
 ENV UID 1000
@@ -47,10 +48,3 @@ RUN groupmod -g ${JENKINSGID} jenkins && \
     #chmod 666 /var/run/docker.sock
 
 USER jenkins
-
-# Create empty whitelist so command can be set up once for all time
-RUN pwd && \
-    ls -l && \
-    mkdir /home/jenkins/clair && \
-    mkdir /home/jenkins/clair/whitelists && \
-    touch /home/jenkins/clair/whitelists/common-whitelist.yaml
