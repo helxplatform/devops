@@ -1,4 +1,7 @@
+FROM node:16 AS node_base
 FROM jenkins/inbound-agent:4.13-2-jdk11
+COPY --from=node_base /opt /opt
+COPY --from=node_base /usr/local /usr/local
 
 ARG JENKINSUID=1000
 ARG JENKINSGID=1000
@@ -7,74 +10,41 @@ ARG SUDOGID=27
 
 USER root
 
-# Note: removed libreadline-gplv2-dev and python-pip
-RUN echo "deb http://ftp.debian.org/debian stable main contrib non-free" > /etc/apt/sources.list && \
-  apt-get update -qq && \
-  apt-get install -qqy curl libssl1.1 acl apt-transport-https build-essential ca-certificates gettext-base \
-    gnupg gnupg2 less libc6-dev libffi-dev libgdm-dev libncursesw5-dev libsqlite3-dev \
-    libbz2-dev lsb-release make npm python-apt-common python3 python3-venv python3-dbus python3-gi \
-    python python3-software-properties python3-wheel python3-setuptools ruby ruby-bundler \
-    software-properties-common sudo tk-dev vim-tiny zlib1g-dev libssl-dev
+# Remove old docker
+RUN dpkg --remove docker docker-engine docker.io containerd runc
 
-RUN apt-get install -qqy fonts-liberation libasound2 libatk1.0-0 libc6 libcairo2 \
-    libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm-dev libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 \
-    libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 \
-    libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 \
-    libxrender1 libxss1 libxtst6 wget xdg-utils && \
-  curl -L http://ftp.us.debian.org/debian/pool/main/libi/libindicator/libindicator7_0.5.0-4_amd64.deb \
-     -o libindicator7_0.5.0-4_amd64.deb && \
-  apt-get -y install ./libindicator7_0.5.0-4_amd64.deb && \
-  curl -L http://ftp.us.debian.org/debian/pool/main/liba/libappindicator/libappindicator1_0.4.92-7_amd64.deb \
-     -o ./libappindicator1_0.4.92-7_amd64.deb && \
-  apt-get -y install ./libappindicator1_0.4.92-7_amd64.deb
+RUN apt-get update && \
+    apt-get -y install ca-certificates curl gnupg lsb-release
 
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | \
-  apt-key add - && \
-  apt-key fingerprint 0EBFCD88
+# Add new docker source
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+RUN echo  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-RUN add-apt-repository \
-  "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
-  apt-get update && \
-  apt-get install -qqy docker-ce docker-ce-cli && \
-  curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64" \
-     -o /usr/local/bin/docker-compose && \
-  chmod +x /usr/local/bin/docker-compose && \
-  ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* && \
-  curl -L https://github.com/arminc/clair-scanner/releases/download/v12/clair-scanner_linux_amd64 \
-     -o /usr/local/bin/clair-scanner && \
-  chmod +x /usr/local/bin/clair-scanner && \
-  ln -s /usr/local/bin/clair-scanner /usr/bin/clair-scanner
-
-RUN apt-get install python3.9
-
-# INSTALL NODE.JS:
-RUN npm cache clean --force && \
-  npm install npm -g && \
-  npm install n -g && \
-  n lts
+RUN apt-get update && \
+    apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin && \
+    apt-get -y install acl && \
+    apt-get -y install python3.9 python3-pip && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 && \
+    pip install --upgrade pip && \
+    pip install pytest~=7.1 docker~=5.0 pyyaml~=6.0  jinja2~=3.1
 
 ENV USER jenkins
 ENV UID 1000
 
 # Setup users and groups
 RUN groupmod -g ${JENKINSGID} jenkins && \
-  groupmod -g ${DOCKERGID} docker && \
-  usermod -g ${JENKINSGID} -G ${DOCKERGID},${SUDOGID} -u ${JENKINSUID} jenkins && \
-  usermod -p '$6$zltyyttlas$DwfqAq2l5HlUE2WnEUhFtAi1Je3YE2uH50fdyyUmUjoXzmzZGm3ch4eaT/N6O62JgSKdhy0tslF/f8dNdXZQt/' jenkins && \
-  touch /var/run/docker.sock && \
-  chown root:docker /var/run/docker.sock && \
-  chmod 660 /var/run/docker.sock && \
-  ls -l /var/run/docker.sock && \
-  setfacl -m user:$USER:rw /var/run/docker.sock && \
-  getfacl /var/run/docker.sock
+    groupmod -g ${DOCKERGID} docker && \
+    usermod -g ${JENKINSGID} -G ${DOCKERGID},${SUDOGID} -u ${JENKINSUID} jenkins && \
+    usermod -p '$6$zltyyttlas$DwfqAq2l5HlUE2WnEUhFtAi1Je3YE2uH50fdyyUmUjoXzmzZGm3ch4eaT/N6O62JgSKdhy0tslF/f8dNdXZQt/' jenkins && \
+    touch /var/run/docker.sock && \
+    chown root:docker /var/run/docker.sock && \
+    chmod 660 /var/run/docker.sock && \
+    ls -l /var/run/docker.sock && \
+    setfacl -m user:$USER:rw /var/run/docker.sock && \
+    getfacl /var/run/docker.sock
+    #groupmod -g 990 999
+    #chmod 666 /var/run/docker.sock
 
 USER jenkins
-
-# Create empty whitelist so command can be set up once for all time
-RUN pwd && \
-  ls -l && \
-  mkdir /home/jenkins/clair && \
-  mkdir /home/jenkins/clair/whitelists && \
-  touch /home/jenkins/clair/whitelists/common-whitelist.yaml
