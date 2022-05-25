@@ -1,4 +1,4 @@
-TAG_VERSION := v0.0.16
+TAG_VERSION := 1.0.3
 REPO := containers.renci.org/helxplatform/agent-docker
 
 .PHONY: push
