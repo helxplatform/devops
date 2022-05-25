@@ -1,7 +1,10 @@
 services:
   agent:
-    image: containers.renci.org/helxplatform/agent-docker:v0.0.16
+    image: containers.renci.org/helxplatform/agent-docker:1.0.3
     restart: always
+    group_add:
+      # This is the GID of the docker group on the VM. The GID may be different on other VMs.
+      - "749"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: -url https://jenkins.apps.renci.org/ -webSocket -workDir /home/jenkins/agent ${AGENT_SECRET} jenkins-docker-builder.edc.renci.org
