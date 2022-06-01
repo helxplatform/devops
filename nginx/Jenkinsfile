@@ -45,10 +45,16 @@ spec:
                         /kaniko/executor --dockerfile ./nginx/Dockerfile \
                                          --context ./nginx/ \
                                          --verbosity debug \
+                                         --no-push \
                                          --destination helxplatform/nginx:1.0.24 \
-                                         --destination helxplatform/nginx:latest
-
+                                         --destination helxplatform/nginx:latest \
+                                         --tarPath image.tar
                         '''
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'image.tar', onlyIfSuccessful: true
                 }
             }
         }
@@ -61,20 +67,17 @@ spec:
         //        }
         //    }
         //}
-        //stage('Publish') {
-        //    environment {
-        //        DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
-        //        DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
-        //    }
-        //    steps {
-        //        container('agent-docker') {
-        //            sh '''
-        //            echo publish
-        //            echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin $DOCKER_REGISTRY
-        //            docker push helxplatform/nginx:$BRANCH_NAME
-        //            '''
-        //        }
-        //    }
-        //}
+        stage('Publish') {
+            steps {
+                container('agent-docker') {
+                    sh '''
+                    echo "Publish stage"
+                    crane auth -u $DOCKERHUB_CREDS_USR -p $DOCKERHUB_CREDS_PSW $DOCKER_REGISTRY
+                    crane push image.tar helxplatform/nginx:1.0.24
+                    crane push image.tar helxplatform/nginx:latest
+                    '''
+                }
+            }
+        }
     }
 }
