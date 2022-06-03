@@ -9,9 +9,9 @@ metadata:
 spec:
   containers:
   - name: jnlp
-    workingDir: /tmp/jenkins
+    workingDir: /home/jenkins/agent
   - name: kaniko
-    workingDir: /tmp/jenkins
+    workingDir: /home/jenkins/agent
     image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
     command:
@@ -20,6 +20,13 @@ spec:
     volumeMounts:
     - name: jenkins-docker-cfg
       mountPath: /kaniko/.docker
+  - name: crane
+    workingDir: /home/jenkins/agent
+    image: gcr.io/go-containerregistry/crane:debug
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
   volumes:
   - name: jenkins-docker-cfg
     projected:
@@ -32,10 +39,17 @@ spec:
 """
         }
     }
+    environment {
+        PATH = "/busybox:/kaniko:/ko-app/:$PATH"
+        DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
+        DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
+        TAG1 = "$BRANCH_NAME-$BUILD_NUMBER"
+        TAG2 = "BRANCH_NAME-latest"
+    }
     stages {
         stage('Build') {
             environment {
-                PATH = "/busybox:/kaniko:$PATH"
+                PATH = "/busybox:/kaniko:/ko-app/:$PATH"
                 DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
                 DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
             }
@@ -46,8 +60,8 @@ spec:
                                          --context ./nginx/ \
                                          --verbosity debug \
                                          --no-push \
-                                         --destination helxplatform/nginx:1.0.24 \
-                                         --destination helxplatform/nginx:latest \
+                                         --destination helxplatform/nginx:$TAG1 \
+                                         --destination helxplatform/nginx:$TAG2 \
                                          --tarPath image.tar
                         '''
                 }
@@ -58,23 +72,31 @@ spec:
                 }
             }
         }
-        //stage('Test') {
-        //    steps {
-        //        container('agent-docker') {
-        //            sh '''
-        //            echo test
-        //            '''
-        //        }
-        //    }
-        //}
+        stage('Test') {
+            steps {
+                    sh '''
+                    echo Test stage
+                    '''
+                }
+            }
+        }
         stage('Publish') {
             steps {
-                container('agent-docker') {
+                container(name: 'crane', shell: '/busybox/sh') {
                     sh '''
                     echo "Publish stage"
-                    crane auth -u $DOCKERHUB_CREDS_USR -p $DOCKERHUB_CREDS_PSW $DOCKER_REGISTRY
-                    crane push image.tar helxplatform/nginx:1.0.24
-                    crane push image.tar helxplatform/nginx:latest
+                    cat $DOCKERHUB_CREDS_PSW > ./p.txt
+                    chmod 600 ./p.txt
+                    cat ./p.txt | crane auth login -u $DOCKERHUB_CREDS_USR --password-stdin $DOCKER_REGISTRY
+                    crane push image.tar helxplatform/nginx:$TAG1
+                    crane push image.tar helxplatform/nginx:$TAG2
+                    '''
+                }
+            }
+            post {
+                cleanup {
+                    sh '''
+                    echo "Remove archived artifacts."
                     '''
                 }
             }
