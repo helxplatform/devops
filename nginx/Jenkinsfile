@@ -43,16 +43,14 @@ spec:
         PATH = "/busybox:/kaniko:/ko-app/:$PATH"
         DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
         DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
-        TAG1 = "$BRANCH_NAME-$BUILD_NUMBER"
-        TAG2 = "BRANCH_NAME-latest"
+        DOCKER_OWNER="helxplatform"
+        DOCKER_APP="nginx"
+        IMAGE_NAME="${DOCKER_OWNER}/${DOCKER_APP}"
+        TAG1="$BRANCH_NAME-$BUILD_NUMBER"
+        TAG2="BRANCH_NAME-latest"
     }
     stages {
         stage('Build') {
-            environment {
-                PATH = "/busybox:/kaniko:/ko-app/:$PATH"
-                DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
-                DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
-            }
             steps {
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
@@ -60,8 +58,8 @@ spec:
                                          --context ./nginx/ \
                                          --verbosity debug \
                                          --no-push \
-                                         --destination helxplatform/nginx:$TAG1 \
-                                         --destination helxplatform/nginx:$TAG2 \
+                                         --destination $IMAGE_NAME:$TAG1 \
+                                         --destination $IMAGE_NAME:$TAG2 \
                                          --tarPath image.tar
                         '''
                 }
@@ -87,8 +85,8 @@ spec:
                     echo "$DOCKERHUB_CREDS_PSW" > p.txt
                     chmod 600 p.txt
                     cat p.txt | crane auth login -u $DOCKERHUB_CREDS_USR --password-stdin $DOCKER_REGISTRY
-                    crane push image.tar helxplatform/nginx:$TAG1
-                    crane push image.tar helxplatform/nginx:$TAG2
+                    crane push image.tar $IMAGE_NAME:$TAG1
+                    crane push image.tar $IMAGE_NAME:$TAG2
                     '''
                 }
             }
