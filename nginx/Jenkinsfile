@@ -47,7 +47,7 @@ spec:
         DOCKER_APP="nginx"
         IMAGE_NAME="${DOCKER_OWNER}/${DOCKER_APP}"
         TAG1="$BRANCH_NAME-$BUILD_NUMBER"
-        TAG2="BRANCH_NAME-latest"
+        TAG2="$BRANCH_NAME-latest"
     }
     stages {
         stage('Build') {
