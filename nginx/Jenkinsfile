@@ -21,7 +21,7 @@ spec:
     - name: jenkins-docker-cfg
       mountPath: /kaniko/.docker
   - name: crane
-    workingDir: /home/jenkins/agent
+    workingDir: /tmp/jenkins
     image: gcr.io/go-containerregistry/crane:debug
     imagePullPolicy: Always
     command:
@@ -84,9 +84,9 @@ spec:
                 container(name: 'crane', shell: '/busybox/sh') {
                     sh '''
                     echo "Publish stage"
-                    cat $DOCKERHUB_CREDS_PSW > ./p.txt
-                    chmod 600 ./p.txt
-                    cat ./p.txt | crane auth login -u $DOCKERHUB_CREDS_USR --password-stdin $DOCKER_REGISTRY
+                    echo "$DOCKERHUB_CREDS_PSW" > p.txt
+                    chmod 600 p.txt
+                    cat p.txt | crane auth login -u $DOCKERHUB_CREDS_USR --password-stdin $DOCKER_REGISTRY
                     crane push image.tar helxplatform/nginx:$TAG1
                     crane push image.tar helxplatform/nginx:$TAG2
                     '''
