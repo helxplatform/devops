@@ -1,0 +1,102 @@
+pipeline {
+  agent {
+    kubernetes {
+        label 'kaniko-build-agent'
+        yaml """
+kind: Pod
+metadata:
+  name: kaniko
+spec:
+  containers:
+  - name: jnlp
+    workingDir: /home/jenkins/agent
+  - name: kaniko
+    workingDir: /home/jenkins/agent
+    image: gcr.io/kaniko-project/executor:debug
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
+    volumeMounts:
+    - name: jenkins-docker-cfg
+      mountPath: /kaniko/.docker
+  - name: crane
+    workingDir: /tmp/jenkins
+    image: gcr.io/go-containerregistry/crane:debug
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
+  volumes:
+  - name: jenkins-docker-cfg
+    projected:
+      sources:
+      - secret:
+          name: rencibuild-imagepull-secret
+          items:
+            - key: .dockerconfigjson
+              path: config.json
+"""
+        }
+    }
+    environment {
+        PATH = "/busybox:/kaniko:/ko-app/:$PATH"
+        DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
+        DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
+        DOCKER_OWNER="helxplatform"
+        DOCKER_APP="nginx"
+        IMAGE_NAME="${DOCKER_OWNER}/${DOCKER_APP}"
+        TAG1="$BRANCH_NAME-$BUILD_NUMBER"
+        TAG2="$BRANCH_NAME-latest"
+    }
+    stages {
+        stage('Build') {
+            steps {
+                container(name: 'kaniko', shell: '/busybox/sh') {
+                    sh '''#!/busybox/sh
+                        /kaniko/executor --dockerfile ./nginx/Dockerfile \
+                                         --context ./nginx/ \
+                                         --verbosity debug \
+                                         --no-push \
+                                         --destination $IMAGE_NAME:$TAG1 \
+                                         --destination $IMAGE_NAME:$TAG2 \
+                                         --tarPath image.tar
+                        '''
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'image.tar', onlyIfSuccessful: true
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                    sh '''
+                    echo Test stage
+                    '''
+            }
+        }
+        stage('Publish') {
+            steps {
+                container(name: 'crane', shell: '/busybox/sh') {
+                    sh '''
+                    echo "Publish stage"
+                    echo "$DOCKERHUB_CREDS_PSW" > p.txt
+                    chmod 600 p.txt
+                    cat p.txt | crane auth login -u $DOCKERHUB_CREDS_USR --password-stdin $DOCKER_REGISTRY
+                    crane push image.tar $IMAGE_NAME:$TAG1
+                    crane push image.tar $IMAGE_NAME:$TAG2
+                    '''
+                }
+            }
+            post {
+                cleanup {
+                    sh '''
+                    echo "Remove archived artifacts."
+                    '''
+                }
+            }
+        }
+    }
+}
