@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# stop on errors
+set -eo pipefail
+
+# execute and print
+# set -x
+
 function print_help() {
   echo "\
 usage: $0
@@ -60,7 +66,8 @@ while [[ $# > 0 ]]
         ;;
       --)
         HELM_ARGS="${@:2}"
-        shift $#
+        let "REMAINING_ARGS=$#-1"
+        shift $REMAINING_ARGS
         ;;
       *)
         # unknown option
@@ -129,3 +136,5 @@ else
     rm $TEMP_FILE
   fi
 fi
+
+echo "## $0 done. ##"
