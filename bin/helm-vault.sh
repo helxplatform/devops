@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# stop on errors
+set -eo pipefail
+
+# execute and print
+# set -x
+
 function print_help() {
   echo "\
 usage: $0
@@ -11,6 +17,10 @@ usage: $0
   -p|--put          Specify a values YAML to insert into Vault (do not run
                     Helm command).  Specify path of file for input or directory
                     that contains the file (filename created from secret path).
+  -r|--remove-cmd   Specify the remove file command to be used when deleting the
+                    temporary values YAML.  Default value is 'rm'.  It is good
+                    to specify a secure delete program if your file system is
+                    not encrypted.
   -s|--secret-path  Specify vault secret path to get values YAML file from.
   --                Additional arguments for the Helm command go after this.
 "
@@ -21,6 +31,7 @@ DEBUG=false
 # Get directory containing this script.
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 VALUES_FIELD=values.yaml
+REMOVE_CMD="rm"
 GET_VALUES_YAML=false
 PUT_VALUES_YAML=false
 PUT_VALUES_YAML_FILE=""
@@ -54,13 +65,18 @@ while [[ $# > 0 ]]
         PUT_VALUES_YAML_FILE="$2"
         shift # past argument
         ;;
+      -r|--remove-cmd)
+        REMOVE_CMD="$2"
+        shift # past argument
+        ;;
       -s|--secret-path)
         SECRET_PATH="$2"
         shift # past argument
         ;;
       --)
         HELM_ARGS="${@:2}"
-        shift $#
+        let "REMAINING_ARGS=$#-1"
+        shift $REMAINING_ARGS
         ;;
       *)
         # unknown option
@@ -126,6 +142,8 @@ else
       exit 1
     fi
     helm --values=$TEMP_FILE $HELM_ARGS
-    rm $TEMP_FILE
+    $REMOVE_CMD $TEMP_FILE
   fi
 fi
+
+echo "## $0 done. ##"
