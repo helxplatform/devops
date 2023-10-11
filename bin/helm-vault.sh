@@ -34,6 +34,7 @@ VALUES_FIELD=values.yaml
 REMOVE_CMD="rm"
 GET_VALUES_YAML=false
 PUT_VALUES_YAML=false
+COMPARE_VALUES=false
 PUT_VALUES_YAML_FILE=""
 SECRET_PATH=""
 YAMLS_DIR=""
@@ -55,6 +56,12 @@ while [[ $# > 0 ]]
         print_help
         exit 0
         ;;
+      -c|--compare)
+        COMPARE_VALUES=true
+        GET_VALUES_YAML_FILE="$2"
+        shift # past argument
+        ;;
+
       -g|--get)
         GET_VALUES_YAML=true
         GET_VALUES_YAML_FILE="$2"
@@ -135,13 +142,22 @@ else
     mv "$TEMP_FILE" "$GET_VALUES_YAML_FILE"
     echo "** keeping values YAML: $GET_VALUES_YAML_FILE"
     echo "Not running helm command"
+  elif $COMPARE_VALUES
+  then
+    echo "comparing file from Vault to $GET_VALUES_YAML_FILE"
+    echo "< remote difference"
+    echo "> local difference"
+    echo
+    diff "$TEMP_FILE" "$GET_VALUES_YAML_FILE"
   else
     if [ -z "$HELM_ARGS" ]; then
       echo "Helm arguments not specified."
       print_help
       exit 1
     fi
+    # Run helm command with values pulled from Vault.
     helm --values=$TEMP_FILE $HELM_ARGS
+    # Delete the temp file used for values pulled from Vault.
     $REMOVE_CMD $TEMP_FILE
   fi
 fi
