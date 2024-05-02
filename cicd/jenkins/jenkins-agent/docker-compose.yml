@@ -1,0 +1,22 @@
+services:
+  agent:
+    image: containers.renci.org/helxplatform/agent-docker:1.0.3
+    restart: always
+    group_add:
+      # This is the GID of the docker group on the VM. The GID may be different on other VMs.
+      - "749"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -url https://jenkins.apps.renci.org/ -webSocket -workDir /home/jenkins/agent ${AGENT_SECRET} jenkins-docker-builder.edc.renci.org
+
+  docuum:
+    image: stephanmisc/docuum:0.21.1
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - docuum:/root
+    command: --threshold '40 GB'
+
+volumes:
+  # Stores data on how often images are used
+  docuum:
