@@ -15,6 +15,9 @@ import argparse
 import sys
 
 # NOTE: %%I/%%L/%%s below are intentional escapes for psycopg3 so Postgres sees %I/%L/%s.
+#
+# IMPORTANT: We use E'' strings for newline escapes so the output contains real newlines,
+# not literal "\n" text.
 GENERATOR_SQL = r"""
 WITH tables AS (
   SELECT table_schema, table_name
@@ -47,7 +50,7 @@ $SQL$,
     %s || '/' || t.table_name || '.csv',
     CASE
       WHEN n.col_list IS NULL THEN ''
-      ELSE format(',\n  FORCE_NULL (%%s)', n.col_list)
+      ELSE format(E',\n  FORCE_NULL (%%s)', n.col_list)
     END
   ) AS copy_sql
 FROM tables t
