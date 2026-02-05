@@ -5,23 +5,16 @@ Generate plain-text PostgreSQL COPY statements for every table in schema `omop_l
 This script connects to Postgres, runs a generator query, and outputs *only* the COPY statements
 (no psql headers/footers/ASCII tables).
 
-Requirements:
-- Python 3.8+
-- One of: psycopg (v3) OR psycopg2
-- Connection info via PG env vars (recommended):
-    PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD
-  Or pass a libpq connection string via --dsn.
-
-Examples:
-  export PGHOST=localhost PGPORT=5432 PGDATABASE=mydb PGUSER=myuser PGPASSWORD=secret
-  python3 generate_omop_copy.py > omop_load_copy_commands.sql
-
-  python3 generate_omop_copy.py --dsn "host=localhost port=5432 dbname=mydb user=myuser password=secret" \
-    --out omop_load_copy_commands.sql
+Compatibility note (psycopg3):
+- psycopg3 uses "%"-style placeholders (e.g., %s) and parses the query for them.
+- Our SQL also uses Postgres format() with %I/%L/%s.
+  To prevent psycopg3 from treating %I/%L/%s as placeholders, we escape them as %%I/%%L/%%s
+  in the query string. Postgres then receives single-% specifiers as intended.
 """
 import argparse
 import sys
 
+# NOTE: %%I/%%L/%%s below are intentional escapes for psycopg3 so Postgres sees %I/%L/%s.
 GENERATOR_SQL = r"""
 WITH tables AS (
   SELECT table_schema, table_name
@@ -33,7 +26,7 @@ nullable_cols AS (
   SELECT
     table_schema,
     table_name,
-    string_agg(format('%I', column_name), ', ' ORDER BY ordinal_position) AS col_list
+    string_agg(format('%%I', column_name), ', ' ORDER BY ordinal_position) AS col_list
   FROM information_schema.columns
   WHERE table_schema = %s
     AND is_nullable = 'YES'
@@ -42,11 +35,11 @@ nullable_cols AS (
 SELECT
   format(
 $SQL$
-COPY %I.%I
-FROM %L
+COPY %%I.%%I
+FROM %%L
 WITH (
   FORMAT csv,
-  HEADER true%s
+  HEADER true%%s
 );
 $SQL$,
     t.table_schema,
@@ -54,7 +47,7 @@ $SQL$,
     %s || '/' || t.table_name || '.csv',
     CASE
       WHEN n.col_list IS NULL THEN ''
-      ELSE format(',\n  FORCE_NULL (%s)', n.col_list)
+      ELSE format(',\n  FORCE_NULL (%%s)', n.col_list)
     END
   ) AS copy_sql
 FROM tables t
@@ -82,12 +75,40 @@ def get_connection(dsn):
                 "  pip install psycopg2-binary\n"
             )
 
-def main():
-    p = argparse.ArgumentParser()
-    p.add_argument("--dsn", default=None, help="libpq connection string. If omitted, uses PG* env vars.")
+def build_parser() -> argparse.ArgumentParser:
+    epilog = r"""
+DSN examples (libpq connection strings / URLs):
+
+  # URL-style DSN (common)
+  --dsn "postgresql://USER:PASSWORD@HOST:5432/DBNAME"
+
+  # URL DSN with SSL
+  --dsn "postgresql://USER:PASSWORD@HOST:5432/DBNAME?sslmode=require"
+
+  # If your password has special characters, URL-encode it:
+  #   @ -> %40   : -> %3A   / -> %2F   ? -> %3F   # -> %23
+
+  # Keyword/space-separated DSN (also valid)
+  --dsn "host=HOST port=5432 dbname=DBNAME user=USER password=PASSWORD sslmode=require"
+
+If --dsn is omitted, libpq defaults are used (PGHOST/PGPORT/PGDATABASE/PGUSER/PGPASSWORD, etc.).
+"""
+    p = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=(
+            "Generate plain-text COPY statements for every table in schema 'omop_load'.\n"
+            "Outputs only the SQL statements (no psql table formatting)."
+        ),
+        epilog=epilog.strip(),
+    )
+    p.add_argument("--dsn", default=None, help="libpq connection string or URL. If omitted, uses PG* env vars.")
     p.add_argument("--schema", default="omop_load", help="Schema to iterate (default: omop_load)")
     p.add_argument("--dir", default="/pgdata/pg15/tmp_refresh", help="Server-side CSV dir (default: /pgdata/pg15/tmp_refresh)")
     p.add_argument("--out", default="-", help="Output file, or '-' for stdout (default: -)")
+    return p
+
+def main():
+    p = build_parser()
     args = p.parse_args()
 
     conn = get_connection(args.dsn)
